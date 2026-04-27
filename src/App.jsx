@@ -549,18 +549,6 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .a-modal-body{padding:1.2rem 1rem;}
   .a-modal-ft{padding:1rem;}
   .a-modal-hd{padding:1rem 1.2rem;}
-  /* Admin table - make rows card-like on narrow screens */
-  .a-tbl-wrap{overflow:visible;border:none;}
-  .a-tbl{min-width:unset;width:100%;}
-  .a-tbl thead{display:none;}
-  .a-tbl tbody{display:block;}
-  .a-tbl tbody tr{display:block;background:var(--a-surface);border:1px solid var(--a-border);margin-bottom:.9rem;padding:.8rem;border-radius:8px;}
-  .a-tbl td{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:none;font-size:.82rem;color:var(--a-text);}
-  .a-tbl td .a-tbl-name{margin:0;font-size:1rem;}
-  .a-tbl td .a-tbl-dev{display:block;font-size:.72rem;color:var(--a-muted);}
-  .a-tbl-img{width:64px;height:48px;margin-right:.8rem;border-radius:6px;}
-  .a-row-act{margin-left:0;display:flex;gap:.45rem;}
-  .a-ico-btn{width:38px;height:38px}
 }
 
 /* ══════════════════════════════
@@ -634,11 +622,6 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .a-pg-title{font-size:1.4rem;}
   .a-main{padding:1rem .75rem;}
   .a-login-box{padding:1.8rem 1.2rem;}
-  /* Form modal full-screen on very small devices */
-  .a-modal{max-width:100%;border-radius:6px;margin:0 0.25rem;}
-  .a-modal-hd{padding:1rem;}
-  .a-modal-body{padding:1rem;}
-  .a-modal-ft{padding:0.9rem;}
 }
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.8rem;}
 
@@ -747,22 +730,6 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 
 /* Overview tab */
 .ov-body{padding:2rem 2.2rem;}
-
-/* Make dialog/modals scrollable and touch-friendly on small screens */
-.a-modal, .ri-box, .det {
-  display:flex;
-  flex-direction:column;
-  max-height:calc(100svh - 2rem);
-}
-.a-modal-body, .ri-body, .ri-wa-body, .ri-success, .ov-body {
-  overflow:auto;
-  -webkit-overflow-scrolling:touch;
-  flex:1 1 auto;
-}
-.a-modal-ov, .ri-ov, .ov { /* ensure overlay allows inner scrolling */
-  overflow-y:auto;
-}
-.a-modal-ft{flex-shrink:0}
 .spec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;margin-bottom:2rem;}
 .spec-section{background:var(--card);border:1px solid var(--border);overflow:hidden;}
 .spec-sec-hd{display:flex;align-items:center;gap:.55rem;padding:.65rem 1rem;background:var(--ink);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;}
