@@ -747,6 +747,22 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 
 /* Overview tab */
 .ov-body{padding:2rem 2.2rem;}
+
+/* Make dialog/modals scrollable and touch-friendly on small screens */
+.a-modal, .ri-box, .det {
+  display:flex;
+  flex-direction:column;
+  max-height:calc(100svh - 2rem);
+}
+.a-modal-body, .ri-body, .ri-wa-body, .ri-success, .ov-body {
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  flex:1 1 auto;
+}
+.a-modal-ov, .ri-ov, .ov { /* ensure overlay allows inner scrolling */
+  overflow-y:auto;
+}
+.a-modal-ft{flex-shrink:0}
 .spec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;margin-bottom:2rem;}
 .spec-section{background:var(--card);border:1px solid var(--border);overflow:hidden;}
 .spec-sec-hd{display:flex;align-items:center;gap:.55rem;padding:.65rem 1rem;background:var(--ink);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;}
