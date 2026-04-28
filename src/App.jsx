@@ -1940,90 +1940,54 @@ function UnitTypeEditor({unitTypes, onChange}){
   );
 }
 
-/* ═══ AI PDF PARSER ═══ */
-const AI_SYSTEM_PROMPT = `You are a property data extraction specialist. Extract all available property details from the uploaded PDF brochure and return ONLY a valid JSON object — no markdown, no explanation, no extra text.
+/* ═══ PDF TEXT EXTRACTION + HEURISTIC PARSER (FREE — no API key) ═══ */
+/* Uses Mozilla PDF.js loaded from CDN to extract text client-side,
+   then parses with regex heuristics to fill form fields.
+   Loaded via blob URL to bypass CSP script-src restrictions. */
 
-Return this exact JSON structure (use null for fields not found):
-{
-  "name": "Full project name",
-  "developer": "Developer company name",
-  "location": "Full address or area, state",
-  "type": "One of: Condominium, Semi-Detached, Serviced Apartment, Shophouse, Terrace House, SoHo / Office, Bungalow, Duplex",
-  "status": "One of: New Launch, Under Construction, Completed, Sold Out",
-  "completion": "e.g. Q4 2026",
-  "tenure": "Freehold or Leasehold",
-  "landSize": "e.g. 3.2 acres",
-  "constructionStage": "Current construction stage description",
-  "totalBlocks": 2,
-  "totalFloorsPerTower": ["Tower A: 38 floors", "Tower B: 36 floors"],
-  "residentialStartLevel": "e.g. Level 5",
-  "totalUnits": 320,
-  "floors": 38,
-  "unitsBreakdown": "e.g. 280 Public / 40 Bumi",
-  "unitsPerTower": "e.g. Tower A: 168 units",
-  "bedrooms": "e.g. 2, 3, 4",
-  "bathrooms": "e.g. 2, 3",
-  "sizeSqft": "e.g. 900-2200",
-  "carParkLevels": "e.g. Level 1-4",
-  "numberOfCarParks": "e.g. 480 bays",
-  "parkingNotes": "Notes about parking",
-  "numberOfLifts": "e.g. 4 per tower",
-  "priceFrom": 480000,
-  "priceTo": 1200000,
-  "maintenanceFee": "e.g. RM 0.35 / sf / month",
-  "sinkingFund": "e.g. RM 0.10 / sf / month",
-  "showroom": "Showroom location and hours",
-  "scaleModel": "Yes or No",
-  "description": "2-3 sentence project description",
-  "highlights": "comma-separated list of key highlights",
-  "facilities": "comma-separated list of facilities",
-  "upgrades": "Description of premium finishes and upgrade specs",
-  "unitTypes": [
-    {
-      "label": "Type A",
-      "name": "2-Bedroom",
-      "beds": 2,
-      "baths": 2,
-      "size": "900 sf",
-      "priceFrom": "From RM 480,000",
-      "image": "",
-      "desc": "Brief layout description"
-    }
-  ]
-}`;
+const PDFJS_VERSION    = "3.11.174";
+const PDFJS_CDN        = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.min.js`;
+const PDFJS_WORKER_CDN = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
 
-async function parsePDFWithAI(base64Data) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+async function ensurePdfJs() {
+  if (window.pdfjsLib) return window.pdfjsLib;
+  // Load directly from CDN — no blob URL needed, works on Vercel with standard CSP.
+  await loadScript(PDFJS_CDN);
+  if (!window.pdfjsLib) throw new Error("Could not load PDF.js library.");
+  // Point worker at the matching CDN worker (free, no API key).
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_CDN;
+  return window.pdfjsLib;
+}
+
+async function extractPdfText(file) {
+  const pdfjs = await ensurePdfJs();
+  if (!pdfjs) throw new Error("Failed to load PDF.js library.");
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjs.getDocument({ data: buf }).promise;
+  let fullText = "";
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const pageText = content.items.map(it => it.str).join(" ");
+    fullText += pageText + "\n\n";
+  }
+  return fullText;
+}
+
+/* ═══ AI PDF PARSER — calls /api/parse-pdf (Vercel serverless → Claude) ═══ */
+async function parseWithClaude(rawText) {
+  const res = await fetch("/api/parse-pdf", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4000,
-      system: AI_SYSTEM_PROMPT,
-      messages: [{
-        role: "user",
-        content: [
-          { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64Data } },
-          { type: "text", text: "Extract all property information from this brochure/document and return the JSON object as instructed. If a field is not found, use null. Extract as many unit types as you can find." }
-        ]
-      }]
-    })
+    body: JSON.stringify({ text: rawText }),
   });
-  if (!response.ok) throw new Error(`API error ${response.status}`);
-  const data = await response.json();
-  const raw = data.content?.map(b => b.text || "").join("") || "";
-  const clean = raw.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Server error ${res.status} — check ANTHROPIC_API_KEY in Vercel env vars.`);
+  }
+  return res.json();
 }
 
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(",")[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
 
 /* ═══ AI PDF UPLOAD WIDGET ═══ */
 function AIPDFWidget({ onAutofill }) {
@@ -2035,9 +1999,9 @@ function AIPDFWidget({ onAutofill }) {
   const [dragOver, setDragOver] = useState(false);
 
   const STEPS = [
-    "Reading PDF document…",
-    "Sending to AI for analysis…",
-    "Extracting property details…",
+    "Loading PDF reader…",
+    "Extracting text from PDF…",
+    "Claude AI is reading the brochure…",
     "Filling in form fields…",
   ];
 
@@ -2057,13 +2021,23 @@ function AIPDFWidget({ onAutofill }) {
     if (!file) return;
     setStep("loading"); setProgress(0); setErrMsg(""); setFilledFields([]);
     try {
+      // Step 1 — load PDF.js
       setProgress(0);
-      const b64 = await fileToBase64(file);
-      setProgress(1);
-      const result = await parsePDFWithAI(b64);
-      setProgress(2);
+      await ensurePdfJs();
 
-      // Map result → form fields
+      // Step 2 — extract raw text from the PDF (client-side, free)
+      setProgress(1);
+      const rawText = await extractPdfText(file);
+      if (!rawText || rawText.trim().length < 30) {
+        throw new Error("Could not extract text. The PDF may be scanned/image-only — please fill manually.");
+      }
+
+      // Step 3 — send text to Claude AI via /api/parse-pdf (Vercel serverless)
+      setProgress(2);
+      const result = await parseWithClaude(rawText);
+
+      // Step 4 — map AI result → form fields
+      setProgress(3);
       const filled = [];
       const formPatch = {};
       const FIELD_LABELS = {
@@ -2084,27 +2058,28 @@ function AIPDFWidget({ onAutofill }) {
 
       for (const [k, label] of Object.entries(FIELD_LABELS)) {
         const v = result[k];
-        if (v !== null && v !== undefined && v !== "" ) {
+        if (v !== null && v !== undefined && v !== "") {
           formPatch[k] = Array.isArray(v) ? v.join(", ") : String(v);
           filled.push(label);
         }
       }
-      // totalFloorsPerTower (array → comma string)
       if (Array.isArray(result.totalFloorsPerTower) && result.totalFloorsPerTower.length) {
         formPatch.totalFloorsPerTower = result.totalFloorsPerTower.join(", ");
         filled.push("Floors per Tower");
       }
 
-      setProgress(3);
       setFilledFields(filled);
       setStep("done");
 
-      // unitTypes comes back as array of objects — pass separately
       const unitTypes = Array.isArray(result.unitTypes) ? result.unitTypes : [];
       onAutofill(formPatch, unitTypes);
 
+      if (filled.length === 0 && unitTypes.length === 0) {
+        setErrMsg("No fields could be detected automatically. Please fill the form manually.");
+      }
+
     } catch (e) {
-      setErrMsg(e.message || "Failed to parse PDF. Please try again or fill manually.");
+      setErrMsg(e.message || "Failed to read PDF. Please try again or fill manually.");
       setStep("error");
     }
   };
@@ -2114,10 +2089,10 @@ function AIPDFWidget({ onAutofill }) {
   return (
     <div className="ai-zone">
       <div className="ai-zone-hd">
-        <div className="ai-zone-icon">✨</div>
+        <div className="ai-zone-icon">🤖</div>
         <div>
           <div className="ai-zone-title">AI Auto-fill from Brochure PDF</div>
-          <div className="ai-zone-sub">Upload a project brochure or factsheet — AI will extract and fill in all available fields automatically</div>
+          <div className="ai-zone-sub">Upload a project brochure — text is extracted locally via PDF.js, then <strong>Claude AI</strong> reads and fills all form fields automatically</div>
         </div>
       </div>
       <div className="ai-zone-body">
@@ -2145,7 +2120,7 @@ function AIPDFWidget({ onAutofill }) {
 
         {file && step !== "loading" && (
           <button className="ai-parse-btn" onClick={runParse} disabled={step==="loading"}>
-            <span>✨</span> Extract & Auto-fill with AI
+            <span>🤖</span> Extract &amp; Auto-fill with Claude AI
           </button>
         )}
 
