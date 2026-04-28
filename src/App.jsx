@@ -3534,9 +3534,37 @@ export default function App(){
                     {cmpProjects.map(p=>(<td key={p.id} className="proj-col" style={{padding:"0 .5rem .5rem",verticalAlign:"top",borderRight:"1px solid var(--border)"}}><div className="proj-card"><img className="proj-img" src={p.image} alt={p.name}/><div className="proj-info"><div className="proj-type">{p.type}</div><div className="proj-nm">{p.name}</div><div className="proj-dv">by {p.developer}</div></div><button className="proj-rm" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div></td>))}
                   </tr></thead>
                   <tbody>{(()=>{
+                    const vs=p=>(p.visibleSections||{});
+                    const sec=(p,k)=>vs(p)[k]!==false;
+                    const cv=(p,secKey,val)=>{if(!sec(p,secKey))return"—";if(val===null||val===undefined||val==="")return"—";return val;};
+                    const cvArr=(p,secKey,arr)=>{if(!sec(p,secKey))return null;const a=Array.isArray(arr)?arr:[];return a.length?a:null;};
                     const Sec=({l})=>(<tr><td><div className="sec-hd">{l}</div></td>{cmpProjects.map(p=><td key={p.id}><div className="val-cell sec"/></td>)}</tr>);
                     const Row=({l,r,bid})=>(<tr><td><div className="lbl-cell">{l}</div></td>{cmpProjects.map(p=><td key={p.id}><div className={`val-cell${bid===p.id?" best-cell":""}`}>{r(p)}{bid===p.id&&<span className="best-tag">BEST</span>}</div></td>)}</tr>);
-                    return(<><Sec l="OVERVIEW"/><Row l="Developer" r={p=>p.developer}/><Row l="Location" r={p=>p.location}/><Row l="Status" r={p=>p.status}/><Row l="Completion" r={p=>p.completion}/><Row l="Tenure" r={p=>p.tenure}/><Row l="Land Size" r={p=>p.landSize||"—"}/><Row l="Total Units" r={p=>`${p.totalUnits} units`}/><Sec l="PRICING"/><Row l="Starting From" r={p=><strong style={{fontFamily:"var(--serif)",fontSize:"1rem"}}>{fmt(p.priceFrom)}</strong>} bid={cheapest}/><Row l="Price Range" r={p=>`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`}/><Row l="Maintenance" r={p=>p.maintenanceFee||"—"}/><Sec l="UNIT SPECS"/><Row l="Bedrooms" r={p=>bLbl(p.bedrooms)+" bed"}/><Row l="Bathrooms" r={p=>bLbl(p.bathrooms)+" bath"}/><Row l="Built-up" r={p=>`${p.sizeSqft?.[0]?.toLocaleString()} – ${p.sizeSqft?.[1]?.toLocaleString()} sf`} bid={largest}/><Row l="Car Parks" r={p=>p.numberOfCarParks||"—"}/><Row l="Lifts" r={p=>p.numberOfLifts||"—"}/><Row l="Layout Types" r={p=>`${Array.isArray(p.unitTypes)?p.unitTypes.length:0} types`}/><Sec l="HIGHLIGHTS"/><Row l="Highlights" r={p=><div className="tw">{(p.highlights||[]).map(h=><span key={h} className="ctag2">{h}</span>)}</div>}/><Sec l="FACILITIES"/><Row l="Amenities" r={p=><div className="tw">{(p.facilities||[]).map(f=><span key={f} className="ctag2">{f}</span>)}</div>}/></>);
+                    return(<>
+                      <Sec l="OVERVIEW"/>
+                      <Row l="Developer" r={p=>cv(p,"overview.basicInfo",p.developer)}/>
+                      <Row l="Location" r={p=>cv(p,"overview.basicInfo",p.location)}/>
+                      <Row l="Status" r={p=>cv(p,"overview.basicInfo",p.status)}/>
+                      <Row l="Completion" r={p=>cv(p,"overview.basicInfo",p.completion)}/>
+                      <Row l="Tenure" r={p=>cv(p,"overview.basicInfo",p.tenure)}/>
+                      <Row l="Land Size" r={p=>cv(p,"overview.basicInfo",p.landSize)}/>
+                      <Row l="Total Units" r={p=>{const v=cv(p,"overview.unitInfo",p.totalUnits);return v==="—"?"—":`${v} units`;}}/>
+                      <Sec l="PRICING"/>
+                      <Row l="Starting From" r={p=>{if(!sec(p,"overview.financial"))return"—";return p.priceFrom?<strong style={{fontFamily:"var(--serif)",fontSize:"1rem"}}>{fmt(p.priceFrom)}</strong>:"—";}} bid={cheapest}/>
+                      <Row l="Price Range" r={p=>{if(!sec(p,"overview.financial"))return"—";return p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:"—";}}/>
+                      <Row l="Maintenance" r={p=>cv(p,"overview.financial",p.maintenanceFee)}/>
+                      <Sec l="UNIT SPECS"/>
+                      <Row l="Bedrooms" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bedrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bed":"—";}}/>
+                      <Row l="Bathrooms" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bathrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bath":"—";}}/>
+                      <Row l="Built-up" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const s=p.sizeSqft;return Array.isArray(s)&&s[0]&&s[1]?`${s[0].toLocaleString()} – ${s[1].toLocaleString()} sf`:"—";}} bid={largest}/>
+                      <Row l="Car Parks" r={p=>cv(p,"overview.parking",p.numberOfCarParks)}/>
+                      <Row l="Lifts" r={p=>cv(p,"overview.facilities",p.numberOfLifts)}/>
+                      <Row l="Layout Types" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const ut=p.unitTypes;return Array.isArray(ut)?`${ut.length} types`:"—";}}/>
+                      <Sec l="HIGHLIGHTS"/>
+                      <Row l="Highlights" r={p=>{const a=cvArr(p,"overview.highlights",p.highlights);return a?<div className="tw">{a.map(h=><span key={h} className="ctag2">{h}</span>)}</div>:"—";}}/>
+                      <Sec l="FACILITIES"/>
+                      <Row l="Amenities" r={p=>{const a=cvArr(p,"overview.facList",p.facilities);return a?<div className="tw">{a.map(f=><span key={f} className="ctag2">{f}</span>)}</div>:"—";}}/>
+                    </>);
                   })()}</tbody>
                 </table>
               </div>
