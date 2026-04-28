@@ -502,6 +502,37 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .ps-tick-lbl{font-size:.58rem;color:var(--muted);white-space:nowrap;letter-spacing:.02em;}
 .ps-tick.active .ps-tick-lbl{color:var(--gold);}
 
+/* ── Card-based project listing ── */
+.a-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;margin-bottom:1rem;}
+.a-proj-card{background:var(--a-surface);border:1px solid var(--a-border);display:flex;flex-direction:column;transition:border-color .18s,box-shadow .18s;position:relative;}
+.a-proj-card:hover{border-color:var(--a-gold);box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.a-proj-card.dimmed{opacity:.55;}
+.a-card-img-wrap{position:relative;height:160px;overflow:hidden;flex-shrink:0;}
+.a-card-img{width:100%;height:100%;object-fit:cover;display:block;}
+.a-card-status{position:absolute;top:.6rem;left:.6rem;}
+.a-card-vis-badge{position:absolute;top:.6rem;right:.6rem;font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .5rem;background:rgba(0,0,0,.6);color:#fff;backdrop-filter:blur(4px);}
+.a-card-vis-badge.hidden{color:var(--a-red);}
+.a-card-body{padding:1rem 1.1rem;flex:1;display:flex;flex-direction:column;gap:.55rem;}
+.a-card-name{font-weight:600;color:#e0e4ef;font-size:.92rem;line-height:1.35;}
+.a-card-dev{font-size:.72rem;color:var(--a-muted);line-height:1.4;}
+.a-card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;font-size:.74rem;color:var(--a-muted);}
+.a-card-meta-sep{color:var(--a-border);}
+.a-card-price{font-family:var(--serif);font-size:1.05rem;color:var(--a-gold);font-weight:600;margin-top:auto;padding-top:.3rem;}
+.a-card-footer{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1.1rem;border-top:1px solid var(--a-border);gap:.5rem;}
+.a-card-toggle{display:flex;align-items:center;}
+.a-card-menu-wrap{position:relative;}
+.a-card-menu-btn{width:36px;height:36px;background:transparent;border:1px solid var(--a-border);color:var(--a-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all .15s;line-height:1;}
+.a-card-menu-btn:hover{border-color:var(--a-gold);color:var(--a-gold);}
+.a-card-dropdown{position:absolute;right:0;bottom:calc(100% + 4px);background:var(--a-surface);border:1px solid var(--a-border);box-shadow:0 4px 16px rgba(0,0,0,.35);z-index:50;min-width:140px;animation:fadeIn .12s ease;}
+.a-card-drop-item{display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;font-size:.8rem;color:var(--a-text);cursor:pointer;transition:background .12s;white-space:nowrap;border:none;background:none;width:100%;font-family:var(--sans);text-align:left;}
+.a-card-drop-item:hover{background:var(--a-surface2);}
+.a-card-drop-item.danger{color:var(--a-red);}
+.a-card-drop-item.danger:hover{background:rgba(230,57,70,.1);}
+.a-card-empty{grid-column:1/-1;text-align:center;padding:3rem;color:var(--a-muted);font-size:.84rem;}
+.a-fab{display:none;position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;border-radius:50%;background:var(--a-gold);color:var(--a-bg);border:none;font-size:1.6rem;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.4);z-index:100;transition:transform .15s;}
+.a-fab:hover{transform:scale(1.08);}
+.a-toolbar.sticky{position:sticky;top:0;z-index:20;background:var(--a-bg);padding-top:.5rem;padding-bottom:.5rem;}
+
 /* ══════════════════════════════
    RESPONSIVE — 768 px
 ══════════════════════════════ */
@@ -549,8 +580,7 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .det-tag-pill{margin-bottom:.3rem;}
   .det-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;}
   .det-tab{flex:0 0 auto;padding:.85rem .8rem;font-size:.72rem;white-space:nowrap;}
-  .gal-strip{overflow-x:auto;padding:.2rem;gap:.2rem;}
-  .gal-t{height:48px;}
+  .gal-strip{display:none;}
 
   /* Overview tab */
   .ov-body{padding:1.4rem 1rem;overflow-y:auto;}
@@ -571,10 +601,14 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .loc-body{padding:1.2rem 1rem;}
   .map-embed{height:240px;}
 
-  /* Price bar */
-  .price-bar{flex-direction:column;gap:.75rem;padding:1.1rem 1.2rem;}
-  .pb-btns{display:flex;flex-direction:column;gap:.5rem;width:100%;}
-  .pb-btn1,.pb-btn2{width:100%;text-align:center;padding:.75rem;}
+  /* Price bar — mobile left-right */
+  .price-bar{flex-direction:row;align-items:center;gap:.75rem;padding:1rem 1.2rem;flex-wrap:nowrap;}
+  .pb-left{flex:0 0 auto;min-width:0;}
+  .pb-left .pb-lbl{margin-bottom:.1rem;}
+  .pb-price{font-size:1.3rem;white-space:nowrap;}
+  .pb-price span{font-size:.72rem;}
+  .pb-btns{display:flex;flex-direction:column;gap:.4rem;flex:1;min-width:0;}
+  .pb-btn1,.pb-btn2{width:100%;text-align:center;padding:.65rem .5rem;font-size:.72rem;min-height:44px;display:flex;align-items:center;justify-content:center;}
 
   /* RI / VS modals */
   .ri-ov{padding:.75rem;}
@@ -590,6 +624,11 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .a-modal-body{padding:1.2rem 1rem;}
   .a-modal-ft{padding:1rem;}
   .a-modal-hd{padding:1rem 1.2rem;}
+  .a-card-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
+  .a-card-img-wrap{height:140px;}
+  .a-fab{display:flex;}
+  .a-add-btn.desktop-only{display:none;}
+  .a-toolbar.sticky{position:sticky;top:0;z-index:20;background:var(--a-bg);padding:.6rem 0;margin-bottom:.8rem;}
 }
 
 /* ══════════════════════════════
@@ -662,7 +701,10 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .ut-desc{word-break:break-word;font-size:.78rem;}
 
   /* Price bar */
-  .pb-price{font-size:1.4rem;}
+  .pb-price{font-size:1.15rem;}
+  .pb-price span{font-size:.65rem;}
+  .price-bar{padding:.85rem .9rem;gap:.6rem;}
+  .pb-btn1,.pb-btn2{padding:.6rem .4rem;font-size:.68rem;}
 
   /* RI / VS modals — full-screen */
   .ri-ov{padding:0;align-items:flex-end;}
@@ -678,6 +720,8 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .a-search{min-width:unset;}
   .a-tbl-wrap{font-size:.76rem;}
   .a-pg-title{font-size:1.4rem;}
+  .a-card-grid{grid-template-columns:1fr;}
+  .a-card-img-wrap{height:130px;}
   .a-main{padding:1rem .75rem;}
   .a-login-box{padding:1.8rem 1.2rem;}
 }
@@ -766,6 +810,7 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .ov{position:fixed;inset:0;z-index:200;background:rgba(8,8,10,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;overflow:hidden;animation:fadeIn .22s ease;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 .det{background:var(--parchment);width:100%;max-width:1060px;height:calc(100svh - 3rem);max-height:calc(100svh - 3rem);position:relative;animation:slideUp .28s ease;overflow:hidden;display:flex;flex-direction:column;}
+@media(min-width:1024px){.det{max-width:1280px;}}
 @keyframes slideUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 .det-hero{position:relative;height:360px;overflow:hidden;flex-shrink:0;}
 .det-hero img{width:100%;height:100%;object-fit:cover;}
@@ -787,6 +832,36 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .det-tab:hover{color:#ccc;}
 .det-tab.on{color:var(--gold);border-bottom-color:var(--gold);}
 
+/* Desktop split layout — left image / right content */
+.det-split{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+.det-left{flex-shrink:0;}
+.det-right{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+.det-right-hd{display:none;}
+
+/* Hero image nav — mobile only */
+.det-hero-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:8;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .18s;}
+.det-hero-nav:hover{background:rgba(0,0,0,.75);}
+.det-hero-nav.prev{left:.75rem;}
+.det-hero-nav.next{right:.75rem;}
+.det-hero-dots{position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:8;display:flex;gap:.4rem;}
+.det-hero-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);border:none;padding:0;cursor:pointer;transition:background .18s,transform .18s;}
+.det-hero-dot.on{background:#fff;transform:scale(1.3);}
+@media(min-width:1024px){.det-hero-nav,.det-hero-dots{display:none !important;}}
+@media(max-width:1023px){.gal-strip{display:none !important;}}
+@media(min-width:1024px){
+.det-split{flex-direction:row;flex:1;}
+.det-left{width:44%;min-width:380px;max-width:520px;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;}
+.det-left .det-hero{height:100%;min-height:320px;flex:1;}
+.det-left .det-hero-ov{background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.18) 50%,transparent 100%);}
+.det-left .det-hc{left:1.8rem;right:1.8rem;bottom:1.5rem;}
+.det-left .det-title{font-size:1.8rem;}
+.det-left .gal-strip{flex-shrink:0;}
+.det-right{width:56%;flex:1;border-left:1px solid var(--border);}
+.det-right-hd{display:none;}
+.det-close{z-index:15;background:var(--ink);color:#fff;border-radius:50%;}
+.det-sticky-bar{flex-shrink:0;border-top:1px solid var(--border);}
+}
+
 /* Overview tab */
 .ov-body{padding:2rem 2.2rem;}
 .spec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;margin-bottom:2rem;}
@@ -807,7 +882,8 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .det-desc-p{padding:1rem;font-size:.84rem;line-height:1.75;color:var(--muted);}
 .fac-chips{padding:.75rem 1rem;display:flex;flex-wrap:wrap;gap:.4rem;}
 .fac-chip{background:var(--warm);border:1px solid var(--border);font-size:.72rem;padding:.28rem .65rem;color:var(--ink);}
-.price-bar{background:var(--ink);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding:1.3rem 2.2rem;margin-top:2rem;}
+.price-bar{background:var(--ink);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding:1.3rem 2.2rem;}
+.det-sticky-bar{margin-top:0;}
 .pb-left .pb-lbl{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#ACBCBF;margin-bottom:.18rem;}
 .pb-price{font-family:var(--serif);font-size:1.8rem;color:var(--gold);}
 .pb-price span{font-size:.9rem;color:#ACBCBF;font-weight:300;}
@@ -1792,34 +1868,45 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
   return (
     <div className="ov" onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div className="det">
-        <div className="det-hero">
-          <img src={allImgs[activeImg]} alt={p.name}/>
-          <div className="det-hero-ov"/>
-          <div className="det-hc">
-            <div className="det-tag-pill" style={{background:p.tagColor}}>{p.tag}</div>
-            <h2 className="det-title">{p.name}</h2>
-            <div className="det-dv"><IPin/>{p.developer}&nbsp;·&nbsp;<IPin/>{p.location}</div>
-          </div>
-          <button className="det-close" onClick={onClose}>✕</button>
-        </div>
-        {allImgs.length>1&&(
-          <div className="gal-strip">
-            {allImgs.map((img,i)=>(
-              <div key={i} className={`gal-t${activeImg===i?" on":""}`} onClick={()=>setActiveImg(i)}>
-                <img src={img} alt=""/>
+        <button className="det-close" onClick={onClose}>✕</button>
+        <div className="det-split">
+          {/* ── LEFT: image + gallery ── */}
+          <div className="det-left">
+            <div className="det-hero">
+              <img src={allImgs[activeImg]} alt={p.name}/>
+              <div className="det-hero-ov"/>
+              <div className="det-hc">
+                <div className="det-tag-pill" style={{background:p.tagColor}}>{p.tag}</div>
+                <h2 className="det-title">{p.name}</h2>
+                <div className="det-dv"><IPin/>{p.developer}&nbsp;·&nbsp;<IPin/>{p.location}</div>
               </div>
-            ))}
+              {allImgs.length>1&&<>
+                <button className="det-hero-nav prev" onClick={()=>setActiveImg(i=>(i-1+allImgs.length)%allImgs.length)} aria-label="Previous image">‹</button>
+                <button className="det-hero-nav next" onClick={()=>setActiveImg(i=>(i+1)%allImgs.length)} aria-label="Next image">›</button>
+                <div className="det-hero-dots">{allImgs.map((_,i)=><button key={i} className={`det-hero-dot${activeImg===i?" on":""}`} onClick={()=>setActiveImg(i)}/>)}</div>
+              </>}
+            </div>
+            {allImgs.length>1&&(
+              <div className="gal-strip">
+                {allImgs.map((img,i)=>(
+                  <div key={i} className={`gal-t${activeImg===i?" on":""}`} onClick={()=>setActiveImg(i)}>
+                    <img src={img} alt=""/>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-        {visDetTabs.length > 1 && (
-          <div className="det-tabs">
-            {visDetTabs.map(({k,l})=>(
-              <button key={k} className={`det-tab${activeTab===k?" on":""}`} onClick={()=>setDetTab(k)}>{l}</button>
-            ))}
-          </div>
-        )}
+          {/* ── RIGHT: tabs + content + sticky price bar ── */}
+          <div className="det-right">
+            {visDetTabs.length > 1 && (
+              <div className="det-tabs">
+                {visDetTabs.map(({k,l})=>(
+                  <button key={k} className={`det-tab${activeTab===k?" on":""}`} onClick={()=>setDetTab(k)}>{l}</button>
+                ))}
+              </div>
+            )}
 
-        <div className="det-content">
+            <div className="det-content">
         {/* ── OVERVIEW ── */}
         {activeTab==="overview"&&(
           <div>
@@ -1859,21 +1946,7 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
                 </div>
               )}
             </div>
-            {sec("overview","priceBar")&&(
-              <div className="price-bar">
-                <div className="pb-left">
-                  <div className="pb-lbl">Price starting from</div>
-                  <div className="pb-price">{fmt(p.priceFrom)}<span> – {fmt(p.priceTo)}</span></div>
-                </div>
-                <div className="pb-btns">
-                  <button className="pb-btn1" onClick={onRegisterInterest}>Register Interest</button>
-                  {p.showroom && p.showroom.trim().toLowerCase()!=="no" && p.showroom.trim()!=="" && (
-                    <button className="pb-btn2" onClick={onVisitShowroom}>Visit Showroom</button>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
         )}
 
         {/* ── LOCATION ── */}
@@ -1960,6 +2033,22 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
             )}
           </div>
         )}
+            </div>
+            {sec("overview","priceBar")&&(
+              <div className="price-bar det-sticky-bar">
+                <div className="pb-left">
+                  <div className="pb-lbl">Price starting from</div>
+                  <div className="pb-price">{fmt(p.priceFrom)}<span> – {fmt(p.priceTo)}</span></div>
+                </div>
+                <div className="pb-btns">
+                  <button className="pb-btn1" onClick={onRegisterInterest}>Register Interest</button>
+                  {p.showroom && p.showroom.trim().toLowerCase()!=="no" && p.showroom.trim()!=="" && (
+                    <button className="pb-btn2" onClick={onVisitShowroom}>Visit Showroom</button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -2928,6 +3017,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
   const [pg,setPg]=useState(1);
   const [editT,setEditT]=useState(null);
   const [delT,setDelT]=useState(null);
+  const [openMenu,setOpenMenu]=useState(null);
   // ESC to close delete modal
   useEffect(() => {
     if (!delT) return;
@@ -2935,6 +3025,15 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
     document.addEventListener("keydown", h);
     return () => document.removeEventListener("keydown", h);
   }, [delT]);
+  // Click-outside to close card dropdown menu
+  useEffect(() => {
+    if (openMenu === null) return;
+    const h = (e) => {
+      if (!e.target.closest(".a-card-menu-wrap")) setOpenMenu(null);
+    };
+    document.addEventListener("click", h);
+    return () => document.removeEventListener("click", h);
+  }, [openMenu]);
   const [toast,setToast]=useState(null);
   const showToast=(msg,type="success")=>setToast({msg,type});
   // Settings local state (copy so edits don't save until Save clicked)
@@ -3025,55 +3124,58 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
         {aTab==="projects"&&<>
           <div className="a-pg-title">Manage <em>Projects</em></div>
           <div className="a-pg-sub">Create, update, or remove property listings.</div>
-          <div className="a-toolbar">
+          <div className="a-toolbar sticky">
             <input className="a-search" placeholder="Search…" value={srch} onChange={e=>setSrch(e.target.value)}/>
             <select className="a-fsel" value={tf} onChange={e=>setTf(e.target.value)}>{["All Types",...PROP_TYPES].map(t=><option key={t}>{t}</option>)}</select>
             <select className="a-fsel" value={sf} onChange={e=>setSf(e.target.value)}>{["All Status",...STATUSES].map(s=><option key={s}>{s}</option>)}</select>
-            <button className="a-add-btn" onClick={()=>setEditT("new")}><IPlus/> Add Project</button>
+            <button className="a-add-btn desktop-only" onClick={()=>setEditT("new")}><IPlus/> Add Project</button>
           </div>
-          <div className="a-tbl-wrap">
-            <table className="a-tbl">
-              <thead><tr><th style={{width:64}}>Image</th><th>Project</th><th>Type</th><th>Status</th><th>Price From</th><th>Units</th><th>Layouts</th><th style={{width:130}}>Published</th><th style={{width:90}}>Actions</th></tr></thead>
-              <tbody>
-                {items.length===0?<tr><td colSpan={8} className="a-tbl-empty">No projects found.</td></tr>:items.map(p=>(
-                  <tr key={p.id} style={{opacity:p.visible===false?.55:1}}>
-                    <td><img className="a-tbl-img" src={p.image} alt={p.name}/></td>
-                    <td>
-                      <div className="a-tbl-name">{p.name}</div>
-                      <div className="a-tbl-dev">{p.developer} · {p.location}</div>
-                    </td>
-                    <td style={{color:"#8a99bf",fontSize:".78rem"}}>{p.type}</td>
-                    <td><SChip s={p.status}/></td>
-                    <td style={{fontFamily:"var(--serif)",color:"var(--a-gold)",fontSize:"1rem"}}>{fmt(p.priceFrom)}</td>
-                    <td style={{color:"var(--a-muted)"}}>{p.totalUnits}</td>
-                    <td style={{color:"var(--a-muted)",fontSize:".76rem"}}>{Array.isArray(p.unitTypes)?p.unitTypes.length:0} types</td>
-                    <td>
-                      <div style={{display:"flex",flexDirection:"column",gap:".35rem"}}>
-                        <Toggle
-                          checked={p.visible!==false}
-                          onChange={()=>toggleProjectVisible(p.id)}
-                          label={p.visible!==false?"Live":"Hidden"}
-                        />
-                        {p.visible!==false&&(()=>{
-                          const tabs=[p.visibleTabs?.overview!==false&&"Info",p.visibleTabs?.location!==false&&"Loc",p.visibleTabs?.layouts!==false&&"Layouts"].filter(Boolean);
-                          return <span style={{fontSize:".62rem",color:"var(--a-muted)"}}>{tabs.length?tabs.join(" · "):"No tabs"}</span>;
-                        })()}
+          <div className="a-card-grid">
+            {items.length===0?<div className="a-card-empty">No projects found.</div>:items.map(p=>(
+              <div key={p.id} className={`a-proj-card${p.visible===false?" dimmed":""}`}>
+                <div className="a-card-img-wrap">
+                  <img className="a-card-img" src={p.image} alt={p.name}/>
+                  <div className="a-card-status"><SChip s={p.status}/></div>
+                  <div className={`a-card-vis-badge${p.visible===false?" hidden":""}`}>{p.visible!==false?"Live":"Hidden"}</div>
+                </div>
+                <div className="a-card-body">
+                  <div className="a-card-name">{p.name}</div>
+                  <div className="a-card-dev">{p.developer} · {p.location}</div>
+                  <div className="a-card-meta">
+                    <span>{p.type}</span>
+                    <span className="a-card-meta-sep">·</span>
+                    <span>{p.totalUnits} units</span>
+                    <span className="a-card-meta-sep">·</span>
+                    <span>{Array.isArray(p.unitTypes)?p.unitTypes.length:0} layouts</span>
+                  </div>
+                  <div className="a-card-price">{fmt(p.priceFrom)}</div>
+                </div>
+                <div className="a-card-footer">
+                  <div className="a-card-toggle">
+                    <Toggle checked={p.visible!==false} onChange={()=>toggleProjectVisible(p.id)} label={p.visible!==false?"Live":"Hidden"}/>
+                  </div>
+                  <div className="a-card-menu-wrap">
+                    <button className="a-card-menu-btn" onClick={()=>setOpenMenu(openMenu===p.id?null:p.id)} title="Actions">⋮</button>
+                    {openMenu===p.id&&(
+                      <div className="a-card-dropdown">
+                        <button className="a-card-drop-item" onClick={()=>{setEditT(p);setOpenMenu(null);}}><IEdit/> Edit</button>
+                        <button className="a-card-drop-item danger" onClick={()=>{setDelT(p);setOpenMenu(null);}}><ITrash/> Delete</button>
                       </div>
-                    </td>
-                    <td><div className="a-row-act"><button className="a-ico-btn edit" title="Edit" onClick={()=>setEditT(p)}><IEdit/></button><button className="a-ico-btn del" title="Delete" onClick={()=>setDelT(p)}><ITrash/></button></div></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="a-pager">
-              <span>Showing {filt.length===0?0:(safePg-1)*PAGE_SZ+1}–{Math.min(safePg*PAGE_SZ,filt.length)} of {filt.length}</span>
-              <div className="a-pager-btns">
-                <button className="a-pg-btn" onClick={()=>setPg(p=>Math.max(1,p-1))} disabled={safePg<=1}>‹</button>
-                {Array.from({length:totPg},(_,i)=>i+1).map(n=><button key={n} className={`a-pg-btn${n===safePg?" on":""}`} onClick={()=>setPg(n)}>{n}</button>)}
-                <button className="a-pg-btn" onClick={()=>setPg(p=>Math.min(totPg,p+1))} disabled={safePg>=totPg}>›</button>
+                    )}
+                  </div>
+                </div>
               </div>
+            ))}
+          </div>
+          <div className="a-pager" style={{border:"1px solid var(--a-border)"}}>
+            <span>Showing {filt.length===0?0:(safePg-1)*PAGE_SZ+1}–{Math.min(safePg*PAGE_SZ,filt.length)} of {filt.length}</span>
+            <div className="a-pager-btns">
+              <button className="a-pg-btn" onClick={()=>setPg(p=>Math.max(1,p-1))} disabled={safePg<=1}>‹</button>
+              {Array.from({length:totPg},(_,i)=>i+1).map(n=><button key={n} className={`a-pg-btn${n===safePg?" on":""}`} onClick={()=>setPg(n)}>{n}</button>)}
+              <button className="a-pg-btn" onClick={()=>setPg(p=>Math.min(totPg,p+1))} disabled={safePg>=totPg}>›</button>
             </div>
           </div>
+          <button className="a-fab" onClick={()=>setEditT("new")} title="Add Project">+</button>
         </>}
 
         {aTab==="settings"&&<>
