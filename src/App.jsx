@@ -414,6 +414,15 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .mob-drawer-cta{width:100%;background:var(--cta);color:#fff;border:none;padding:.8rem;font-family:var(--sans);font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
 .mob-drawer-cta:hover{opacity:.88;}
 
+/* Mobile admin sub-nav dropdown */
+.mob-admin-sub{display:flex;flex-direction:column;padding:0;overflow:hidden;max-height:0;transition:max-height .3s ease;background:rgba(0,0,0,.15);}
+.mob-admin-sub.open{max-height:300px;}
+.mob-admin-sub-item{display:flex;align-items:center;gap:.7rem;padding:.7rem 1.4rem .7rem 2.6rem;background:transparent;border:none;color:#8a9baa;font-family:var(--sans);font-size:.78rem;letter-spacing:.04em;cursor:pointer;transition:background .15s,color .15s;text-align:left;width:100%;border-left:3px solid transparent;}
+.mob-admin-sub-item:hover{background:rgba(255,255,255,.04);color:#ccc;}
+.mob-admin-sub-item.on{color:var(--gold);border-left-color:var(--gold);background:rgba(82,137,173,.08);}
+.mob-admin-chevron{margin-left:auto;font-size:.6rem;transition:transform .25s;color:#5a6a7a;}
+.mob-admin-chevron.open{transform:rotate(180deg);}
+
 .hero{background:linear-gradient(160deg,#243C4C 0%,#1e4a62 100%);padding:5rem 2.5rem 4rem;text-align:center;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,#182938 0%,transparent 70%);}
 .h-eye{position:relative;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;font-weight:500;}
@@ -507,13 +516,16 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 
   /* Detail modal */
   .ov{padding:.5rem .5rem;}
-  .det{max-height:calc(100svh - 1rem);display:flex;flex-direction:column;}
-  .det-hero{height:240px;flex-shrink:0;}
-  .det-hc{left:1rem;right:1rem;bottom:1rem;}
-  .det-title{font-size:1.5rem;}
+  .det{max-height:100svh;min-height:100svh;display:flex;flex-direction:column;}
+  .det-hero{height:30vh;max-height:220px;flex-shrink:0;}
+  .det-hc{left:1rem;right:1rem;bottom:.75rem;}
+  .det-title{font-size:1.35rem;}
+  .det-tag-pill{margin-bottom:.3rem;}
   .det-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;}
+  .ov{padding:0;}
   .det-tab{flex:0 0 auto;padding:.85rem .8rem;font-size:.72rem;white-space:nowrap;}
-  .gal-strip{overflow-x:auto;}
+  .gal-strip{overflow-x:auto;padding:.2rem;gap:.2rem;}
+  .gal-t{height:48px;}
 
   /* Overview tab */
   .ov-body{padding:1.4rem 1rem;overflow-y:auto;}
@@ -523,9 +535,12 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 
   /* Layouts tab */
   .layouts-body{padding:1.2rem 1rem;}
-  .ut-card{grid-template-columns:1fr;}
-  .ut-img-panel{min-height:180px;height:180px;}
-  .ut-info-panel{padding:1rem 1.2rem;}
+  .ut-card{grid-template-columns:1fr !important;}
+  .ut-img-panel{min-height:180px;height:180px;width:100%;}
+  .ut-info-panel{padding:1.2rem 1rem;width:100%;box-sizing:border-box;}
+  .ut-header{flex-direction:column;gap:.6rem;}
+  .ut-price-badge{align-self:flex-start;}
+  .ut-desc{word-break:break-word;}
 
   /* Location tab */
   .loc-body{padding:1.2rem 1rem;}
@@ -589,20 +604,29 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   /* Detail modal — full-screen */
   .ov{padding:0;}
   .det{min-height:100svh;border-radius:0;max-height:100svh;}
-  .det-hero{height:210px;}
-  .det-hc{left:.85rem;right:.85rem;bottom:.85rem;}
-  .det-title{font-size:1.25rem;}
+  .det-hero{height:28vh;max-height:180px;min-height:140px;}
+  .det-hc{left:.85rem;right:.85rem;bottom:.6rem;}
+  .det-title{font-size:1.15rem;}
+  .det-dv{font-size:.72rem;}
+  .det-tag-pill{font-size:.55rem;padding:.15rem .5rem;margin-bottom:.2rem;}
   .det-dev{font-size:.76rem;}
   .det-tab{padding:.8rem .65rem;font-size:.68rem;}
+  .gal-strip{padding:.15rem;gap:.15rem;}
+  .gal-t{height:40px;}
 
   /* Spec rows */
   .spec-key{min-width:100px;font-size:.7rem;}
   .spec-val{font-size:.74rem;}
 
   /* Unit type card */
-  .ut-img-panel{height:160px;min-height:160px;}
+  .ut-card{grid-template-columns:1fr !important;}
+  .ut-img-panel{height:160px;min-height:160px;width:100%;}
+  .ut-info-panel{padding:1rem .85rem;width:100%;box-sizing:border-box;}
   .ut-name{font-size:1.2rem;}
-  .ut-price-badge{font-size:.95rem;}
+  .ut-price-badge{font-size:.95rem;align-self:flex-start;}
+  .ut-header{flex-direction:column;gap:.5rem;}
+  .ut-stats{gap:.35rem;}
+  .ut-desc{word-break:break-word;font-size:.78rem;}
 
   /* Price bar */
   .pb-price{font-size:1.4rem;}
@@ -705,11 +729,11 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .add-more p{color:var(--muted);font-size:.84rem;margin-bottom:.7rem;}
 
 /* ═══ DETAIL MODAL ═══ */
-.ov{position:fixed;inset:0;z-index:200;background:rgba(8,8,10,.88);backdrop-filter:blur(8px);display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fadeIn .22s ease;}
+.ov{position:fixed;inset:0;z-index:200;background:rgba(8,8,10,.88);backdrop-filter:blur(8px);display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:hidden;animation:fadeIn .22s ease;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.det{background:var(--parchment);width:100%;max-width:1060px;position:relative;animation:slideUp .28s ease;overflow:hidden;}
+.det{background:var(--parchment);width:100%;max-width:1060px;position:relative;animation:slideUp .28s ease;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100svh - 3rem);}
 @keyframes slideUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
-.det-hero{position:relative;height:360px;overflow:hidden;}
+.det-hero{position:relative;height:360px;overflow:hidden;flex-shrink:0;}
 .det-hero img{width:100%;height:100%;object-fit:cover;}
 .det-hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.1) 55%,transparent 100%);}
 .det-hc{position:absolute;bottom:1.8rem;left:2.2rem;right:2.2rem;}
@@ -718,12 +742,13 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .det-dv{color:rgba(255,255,255,.6);font-size:.84rem;display:flex;align-items:center;gap:.5rem;}
 .det-close{position:absolute;top:1rem;right:1rem;z-index:10;width:36px;height:36px;background:rgba(0,0,0,.55);border:none;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
 .det-close:hover{background:rgba(0,0,0,.9);}
-.gal-strip{display:flex;gap:.3rem;padding:.3rem;background:var(--ink);}
+.gal-strip{display:flex;gap:.3rem;padding:.3rem;background:var(--ink);flex-shrink:0;}
 .gal-t{flex:1;height:72px;overflow:hidden;cursor:pointer;opacity:.6;transition:opacity .18s;}
 .gal-t:hover,.gal-t.on{opacity:1;}
 .gal-t.on{outline:2px solid var(--gold);outline-offset:-2px;}
 .gal-t img{width:100%;height:100%;object-fit:cover;}
-.det-tabs{display:flex;background:#243C4C;border-bottom:1px solid #3d5a6e;}
+.det-tabs{display:flex;background:#243C4C;border-bottom:1px solid #3d5a6e;flex-shrink:0;position:relative;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.det-content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;min-height:0;}
 .det-tab{flex:1;padding:.85rem 1rem;background:transparent;border:none;border-bottom:2px solid transparent;color:#ACBCBF;font-family:var(--sans);font-size:.76rem;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;transition:color .18s,border-color .18s;text-align:center;}
 .det-tab:hover{color:#ccc;}
 .det-tab.on{color:var(--gold);border-bottom-color:var(--gold);}
@@ -775,7 +800,7 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .layouts-intro{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:1.4rem;}
 
 /* Each unit type is a full horizontal card: image left, info right */
-.ut-card{background:var(--card);border:1px solid var(--border);display:grid;grid-template-columns:320px 1fr;overflow:hidden;margin-bottom:1.4rem;transition:box-shadow .25s;}
+.ut-card{background:var(--card);border:1px solid var(--border);display:grid;grid-template-columns:320px 1fr;overflow:hidden;margin-bottom:1.4rem;transition:box-shadow .25s;max-width:100%;}
 .ut-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.1);}
 .ut-card:last-child{margin-bottom:0;}
 
@@ -1728,6 +1753,7 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
           </div>
         )}
 
+        <div className="det-content">
         {/* ── OVERVIEW ── */}
         {activeTab==="overview"&&(
           <div>
@@ -1868,6 +1894,7 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
             )}
           </div>
         )}
+        </div>
       </div>
     </div>
   );
@@ -2227,9 +2254,9 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
     setForm(f => ({ ...f, ...formPatch }));
     if (unitTypes && unitTypes.length > 0) setUnitTypesList(unitTypes);
   };
-  const FF=({label,hint,k,type="text",ph=""})=>(<div className="a-ff"><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}</label><input className="a-inp" type={type} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
-  const FT=({label,hint,k,rows=2,ph=""})=>(<div className="a-ff"><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}</label><textarea className="a-txt" rows={rows} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
-  const FS=({label,k,opts})=>(<div className="a-ff"><label className="a-flbl">{label}</label><select className="a-sel" value={form[k]??""} onChange={e=>set(k,e.target.value)}>{opts.map(o=><option key={o}>{o}</option>)}</select></div>);
+  const ff=(label,k,ph="",type="text",hint)=>(<div className="a-ff"><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}</label><input className="a-inp" type={type} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
+  const ft=(label,k,ph="",rows=2,hint)=>(<div className="a-ff"><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}</label><textarea className="a-txt" rows={rows} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
+  const fs=(label,k,opts)=>(<div className="a-ff"><label className="a-flbl">{label}</label><select className="a-sel" value={form[k]??""} onChange={e=>set(k,e.target.value)}>{opts.map(o=><option key={o}>{o}</option>)}</select></div>);
   return(
     <div className="a-modal-ov" onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div className="a-modal">
@@ -2248,14 +2275,14 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
               <div className="a-ff s2"><label className="a-flbl">Project Name</label><input className="a-inp" value={form.name} placeholder="e.g. The Pinnacle Residences" onChange={e=>set("name",e.target.value)}/></div>
             </div>
             <div className="a-form-grid" style={{marginBottom:"1rem"}}>
-              <FF label="Developer" k="developer" ph="e.g. Mah Sing Group"/>
-              <FF label="Location" k="location" ph="e.g. Georgetown, Penang"/>
-              <FS label="Property Type" k="type" opts={PROP_TYPES}/>
-              <FS label="Status" k="status" opts={STATUSES}/>
-              <FF label="Completion" k="completion" ph="e.g. Q4 2026"/>
-              <FS label="Tenure" k="tenure" opts={TENURES}/>
-              <FF label="Land Size" k="landSize" ph="e.g. 3.2 acres"/>
-              <FF label="Construction Stage" k="constructionStage" ph="e.g. Piling & Foundation"/>
+              {ff("Developer","developer","e.g. Mah Sing Group")}
+              {ff("Location","location","e.g. Georgetown, Penang")}
+              {fs("Property Type","type",PROP_TYPES)}
+              {fs("Status","status",STATUSES)}
+              {ff("Completion","completion","e.g. Q4 2026")}
+              {fs("Tenure","tenure",TENURES)}
+              {ff("Land Size","landSize","e.g. 3.2 acres")}
+              {ff("Construction Stage","constructionStage","e.g. Piling & Foundation")}
             </div>
             <div className="a-form-sec">Badge</div>
             <div className="a-form-grid">
@@ -2266,36 +2293,36 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
 
           {tab==="development"&&<>
             <div className="a-form-sec">Structure</div>
-            <div className="a-form-grid c3" style={{marginBottom:"1rem"}}><FF label="Total Blocks" k="totalBlocks" type="number" ph="2"/><FF label="Total Floors" k="floors" type="number" ph="38"/><FF label="Total Units" k="totalUnits" type="number" ph="320"/></div>
-            <div className="a-form-grid c1" style={{marginBottom:"1rem"}}><FT label="Floors per Tower" hint="comma-sep" k="totalFloorsPerTower" ph="Tower A: 38 floors, Tower B: 36 floors" rows={2}/><FF label="Residential Start Level" k="residentialStartLevel" ph="e.g. Level 5"/></div>
+            <div className="a-form-grid c3" style={{marginBottom:"1rem"}}>{ff("Total Blocks","totalBlocks","2","number")}{ff("Total Floors","floors","38","number")}{ff("Total Units","totalUnits","320","number")}</div>
+            <div className="a-form-grid c1" style={{marginBottom:"1rem"}}>{ft("Floors per Tower","totalFloorsPerTower","Tower A: 38 floors, Tower B: 36 floors",2,"comma-sep")}{ff("Residential Start Level","residentialStartLevel","e.g. Level 5")}</div>
             <div className="a-form-sec">Units Breakdown</div>
-            <div className="a-form-grid c1"><FF label="Public / Bumi Breakdown" k="unitsBreakdown" ph="e.g. 280 Public / 40 Bumi"/><FF label="Units per Tower" k="unitsPerTower" ph="e.g. Tower A: 168 | Tower B: 152"/></div>
+            <div className="a-form-grid c1">{ff("Public / Bumi Breakdown","unitsBreakdown","e.g. 280 Public / 40 Bumi")}{ff("Units per Tower","unitsPerTower","e.g. Tower A: 168 | Tower B: 152")}</div>
           </>}
 
           {tab==="units"&&<>
             <div className="a-form-sec">Unit Specs (Overview)</div>
-            <div className="a-form-grid c3" style={{marginBottom:"1rem"}}><FF label="Bedrooms" hint="comma-sep" k="bedrooms" ph="2, 3, 4"/><FF label="Bathrooms" hint="comma-sep" k="bathrooms" ph="2, 3"/><FF label="Size sqft" hint="min–max" k="sizeSqft" ph="900–2200"/></div>
+            <div className="a-form-grid c3" style={{marginBottom:"1rem"}}>{ff("Bedrooms","bedrooms","2, 3, 4","text","comma-sep")}{ff("Bathrooms","bathrooms","2, 3","text","comma-sep")}{ff("Size sqft","sizeSqft","900–2200","text","min–max")}</div>
             <div className="a-form-sec">Unit Types with Layouts</div>
             <UnitTypeEditor unitTypes={unitTypesList} onChange={setUnitTypesList}/>
             <div style={{marginTop:"1.2rem"}}/>
             <div className="a-form-sec">Parking & Lifts</div>
-            <div className="a-form-grid" style={{marginBottom:"1rem"}}><FF label="Car Park Levels" k="carParkLevels" ph="e.g. Level 1–4"/><FF label="Number of Car Parks" k="numberOfCarParks" ph="e.g. 480 bays"/><FF label="Number of Lifts" k="numberOfLifts" ph="e.g. 4 per tower"/></div>
-            <FT label="Parking Notes" k="parkingNotes" ph="EV charging, ANPR..." rows={2}/>
+            <div className="a-form-grid" style={{marginBottom:"1rem"}}>{ff("Car Park Levels","carParkLevels","e.g. Level 1–4")}{ff("Number of Car Parks","numberOfCarParks","e.g. 480 bays")}{ff("Number of Lifts","numberOfLifts","e.g. 4 per tower")}</div>
+            {ft("Parking Notes","parkingNotes","EV charging, ANPR...",2)}
             <div style={{marginTop:"1rem"}}/>
-            <FT label="Upgrade Specifications" k="upgrades" ph="Bosch appliances, Italian tiles..." rows={2}/>
+            {ft("Upgrade Specifications","upgrades","Bosch appliances, Italian tiles...",2)}
           </>}
 
           {tab==="financials"&&<>
             <div className="a-form-sec">Pricing</div>
-            <div className="a-form-grid c3" style={{marginBottom:"1rem"}}><FF label="Starting Price (RM)" k="priceFrom" type="number" ph="480000"/><FF label="Max Price (RM)" k="priceTo" type="number" ph="1200000"/></div>
-            <div className="a-form-grid" style={{marginBottom:"1rem"}}><FF label="Maintenance Fee" k="maintenanceFee" ph="e.g. RM 0.35 / sf / month"/><FF label="Sinking Fund" k="sinkingFund" ph="e.g. RM 0.10 / sf / month"/><FF label="Showroom" k="showroom" ph="Location & hours"/><FF label="Scale Model" k="scaleModel" ph="Yes / No"/></div>
+            <div className="a-form-grid c3" style={{marginBottom:"1rem"}}>{ff("Starting Price (RM)","priceFrom","480000","number")}{ff("Max Price (RM)","priceTo","1200000","number")}</div>
+            <div className="a-form-grid" style={{marginBottom:"1rem"}}>{ff("Maintenance Fee","maintenanceFee","e.g. RM 0.35 / sf / month")}{ff("Sinking Fund","sinkingFund","e.g. RM 0.10 / sf / month")}{ff("Showroom","showroom","Location & hours")}{ff("Scale Model","scaleModel","Yes / No")}</div>
             <div className="a-form-sec">Media</div>
             <div className="a-form-grid c1">
               <div className="a-ff"><label className="a-flbl">Main Image URL</label><input className="a-inp" value={form.image} placeholder="https://..." onChange={e=>set("image",e.target.value)}/>{form.image&&<img className="img-prev" src={form.image} alt="" onError={e=>e.target.style.display="none"} onLoad={e=>e.target.style.display="block"}/>}</div>
-              <FT label="Gallery Images" hint="comma-sep URLs" k="gallery" rows={2} ph="https://img1.jpg, https://img2.jpg"/>
+              {ft("Gallery Images","gallery","https://img1.jpg, https://img2.jpg",2,"comma-sep URLs")}
               <div className="a-ff"><label className="a-flbl">Description</label><textarea className="a-txt" rows={3} value={form.description} onChange={e=>set("description",e.target.value)}/></div>
-              <FT label="Highlights" hint="comma-sep" k="highlights" rows={2} ph="Smart Home, Sky Pool..."/>
-              <FT label="Facilities" hint="comma-sep" k="facilities" rows={2} ph="Pool, Gym, Sky Lounge..."/>
+              {ft("Highlights","highlights","Smart Home, Sky Pool...",2,"comma-sep")}
+              {ft("Facilities","facilities","Pool, Gym, Sky Lounge...",2,"comma-sep")}
             </div>
           </>}
 
@@ -2540,8 +2567,10 @@ function AnalyticsDashboard() {
 
 /* ═══ ADMIN PANEL ═══ */
 const PAGE_SZ=8;
-function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings}){
-  const [aTab,setATab]=useState("projects");
+function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:externalATab,setATab:externalSetATab}){
+  const [internalATab,internalSetATab]=useState("projects");
+  const aTab = externalATab || internalATab;
+  const setATab = externalSetATab || internalSetATab;
   const [srch,setSrch]=useState("");
   const [tf,setTf]=useState("All Types");
   const [sf,setSf]=useState("All Status");
@@ -2849,6 +2878,8 @@ export default function App(){
   const saveSettings=useCallback(async updated=>{setSettings(updated);try{await window.storage.set(SETTINGS_KEY,JSON.stringify(updated));}catch{}},[]);
 
   const [tab,setTab]=useState("listings");
+  const [adminTab,setAdminTab]=useState("projects");
+  const [adminSubOpen,setAdminSubOpen]=useState(false);
   const [search,setSearch]=useState("");
   const [type,setType]=useState("All Types");
   const [loc,setLoc]=useState("All Areas");
@@ -2896,9 +2927,17 @@ export default function App(){
           <button className="mob-drawer-x" onClick={()=>setMobileNavOpen(false)}>✕</button>
         </div>
         <div className="mob-drawer-nav">
-          <button className={`mob-nav-item${tab==="listings"?" on":""}`} onClick={()=>{setTab("listings");setMobileNavOpen(false);}}>🏠 Listings</button>
-          <button className={`mob-nav-item${tab==="compare"?" on":""}`} onClick={()=>{setTab("compare");setMobileNavOpen(false);}}>⚖️ Compare{cmpIds.length>0&&<span className="mob-badge" style={{marginLeft:".5rem"}}>{cmpIds.length}</span>}</button>
-          <button className={`mob-nav-item${tab==="admin"?" on":""}`} onClick={()=>{setTab("admin");setMobileNavOpen(false);}}>🔒 Admin</button>
+          <button className={`mob-nav-item${tab==="listings"?" on":""}`} onClick={()=>{setTab("listings");setAdminSubOpen(false);setMobileNavOpen(false);}}>🏠 Listings</button>
+          <button className={`mob-nav-item${tab==="compare"?" on":""}`} onClick={()=>{setTab("compare");setAdminSubOpen(false);setMobileNavOpen(false);}}>⚖️ Compare{cmpIds.length>0&&<span className="mob-badge" style={{marginLeft:".5rem"}}>{cmpIds.length}</span>}</button>
+          <button className={`mob-nav-item${tab==="admin"?" on":""}`} onClick={()=>{if(tab==="admin"){setAdminSubOpen(v=>!v);}else{setTab("admin");setAdminSubOpen(true);}}}>🔒 Admin<span className={`mob-admin-chevron${adminSubOpen&&tab==="admin"?" open":""}`}>▼</span></button>
+          {tab==="admin"&&adminAuthed&&(
+            <div className={`mob-admin-sub${adminSubOpen?" open":""}`}>
+              <button className={`mob-admin-sub-item${adminTab==="analytics"?" on":""}`} onClick={()=>{setAdminTab("analytics");setMobileNavOpen(false);}}>📊 Analytics</button>
+              <button className={`mob-admin-sub-item${adminTab==="dashboard"?" on":""}`} onClick={()=>{setAdminTab("dashboard");setMobileNavOpen(false);}}>📋 Dashboard</button>
+              <button className={`mob-admin-sub-item${adminTab==="projects"?" on":""}`} onClick={()=>{setAdminTab("projects");setMobileNavOpen(false);}}>📁 Projects</button>
+              <button className={`mob-admin-sub-item${adminTab==="settings"?" on":""}`} onClick={()=>{setAdminTab("settings");setMobileNavOpen(false);}}>⚙️ Settings</button>
+            </div>
+          )}
         </div>
         <div className="mob-drawer-ft">
           <button className="mob-drawer-cta" onClick={()=>{openRI(null);setMobileNavOpen(false);}}>Register Interest</button>
@@ -2926,7 +2965,7 @@ export default function App(){
       </nav>
 
       {tab==="admin"&&(adminAuthed
-        ? <AdminPanel projects={projects} onSave={saveProjects} settings={settings} onSaveSettings={saveSettings} onLogout={()=>setAdminAuthed(false)}/>
+        ? <AdminPanel projects={projects} onSave={saveProjects} settings={settings} onSaveSettings={saveSettings} onLogout={()=>setAdminAuthed(false)} aTab={adminTab} setATab={setAdminTab}/>
         : <AdminLogin settings={settings} onLogin={()=>setAdminAuthed(true)}/>
       )}
 
