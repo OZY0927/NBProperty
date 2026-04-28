@@ -1945,17 +1945,16 @@ function UnitTypeEditor({unitTypes, onChange}){
    then parses with regex heuristics to fill form fields.
    Loaded via blob URL to bypass CSP script-src restrictions. */
 
-const PDFJS_VERSION = "3.11.174";
-const PDFJS_CDN = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.min.js`;
+const PDFJS_VERSION    = "3.11.174";
+const PDFJS_CDN        = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.min.js`;
 const PDFJS_WORKER_CDN = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
 
 async function ensurePdfJs() {
   if (window.pdfjsLib) return window.pdfjsLib;
-  // Load PDF.js directly from CDN via a <script> tag — no blob URL needed,
-  // so this works on Vercel and any host with a standard CSP.
+  // Load directly from CDN — no blob URL needed, works on Vercel with standard CSP.
   await loadScript(PDFJS_CDN);
   if (!window.pdfjsLib) throw new Error("Could not load PDF.js library.");
-  // Point the worker at the matching CDN worker — also free, no API key required.
+  // Point worker at the matching CDN worker (free, no API key).
   window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_CDN;
   return window.pdfjsLib;
 }
@@ -1975,169 +1974,18 @@ async function extractPdfText(file) {
   return fullText;
 }
 
-/* ── Heuristic helpers ── */
-const _grab = (text, regex) => {
-  const m = text.match(regex);
-  return m ? (m[1] || m[0]).trim() : null;
-};
-const _parsePrice = s => {
-  if (!s) return null;
-  const cleaned = String(s).replace(/[, ]/g, "");
-  const mil = cleaned.match(/([\d.]+)\s*m(?:il)?/i);
-  if (mil) return Math.round(parseFloat(mil[1]) * 1000000);
-  const k = cleaned.match(/([\d.]+)\s*k/i);
-  if (k) return Math.round(parseFloat(k[1]) * 1000);
-  const num = cleaned.match(/(\d{4,})/);
-  return num ? Number(num[1]) : null;
-};
-const _firstOf = (text, opts) => {
-  for (const o of opts) {
-    const re = new RegExp(`\\b${o.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
-    if (re.test(text)) return o;
+/* ═══ AI PDF PARSER — calls /api/parse-pdf (Vercel serverless → Claude) ═══ */
+async function parseWithClaude(rawText) {
+  const res = await fetch("/api/parse-pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: rawText }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Server error ${res.status} — check ANTHROPIC_API_KEY in Vercel env vars.`);
   }
-  return null;
-};
-
-function parsePropertyText(text) {
-  const t = text.replace(/\s+/g, " ").trim();
-  const result = {};
-
-  // Project name — first prominent line; fallback heuristic
-  const nameMatch = text.split("\n").map(s => s.trim()).find(s => s.length > 5 && s.length < 80 && /[A-Z]/.test(s) && !/^page\s*\d/i.test(s));
-  if (nameMatch) result.name = nameMatch;
-
-  // Project name explicit label
-  const labeledName = _grab(t, /project\s*name\s*[:\-]?\s*([^\n]{3,80}?)(?=\s{2,}|developer|location|by\s+[A-Z]|$)/i);
-  if (labeledName) result.name = labeledName;
-
-  // Developer
-  result.developer = _grab(t, /(?:developer|developed\s*by|by)\s*[:\-]?\s*([A-Z][\w&.,'\- ]{2,60}?)(?=\s{2,}|location|address|tel|phone|$)/i);
-
-  // Location / address
-  result.location = _grab(t, /(?:location|address)\s*[:\-]?\s*([^\n]{4,100}?)(?=\s{2,}|tenure|type|completion|$)/i);
-
-  // Type — match against known types
-  result.type = _firstOf(t, ["Condominium", "Semi-Detached", "Serviced Apartment", "Shophouse", "Terrace House", "SoHo / Office", "SoHo", "Bungalow", "Duplex"]);
-  if (result.type === "SoHo") result.type = "SoHo / Office";
-
-  // Status
-  result.status = _firstOf(t, ["New Launch", "Under Construction", "Completed", "Sold Out"]);
-
-  // Tenure
-  result.tenure = _firstOf(t, ["Freehold", "Leasehold"]);
-
-  // Completion (e.g. Q4 2026, 2027)
-  result.completion = _grab(t, /(?:completion|expected\s*completion|t\.?o\.?p\.?|vacant\s*possession)\s*[:\-]?\s*(Q[1-4]\s*\d{4}|\d{4})/i)
-                   || _grab(t, /\b(Q[1-4]\s*20\d{2})\b/);
-
-  // Land size
-  result.landSize = _grab(t, /land\s*(?:area|size)\s*[:\-]?\s*([\d.]+\s*(?:acres?|sq\s*ft|sqft|hectares?))/i);
-
-  // Total units
-  const units = _grab(t, /(?:total\s*units?|no\.?\s*of\s*units?|units)\s*[:\-]?\s*(\d{2,5})/i);
-  if (units) result.totalUnits = Number(units);
-
-  // Total floors
-  const floors = _grab(t, /(?:total\s*floors?|storey|storeys|levels)\s*[:\-]?\s*(\d{1,3})/i);
-  if (floors) result.floors = Number(floors);
-
-  // Total blocks / towers
-  const blocks = _grab(t, /(?:total\s*blocks?|towers?|no\.?\s*of\s*blocks?)\s*[:\-]?\s*(\d{1,2})/i);
-  if (blocks) result.totalBlocks = Number(blocks);
-
-  // Bedrooms (collect all numbers near "bedroom" or "bed")
-  const bedMatches = [...t.matchAll(/(\d)\s*-?\s*(?:bed(?:room)?s?)/gi)].map(m => Number(m[1]));
-  if (bedMatches.length) result.bedrooms = [...new Set(bedMatches)].sort().join(", ");
-
-  // Bathrooms
-  const bathMatches = [...t.matchAll(/(\d)\s*-?\s*(?:bath(?:room)?s?)/gi)].map(m => Number(m[1]));
-  if (bathMatches.length) result.bathrooms = [...new Set(bathMatches)].sort().join(", ");
-
-  // Size sqft range — e.g. "900 - 2,200 sf" or "900 to 2200 sqft"
-  const sizeMatch = t.match(/(\d{3,5})\s*[,]?\s*(?:-|to|–|—)\s*(\d{3,5})\s*(?:sf|sqft|sq\.?\s*ft)/i);
-  if (sizeMatch) result.sizeSqft = `${sizeMatch[1].replace(/,/g,"")}-${sizeMatch[2].replace(/,/g,"")}`;
-
-  // Price from / to
-  const priceFromMatch = t.match(/(?:from|starting\s*from|price\s*from|fr\.?)\s*RM\s*([\d.,]+\s*(?:m|million|k)?)/i);
-  if (priceFromMatch) {
-    const v = _parsePrice(priceFromMatch[1]);
-    if (v) result.priceFrom = v;
-  }
-  const priceRangeMatch = t.match(/RM\s*([\d.,]+\s*(?:m|k)?)\s*(?:-|to|–|—)\s*RM\s*([\d.,]+\s*(?:m|k)?)/i);
-  if (priceRangeMatch) {
-    const lo = _parsePrice(priceRangeMatch[1]);
-    const hi = _parsePrice(priceRangeMatch[2]);
-    if (lo && !result.priceFrom) result.priceFrom = lo;
-    if (hi) result.priceTo = hi;
-  }
-
-  // Maintenance fee
-  result.maintenanceFee = _grab(t, /(?:maintenance\s*fee|service\s*charge)\s*[:\-]?\s*(RM\s*[\d.,]+\s*\/?\s*(?:sf|sqft)?\s*\/?\s*(?:month|mth)?)/i);
-
-  // Sinking fund
-  result.sinkingFund = _grab(t, /sinking\s*fund\s*[:\-]?\s*(RM\s*[\d.,]+\s*\/?\s*(?:sf|sqft)?\s*\/?\s*(?:month|mth)?)/i);
-
-  // Number of car parks
-  result.numberOfCarParks = _grab(t, /(?:car\s*parks?|parking\s*bays?)\s*[:\-]?\s*([\d,]+\s*(?:bays?|lots?)?)/i);
-
-  // Number of lifts
-  result.numberOfLifts = _grab(t, /(?:lifts?|elevators?)\s*[:\-]?\s*(\d+(?:\s*per\s*tower)?)/i);
-
-  // Facilities (collect known keywords)
-  const FAC_KEYWORDS = ["Swimming Pool", "Infinity Pool", "Olympic Pool", "Gymnasium", "Gym", "Sky Lounge", "BBQ", "Playground", "Co-Working", "Clubhouse", "Tennis Court", "Jogging Track", "Sauna", "Cafe", "Bistro", "Garden", "Concierge", "24-Hour Security", "CCTV"];
-  const foundFacs = FAC_KEYWORDS.filter(f => new RegExp(`\\b${f.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`, "i").test(t));
-  if (foundFacs.length) result.facilities = [...new Set(foundFacs)].join(", ");
-
-  // Description — first paragraph-like sentence (50-300 chars)
-  const descMatch = text.match(/([A-Z][^.!?\n]{50,300}[.!?])/);
-  if (descMatch) result.description = descMatch[1].trim();
-
-  // Highlights — capture bullet-like lines
-  const highlightLines = text.split(/\n|•|·|■|►/).map(s => s.trim()).filter(s => s.length > 5 && s.length < 60 && /^[A-Z]/.test(s) && !/^page/i.test(s));
-  if (highlightLines.length >= 3) {
-    result.highlights = highlightLines.slice(0, 8).join(", ");
-  }
-
-  // Unit types — try to pull table-like rows: "Type A 2-Bedroom 900 sf RM 480,000"
-  const unitTypes = [];
-  const unitRowRegex = /(Type\s*[A-Z\d]+|Studio|Penthouse|Duplex|Suite)\s+([\w\s\-+]{2,30}?)\s+(\d)\s*-?\s*bed[a-z]*\s+(\d)\s*-?\s*bath[a-z]*\s+([\d,]+)\s*(?:sf|sqft)\s*(?:RM\s*([\d,]+))?/gi;
-  let utm;
-  while ((utm = unitRowRegex.exec(text)) !== null && unitTypes.length < 10) {
-    unitTypes.push({
-      label: utm[1].trim(),
-      name: utm[2].trim(),
-      beds: Number(utm[3]),
-      baths: Number(utm[4]),
-      size: `${utm[5].replace(/,/g,"")} sf`,
-      priceFrom: utm[6] ? `From RM ${utm[6]}` : "",
-      image: "",
-      desc: "",
-    });
-  }
-  // Lighter fallback: lines containing "Type X" + size + bed
-  if (unitTypes.length === 0) {
-    const fallbackRe = /(Type\s*[A-Z\d]+|Studio|Penthouse)\b[^\n]{0,120}?(\d)\s*-?\s*bed[a-z]*[^\n]{0,80}?([\d,]+)\s*(?:sf|sqft)/gi;
-    let m;
-    while ((m = fallbackRe.exec(text)) !== null && unitTypes.length < 10) {
-      unitTypes.push({
-        label: m[1].trim(),
-        name: `${m[2]}-Bedroom`,
-        beds: Number(m[2]),
-        baths: 0,
-        size: `${m[3].replace(/,/g,"")} sf`,
-        priceFrom: "",
-        image: "",
-        desc: "",
-      });
-    }
-  }
-  if (unitTypes.length) result.unitTypes = unitTypes;
-
-  // Strip any null/empty values
-  for (const k of Object.keys(result)) {
-    if (result[k] === null || result[k] === undefined || result[k] === "") delete result[k];
-  }
-  return result;
+  return res.json();
 }
 
 
@@ -2153,7 +2001,7 @@ function AIPDFWidget({ onAutofill }) {
   const STEPS = [
     "Loading PDF reader…",
     "Extracting text from PDF…",
-    "Detecting property fields…",
+    "Claude AI is reading the brochure…",
     "Filling in form fields…",
   ];
 
@@ -2177,18 +2025,19 @@ function AIPDFWidget({ onAutofill }) {
       setProgress(0);
       await ensurePdfJs();
 
-      // Step 2 — extract raw text
+      // Step 2 — extract raw text from the PDF (client-side, free)
       setProgress(1);
       const rawText = await extractPdfText(file);
       if (!rawText || rawText.trim().length < 30) {
         throw new Error("Could not extract text. The PDF may be scanned/image-only — please fill manually.");
       }
 
-      // Step 3 — heuristic parse
+      // Step 3 — send text to Claude AI via /api/parse-pdf (Vercel serverless)
       setProgress(2);
-      const result = parsePropertyText(rawText);
+      const result = await parseWithClaude(rawText);
 
-      // Map result → form fields
+      // Step 4 — map AI result → form fields
+      setProgress(3);
       const filled = [];
       const formPatch = {};
       const FIELD_LABELS = {
@@ -2209,22 +2058,19 @@ function AIPDFWidget({ onAutofill }) {
 
       for (const [k, label] of Object.entries(FIELD_LABELS)) {
         const v = result[k];
-        if (v !== null && v !== undefined && v !== "" ) {
+        if (v !== null && v !== undefined && v !== "") {
           formPatch[k] = Array.isArray(v) ? v.join(", ") : String(v);
           filled.push(label);
         }
       }
-      // totalFloorsPerTower (array → comma string)
       if (Array.isArray(result.totalFloorsPerTower) && result.totalFloorsPerTower.length) {
         formPatch.totalFloorsPerTower = result.totalFloorsPerTower.join(", ");
         filled.push("Floors per Tower");
       }
 
-      setProgress(3);
       setFilledFields(filled);
       setStep("done");
 
-      // unitTypes comes back as array of objects — pass separately
       const unitTypes = Array.isArray(result.unitTypes) ? result.unitTypes : [];
       onAutofill(formPatch, unitTypes);
 
@@ -2243,10 +2089,10 @@ function AIPDFWidget({ onAutofill }) {
   return (
     <div className="ai-zone">
       <div className="ai-zone-hd">
-        <div className="ai-zone-icon">📄</div>
+        <div className="ai-zone-icon">🤖</div>
         <div>
-          <div className="ai-zone-title">Smart Auto-fill from Brochure PDF</div>
-          <div className="ai-zone-sub">Upload a project brochure — text is extracted locally (free, no API key) and detected fields are filled automatically</div>
+          <div className="ai-zone-title">AI Auto-fill from Brochure PDF</div>
+          <div className="ai-zone-sub">Upload a project brochure — text is extracted locally via PDF.js, then <strong>Claude AI</strong> reads and fills all form fields automatically</div>
         </div>
       </div>
       <div className="ai-zone-body">
@@ -2274,7 +2120,7 @@ function AIPDFWidget({ onAutofill }) {
 
         {file && step !== "loading" && (
           <button className="ai-parse-btn" onClick={runParse} disabled={step==="loading"}>
-            <span>✨</span> Extract & Auto-fill with AI
+            <span>🤖</span> Extract &amp; Auto-fill with Claude AI
           </button>
         )}
 
