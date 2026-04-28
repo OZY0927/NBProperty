@@ -1,162 +1,134 @@
-/**
- * /api/parse-pdf.js — Vercel Serverless Function
- *
- * Receives raw PDF text extracted client-side by PDF.js,
- * sends it to Claude Sonnet, and returns structured property JSON.
- *
- * Setup:
- *   1. In Vercel dashboard → Settings → Environment Variables
- *   2. Add:  ANTHROPIC_API_KEY = sk-ant-...
- *   3. Redeploy — done.
- *
- * The API key never reaches the browser. All Claude calls happen server-side.
- */
+// Vercel Serverless Function — POST /api/parse-pdf
+// Uses Google Gemini 2.0 Flash (free tier: 15 RPM / 1500 RPD)
+// Set GEMINI_API_KEY in Vercel Environment Variables
+
+const GEMINI_MODEL = "gemini-2.0-flash";
+
+const SYSTEM_PROMPT = `You are a property data extraction specialist. Extract all available property details from the uploaded PDF brochure and return ONLY a valid JSON object — no markdown, no explanation, no extra text.
+
+Return this exact JSON structure (use null for fields not found):
+{
+  "name": "Full project name",
+  "developer": "Developer company name",
+  "location": "Full address or area, state",
+  "type": "One of: Condominium, Semi-Detached, Serviced Apartment, Shophouse, Terrace House, SoHo / Office, Bungalow, Duplex",
+  "status": "One of: New Launch, Under Construction, Completed, Sold Out",
+  "completion": "e.g. Q4 2026",
+  "tenure": "Freehold or Leasehold",
+  "landSize": "e.g. 3.2 acres",
+  "constructionStage": "Current construction stage description",
+  "totalBlocks": 2,
+  "totalFloorsPerTower": ["Tower A: 38 floors", "Tower B: 36 floors"],
+  "residentialStartLevel": "e.g. Level 5",
+  "totalUnits": 320,
+  "floors": 38,
+  "unitsBreakdown": "e.g. 280 Public / 40 Bumi",
+  "unitsPerTower": "e.g. Tower A: 168 units",
+  "bedrooms": "e.g. 2, 3, 4",
+  "bathrooms": "e.g. 2, 3",
+  "sizeSqft": "e.g. 900-2200",
+  "carParkLevels": "e.g. Level 1-4",
+  "numberOfCarParks": "e.g. 480 bays",
+  "parkingNotes": "Notes about parking",
+  "numberOfLifts": "e.g. 4 per tower",
+  "priceFrom": 480000,
+  "priceTo": 1200000,
+  "maintenanceFee": "e.g. RM 0.35 / sf / month",
+  "sinkingFund": "e.g. RM 0.10 / sf / month",
+  "showroom": "Showroom location and hours",
+  "scaleModel": "Yes or No",
+  "description": "2-3 sentence project description",
+  "highlights": "comma-separated list of key highlights",
+  "facilities": "comma-separated list of facilities",
+  "upgrades": "Description of premium finishes and upgrade specs",
+  "unitTypes": [
+    {
+      "label": "Type A",
+      "name": "2-Bedroom",
+      "beds": 2,
+      "baths": 2,
+      "size": "900 sf",
+      "priceFrom": "From RM 480,000",
+      "image": "",
+      "desc": "Brief layout description"
+    }
+  ]
+}`;
 
 export default async function handler(req, res) {
-  /* ── CORS preflight ── */
+  // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(200).end();
 
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed." });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
-  /* ── Validate input ── */
-  const { text } = req.body || {};
-  if (!text || typeof text !== "string" || text.trim().length < 20) {
-    return res.status(400).json({ error: "No usable text provided." });
-  }
-
-  /* ── Check API key ── */
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({
-      error: "ANTHROPIC_API_KEY is not set. Add it in Vercel → Settings → Environment Variables.",
-    });
+    return res.status(500).json({ error: "GEMINI_API_KEY not configured" });
   }
 
-  /* ── Build prompt ── */
-  // Limit text to ~12 000 chars to stay within token budget
-  const brochureText = text.substring(0, 12000);
-
-  const prompt = `You are an expert property brochure data extractor for Malaysian real estate.
-Extract all property information from the brochure text below and return ONLY a valid JSON object.
-No markdown fences, no preamble, no explanation — just the raw JSON.
-
-Return this exact schema (use null for any field you cannot confidently determine):
-
-{
-  "name": string,
-  "developer": string,
-  "location": string,
-  "type": one of ["Condominium","Semi-Detached","Serviced Apartment","Shophouse","Terrace House","SoHo / Office","Bungalow","Duplex"] or null,
-  "status": one of ["New Launch","Under Construction","Completed","Sold Out"] or null,
-  "completion": string (e.g. "Q4 2026"),
-  "tenure": one of ["Freehold","Leasehold"] or null,
-  "landSize": string (e.g. "3.2 acres"),
-  "constructionStage": string (e.g. "Piling & Foundation"),
-  "totalBlocks": number or null,
-  "floors": number or null,
-  "totalUnits": number or null,
-  "residentialStartLevel": string (e.g. "Level 5"),
-  "unitsBreakdown": string (e.g. "280 Public / 40 Bumi"),
-  "unitsPerTower": string (e.g. "Tower A: 168 units | Tower B: 152 units"),
-  "bedrooms": string (comma-separated bedroom counts, e.g. "2, 3, 4"),
-  "bathrooms": string (comma-separated bathroom counts, e.g. "2, 3"),
-  "sizeSqft": string (min-max range e.g. "900-2200"),
-  "carParkLevels": string (e.g. "Level 1-4"),
-  "numberOfCarParks": string (e.g. "480 bays (1.5 per unit)"),
-  "parkingNotes": string,
-  "numberOfLifts": string (e.g. "4 lifts per tower (3 passenger + 1 service)"),
-  "priceFrom": number or null (raw RM integer, e.g. 480000),
-  "priceTo": number or null (raw RM integer),
-  "maintenanceFee": string (e.g. "RM 0.35 / sf / month"),
-  "sinkingFund": string (e.g. "RM 0.10 / sf / month"),
-  "showroom": string (location + hours),
-  "scaleModel": string (e.g. "Yes — displayed at showroom"),
-  "description": string (2-4 sentence marketing summary in English),
-  "highlights": string (comma-separated key selling points, max 8),
-  "facilities": string (comma-separated facility names),
-  "upgrades": string (premium finishes / inclusions description),
-  "totalFloorsPerTower": array of strings (e.g. ["Tower A: 38 floors", "Tower B: 36 floors"]),
-  "unitTypes": array of objects with this shape:
-    {
-      "label": string (e.g. "Type A"),
-      "name": string (e.g. "2-Bedroom" or "Studio Suite"),
-      "beds": number,
-      "baths": number,
-      "size": string (e.g. "900 sf"),
-      "priceFrom": string (e.g. "From RM 480,000"),
-      "image": "",
-      "desc": string (1-2 sentence unit description)
-    }
-}
-
-Rules:
-- Return ONLY the JSON — no extra text before or after.
-- For price fields (priceFrom, priceTo), use plain integers only (e.g. 480000, not "RM 480,000").
-- If a field is not found in the text, use null — never guess or invent values.
-- Extract as many unitTypes as possible from layout tables or unit-type sections.
-- Write description and unit desc fields in fluent marketing English even if source is another language.
-- For highlights and facilities, only include values actually mentioned in the brochure.
-
-BROCHURE TEXT:
-${brochureText}`;
-
-  /* ── Call Claude ── */
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const { base64Data } = req.body;
+    if (!base64Data || typeof base64Data !== "string") {
+      return res.status(400).json({ error: "Missing base64Data in request body" });
+    }
+
+    // Limit payload size (~20 MB base64)
+    if (base64Data.length > 28 * 1024 * 1024) {
+      return res.status(413).json({ error: "File too large" });
+    }
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+
+    const geminiRes = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 2000,
-        messages: [{ role: "user", content: prompt }],
+        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: [
+          {
+            parts: [
+              {
+                inline_data: {
+                  mime_type: "application/pdf",
+                  data: base64Data,
+                },
+              },
+              {
+                text: "Extract all property information from this brochure/document and return the JSON object as instructed. If a field is not found, use null. Extract as many unit types as you can find.",
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.1,
+          maxOutputTokens: 4096,
+          responseMimeType: "application/json",
+        },
       }),
     });
 
-    if (!response.ok) {
-      const errBody = await response.json().catch(() => ({}));
-      const msg = errBody?.error?.message || `Claude API returned ${response.status}`;
-      return res.status(502).json({ error: msg });
+    if (!geminiRes.ok) {
+      const errBody = await geminiRes.text();
+      console.error("Gemini API error:", geminiRes.status, errBody);
+      return res.status(502).json({ error: `Gemini API error ${geminiRes.status}` });
     }
 
-    const data = await response.json();
-    const rawOutput = (data.content || []).map(b => b.text || "").join("");
+    const data = await geminiRes.json();
+    const rawText =
+      data?.candidates?.[0]?.content?.parts?.map((p) => p.text || "").join("") || "";
 
-    /* Strip markdown fences if Claude wrapped the JSON anyway */
-    const clean = rawOutput
-      .replace(/^```json\s*/i, "")
-      .replace(/^```\s*/i, "")
-      .replace(/\s*```$/i, "")
-      .trim();
-
-    let parsed;
-    try {
-      parsed = JSON.parse(clean);
-    } catch {
-      console.error("Claude JSON parse error. Raw output:", rawOutput.slice(0, 500));
-      return res.status(502).json({
-        error: "Claude returned malformed JSON. Please try again.",
-      });
-    }
-
-    /* Remove null / empty values so the form patch is clean */
-    for (const k of Object.keys(parsed)) {
-      if (parsed[k] === null || parsed[k] === undefined || parsed[k] === "") {
-        delete parsed[k];
-      }
-    }
+    // Parse the JSON from Gemini's response
+    const clean = rawText.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(clean);
 
     return res.status(200).json(parsed);
   } catch (err) {
-    console.error("parse-pdf handler error:", err);
-    return res.status(500).json({ error: err.message || "Internal server error." });
+    console.error("parse-pdf error:", err);
+    return res.status(500).json({ error: err.message || "Internal server error" });
   }
 }
