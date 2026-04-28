@@ -1,8 +1,9 @@
 // Vercel Serverless Function — POST /api/parse-pdf
-// Uses Google Gemini 2.0 Flash (free tier: 15 RPM / 1500 RPD)
-// Set GEMINI_API_KEY in Vercel Environment Variables
+// Uses Groq API with Llama 3.2 90B Vision (completely free, unlimited RPM)
+// Set GROQ_API_KEY in Vercel Environment Variables
+// Get free key at: https://console.groq.com
 
-const GEMINI_MODEL = "gemini-2.0-flash";
+const GROQ_MODEL = "llama-3.2-90b-vision-preview";
 
 /**
  * Normalizes API response to extract values and mark low-confidence fields
@@ -109,9 +110,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: "GEMINI_API_KEY not configured" });
+    return res.status(500).json({ error: "GROQ_API_KEY not configured" });
   }
 
   try {
@@ -125,47 +126,52 @@ export default async function handler(req, res) {
       return res.status(413).json({ error: "File too large" });
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+    const url = `https://api.groq.com/openai/v1/chat/completions`;
 
-    const geminiRes = await fetch(url, {
+    const groqRes = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [
+        model: GROQ_MODEL,
+        messages: [
           {
-            parts: [
+            role: "system",
+            content: SYSTEM_PROMPT,
+          },
+          {
+            role: "user",
+            content: [
               {
-                inline_data: {
-                  mime_type: "application/pdf",
-                  data: base64Data,
-                },
+                type: "text",
+                text: "Extract structured property project data from this PDF:",
               },
               {
-                text: "Extract structured property project data from the following PDF text:",
+                type: "image_url",
+                image_url: {
+                  url: `data:application/pdf;base64,${base64Data}`,
+                },
               },
             ],
           },
         ],
-        generationConfig: {
-          temperature: 0.1,
-          maxOutputTokens: 4096,
-          responseMimeType: "application/json",
-        },
+        temperature: 0.1,
+        max_tokens: 4096,
       }),
     });
 
-    if (!geminiRes.ok) {
-      const errBody = await geminiRes.text();
-      console.error("Gemini API error:", geminiRes.status, errBody);
-      return res.status(502).json({ error: `Gemini API error ${geminiRes.status}` });
+    if (!groqRes.ok) {
+      const errBody = await groqRes.text();
+      console.error("Groq API error:", groqRes.status, errBody);
+      return res.status(502).json({ error: `Groq API error ${groqRes.status}` });
     }
 
-    const data = await geminiRes.json();
-    const rawText =
-      data?.candidates?.[0]?.content?.parts?.map((p) => p.text || "").join("") || "";
+    const data = await groqRes.json();
+    const rawText = data?.choices?.[0]?.message?.content || "";
 
-    // Parse the JSON from Gemini's response
+    // Parse the JSON from Groq's response
     const clean = rawText.replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(clean);
 
