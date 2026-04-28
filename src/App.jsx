@@ -1058,6 +1058,24 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .img-prev{width:100%;height:80px;object-fit:cover;margin-top:.4rem;border:1px solid var(--a-border);}
 .a-map-preview{width:100%;height:200px;border:1px solid var(--a-border);margin-bottom:1rem;overflow:hidden;}
 .a-map-preview iframe{width:100%;height:100%;border:none;display:block;}
+.map-picker-mini{margin-bottom:1rem;}
+.map-picker-container{width:100%;height:200px;border:1px solid var(--a-border);background:#1a2a3a;z-index:1;}
+.map-picker-actions{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:.4rem;}
+.map-picker-expand{background:transparent;border:1px solid var(--a-border);color:var(--a-text);font-family:var(--sans);font-size:.72rem;padding:.35rem .75rem;cursor:pointer;transition:all .18s;letter-spacing:.04em;}
+.map-picker-expand:hover{border-color:var(--a-gold);color:var(--a-gold);}
+.map-picker-hint{font-size:.66rem;color:var(--a-muted);font-style:italic;}
+.map-picker-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeIn .2s ease;}
+.map-picker-modal{background:var(--a-surface);border:1px solid var(--a-border);width:100%;max-width:900px;max-height:90vh;display:flex;flex-direction:column;animation:slideUp .25s ease;overflow:hidden;}
+.map-picker-modal-hd{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.2rem;border-bottom:1px solid var(--a-border);font-size:.85rem;font-weight:600;color:var(--a-text);}
+.map-picker-modal-x{background:transparent;border:1px solid var(--a-border);color:var(--a-muted);width:30px;height:30px;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.map-picker-modal-x:hover{border-color:var(--a-gold);color:#fff;}
+.map-picker-modal-body{flex:1;min-height:400px;height:60vh;z-index:1;}
+.map-picker-modal-ft{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.2rem;border-top:1px solid var(--a-border);background:var(--a-bg);}
+.map-picker-coords{font-family:var(--sans);font-size:.78rem;color:var(--a-gold);font-weight:500;letter-spacing:.02em;}
+.map-picker-confirm{background:var(--a-cta);color:#fff;border:none;padding:.55rem 1.4rem;font-family:var(--sans);font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
+.map-picker-confirm:hover{opacity:.88;}
+@media(max-width:768px){.map-picker-overlay{padding:.5rem;}.map-picker-modal{max-height:100vh;}.map-picker-modal-body{min-height:300px;height:50vh;}}
+@media(max-width:480px){.map-picker-overlay{padding:0;}.map-picker-modal{max-height:100vh;border-radius:0;}.map-picker-modal-body{min-height:250px;height:45vh;}.map-picker-actions{flex-direction:column;align-items:flex-start;}}
 .a-form-err{background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.3);color:#e63946;font-size:.78rem;padding:.6rem .9rem;margin-bottom:1rem;}
 .a-modal-ft{padding:1.2rem 2rem;border-top:1px solid var(--a-border);display:flex;justify-content:flex-end;gap:.75rem;background:var(--a-bg);}
 .a-cancel{background:transparent;color:var(--a-muted);border:1px solid var(--a-border);padding:.65rem 1.5rem;font-family:var(--sans);font-size:.8rem;cursor:pointer;}
@@ -2391,6 +2409,143 @@ function defaultSections() {
     for (const { k } of secs) out[`${tab}.${k}`] = true;
   return out;
 }
+
+/* ═══ INTERACTIVE MAP PICKER (Leaflet + OpenStreetMap) ═══ */
+function loadCSS(href) {
+  if (document.querySelector(`link[href="${href}"]`)) return;
+  const l = document.createElement("link"); l.rel = "stylesheet"; l.href = href; document.head.appendChild(l);
+}
+async function ensureLeaflet() {
+  loadCSS("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+  if (!window.L) await loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");
+  return window.L;
+}
+
+function MapPicker({ lat, lng, onPick }) {
+  const [expanded, setExpanded] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
+  const mapRef = React.useRef(null);
+  const markerRef = React.useRef(null);
+  const containerRef = React.useRef(null);
+  const expandedContainerRef = React.useRef(null);
+  const initLat = parseFloat(lat) || 5.35;
+  const initLng = parseFloat(lng) || 100.35;
+
+  // Initialize mini map
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const L = await ensureLeaflet();
+      if (cancelled || !containerRef.current) return;
+      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; }
+      const map = L.map(containerRef.current, { scrollWheelZoom: false, zoomControl: true, attributionControl: false })
+        .setView([initLat, initLng], 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
+      const marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
+      marker.on("dragend", () => { const p = marker.getLatLng(); onPick(p.lat.toFixed(6), p.lng.toFixed(6)); });
+      map.on("click", (e) => { marker.setLatLng(e.latlng); onPick(e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6)); });
+      mapRef.current = map;
+      markerRef.current = marker;
+      setMapReady(true);
+      setTimeout(() => map.invalidateSize(), 200);
+    })();
+    return () => { cancelled = true; if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; } };
+  }, []);
+
+  // Update marker when lat/lng props change externally
+  useEffect(() => {
+    if (!markerRef.current || !mapRef.current) return;
+    const la = parseFloat(lat), ln = parseFloat(lng);
+    if (!isNaN(la) && !isNaN(ln) && la !== 0 && ln !== 0) {
+      const cur = markerRef.current.getLatLng();
+      if (Math.abs(cur.lat - la) > 0.00001 || Math.abs(cur.lng - ln) > 0.00001) {
+        markerRef.current.setLatLng([la, ln]);
+        mapRef.current.setView([la, ln], mapRef.current.getZoom());
+      }
+    }
+  }, [lat, lng]);
+
+  // Expanded map modal
+  const expandedMapRef = React.useRef(null);
+  const expandedMarkerRef = React.useRef(null);
+
+  useEffect(() => {
+    if (!expanded) { if (expandedMapRef.current) { expandedMapRef.current.remove(); expandedMapRef.current = null; } return; }
+    let cancelled = false;
+    (async () => {
+      const L = await ensureLeaflet();
+      if (cancelled) return;
+      // small delay to let DOM render
+      await new Promise(r => setTimeout(r, 100));
+      if (!expandedContainerRef.current || cancelled) return;
+      const cLat = parseFloat(lat) || initLat, cLng = parseFloat(lng) || initLng;
+      const map = L.map(expandedContainerRef.current, { zoomControl: true, attributionControl: true })
+        .setView([cLat, cLng], 15);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+      const marker = L.marker([cLat, cLng], { draggable: true }).addTo(map);
+      marker.bindPopup("Drag me or click the map").openPopup();
+      marker.on("dragend", () => {
+        const p = marker.getLatLng();
+        onPick(p.lat.toFixed(6), p.lng.toFixed(6));
+        if (markerRef.current) markerRef.current.setLatLng(p);
+        if (mapRef.current) mapRef.current.setView(p, mapRef.current.getZoom());
+      });
+      map.on("click", (e) => {
+        marker.setLatLng(e.latlng);
+        onPick(e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6));
+        if (markerRef.current) markerRef.current.setLatLng(e.latlng);
+        if (mapRef.current) mapRef.current.setView(e.latlng, mapRef.current.getZoom());
+      });
+      expandedMapRef.current = map;
+      expandedMarkerRef.current = marker;
+      setTimeout(() => map.invalidateSize(), 200);
+    })();
+    return () => { cancelled = true; if (expandedMapRef.current) { expandedMapRef.current.remove(); expandedMapRef.current = null; } };
+  }, [expanded]);
+
+  // Sync expanded marker when lat/lng change
+  useEffect(() => {
+    if (!expandedMarkerRef.current || !expandedMapRef.current) return;
+    const la = parseFloat(lat), ln = parseFloat(lng);
+    if (!isNaN(la) && !isNaN(ln)) {
+      expandedMarkerRef.current.setLatLng([la, ln]);
+    }
+  }, [lat, lng]);
+
+  const handleConfirmClose = () => {
+    setExpanded(false);
+  };
+
+  return (
+    <>
+      <div className="map-picker-mini">
+        <div className="map-picker-container" ref={containerRef} />
+        <div className="map-picker-actions">
+          <button type="button" className="map-picker-expand" onClick={() => setExpanded(true)}>⛶ Enlarge Map</button>
+          <span className="map-picker-hint">Click map or drag pin to set location</span>
+        </div>
+      </div>
+      {expanded && (
+        <div className="map-picker-overlay" onClick={e => { if (e.target === e.currentTarget) handleConfirmClose(); }}>
+          <div className="map-picker-modal">
+            <div className="map-picker-modal-hd">
+              <span>📍 Select Location on Map</span>
+              <button type="button" className="map-picker-modal-x" onClick={handleConfirmClose}>✕</button>
+            </div>
+            <div className="map-picker-modal-body" ref={expandedContainerRef} />
+            <div className="map-picker-modal-ft">
+              <span className="map-picker-coords">
+                {lat && lng ? `${parseFloat(lat).toFixed(6)}, ${parseFloat(lng).toFixed(6)}` : "Click to pick a point"}
+              </span>
+              <button type="button" className="map-picker-confirm" onClick={handleConfirmClose}>✓ Confirm Location</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 function PropertyForm({initial,onSave,onClose,isEdit}){
   const [form,setForm]=useState(initial||EMPTY_FORM);
   const [tab,setTab]=useState("basic");
@@ -2459,18 +2614,11 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
               {ff("Construction Stage","constructionStage","e.g. Piling & Foundation")}
             </div>
             <div className="a-form-sec">Coordinates (for Google Map)</div>
-            <div className="a-form-grid" style={{marginBottom:"1rem"}}>
+            <div className="a-form-grid" style={{marginBottom:".5rem"}}>
               {ff("Latitude","coordinateLat","e.g. 5.3636","text","decimal degrees")}
               {ff("Longitude","coordinateLng","e.g. 100.4565","text","decimal degrees")}
             </div>
-            {(form.coordinateLat && form.coordinateLng && !isNaN(parseFloat(form.coordinateLat)) && !isNaN(parseFloat(form.coordinateLng))) && (
-              <div className="a-map-preview">
-                <iframe
-                  src={`https://maps.google.com/maps?q=${parseFloat(form.coordinateLat)},${parseFloat(form.coordinateLng)}&z=15&output=embed`}
-                  title="Map Preview" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen
-                />
-              </div>
-            )}
+            <MapPicker lat={form.coordinateLat} lng={form.coordinateLng} onPick={(la,ln)=>setForm(f=>({...f,coordinateLat:la,coordinateLng:ln}))} />
             <div className="a-form-sec">Badge</div>
             <div className="a-form-grid">
               <div className="a-ff"><label className="a-flbl">Tag Label</label><input className="a-inp" value={form.tag} placeholder="e.g. HOT" onChange={e=>set("tag",e.target.value.toUpperCase())}/><div className="tag-presets">{TAG_PRESETS.map(t=><button key={t} className="tpre" onClick={()=>set("tag",t)}>{t}</button>)}</div></div>
