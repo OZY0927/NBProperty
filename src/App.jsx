@@ -439,6 +439,18 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 /* ── Filter Panel ── */
 .filter-panel{background:var(--card);border:1px solid var(--border);margin-bottom:2.5rem;}
 .filter-top{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;padding:.9rem 1.2rem;border-bottom:1px solid var(--border);}
+.filter-row2{display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;padding:.75rem 1.2rem;border-bottom:1px solid var(--border);background:var(--warm);animation:fadeIn .2s ease;}
+.filter-group{display:flex;flex-direction:column;gap:.3rem;}
+.filter-group .flbl{font-size:.6rem;}
+.fmore-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--sans);font-size:.72rem;padding:.4rem .8rem;cursor:pointer;transition:all .18s;white-space:nowrap;letter-spacing:.04em;}
+.fmore-btn:hover{border-color:var(--gold);color:var(--gold);}
+.fsize-range{display:flex;align-items:center;gap:.3rem;}
+.fsize-inp{width:80px;padding:.44rem .6rem;border:1px solid var(--border);background:var(--parchment);color:var(--ink);font-family:var(--sans);font-size:.8rem;outline:none;transition:border-color .18s;}
+.fsize-inp:focus{border-color:var(--gold);}
+.fsize-inp::placeholder{color:var(--muted);font-size:.75rem;}
+.fsize-sep{color:var(--muted);font-size:.8rem;}
+.fclear-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--sans);font-size:.68rem;padding:.42rem .75rem;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .18s;align-self:flex-end;margin-left:auto;white-space:nowrap;}
+.fclear-btn:hover{border-color:var(--a-red);color:var(--a-red);}
 .flbl{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;}
 .fsel{padding:.48rem 2rem .48rem .85rem;border:1px solid var(--border);background:var(--parchment);color:var(--ink);font-family:var(--sans);font-size:.81rem;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%238a8578' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .65rem center;transition:border-color .18s;}
 .fsel:focus{border-color:var(--gold);outline:none;}
@@ -502,6 +514,8 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .filter-top{padding:.75rem;gap:.5rem;}
   .fsel{font-size:.78rem;padding:.42rem 1.8rem .42rem .75rem;}
   .filter-divider{display:none;}
+  .filter-row2{padding:.65rem .75rem;gap:.5rem;}
+  .fsize-inp{width:70px;font-size:.76rem;}
   .price-panel{padding:.85rem;}
   .ps-thumb{width:26px;height:26px;}
 
@@ -583,6 +597,13 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .filter-top{flex-direction:column;align-items:stretch;}
   .fsel{width:100%;}
   .rcnt{margin-left:0;text-align:center;padding:.2rem 0;}
+  .filter-row2{flex-direction:column;align-items:stretch;}
+  .filter-group{width:100%;}
+  .filter-group .fsel{width:100%;}
+  .fsize-range{width:100%;}
+  .fsize-inp{flex:1;width:auto;}
+  .fmore-btn{width:100%;text-align:center;}
+  .fclear-btn{margin-left:0;width:100%;text-align:center;}
 
   /* Card image shorter */
   .cimg{height:200px;}
@@ -3036,6 +3057,13 @@ export default function App(){
   const [stat,setStat]=useState("All Status");
   const [priceMin,setPriceMin]=useState(PRICE_SLIDER_MIN);
   const [priceMax,setPriceMax]=useState(PRICE_SLIDER_MAX);
+  const [fBed,setFBed]=useState("All Beds");
+  const [fBath,setFBath]=useState("All Baths");
+  const [fTenure,setFTenure]=useState("All Tenure");
+  const [fCompletion,setFCompletion]=useState("All Completion");
+  const [fSizeMin,setFSizeMin]=useState("");
+  const [fSizeMax,setFSizeMax]=useState("");
+  const [showMoreFilters,setShowMoreFilters]=useState(false);
   const [selected,setSelected]=useState(null);
   const [cmpIds,setCmpIds]=useState([]);
   const [pdfBusy,setPdfBusy]=useState(false);
@@ -3054,8 +3082,12 @@ export default function App(){
   const LOCS  = useMemo(()=>["All Areas",...new Set(projects.map(p=>p.location))],[projects]);
   const TYPES = useMemo(()=>["All Types",...new Set(projects.map(p=>p.type))],[projects]);
   const STATS = useMemo(()=>["All Status",...new Set(projects.map(p=>p.status))],[projects]);
+  const BEDS  = useMemo(()=>{const s=new Set();projects.forEach(p=>(p.bedrooms||[]).forEach(b=>s.add(b)));return ["All Beds",...[...s].sort((a,b)=>a-b).map(String)];},[projects]);
+  const BATHS = useMemo(()=>{const s=new Set();projects.forEach(p=>(p.bathrooms||[]).forEach(b=>s.add(b)));return ["All Baths",...[...s].sort((a,b)=>a-b).map(String)];},[projects]);
+  const TENURE_OPTS = ["All Tenure","Freehold","Leasehold"];
+  const COMPLETION_OPTS = useMemo(()=>{const s=new Set();projects.forEach(p=>{if(p.completion)s.add(p.completion);});return ["All Completion",...[...s].sort()];},[projects]);
 
-  const filtered=useMemo(()=>{return projects.filter(p=>{if(p.visible===false)return false;if(type!=="All Types"&&p.type!==type)return false;if(loc!=="All Areas"&&p.location!==loc)return false;if(stat!=="All Status"&&p.status!==stat)return false;if(p.priceFrom>priceMax||p.priceTo<priceMin)return false;if(search){const q=search.toLowerCase();if(!p.name.toLowerCase().includes(q)&&!p.location.toLowerCase().includes(q)&&!p.developer.toLowerCase().includes(q)&&!p.type.toLowerCase().includes(q))return false;}return true;});},[projects,search,type,loc,stat,priceMin,priceMax]);
+  const filtered=useMemo(()=>{return projects.filter(p=>{if(p.visible===false)return false;if(type!=="All Types"&&p.type!==type)return false;if(loc!=="All Areas"&&p.location!==loc)return false;if(stat!=="All Status"&&p.status!==stat)return false;if(p.priceFrom>priceMax||p.priceTo<priceMin)return false;if(fBed!=="All Beds"&&!(p.bedrooms||[]).includes(Number(fBed)))return false;if(fBath!=="All Baths"&&!(p.bathrooms||[]).includes(Number(fBath)))return false;if(fTenure!=="All Tenure"&&p.tenure!==fTenure)return false;if(fCompletion!=="All Completion"&&p.completion!==fCompletion)return false;if(fSizeMin){const mn=Number(fSizeMin);if(!isNaN(mn)&&mn>0&&(p.sizeSqft?.[1]||0)<mn)return false;}if(fSizeMax){const mx=Number(fSizeMax);if(!isNaN(mx)&&mx>0&&(p.sizeSqft?.[0]||0)>mx)return false;}if(search){const q=search.toLowerCase();if(!p.name.toLowerCase().includes(q)&&!p.location.toLowerCase().includes(q)&&!p.developer.toLowerCase().includes(q)&&!p.type.toLowerCase().includes(q))return false;}return true;});},[projects,search,type,loc,stat,priceMin,priceMax,fBed,fBath,fTenure,fCompletion,fSizeMin,fSizeMax]);
   const cmpProjects=useMemo(()=>projects.filter(p=>cmpIds.includes(p.id)&&p.visible!==false),[projects,cmpIds]);
   const toggleCmp=useCallback((e,id)=>{e.stopPropagation();setCmpIds(prev=>prev.includes(id)?prev.filter(x=>x!==id):prev.length>=5?prev:[...prev,id]);},[]);
   const cheapest=cmpProjects.length?cmpProjects.reduce((a,b)=>a.priceFrom<b.priceFrom?a:b).id:null;
@@ -3128,15 +3160,46 @@ export default function App(){
         </section>
         <main className="main">
           <div className="filter-panel">
-            {/* Top row: dropdowns + result count */}
+            {/* Row 1: primary filters */}
             <div className="filter-top">
               <span className="flbl">Filter by</span>
               <div className="filter-divider"/>
               <select className="fsel" value={type} onChange={e=>setType(e.target.value)}>{TYPES.map(t=><option key={t}>{t}</option>)}</select>
               <select className="fsel" value={loc} onChange={e=>setLoc(e.target.value)}>{LOCS.map(l=><option key={l}>{l}</option>)}</select>
               <select className="fsel" value={stat} onChange={e=>setStat(e.target.value)}>{STATS.map(s=><option key={s}>{s}</option>)}</select>
+              <button className="fmore-btn" onClick={()=>setShowMoreFilters(v=>!v)}>{showMoreFilters?"▲ Less Filters":"▼ More Filters"}</button>
               <div className="rcnt">Showing <strong>{filtered.length}</strong> project{filtered.length!==1?"s":""}</div>
             </div>
+            {/* Row 2: expanded filters */}
+            {showMoreFilters&&(
+              <div className="filter-row2">
+                <div className="filter-group">
+                  <span className="flbl">Bedrooms</span>
+                  <select className="fsel" value={fBed} onChange={e=>setFBed(e.target.value)}>{BEDS.map(b=><option key={b}>{b}</option>)}</select>
+                </div>
+                <div className="filter-group">
+                  <span className="flbl">Bathrooms</span>
+                  <select className="fsel" value={fBath} onChange={e=>setFBath(e.target.value)}>{BATHS.map(b=><option key={b}>{b}</option>)}</select>
+                </div>
+                <div className="filter-group">
+                  <span className="flbl">Tenure</span>
+                  <select className="fsel" value={fTenure} onChange={e=>setFTenure(e.target.value)}>{TENURE_OPTS.map(t=><option key={t}>{t}</option>)}</select>
+                </div>
+                <div className="filter-group">
+                  <span className="flbl">Completion</span>
+                  <select className="fsel" value={fCompletion} onChange={e=>setFCompletion(e.target.value)}>{COMPLETION_OPTS.map(c=><option key={c}>{c}</option>)}</select>
+                </div>
+                <div className="filter-group">
+                  <span className="flbl">Built-up (sqft)</span>
+                  <div className="fsize-range">
+                    <input className="fsize-inp" type="number" placeholder="Min" value={fSizeMin} onChange={e=>setFSizeMin(e.target.value)} min="0"/>
+                    <span className="fsize-sep">–</span>
+                    <input className="fsize-inp" type="number" placeholder="Max" value={fSizeMax} onChange={e=>setFSizeMax(e.target.value)} min="0"/>
+                  </div>
+                </div>
+                <button className="fclear-btn" onClick={()=>{setFBed("All Beds");setFBath("All Baths");setFTenure("All Tenure");setFCompletion("All Completion");setFSizeMin("");setFSizeMax("");}}>Clear Filters</button>
+              </div>
+            )}
             {/* Price slider — full width */}
             <PriceRangeSlider minVal={priceMin} maxVal={priceMax} onChange={(mn,mx)=>{setPriceMin(mn);setPriceMax(mx);}}/>
           </div>
