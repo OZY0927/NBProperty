@@ -1940,54 +1940,28 @@ function UnitTypeEditor({unitTypes, onChange}){
   );
 }
 
-/* ═══ PDF TEXT EXTRACTION + HEURISTIC PARSER (FREE — no API key) ═══ */
-/* Uses Mozilla PDF.js loaded from CDN to extract text client-side,
-   then parses with regex heuristics to fill form fields.
-   Loaded via blob URL to bypass CSP script-src restrictions. */
-
-const PDFJS_VERSION    = "3.11.174";
-const PDFJS_CDN        = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.min.js`;
-const PDFJS_WORKER_CDN = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
-
-async function ensurePdfJs() {
-  if (window.pdfjsLib) return window.pdfjsLib;
-  // Load directly from CDN — no blob URL needed, works on Vercel with standard CSP.
-  await loadScript(PDFJS_CDN);
-  if (!window.pdfjsLib) throw new Error("Could not load PDF.js library.");
-  // Point worker at the matching CDN worker (free, no API key).
-  window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_CDN;
-  return window.pdfjsLib;
-}
-
-async function extractPdfText(file) {
-  const pdfjs = await ensurePdfJs();
-  if (!pdfjs) throw new Error("Failed to load PDF.js library.");
-  const buf = await file.arrayBuffer();
-  const pdf = await pdfjs.getDocument({ data: buf }).promise;
-  let fullText = "";
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    const pageText = content.items.map(it => it.str).join(" ");
-    fullText += pageText + "\n\n";
-  }
-  return fullText;
-}
-
-/* ═══ AI PDF PARSER — calls /api/parse-pdf (Vercel serverless → Claude) ═══ */
-async function parseWithClaude(rawText) {
-  const res = await fetch("/api/parse-pdf", {
+/* ═══ AI PDF PARSER ═══ */
+async function parsePDFWithAI(base64Data) {
+  const response = await fetch("/api/parse-pdf", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: rawText }),
+    body: JSON.stringify({ base64Data }),
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `Server error ${res.status} — check ANTHROPIC_API_KEY in Vercel env vars.`);
+  if (!response.ok) {
+    const errBody = await response.json().catch(() => ({}));
+    throw new Error(errBody.error || `API error ${response.status}`);
   }
-  return res.json();
+  return response.json();
 }
 
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 /* ═══ AI PDF UPLOAD WIDGET ═══ */
 function AIPDFWidget({ onAutofill }) {
@@ -1999,9 +1973,9 @@ function AIPDFWidget({ onAutofill }) {
   const [dragOver, setDragOver] = useState(false);
 
   const STEPS = [
-    "Loading PDF reader…",
-    "Extracting text from PDF…",
-    "Claude AI is reading the brochure…",
+    "Reading PDF document…",
+    "Sending to AI for analysis…",
+    "Extracting property details…",
     "Filling in form fields…",
   ];
 
@@ -2021,23 +1995,13 @@ function AIPDFWidget({ onAutofill }) {
     if (!file) return;
     setStep("loading"); setProgress(0); setErrMsg(""); setFilledFields([]);
     try {
-      // Step 1 — load PDF.js
       setProgress(0);
-      await ensurePdfJs();
-
-      // Step 2 — extract raw text from the PDF (client-side, free)
+      const b64 = await fileToBase64(file);
       setProgress(1);
-      const rawText = await extractPdfText(file);
-      if (!rawText || rawText.trim().length < 30) {
-        throw new Error("Could not extract text. The PDF may be scanned/image-only — please fill manually.");
-      }
-
-      // Step 3 — send text to Claude AI via /api/parse-pdf (Vercel serverless)
+      const result = await parsePDFWithAI(b64);
       setProgress(2);
-      const result = await parseWithClaude(rawText);
 
-      // Step 4 — map AI result → form fields
-      setProgress(3);
+      // Map result → form fields
       const filled = [];
       const formPatch = {};
       const FIELD_LABELS = {
@@ -2058,28 +2022,27 @@ function AIPDFWidget({ onAutofill }) {
 
       for (const [k, label] of Object.entries(FIELD_LABELS)) {
         const v = result[k];
-        if (v !== null && v !== undefined && v !== "") {
+        if (v !== null && v !== undefined && v !== "" ) {
           formPatch[k] = Array.isArray(v) ? v.join(", ") : String(v);
           filled.push(label);
         }
       }
+      // totalFloorsPerTower (array → comma string)
       if (Array.isArray(result.totalFloorsPerTower) && result.totalFloorsPerTower.length) {
         formPatch.totalFloorsPerTower = result.totalFloorsPerTower.join(", ");
         filled.push("Floors per Tower");
       }
 
+      setProgress(3);
       setFilledFields(filled);
       setStep("done");
 
+      // unitTypes comes back as array of objects — pass separately
       const unitTypes = Array.isArray(result.unitTypes) ? result.unitTypes : [];
       onAutofill(formPatch, unitTypes);
 
-      if (filled.length === 0 && unitTypes.length === 0) {
-        setErrMsg("No fields could be detected automatically. Please fill the form manually.");
-      }
-
     } catch (e) {
-      setErrMsg(e.message || "Failed to read PDF. Please try again or fill manually.");
+      setErrMsg(e.message || "Failed to parse PDF. Please try again or fill manually.");
       setStep("error");
     }
   };
@@ -2089,10 +2052,10 @@ function AIPDFWidget({ onAutofill }) {
   return (
     <div className="ai-zone">
       <div className="ai-zone-hd">
-        <div className="ai-zone-icon">🤖</div>
+        <div className="ai-zone-icon">✨</div>
         <div>
           <div className="ai-zone-title">AI Auto-fill from Brochure PDF</div>
-          <div className="ai-zone-sub">Upload a project brochure — text is extracted locally via PDF.js, then <strong>Claude AI</strong> reads and fills all form fields automatically</div>
+          <div className="ai-zone-sub">Upload a project brochure or factsheet — AI will extract and fill in all available fields automatically</div>
         </div>
       </div>
       <div className="ai-zone-body">
@@ -2120,7 +2083,7 @@ function AIPDFWidget({ onAutofill }) {
 
         {file && step !== "loading" && (
           <button className="ai-parse-btn" onClick={runParse} disabled={step==="loading"}>
-            <span>🤖</span> Extract &amp; Auto-fill with Claude AI
+            <span>✨</span> Extract & Auto-fill with AI
           </button>
         )}
 
