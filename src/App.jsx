@@ -1089,11 +1089,20 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .ai-step-txt.active{color:var(--a-gold);}
 .ai-step-txt.wait{color:var(--a-muted);}
 .ai-result-bar{display:flex;align-items:flex-start;flex-direction:column;gap:.4rem;margin-top:.75rem;padding:.7rem 1rem;background:rgba(45,158,107,.1);border:1px solid rgba(45,158,107,.25);}
+.ai-result-bar.fallback{background:rgba(82,137,173,.1);border:1px solid rgba(82,137,173,.25);}
+.ai-result-bar.fallback .ai-result-txt{color:var(--a-gold);}
+.ai-result-bar.fallback .ai-field-tag{background:rgba(82,137,173,.15);border-color:rgba(82,137,173,.25);color:var(--a-gold);}
 .ai-result-txt{font-size:.75rem;color:#2d9e6b;font-weight:600;}
 .ai-result-count{font-size:.7rem;color:var(--a-muted);}
 .ai-err-bar{display:flex;align-items:flex-start;gap:.6rem;margin-top:.75rem;padding:.7rem 1rem;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.25);font-size:.75rem;color:#e63946;line-height:1.5;}
 .ai-filled-fields{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem;}
 .ai-field-tag{background:rgba(45,158,107,.15);border:1px solid rgba(45,158,107,.2);color:#2d9e6b;font-size:.62rem;padding:.12rem .45rem;}
+.ai-btn-row{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;}
+.ai-btn-row .ai-parse-btn{flex:1;margin-top:0;}
+.ai-fallback-btn{flex:1;background:transparent;color:var(--a-text);border:1px solid var(--a-border);padding:.72rem;font-family:var(--sans);font-size:.76rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+.ai-fallback-btn:hover{border-color:var(--a-gold);color:var(--a-gold);}
+.ai-fallback-btn:disabled{opacity:.45;cursor:not-allowed;}
+.ai-progress-hd{font-size:.72rem;color:var(--a-gold);font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem;}
 
 .del-modal{background:var(--a-surface);border:1px solid var(--a-border);width:100%;max-width:420px;padding:2rem;animation:slideUp .2s ease;}
 .del-ico{font-size:2.5rem;margin-bottom:1rem;text-align:center;}
@@ -1940,6 +1949,121 @@ function UnitTypeEditor({unitTypes, onChange}){
   );
 }
 
+/* ═══ PDF.js TEXT-BASED FALLBACK PARSER ═══ */
+async function loadPdfJs() {
+  if (window.pdfjsLib) return window.pdfjsLib;
+  // Use pdf.js 3.x UMD build for maximum browser compatibility
+  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+  const lib = window.pdfjsLib;
+  if (!lib) throw new Error("Failed to load PDF.js library");
+  lib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  return lib;
+}
+
+async function extractPdfText(file) {
+  const pdfjsLib = await loadPdfJs();
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  const pages = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const tc = await page.getTextContent();
+    pages.push(tc.items.map(it => it.str).join(" "));
+  }
+  return pages.join("\n");
+}
+
+function parsePdfTextToFields(text) {
+  const result = {};
+  const t = text.replace(/\s+/g, " ");
+
+  // Helper: first regex match
+  const m = (regex) => { const r = t.match(regex); return r ? r[1].trim() : null; };
+  const mi = (regex) => { const r = t.match(regex); return r ? parseInt(r[1].replace(/,/g,""),10) : null; };
+
+  // Project name — typically the largest/first prominent text; try common patterns
+  result.name = m(/(?:project\s*name|nama\s*projek)[:\s–-]*([^\n|·•,]{3,80})/i)
+    || m(/^([A-Z][A-Za-z0-9 &'@.()-]{4,60})\s/);
+  result.developer = m(/(?:developer|developed\s*by|pemaju)[:\s–-]*([^\n|·•]{3,80})/i);
+  result.location = m(/(?:location|lokasi|address|alamat)[:\s–-]*([^\n|·•]{5,120})/i);
+
+  // Type
+  const typeMap = {"condominium":"Condominium","condo":"Condominium","semi-d":"Semi-Detached","semi detached":"Semi-Detached","semi-detached":"Semi-Detached","serviced apartment":"Serviced Apartment","serviced residence":"Serviced Apartment","shophouse":"Shophouse","shop house":"Shophouse","terrace":"Terrace House","terraced":"Terrace House","townhouse":"Terrace House","soho":"SoHo / Office","sovo":"SoHo / Office","office":"SoHo / Office","bungalow":"Bungalow","duplex":"Duplex"};
+  const tl = t.toLowerCase();
+  for (const [kw, val] of Object.entries(typeMap)) { if (tl.includes(kw)) { result.type = val; break; } }
+
+  // Tenure
+  if (/freehold/i.test(t)) result.tenure = "Freehold";
+  else if (/leasehold/i.test(t)) result.tenure = "Leasehold";
+
+  // Status
+  if (/completed|siap/i.test(t)) result.status = "Completed";
+  else if (/under\s*construction|sedang\s*dibina/i.test(t)) result.status = "Under Construction";
+  else if (/new\s*launch|pelancaran\s*baru/i.test(t)) result.status = "New Launch";
+  else if (/sold\s*out|habis\s*dijual/i.test(t)) result.status = "Sold Out";
+
+  result.completion = m(/(?:completion|expected\s*completion|est\.?\s*completion|siap)[:\s–-]*(Q[1-4]\s*\d{4}|\d{4})/i);
+  result.landSize = m(/(?:land\s*(?:area|size)|keluasan\s*tanah)[:\s–-]*([\d.,]+\s*(?:acres?|hectares?|sq\s*ft|sf))/i);
+  result.constructionStage = m(/(?:construction\s*stage|progress)[:\s–-]*([^\n|·•]{3,100})/i);
+
+  // Numeric fields
+  result.totalUnits = mi(/(?:total\s*units?|jumlah\s*unit)[:\s–-]*([\d,]+)/i);
+  result.floors = mi(/(?:total\s*(?:floors?|storeys?|levels?)|tingkat)[:\s–-]*([\d,]+)/i);
+  result.totalBlocks = mi(/(?:total\s*(?:blocks?|towers?))[:\s–-]*([\d,]+)/i);
+
+  // Size range
+  const szMatch = t.match(/(?:built[\s-]*up|size|keluasan)[:\s–-]*([\d,]+)\s*(?:[-–to]+)\s*([\d,]+)\s*(?:sq\s*ft|sf)/i);
+  if (szMatch) result.sizeSqft = `${szMatch[1].replace(/,/g,"")}-${szMatch[2].replace(/,/g,"")}`;
+  else { const szSingle = m(/(?:built[\s-]*up|size|keluasan)[:\s–-]*([\d,]+\s*(?:sq\s*ft|sf))/i); if(szSingle) result.sizeSqft = szSingle; }
+
+  // Bedrooms / bathrooms
+  const bedMatch = t.match(/([\d,]+)\s*(?:[-–to]+)\s*([\d,]+)\s*(?:bed(?:room)?s?)/i);
+  if (bedMatch) result.bedrooms = `${bedMatch[1]}, ${bedMatch[2]}`;
+  else { const b = m(/(\d+)\s*(?:bed(?:room)?s?)/i); if(b) result.bedrooms = b; }
+  const bathMatch = t.match(/([\d,]+)\s*(?:[-–to]+)\s*([\d,]+)\s*(?:bath(?:room)?s?)/i);
+  if (bathMatch) result.bathrooms = `${bathMatch[1]}, ${bathMatch[2]}`;
+  else { const b = m(/(\d+)\s*(?:bath(?:room)?s?)/i); if(b) result.bathrooms = b; }
+
+  // Pricing
+  const priceAll = [...t.matchAll(/RM\s*([\d,]+(?:\.\d+)?(?:\s*(?:mil(?:lion)?|k))?)/gi)].map(x => {
+    let v = x[1].replace(/,/g,"").trim();
+    if (/mil/i.test(v)) v = parseFloat(v) * 1000000;
+    else if (/k$/i.test(v)) v = parseFloat(v) * 1000;
+    else v = parseFloat(v);
+    return isNaN(v) ? 0 : v;
+  }).filter(v => v >= 50000 && v <= 50000000).sort((a,b) => a-b);
+  if (priceAll.length >= 2) { result.priceFrom = priceAll[0]; result.priceTo = priceAll[priceAll.length-1]; }
+  else if (priceAll.length === 1) { result.priceFrom = priceAll[0]; }
+
+  // Parking
+  result.numberOfCarParks = m(/(?:car\s*parks?|parking\s*(?:bays?|lots?))[:\s–-]*([\d,]+\s*(?:bays?|lots?|units?)?)/i);
+  result.carParkLevels = m(/(?:car\s*park\s*levels?|parking\s*levels?)[:\s–-]*([^\n|·•]{2,60})/i);
+  result.parkingNotes = m(/(?:parking\s*notes?|parking\s*info)[:\s–-]*([^\n|·•]{3,120})/i);
+  result.numberOfLifts = m(/(?:lifts?|elevators?)[:\s–-]*([\d]+[^\n|·•]{0,60})/i);
+
+  // Maintenance
+  result.maintenanceFee = m(/(?:maintenance\s*fee|service\s*charge|caj\s*penyelenggaraan)[:\s–-]*(RM[^\n|·•]{2,60})/i);
+  result.sinkingFund = m(/(?:sinking\s*fund|tabung\s*penjelas)[:\s–-]*(RM[^\n|·•]{2,60})/i);
+
+  // Facilities & highlights — grab comma / bullet lists after keywords
+  const facMatch = t.match(/(?:facilities|kemudahan)[:\s–-]*([^\n]{10,400})/i);
+  if (facMatch) result.facilities = facMatch[1].replace(/[•·|]+/g,",").trim();
+  const hiMatch = t.match(/(?:highlights?|ciri[- ]?ciri)[:\s–-]*([^\n]{10,400})/i);
+  if (hiMatch) result.highlights = hiMatch[1].replace(/[•·|]+/g,",").trim();
+
+  result.showroom = m(/(?:show\s*room|gallery|galeri)[:\s–-]*([^\n|·•]{3,120})/i);
+  result.upgrades = m(/(?:upgrades?|finishes|specifications?)[:\s–-]*([^\n]{10,300})/i);
+  result.description = m(/(?:description|about\s*the\s*project|overview)[:\s–-]*([^\n]{15,500})/i);
+
+  result.residentialStartLevel = m(/(?:residential\s*(?:start|from)\s*level)[:\s–-]*([^\n|·•]{2,40})/i);
+  result.unitsBreakdown = m(/(?:units?\s*breakdown|bumi(?:putera)?\s*quota)[:\s–-]*([^\n|·•]{3,80})/i);
+  result.unitsPerTower = m(/(?:units?\s*per\s*tower)[:\s–-]*([^\n|·•]{3,80})/i);
+
+  // Clean nulls
+  for (const k of Object.keys(result)) { if (result[k] === null || result[k] === undefined) delete result[k]; }
+  return result;
+}
+
 /* ═══ AI PDF PARSER ═══ */
 async function parsePDFWithAI(base64Data) {
   const response = await fetch("/api/parse-pdf", {
@@ -1966,11 +2090,12 @@ function fileToBase64(file) {
 /* ═══ AI PDF UPLOAD WIDGET ═══ */
 function AIPDFWidget({ onAutofill }) {
   const [file, setFile] = useState(null);
-  const [step, setStep] = useState("idle"); // idle | loading | done | error
+  const [step, setStep] = useState("idle"); // idle | loading | done | error | fallback-loading | fallback-done
   const [progress, setProgress] = useState(0); // 0-3
   const [filledFields, setFilledFields] = useState([]);
   const [errMsg, setErrMsg] = useState("");
   const [dragOver, setDragOver] = useState(false);
+  const [usedFallback, setUsedFallback] = useState(false);
 
   const STEPS = [
     "Reading PDF document…",
@@ -1979,10 +2104,17 @@ function AIPDFWidget({ onAutofill }) {
     "Filling in form fields…",
   ];
 
+  const FALLBACK_STEPS = [
+    "Loading PDF reader…",
+    "Extracting text from pages…",
+    "Matching fields with patterns…",
+    "Filling in form fields…",
+  ];
+
   const handleFile = f => {
     if (!f || f.type !== "application/pdf") { setErrMsg("Please upload a PDF file."); return; }
     if (f.size > 20 * 1024 * 1024) { setErrMsg("File too large (max 20 MB)."); return; }
-    setFile(f); setErrMsg(""); setStep("idle"); setFilledFields([]);
+    setFile(f); setErrMsg(""); setStep("idle"); setFilledFields([]); setUsedFallback(false);
   };
 
   const handleDrop = e => {
@@ -1991,9 +2123,66 @@ function AIPDFWidget({ onAutofill }) {
     handleFile(f);
   };
 
+  // Shared: map result object → form patch + filled list
+  const applyResult = (result) => {
+    const filled = [];
+    const formPatch = {};
+    const FIELD_LABELS = {
+      name:"Project Name", developer:"Developer", location:"Location", type:"Property Type",
+      status:"Status", completion:"Completion", tenure:"Tenure", landSize:"Land Size",
+      constructionStage:"Construction Stage", totalBlocks:"Total Blocks", floors:"Total Floors",
+      totalUnits:"Total Units", residentialStartLevel:"Residential Start Level",
+      unitsBreakdown:"Units Breakdown", unitsPerTower:"Units per Tower",
+      bedrooms:"Bedrooms", bathrooms:"Bathrooms", sizeSqft:"Size (sqft)",
+      carParkLevels:"Car Park Levels", numberOfCarParks:"No. of Car Parks",
+      parkingNotes:"Parking Notes", numberOfLifts:"No. of Lifts",
+      priceFrom:"Price From", priceTo:"Price To",
+      maintenanceFee:"Maintenance Fee", sinkingFund:"Sinking Fund",
+      showroom:"Showroom", scaleModel:"Scale Model",
+      description:"Description", highlights:"Highlights", facilities:"Facilities",
+      upgrades:"Upgrades",
+    };
+    for (const [k, label] of Object.entries(FIELD_LABELS)) {
+      const v = result[k];
+      if (v !== null && v !== undefined && v !== "") {
+        formPatch[k] = Array.isArray(v) ? v.join(", ") : String(v);
+        filled.push(label);
+      }
+    }
+    if (Array.isArray(result.totalFloorsPerTower) && result.totalFloorsPerTower.length) {
+      formPatch.totalFloorsPerTower = result.totalFloorsPerTower.join(", ");
+      filled.push("Floors per Tower");
+    }
+    const unitTypes = Array.isArray(result.unitTypes) ? result.unitTypes : [];
+    return { formPatch, filled, unitTypes };
+  };
+
+  // Fallback: pdf.js text extraction + regex matching (runs client-side, no API needed)
+  const runFallbackParse = async () => {
+    if (!file) return;
+    setStep("fallback-loading"); setProgress(0); setErrMsg(""); setFilledFields([]); setUsedFallback(true);
+    try {
+      setProgress(0);
+      const text = await extractPdfText(file);
+      setProgress(1);
+      if (!text || text.trim().length < 20) throw new Error("Could not extract readable text from this PDF.");
+      setProgress(2);
+      const result = parsePdfTextToFields(text);
+      setProgress(3);
+      const { formPatch, filled, unitTypes } = applyResult(result);
+      setFilledFields(filled);
+      setStep(filled.length > 0 ? "fallback-done" : "error");
+      if (filled.length === 0) { setErrMsg("No property fields could be detected from this PDF."); return; }
+      onAutofill(formPatch, unitTypes);
+    } catch (e) {
+      setErrMsg(e.message || "Basic PDF reader failed. Please fill manually.");
+      setStep("error");
+    }
+  };
+
   const runParse = async () => {
     if (!file) return;
-    setStep("loading"); setProgress(0); setErrMsg(""); setFilledFields([]);
+    setStep("loading"); setProgress(0); setErrMsg(""); setFilledFields([]); setUsedFallback(false);
     try {
       setProgress(0);
       const b64 = await fileToBase64(file);
@@ -2001,49 +2190,40 @@ function AIPDFWidget({ onAutofill }) {
       const result = await parsePDFWithAI(b64);
       setProgress(2);
 
-      // Map result → form fields
-      const filled = [];
-      const formPatch = {};
-      const FIELD_LABELS = {
-        name:"Project Name", developer:"Developer", location:"Location", type:"Property Type",
-        status:"Status", completion:"Completion", tenure:"Tenure", landSize:"Land Size",
-        constructionStage:"Construction Stage", totalBlocks:"Total Blocks", floors:"Total Floors",
-        totalUnits:"Total Units", residentialStartLevel:"Residential Start Level",
-        unitsBreakdown:"Units Breakdown", unitsPerTower:"Units per Tower",
-        bedrooms:"Bedrooms", bathrooms:"Bathrooms", sizeSqft:"Size (sqft)",
-        carParkLevels:"Car Park Levels", numberOfCarParks:"No. of Car Parks",
-        parkingNotes:"Parking Notes", numberOfLifts:"No. of Lifts",
-        priceFrom:"Price From", priceTo:"Price To",
-        maintenanceFee:"Maintenance Fee", sinkingFund:"Sinking Fund",
-        showroom:"Showroom", scaleModel:"Scale Model",
-        description:"Description", highlights:"Highlights", facilities:"Facilities",
-        upgrades:"Upgrades",
-      };
-
-      for (const [k, label] of Object.entries(FIELD_LABELS)) {
-        const v = result[k];
-        if (v !== null && v !== undefined && v !== "" ) {
-          formPatch[k] = Array.isArray(v) ? v.join(", ") : String(v);
-          filled.push(label);
-        }
-      }
-      // totalFloorsPerTower (array → comma string)
-      if (Array.isArray(result.totalFloorsPerTower) && result.totalFloorsPerTower.length) {
-        formPatch.totalFloorsPerTower = result.totalFloorsPerTower.join(", ");
-        filled.push("Floors per Tower");
-      }
+      const { formPatch, filled, unitTypes } = applyResult(result);
 
       setProgress(3);
       setFilledFields(filled);
       setStep("done");
 
-      // unitTypes comes back as array of objects — pass separately
-      const unitTypes = Array.isArray(result.unitTypes) ? result.unitTypes : [];
       onAutofill(formPatch, unitTypes);
 
     } catch (e) {
-      setErrMsg(e.message || "Failed to parse PDF. Please try again or fill manually.");
-      setStep("error");
+      // AI failed → automatically try fallback
+      console.warn("AI PDF parse failed, trying basic PDF reader fallback:", e.message);
+      try {
+        setUsedFallback(true);
+        setStep("fallback-loading"); setProgress(0);
+        setErrMsg("");
+        const text = await extractPdfText(file);
+        setProgress(1);
+        if (!text || text.trim().length < 20) throw new Error("Could not extract readable text.");
+        setProgress(2);
+        const result = parsePdfTextToFields(text);
+        setProgress(3);
+        const { formPatch, filled, unitTypes } = applyResult(result);
+        setFilledFields(filled);
+        if (filled.length === 0) {
+          setErrMsg("AI failed and basic reader found no fields. Please fill manually.");
+          setStep("error");
+          return;
+        }
+        setStep("fallback-done");
+        onAutofill(formPatch, unitTypes);
+      } catch (e2) {
+        setErrMsg(e.message + " — Basic PDF reader also failed.");
+        setStep("error");
+      }
     }
   };
 
@@ -2077,20 +2257,42 @@ function AIPDFWidget({ onAutofill }) {
             <span className="ai-file-ico">📄</span>
             <span className="ai-file-name">{file.name}</span>
             <span className="ai-file-size">{fmt(file.size)}</span>
-            <button className="ai-file-rm" onClick={()=>{setFile(null);setStep("idle");setFilledFields([]);setErrMsg("");}}>✕</button>
+            <button className="ai-file-rm" onClick={()=>{setFile(null);setStep("idle");setFilledFields([]);setErrMsg("");setUsedFallback(false);}}>✕</button>
           </div>
         )}
 
-        {file && step !== "loading" && (
-          <button className="ai-parse-btn" onClick={runParse} disabled={step==="loading"}>
-            <span>✨</span> Extract & Auto-fill with AI
-          </button>
+        {file && step !== "loading" && step !== "fallback-loading" && (
+          <div className="ai-btn-row">
+            <button className="ai-parse-btn" onClick={runParse} disabled={step==="loading"||step==="fallback-loading"}>
+              <span>✨</span> Extract & Auto-fill with AI
+            </button>
+            <button className="ai-fallback-btn" onClick={runFallbackParse} disabled={step==="loading"||step==="fallback-loading"}>
+              <span>📖</span> Basic PDF Reader
+            </button>
+          </div>
         )}
 
         {step==="loading" && (
           <div className="ai-progress">
             <div className="ai-progress-steps">
               {STEPS.map((s,i)=>{
+                const state = i < progress ? "done" : i === progress ? "active" : "wait";
+                return (
+                  <div key={i} className="ai-step">
+                    <div className={`ai-step-dot ${state}`}>{state==="done"?"✓":state==="active"?"⟳":i+1}</div>
+                    <span className={`ai-step-txt ${state}`}>{s}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {step==="fallback-loading" && (
+          <div className="ai-progress">
+            <div className="ai-progress-hd">📖 Using Basic PDF Reader (fallback){usedFallback && errMsg ? "" : ""}</div>
+            <div className="ai-progress-steps">
+              {FALLBACK_STEPS.map((s,i)=>{
                 const state = i < progress ? "done" : i === progress ? "active" : "wait";
                 return (
                   <div key={i} className="ai-step">
@@ -2110,6 +2312,16 @@ function AIPDFWidget({ onAutofill }) {
               {filledFields.map(f=><span key={f} className="ai-field-tag">{f}</span>)}
             </div>
             <div className="ai-result-count">Review all tabs and adjust any values as needed.</div>
+          </div>
+        )}
+
+        {step==="fallback-done" && filledFields.length > 0 && (
+          <div className="ai-result-bar fallback">
+            <div className="ai-result-txt">📖 Basic PDF Reader filled {filledFields.length} field{filledFields.length!==1?"s":""}{usedFallback ? " (AI was unavailable)" : ""}</div>
+            <div className="ai-filled-fields">
+              {filledFields.map(f=><span key={f} className="ai-field-tag">{f}</span>)}
+            </div>
+            <div className="ai-result-count">Basic extraction uses text patterns — please review all values carefully.</div>
           </div>
         )}
 
