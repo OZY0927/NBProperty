@@ -1947,21 +1947,16 @@ function UnitTypeEditor({unitTypes, onChange}){
 
 const PDFJS_VERSION = "3.11.174";
 const PDFJS_CDN = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.min.js`;
+const PDFJS_WORKER_CDN = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
 
 async function ensurePdfJs() {
   if (window.pdfjsLib) return window.pdfjsLib;
-  // Fetch script text, then load as same-origin blob URL (bypasses CSP script-src)
-  const res = await fetch(PDFJS_CDN);
-  if (!res.ok) throw new Error("Could not download PDF.js library.");
-  const code = await res.text();
-  const blob = new Blob([code], { type: "application/javascript" });
-  const blobUrl = URL.createObjectURL(blob);
-  await loadScript(blobUrl);
-  URL.revokeObjectURL(blobUrl);
-  if (window.pdfjsLib) {
-    // Disable worker — run on main thread to avoid CSP issues with worker scripts
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "";
-  }
+  // Load PDF.js directly from CDN via a <script> tag — no blob URL needed,
+  // so this works on Vercel and any host with a standard CSP.
+  await loadScript(PDFJS_CDN);
+  if (!window.pdfjsLib) throw new Error("Could not load PDF.js library.");
+  // Point the worker at the matching CDN worker — also free, no API key required.
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_CDN;
   return window.pdfjsLib;
 }
 
