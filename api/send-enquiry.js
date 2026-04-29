@@ -1,69 +1,57 @@
 // Vercel Serverless Function — POST /api/send-enquiry
-// Sends enquiry email from system sender to admin receiver using SMTP via nodemailer
+// Sends enquiry emails using SendGrid
+// Set SENDGRID_API_KEY and optionally SENDGRID_SENDER in environment variables
 
-import nodemailer from 'nodemailer';
+import sendgrid from '@sendgrid/mail';
 
-const SYSTEM_SENDER = 'leehyeongjun0927@gmail.com';
-const ADMIN_RECEIVER = 'ozhengyee@gmail.com';
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY || '');
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    return res.status(200).end();
-  }
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Expect SMTP config in env: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-  if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
-    console.error('SMTP config missing');
-    return res.status(500).json({ error: 'SMTP configuration not set on server' });
+  const apiKey = process.env.SENDGRID_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'SENDGRID_API_KEY not configured' });
   }
 
+  const { projectName, name, email, phone } = req.body || {};
+  if (!name || !projectName) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const sender = process.env.SENDGRID_SENDER || 'leehyeongjun0927@gmail.com';
+  const recipient = process.env.ENQUIRY_RECIPIENT || 'ozhengyee@gmail.com';
+
+  const subject = `Register Interest — ${projectName}`;
+  const text = `New enquiry received from NB Property website.
+
+Project: ${projectName}
+Name: ${name}
+Email: ${email || 'N/A'}
+Phone: ${phone || 'N/A'}
+
+Sent via NB Property website.
+`;
+
+  const msg = {
+    to: recipient,
+    from: sender,
+    subject,
+    text,
+  };
+
   try {
-    const { project, name, phone, message } = req.body || {};
-
-    if (!name || !phone) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: Number(SMTP_PORT),
-      secure: Number(SMTP_PORT) === 465, // true for 465, false for other ports
-      auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS,
-      },
-    });
-
-    const subject = `New enquiry — ${project || 'Website Enquiry'}`;
-    const html = `
-      <p>You have received a new enquiry via the website.</p>
-      <p><strong>Project:</strong> ${project || '—'}</p>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Phone:</strong> ${phone}</p>
-      <p><strong>Message:</strong><br/>${message ? message.replace(/\n/g, '<br/>') : '—'}</p>
-      <p>Sent via NB Property (system sender).</p>
-    `;
-
-    const mailOptions = {
-      from: SYSTEM_SENDER,
-      to: ADMIN_RECEIVER,
-      subject,
-      html,
-    };
-
-    await transporter.sendMail(mailOptions);
-
+    await sendgrid.send(msg);
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error('send-enquiry error:', err);
-    return res.status(500).json({ error: err.message || 'Failed to send enquiry' });
+    console.error('send-enquiry error:', err?.response?.body || err.message || err);
+    return res.status(502).json({ error: 'Failed to send email' });
   }
 }

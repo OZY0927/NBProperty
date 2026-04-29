@@ -1477,6 +1477,7 @@ function RegisterInterestModal({ project, settings, onClose }) {
   useModalEffect(onClose);
   const [mode, setMode]     = useState("form");  // "form" | "whatsapp" | "sent"
   const [name, setName]     = useState("");
+  const [email, setEmail]   = useState("");
   const [phone, setPhone]   = useState("");
   const [sending, setSending] = useState(false);
   const [formErr, setFormErr] = useState("");
@@ -1490,8 +1491,9 @@ function RegisterInterestModal({ project, settings, onClose }) {
   const waURL = `https://api.whatsapp.com/send?phone=${waPhone}&text=Hi%20${encodeURIComponent(waSender)},%20I%27m%20interested%20in%20your%20${waName}%20Please%20contact%20me,%20Thanks!`;
 
   const validate = () => {
-    if (!name.trim())            return "Please enter your name.";
-    if (!phone.trim())           return "Please enter your phone number.";
+    if (!name.trim())                         return "Please enter your name.";
+    if (!email.trim()||!email.includes("@"))  return "Please enter a valid email address.";
+    if (!phone.trim())                        return "Please enter your phone number.";
     return "";
   };
 
@@ -1502,25 +1504,45 @@ function RegisterInterestModal({ project, settings, onClose }) {
     setSending(true);
     trackEvent("inquiry_email", { projectName: projName });
 
+    // Send to server-side email endpoint
     try {
-      const res = await fetch('/api/send-enquiry', {
+      const resp = await fetch('/api/send-enquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ project: projName, name, phone, message: '' }),
+        body: JSON.stringify({ projectName: projName, name, email, phone }),
       });
 
-      if (!res.ok) {
-        const body = await res.json().catch(()=>({}));
-        throw new Error(body?.error || `API error ${res.status}`);
+      if (resp.ok) {
+        setTimeout(() => { setSending(false); setMode('sent'); }, 600);
+        return;
       }
 
-      setSending(false);
-      setMode('sent');
+      // If server returns non-OK, fall back to mailto/clipboard
+      console.error('send-enquiry failed', await resp.text());
     } catch (err) {
-      console.error('send-enquiry failed', err);
-      setSending(false);
-      setFormErr('Failed to send enquiry. Please try again later.');
+      console.error('send-enquiry error', err);
     }
+
+    // Fallback: open mailto or copy details to clipboard
+    const adminEmail = settings?.adminEmail || '';
+    const subject = encodeURIComponent(`Register Interest — ${projName}`);
+    const body = encodeURIComponent(
+      `New enquiry received from NB Property website.\n\n` +
+      `Project:  ${projName}\n` +
+      `Name:     ${name}\n` +
+      `Email:    ${email}\n` +
+      `Phone:    ${phone}\n\n` +
+      `Sent via NB Property website.`
+    );
+
+    if (adminEmail) {
+      window.open(`mailto:${adminEmail}?subject=${subject}&body=${body}`, '_blank');
+    } else {
+      const txt = `Project: ${projName}\nName: ${name}\nEmail: ${email}\nPhone: ${phone}`;
+      navigator.clipboard?.writeText(txt).catch(()=>{});
+    }
+
+    setTimeout(() => { setSending(false); setMode('sent'); }, 600);
   };
 
   return (
@@ -1543,7 +1565,9 @@ function RegisterInterestModal({ project, settings, onClose }) {
             <div className="ri-success-title">Enquiry Sent!</div>
             <p className="ri-success-sub">
               Thank you, <strong>{name}</strong>. Your interest in <strong>{projName}</strong> has been noted.<br/>
-              Our team will be in touch with you shortly.
+              {settings?.adminEmail
+                ? "Your email client has been opened — please send the pre-filled email to complete your enquiry."
+                : "Our team will be in touch with you shortly."}
             </p>
           </div>
         )}
@@ -1568,7 +1592,11 @@ function RegisterInterestModal({ project, settings, onClose }) {
                 <input className="ri-inp" type="text" placeholder="e.g. Ahmad bin Ibrahim"
                   value={name} onChange={e=>{setName(e.target.value);setFormErr("");}}/>
               </div>
-              {/* Email not required — system will send enquiry automatically */}
+              <div className="ri-field">
+                <label className="ri-label">Email Address</label>
+                <input className="ri-inp" type="email" placeholder="e.g. ahmad@email.com"
+                  value={email} onChange={e=>{setEmail(e.target.value);setFormErr("");}}/>
+              </div>
               <div className="ri-field">
                 <label className="ri-label">Phone Number</label>
                 <input className="ri-inp" type="tel" placeholder="e.g. 012-345 6789"
@@ -1577,7 +1605,11 @@ function RegisterInterestModal({ project, settings, onClose }) {
               <button className="ri-submit" onClick={handleSubmit} disabled={sending}>
                 {sending ? "Sending…" : "Submit Enquiry →"}
               </button>
-              
+              {!settings?.adminEmail && (
+                <div style={{fontSize:".68rem",color:"var(--muted)",marginTop:".65rem",textAlign:"center",lineHeight:1.5}}>
+                  ⚠ Admin email not configured. Set it in Admin → Settings to enable email delivery.
+                </div>
+              )}
             </div>
           )}
 
