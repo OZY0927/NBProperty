@@ -1,9 +1,12 @@
 // Vercel Serverless Function — POST /api/parse-pdf
-// Uses Groq API with Llama 3.2 90B Vision (completely free, unlimited RPM)
+// Uses Groq API with a text Llama model (free via Groq)
+// This implementation extracts text from PDF locally using `pdf-parse`
 // Set GROQ_API_KEY in Vercel Environment Variables
 // Get free key at: https://console.groq.com
 
-const GROQ_MODEL = "llama-3.2-90b-vision-preview";
+import pdfParse from 'pdf-parse';
+
+const GROQ_MODEL = "llama-3.1-70b-versatile";
 
 /**
  * Normalizes API response to extract values and mark low-confidence fields
@@ -126,8 +129,19 @@ export default async function handler(req, res) {
       return res.status(413).json({ error: "File too large" });
     }
 
-    const url = `https://api.groq.com/openai/v1/chat/completions`;
+    // Convert base64 PDF to Buffer and extract text using pdf-parse
+    let pdfText = "";
+    try {
+      const pdfBuffer = Buffer.from(base64Data, "base64");
+      const pdfData = await pdfParse(pdfBuffer);
+      pdfText = (pdfData && pdfData.text) ? String(pdfData.text) : "";
+    } catch (pdfErr) {
+      console.error("pdf-parse error:", pdfErr);
+      return res.status(500).json({ error: "Failed to parse PDF on server" });
+    }
 
+    // Call Groq text model with extracted PDF text
+    const url = `https://api.groq.com/openai/v1/chat/completions`;
     const groqRes = await fetch(url, {
       method: "POST",
       headers: {
@@ -137,25 +151,8 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: GROQ_MODEL,
         messages: [
-          {
-            role: "system",
-            content: SYSTEM_PROMPT,
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Extract structured property project data from this PDF:",
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: `data:application/pdf;base64,${base64Data}`,
-                },
-              },
-            ],
-          },
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: `Extract structured property project data from the following PDF text:\n\n${pdfText}` },
         ],
         temperature: 0.1,
         max_tokens: 4096,
