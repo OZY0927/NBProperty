@@ -1497,52 +1497,42 @@ function RegisterInterestModal({ project, settings, onClose }) {
     return "";
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const err = validate();
     if (err) { setFormErr(err); return; }
     setFormErr("");
     setSending(true);
     trackEvent("inquiry_email", { projectName: projName });
+    const adminEmail = settings?.adminEmail || "";
+    const subject    = encodeURIComponent(`Register Interest — ${projName}`);
+    const body       = encodeURIComponent(
+      `New enquiry received from NB Property website.
 
-    // Send to server-side email endpoint
-    try {
-      const resp = await fetch('/api/send-enquiry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectName: projName, name, email, phone }),
-      });
+` +
+      `Project:  ${projName}
+` +
+      `Name:     ${name}
+` +
+      `Email:    ${email}
+` +
+      `Phone:    ${phone}
 
-      if (resp.ok) {
-        setTimeout(() => { setSending(false); setMode('sent'); }, 600);
-        return;
-      }
-
-      // If server returns non-OK, fall back to mailto/clipboard
-      console.error('send-enquiry failed', await resp.text());
-    } catch (err) {
-      console.error('send-enquiry error', err);
-    }
-
-    // Fallback: open mailto or copy details to clipboard
-    const adminEmail = settings?.adminEmail || '';
-    const subject = encodeURIComponent(`Register Interest — ${projName}`);
-    const body = encodeURIComponent(
-      `New enquiry received from NB Property website.\n\n` +
-      `Project:  ${projName}\n` +
-      `Name:     ${name}\n` +
-      `Email:    ${email}\n` +
-      `Phone:    ${phone}\n\n` +
+` +
       `Sent via NB Property website.`
     );
 
     if (adminEmail) {
-      window.open(`mailto:${adminEmail}?subject=${subject}&body=${body}`, '_blank');
+      window.open(`mailto:${adminEmail}?subject=${subject}&body=${body}`, "_blank");
     } else {
-      const txt = `Project: ${projName}\nName: ${name}\nEmail: ${email}\nPhone: ${phone}`;
+      // Fallback: copy details
+      const txt = `Project: ${projName}
+Name: ${name}
+Email: ${email}
+Phone: ${phone}`;
       navigator.clipboard?.writeText(txt).catch(()=>{});
     }
 
-    setTimeout(() => { setSending(false); setMode('sent'); }, 600);
+    setTimeout(() => { setSending(false); setMode("sent"); }, 600);
   };
 
   return (
