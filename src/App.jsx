@@ -582,11 +582,11 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .det-title{font-size:1.35rem;}
   .det-tag-pill{margin-bottom:.3rem;}
   .det-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;}
-  .det-tab{flex:0 0 auto;padding:.85rem .8rem;font-size:.72rem;white-space:nowrap;}
+  .det-tab{flex:0 0 auto;padding:1rem .9rem;font-size:.75rem;white-space:nowrap;border-bottom-width:2px;}
   .gal-strip{display:none;}
 
   /* Overview tab */
-  .ov-body{padding:1.4rem 1rem;overflow-y:auto;}
+  .ov-body{padding:1.2rem .9rem;overflow-y:auto;}
   .ov-desc-row{grid-template-columns:1fr;}
   .spec-grid{grid-template-columns:1fr;}
   .spec-key{min-width:115px;}
@@ -632,6 +632,46 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .a-fab{display:flex;}
   .a-add-btn.desktop-only{display:none;}
   .a-toolbar.sticky{position:sticky;top:0;z-index:20;background:var(--a-bg);padding:.6rem 0;margin-bottom:.8rem;}
+}
+
+/* Mobile tweaks — focused improvements for listing detail modal */
+@media(max-width:480px){
+  /* Darker hero overlay for readability on mobile */
+  .det-hero-ov{background:linear-gradient(to top,rgba(0,0,0,.84) 0%,rgba(0,0,0,.22) 55%,transparent 100%);} 
+
+  /* Reduce hero nav visibility on very small screens to reduce clutter */
+  .det-hero-nav{display:none !important;}
+
+  /* Tighten hero content spacing */
+  .det-hc{left:.85rem;right:.85rem;bottom:.6rem;}
+  .det-title{font-size:1.05rem;line-height:1.05;margin-bottom:.25rem;}
+  .det-dv{font-size:.72rem;margin-bottom:.4rem;}
+
+  /* Make tabs easier to tap and clearly indicate active tab */
+  .det-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.15rem 0;}
+  .det-tab{flex:0 0 auto;padding:1rem .9rem;font-size:.78rem;border-bottom:3px solid transparent;font-weight:500;}
+  .det-tab.on{font-weight:700;border-bottom-color:var(--gold);}
+
+  /* Sticky bottom CTA for thumb reach */
+  .price-bar{position:sticky;bottom:0;z-index:230;padding:.85rem .9rem;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0));box-shadow:0 -6px 18px rgba(0,0,0,.12);}
+  .pb-btns{flex-direction:row;gap:.5rem;}
+  .pb-btn1{flex:1;background:var(--cta);min-height:50px;padding:.7rem;border-radius:8px;font-size:.95rem;font-weight:700;}
+  .pb-btn2{flex:0 0 auto;background:transparent;border:1px solid rgba(255,255,255,.18);min-height:50px;padding:.6rem .9rem;border-radius:8px;}
+
+  /* Compact content: use 2-column compact spec grid to reduce scrolling */
+  .ov-body{padding:.95rem .9rem;}
+  .spec-grid{grid-template-columns:repeat(2,1fr);gap:.8rem;margin-bottom:1rem;}
+  .spec-section{padding:.6rem;}
+  .spec-key{min-width:unset;font-size:.72rem;padding-top:0.2rem;}
+  .spec-val{font-size:.78rem;line-height:1.35;}
+
+  /* Unit types: convert to simple list style and reduce header height */
+  .ut-card{display:block;padding:.6rem;border-radius:8px;margin-bottom:.8rem;}
+  .ut-img-panel{height:120px;min-height:120px;}
+  .ut-info-panel{padding:.9rem 1rem;}
+  .ut-header{flex-direction:row;align-items:center;gap:.6rem;padding:0;margin-bottom:.4rem;}
+  .ut-name{font-size:1.05rem;}
+  .ut-price-badge{font-size:.95rem;padding:.25rem .6rem;}
 }
 
 /* ══════════════════════════════
@@ -978,29 +1018,6 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .ri-wa-title{font-family:var(--serif);font-size:1.3rem;color:var(--ink);margin-bottom:.4rem;}
 .ri-wa-sub{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1.4rem;}
 .ri-wa-btn{display:inline-flex;align-items:center;gap:.6rem;background:#25d366;color:#fff;border:none;padding:.85rem 2rem;font-family:var(--sans);font-size:.9rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:opacity .2s;border-radius:3px;}
-
-/* Mobile-specific tweaks: reduce project-info/dialog font sizes and shorten sticky bottom */
-@media(max-width:767px){
-  .price-bar{padding:.8rem 1rem;gap:.6rem;}
-  .pb-left .pb-lbl{font-size:.55rem;margin-bottom:.1rem;}
-  .pb-price{font-size:1.25rem;}
-  .pb-price span{font-size:.78rem;}
-  .pb-btn1,.pb-btn2{padding:.5rem .9rem;font-size:.72rem;}
-  .pb-btns{gap:.4rem;}
-
-  /* Project info dialog / overview reductions */
-  .det-title{font-size:1.4rem;}
-  .spec-sec-hd{font-size:.58rem;}
-  .spec-key{font-size:.66rem;}
-  .spec-val{font-size:.72rem;}
-  .det-desc-p{font-size:.76rem;}
-
-  /* Make sticky bottom bar shorter so middle content shows more */
-  .det-sticky-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;margin:0;border-top:1px solid var(--border);}
-  .det-sticky-bar .price-bar{padding:.7rem 1rem;}
-  /* ensure content above sticky bar is visible */
-  .det-content{padding-bottom:72px;}
-}
 .ri-wa-btn:hover{opacity:.88;}
 .ri-wa-btn svg{flex-shrink:0;}
 .ri-success{padding:2rem 1.6rem;text-align:center;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
