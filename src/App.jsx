@@ -730,26 +730,6 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 }
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.8rem;}
 
-/* Mobile-specific detail improvements */
-@media(max-width:768px){
-  .ov-desc-row-mobile{display:flex;flex-direction:column;gap:16px;margin-bottom:16px;}
-  .spec-section{padding:16px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.06);border:1px solid rgba(10,20,30,0.04);}
-  .spec-sec-hd{position:sticky;top:0;z-index:4;padding:12px 14px;border-radius:12px 12px 0 0;background:var(--ink);color:#fff;}
-  .det-desc-p{font-size:15px;line-height:1.6;color:var(--muted);text-align:left;white-space:normal;}
-  .hi-item{font-size:14px;line-height:1.6;}
-  .det-content{padding-bottom:96px;}
-  .price-bar.det-sticky-bar{position:sticky;bottom:0;z-index:60;padding:10px 14px;margin-top:12px;border-radius:12px 12px 0 0;box-shadow:0 -6px 20px rgba(0,0,0,0.06);}
-  .pb-btns{gap:8px;}
-  .pb-btn1,.pb-btn2{padding:.56rem .9rem;font-size:.78rem;min-height:44px;}
-  details.spec-section summary.spec-sec-hd{list-style:none;cursor:pointer;display:flex;align-items:center;gap:.55rem;}
-  details.spec-section summary::-webkit-details-marker{display:none;}
-}
-
-@media(max-width:480px){
-  .det-desc-p{font-size:15.5px;line-height:1.65;}
-  .det-content{padding-bottom:88px;}
-}
-
 .card{background:var(--card);border:1px solid var(--border);cursor:pointer;overflow:hidden;transition:transform .25s,box-shadow .25s;position:relative;}
 .card:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(0,0,0,.1);}
 .card.sel{outline:2.5px solid var(--gold);}
@@ -998,6 +978,29 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .ri-wa-title{font-family:var(--serif);font-size:1.3rem;color:var(--ink);margin-bottom:.4rem;}
 .ri-wa-sub{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1.4rem;}
 .ri-wa-btn{display:inline-flex;align-items:center;gap:.6rem;background:#25d366;color:#fff;border:none;padding:.85rem 2rem;font-family:var(--sans);font-size:.9rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:opacity .2s;border-radius:3px;}
+
+/* Mobile-specific tweaks: reduce project-info/dialog font sizes and shorten sticky bottom */
+@media(max-width:767px){
+  .price-bar{padding:.8rem 1rem;gap:.6rem;}
+  .pb-left .pb-lbl{font-size:.55rem;margin-bottom:.1rem;}
+  .pb-price{font-size:1.25rem;}
+  .pb-price span{font-size:.78rem;}
+  .pb-btn1,.pb-btn2{padding:.5rem .9rem;font-size:.72rem;}
+  .pb-btns{gap:.4rem;}
+
+  /* Project info dialog / overview reductions */
+  .det-title{font-size:1.4rem;}
+  .spec-sec-hd{font-size:.58rem;}
+  .spec-key{font-size:.66rem;}
+  .spec-val{font-size:.72rem;}
+  .det-desc-p{font-size:.76rem;}
+
+  /* Make sticky bottom bar shorter so middle content shows more */
+  .det-sticky-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;margin:0;border-top:1px solid var(--border);}
+  .det-sticky-bar .price-bar{padding:.7rem 1rem;}
+  /* ensure content above sticky bar is visible */
+  .det-content{padding-bottom:72px;}
+}
 .ri-wa-btn:hover{opacity:.88;}
 .ri-wa-btn svg{flex-shrink:0;}
 .ri-success{padding:2rem 1.6rem;text-align:center;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
@@ -1894,12 +1897,6 @@ Sent via NB Property website.`
 function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
   useModalEffect(onClose);
   const [activeImg, setActiveImg] = useState(0);
-  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
-  useEffect(()=>{
-    const onResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  },[]);
   const vt = p.visibleTabs || {};
   const ALL_DET_TABS = [
     { k:"overview", l:"📊 Project Info",  show: vt.overview  !== false },
@@ -1975,43 +1972,22 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
             <div className="ov-body">
               {/* Description + Highlights row — each independently gated */}
               {(sec("overview","description")||sec("overview","highlights"))&&(
-                isMobile ? (
-                  <div className="ov-desc-row-mobile" style={{display:"flex",flexDirection:"column",gap:"16px",marginBottom:"16px"}}>
-                    {sec("overview","description")&&(
-                      <details className="spec-section" open>
-                        <summary className="spec-sec-hd"><span>📝</span>Description</summary>
-                        <div style={{paddingTop:"8px"}}>
-                          <p className="det-desc-p">{p.description||"—"}</p>
-                        </div>
-                      </details>
-                    )}
-                    {sec("overview","highlights")&&(
-                      <details className="spec-section">
-                        <summary className="spec-sec-hd"><span>✨</span>Key Highlights</summary>
-                        <div className="hi-list" style={{padding:"12px"}}>
-                          {(p.highlights||[]).map(h=><div key={h} className="hi-item"><div className="hi-dot"/>{h}</div>)}
-                        </div>
-                      </details>
-                    )}
-                  </div>
-                ) : (
-                  <div className="ov-desc-row" style={{gridTemplateColumns:sec("overview","description")&&sec("overview","highlights")?"1.2fr 1fr":"1fr"}}>
-                    {sec("overview","description")&&(
-                      <div className="spec-section">
-                        <div className="spec-sec-hd"><span>📝</span>Description</div>
-                        <p className="det-desc-p">{p.description||"—"}</p>
+                <div className="ov-desc-row" style={{gridTemplateColumns:sec("overview","description")&&sec("overview","highlights")?"1.2fr 1fr":"1fr"}}>
+                  {sec("overview","description")&&(
+                    <div className="spec-section">
+                      <div className="spec-sec-hd"><span>📝</span>Description</div>
+                      <p className="det-desc-p">{p.description||"—"}</p>
+                    </div>
+                  )}
+                  {sec("overview","highlights")&&(
+                    <div className="spec-section">
+                      <div className="spec-sec-hd"><span>✨</span>Key Highlights</div>
+                      <div className="hi-list">
+                        {(p.highlights||[]).map(h=><div key={h} className="hi-item"><div className="hi-dot"/>{h}</div>)}
                       </div>
-                    )}
-                    {sec("overview","highlights")&&(
-                      <div className="spec-section">
-                        <div className="spec-sec-hd"><span>✨</span>Key Highlights</div>
-                        <div className="hi-list">
-                          {(p.highlights||[]).map(h=><div key={h} className="hi-item"><div className="hi-dot"/>{h}</div>)}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )
+                    </div>
+                  )}
+                </div>
               )}
               <div className="spec-grid">
                 {sec("overview","basicInfo")&&<SpecSection icon="🏢" title="Basic Project Info" rows={[["Project Name",p.name],["Location",p.location],["Developer",p.developer],["Property Type",p.type],["Land Size",p.landSize],["Construction Stage",p.constructionStage],["Completion Date",p.completion],["Tenure",p.tenure]]}/>}
