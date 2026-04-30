@@ -584,10 +584,8 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .det-title{font-size:1.2rem;line-height:1.15;}
   .det-tag-pill{margin-bottom:.25rem;font-size:.58rem;padding:.15rem .5rem;}
   .det-dv{font-size:.74rem;gap:.35rem;flex-wrap:wrap;}
-  /* Nav arrows: smaller on mobile for less visual clutter */
-  .det-hero-nav{width:30px;height:30px;font-size:.85rem;opacity:.6;}
-  .det-hero-nav.prev{left:.5rem;}
-  .det-hero-nav.next{right:.5rem;}
+  /* Nav arrows: hidden on mobile — use swipe + dots instead */
+  .det-hero-nav{display:none;}
   .det-hero-dots{bottom:.45rem;gap:.3rem;}
   .det-hero-dot{width:6px;height:6px;}
   /* Tabs: horizontal scroll with better tap targets + strong active */
@@ -631,15 +629,15 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .amenities-grid{gap:.85rem;}
   .amenity-item{padding:.4rem .75rem;font-size:.74rem;}
 
-  /* Bottom CTA — sticky, clean layout */
-  .price-bar{position:sticky;bottom:0;z-index:10;flex-direction:column;align-items:stretch;gap:.5rem;padding:.75rem 1rem;flex-wrap:nowrap;border-top:1px solid rgba(255,255,255,.12);box-shadow:0 -4px 16px rgba(0,0,0,.25);}
-  .pb-left{display:flex;align-items:baseline;gap:.5rem;min-width:0;}
-  .pb-left .pb-lbl{margin-bottom:0;font-size:.58rem;}
-  .pb-price{font-size:1.15rem;white-space:nowrap;}
-  .pb-price span{font-size:.68rem;}
-  .pb-btns{display:flex;flex-direction:row;gap:.5rem;}
-  .pb-btn1{flex:1.3;text-align:center;padding:.7rem .5rem;font-size:.74rem;min-height:44px;display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:2px;}
-  .pb-btn2{flex:1;text-align:center;padding:.7rem .5rem;font-size:.74rem;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:2px;}
+  /* Bottom CTA — sticky, compact layout (~35% smaller) */
+  .price-bar{position:sticky;bottom:0;z-index:10;flex-direction:row;align-items:center;gap:.4rem;padding:.45rem .75rem;flex-wrap:nowrap;border-top:1px solid rgba(255,255,255,.15);box-shadow:0 -2px 12px rgba(0,0,0,.2);background:rgba(24,41,56,.97);backdrop-filter:blur(8px);}
+  .pb-left{flex:0 0 auto;min-width:0;}
+  .pb-left .pb-lbl{margin-bottom:0;font-size:.5rem;opacity:.7;}
+  .pb-price{font-size:.95rem;white-space:nowrap;line-height:1.2;}
+  .pb-price span{font-size:.58rem;}
+  .pb-btns{display:flex;flex-direction:row;gap:.35rem;flex:1;justify-content:flex-end;}
+  .pb-btn1{text-align:center;padding:.42rem .7rem;font-size:.68rem;min-height:36px;display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:2px;white-space:nowrap;}
+  .pb-btn2{text-align:center;padding:.42rem .7rem;font-size:.68rem;min-height:36px;display:flex;align-items:center;justify-content:center;border-radius:2px;white-space:nowrap;}
 
   /* RI / VS modals */
   .ri-ov{padding:.75rem;}
@@ -758,12 +756,12 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .amenity-hd{padding:.45rem .7rem;font-size:.6rem;}
   .amenity-item{padding:.35rem .7rem;font-size:.72rem;}
 
-  /* Price bar — compact sticky */
-  .pb-price{font-size:1.05rem;}
-  .pb-price span{font-size:.62rem;}
-  .pb-left .pb-lbl{font-size:.54rem;}
-  .price-bar{padding:.65rem .75rem;gap:.4rem;}
-  .pb-btn1,.pb-btn2{padding:.6rem .4rem;font-size:.66rem;min-height:42px;}
+  /* Price bar — ultra-compact sticky */
+  .pb-price{font-size:.88rem;}
+  .pb-price span{font-size:.55rem;}
+  .pb-left .pb-lbl{font-size:.48rem;}
+  .price-bar{padding:.4rem .6rem;gap:.3rem;}
+  .pb-btn1,.pb-btn2{padding:.38rem .55rem;font-size:.62rem;min-height:34px;}
 
   /* RI / VS modals — full-screen */
   .ri-ov{padding:0;align-items:flex-end;}
@@ -864,6 +862,40 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .ctag2{background:var(--warm);border:1px solid var(--border);font-size:.62rem;padding:.12rem .38rem;color:var(--ink);}
 .add-more{text-align:center;padding:1.8rem;background:var(--warm);border:1px dashed var(--border);margin-top:1rem;}
 .add-more p{color:var(--muted);font-size:.84rem;margin-bottom:.7rem;}
+
+/* ═══ FULLSCREEN GALLERY LIGHTBOX ═══ */
+.lb-overlay{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.96);display:flex;flex-direction:column;animation:fadeIn .2s ease;touch-action:none;user-select:none;}
+.lb-header{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:linear-gradient(to bottom,rgba(0,0,0,.6),transparent);}
+.lb-counter{color:rgba(255,255,255,.8);font-family:var(--sans);font-size:.78rem;font-weight:500;letter-spacing:.04em;}
+.lb-close{width:36px;height:36px;background:rgba(255,255,255,.12);border:none;border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;backdrop-filter:blur(4px);}
+.lb-close:hover{background:rgba(255,255,255,.25);}
+.lb-body{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.lb-img-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;touch-action:pinch-zoom pan-x pan-y;}
+.lb-img-wrap img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .15s ease;will-change:transform;}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;backdrop-filter:blur(4px);}
+.lb-nav:hover{background:rgba(255,255,255,.22);}
+.lb-nav.prev{left:.75rem;}
+.lb-nav.next{right:.75rem;}
+.lb-dots{position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);display:flex;gap:.45rem;z-index:10;}
+.lb-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);border:none;padding:0;cursor:pointer;transition:all .18s;}
+.lb-dot.on{background:#fff;transform:scale(1.4);}
+@media(max-width:768px){
+  .lb-nav{width:36px;height:36px;font-size:1rem;opacity:.7;}
+  .lb-nav.prev{left:.4rem;}
+  .lb-nav.next{right:.4rem;}
+}
+@media(max-width:480px){
+  .lb-nav{display:none;}
+  .lb-header{padding:.6rem .75rem;}
+  .lb-close{width:32px;height:32px;font-size:.95rem;}
+  .lb-counter{font-size:.7rem;}
+}
+
+/* Gallery tap cue on hero */
+.det-hero-tap{position:absolute;top:.75rem;left:.75rem;z-index:9;display:flex;align-items:center;gap:.35rem;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);color:rgba(255,255,255,.85);font-family:var(--sans);font-size:.65rem;font-weight:500;letter-spacing:.04em;padding:.3rem .6rem;cursor:pointer;border:none;transition:background .15s;}
+.det-hero-tap:hover{background:rgba(0,0,0,.7);}
+.det-hero-tap svg{flex-shrink:0;opacity:.8;}
+@media(min-width:1024px){.det-hero-tap{display:none;}}
 
 /* ═══ DETAIL MODAL ═══ */
 .ov{position:fixed;inset:0;z-index:200;background:rgba(8,8,10,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;overflow:hidden;animation:fadeIn .22s ease;}
@@ -1925,11 +1957,76 @@ Sent via NB Property website.`
 }
 
 /* ═══════════════════════════════════════
+   FULLSCREEN GALLERY LIGHTBOX
+═══════════════════════════════════════ */
+function GalleryLightbox({images, startIndex=0, onClose}){
+  const [idx, setIdx] = useState(startIndex);
+  const touchRef = React.useRef({startX:0,startY:0,dist:0});
+
+  useEffect(()=>{
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = e => {
+      if(e.key==="Escape"){onClose();}
+      else if(e.key==="ArrowLeft"){setIdx(i=>(i-1+images.length)%images.length);}
+      else if(e.key==="ArrowRight"){setIdx(i=>(i+1)%images.length);}
+    };
+    document.addEventListener("keydown",onKey);
+    return ()=>{document.body.style.overflow=prev;document.removeEventListener("keydown",onKey);};
+  },[onClose,images.length]);
+
+  const onTouchStart = e => {
+    const t = e.touches[0];
+    touchRef.current = {startX:t.clientX, startY:t.clientY, dist:0};
+  };
+  const onTouchMove = e => {
+    const t = e.touches[0];
+    touchRef.current.dist = t.clientX - touchRef.current.startX;
+  };
+  const onTouchEnd = () => {
+    const {dist} = touchRef.current;
+    if(Math.abs(dist) > 50){
+      if(dist > 0) setIdx(i=>(i-1+images.length)%images.length);
+      else setIdx(i=>(i+1)%images.length);
+    }
+    touchRef.current.dist = 0;
+  };
+
+  return (
+    <div className="lb-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="lb-header">
+        <span className="lb-counter">{idx+1} / {images.length}</span>
+        <button className="lb-close" onClick={onClose}>✕</button>
+      </div>
+      <div className="lb-body"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {images.length>1&&<>
+          <button className="lb-nav prev" onClick={()=>setIdx(i=>(i-1+images.length)%images.length)} aria-label="Previous">‹</button>
+          <button className="lb-nav next" onClick={()=>setIdx(i=>(i+1)%images.length)} aria-label="Next">›</button>
+        </>}
+        <div className="lb-img-wrap">
+          <img src={images[idx]} alt={`Gallery ${idx+1}`} draggable={false} style={{touchAction:"pinch-zoom"}}/>
+        </div>
+      </div>
+      {images.length>1&&(
+        <div className="lb-dots">
+          {images.map((_,i)=><button key={i} className={`lb-dot${idx===i?" on":""}`} onClick={()=>setIdx(i)}/>)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
    DETAIL MODAL
 ═══════════════════════════════════════ */
 function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
   useModalEffect(onClose);
   const [activeImg, setActiveImg] = useState(0);
+  const [showLightbox, setShowLightbox] = useState(false);
   const vt = p.visibleTabs || {};
   const ALL_DET_TABS = [
     { k:"overview", l:"📊 Project Info",  show: vt.overview  !== false },
@@ -1964,18 +2061,23 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
         <div className="det-split">
           {/* ── LEFT: image + gallery ── */}
           <div className="det-left">
-            <div className="det-hero">
+            <div className="det-hero" style={{cursor:"pointer"}} onClick={()=>setShowLightbox(true)}>
               <img src={allImgs[activeImg]} alt={p.name}/>
               <div className="det-hero-ov"/>
+              {/* Tap-to-view gallery cue (mobile only via CSS) */}
+              <button className="det-hero-tap" onClick={e=>{e.stopPropagation();setShowLightbox(true);}}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v18"/><path d="M16 3v18"/></svg>
+                {allImgs.length} Photos
+              </button>
               <div className="det-hc">
                 <div className="det-tag-pill" style={{background:p.tagColor}}>{p.tag}</div>
                 <h2 className="det-title">{p.name}</h2>
                 <div className="det-dv"><IPin/>{p.developer}&nbsp;·&nbsp;<IPin/>{p.location}</div>
               </div>
               {allImgs.length>1&&<>
-                <button className="det-hero-nav prev" onClick={()=>setActiveImg(i=>(i-1+allImgs.length)%allImgs.length)} aria-label="Previous image">‹</button>
-                <button className="det-hero-nav next" onClick={()=>setActiveImg(i=>(i+1)%allImgs.length)} aria-label="Next image">›</button>
-                <div className="det-hero-dots">{allImgs.map((_,i)=><button key={i} className={`det-hero-dot${activeImg===i?" on":""}`} onClick={()=>setActiveImg(i)}/>)}</div>
+                <button className="det-hero-nav prev" onClick={e=>{e.stopPropagation();setActiveImg(i=>(i-1+allImgs.length)%allImgs.length);}} aria-label="Previous image">‹</button>
+                <button className="det-hero-nav next" onClick={e=>{e.stopPropagation();setActiveImg(i=>(i+1)%allImgs.length);}} aria-label="Next image">›</button>
+                <div className="det-hero-dots">{allImgs.map((_,i)=><button key={i} className={`det-hero-dot${activeImg===i?" on":""}`} onClick={e=>{e.stopPropagation();setActiveImg(i);}}/>)}</div>
               </>}
             </div>
             {allImgs.length>1&&(
@@ -2143,6 +2245,7 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
           </div>
         </div>
       </div>
+      {showLightbox && <GalleryLightbox images={allImgs} startIndex={activeImg} onClose={()=>setShowLightbox(false)}/>}
     </div>
   );
 }
