@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, migrateAnalytics, deleteAllAnalytics } from "./firebase/firestore";
+import COUNTRY_CODES from "./data/countryCodes";
 
 /* ═══════════════════════════════════════════════
    DATA  –  unitTypes is now an array of objects,
@@ -269,6 +270,8 @@ const DEFAULT_SETTINGS = {
   emailjsTemplateId:"",
   emailjsPublicKey: "",
 };
+
+// country codes are loaded from src/data/countryCodes.js
 const PROP_TYPES   = ["Condominium","Semi-Detached","Serviced Apartment","Shophouse","Terrace House","SoHo / Office","Bungalow","Duplex"];
 const STATUSES     = ["New Launch","Under Construction","Completed","Sold Out"];
 const TENURES      = ["Freehold","Leasehold"];
@@ -1472,6 +1475,18 @@ const IWhatsApp=()=>(
   </svg>
 );
 
+/* Inline compact country select (uses flags) */
+function InlineCountrySelect({ value, onChange }){
+  const selected = COUNTRY_CODES.find(c=>String(c.dial)===String(value)) || COUNTRY_CODES.find(c=>c.code==='MY');
+  return (
+    <select className="ri-inp" value={selected?.dial || "60"} onChange={e=>onChange(e.target.value)}>
+      {COUNTRY_CODES.map(c=> (
+        <option key={c.code} value={c.dial}>{`${c.flag} ${c.name} (+${c.dial})`}</option>
+      ))}
+    </select>
+  );
+}
+
 /* ═══ REGISTER INTEREST MODAL ═══ */
 function RegisterInterestModal({ project, settings, onClose }) {
   useModalEffect(onClose);
@@ -1596,8 +1611,7 @@ Phone: ${fullPhone}`;
               </div>
               <div className="ri-field">
                 <label className="ri-label">Country Code</label>
-                <input className="ri-inp" type="tel" placeholder="e.g. 60"
-                  value={phoneCountry} onChange={e=>{setPhoneCountry(e.target.value.replace(/[^0-9]/g, ''));setFormErr("");}}/>
+                <InlineCountrySelect value={phoneCountry} onChange={v=>{setPhoneCountry(String(v));setFormErr("");}} />
               </div>
               <div className="ri-field">
                 <label className="ri-label">Phone Number</label>
@@ -1798,8 +1812,7 @@ Sent via NB Property website.`
             </div>
             <div className="ri-field">
               <label className="ri-label">Country Code</label>
-              <input className="ri-inp" type="tel" placeholder="e.g. 60"
-                value={phoneCountry} onChange={e=>{setPhoneCountry(e.target.value.replace(/[^0-9]/g, ''));setFormErr("");}}/>
+              <InlineCountrySelect value={phoneCountry} onChange={v=>{setPhoneCountry(String(v));setFormErr("");}} />
             </div>
             <div className="ri-field">
               <label className="ri-label">Phone Number</label>
@@ -3242,8 +3255,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
             <div className="a-form-grid" style={{marginBottom:"1rem", marginTop:'.5rem'}}>
               <div className="set-field">
                 <label className="set-label">Default Country Code</label>
-                <input className="set-inp" type="tel" value={sett.countryCode || "60"} placeholder="e.g. 60"
-                  onChange={e=>setSF("countryCode", e.target.value.replace(/[^0-9]/g, ""))}/>
+                <InlineCountrySelect value={sett.countryCode || "60"} onChange={v=>setSF("countryCode", String(v))} />
                 <div className="set-note">Used to prefix mobile numbers in enquiry forms (no +)</div>
               </div>
             </div>
