@@ -577,67 +577,41 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   /* Detail modal */
   .ov{padding:.5rem;}
   .det{height:100svh;max-height:100svh;}
-  /* Hero: reduced height, stronger gradient overlay */
-  .det-hero{height:26vh;max-height:200px;flex-shrink:0;}
-  .det-hero-ov{background:linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.35) 45%,rgba(0,0,0,.12) 100%);}
-  .det-hc{left:.85rem;right:.85rem;bottom:.65rem;}
-  .det-title{font-size:1.2rem;line-height:1.15;}
-  .det-tag-pill{margin-bottom:.25rem;font-size:.58rem;padding:.15rem .5rem;}
-  .det-dv{font-size:.74rem;gap:.35rem;flex-wrap:wrap;}
-  /* Nav arrows: hidden on mobile — use swipe + dots instead */
-  .det-hero-nav{display:none;}
-  .det-hero-dots{bottom:.45rem;gap:.3rem;}
-  .det-hero-dot{width:6px;height:6px;}
-  /* Tabs: horizontal scroll with better tap targets + strong active */
-  .det-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;scrollbar-width:none;-ms-overflow-style:none;gap:0;}
-  .det-tabs::-webkit-scrollbar{display:none;}
-  .det-tab{flex:0 0 auto;padding:.75rem 1rem;font-size:.72rem;white-space:nowrap;min-height:44px;}
-  .det-tab.on{font-weight:700;border-bottom-width:3px;}
+  .det-hero{height:30vh;max-height:220px;flex-shrink:0;}
+  .det-hc{left:1rem;right:1rem;bottom:.75rem;}
+  .det-title{font-size:1.35rem;}
+  .det-tag-pill{margin-bottom:.3rem;}
+  .det-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;}
+  .det-tab{flex:0 0 auto;padding:.85rem .8rem;font-size:.72rem;white-space:nowrap;}
   .gal-strip{display:none;}
 
-  /* Overview tab — compact padding */
-  .ov-body{padding:1rem .85rem;overflow-y:auto;}
-  .ov-desc-row{grid-template-columns:1fr;gap:1rem;margin-bottom:1.2rem;}
-  .spec-grid{grid-template-columns:1fr;gap:.85rem;margin-bottom:1.2rem;}
-  .spec-key{min-width:110px;font-size:.71rem;}
-  .spec-val{font-size:.76rem;}
-  .spec-sec-hd{padding:.55rem .85rem;font-size:.6rem;}
-  .spec-row{padding:.45rem .85rem;}
-  .det-desc-p{padding:.75rem .85rem;font-size:.8rem;line-height:1.65;}
-  .hi-item{padding:.32rem 0;font-size:.76rem;}
-  .fac-chips{padding:.6rem .85rem;gap:.3rem;}
-  .fac-chip{font-size:.68rem;padding:.22rem .55rem;}
+  /* Overview tab */
+  .ov-body{padding:1.4rem 1rem;overflow-y:auto;}
+  .ov-desc-row{grid-template-columns:1fr;}
+  .spec-grid{grid-template-columns:1fr;}
+  .spec-key{min-width:115px;}
 
-  /* Layouts tab — compact */
-  .layouts-body{padding:.85rem .85rem;}
-  .layouts-intro{margin-bottom:1rem;font-size:.62rem;}
-  .ut-card{grid-template-columns:1fr !important;margin-bottom:1rem;}
-  .ut-img-panel{min-height:150px;height:150px;width:100%;}
-  .ut-info-panel{padding:1rem .85rem;width:100%;box-sizing:border-box;gap:.7rem;}
-  .ut-header{flex-direction:column;gap:.45rem;}
-  .ut-name{font-size:1.2rem;}
-  .ut-price-badge{align-self:flex-start;font-size:1rem;padding:.25rem .7rem;}
-  .ut-stats{gap:.35rem;margin-top:.5rem !important;}
-  .ut-stat{padding:.3rem .6rem;font-size:.72rem;}
-  .ut-desc{word-break:break-word;font-size:.78rem;padding:.6rem .85rem;line-height:1.6;}
-  .layouts-upgrades{margin-top:1.2rem;}
-  .lu-body{padding:.75rem .85rem;font-size:.78rem;line-height:1.6;}
+  /* Layouts tab */
+  .layouts-body{padding:1.2rem 1rem;}
+  .ut-card{grid-template-columns:1fr !important;}
+  .ut-img-panel{min-height:180px;height:180px;width:100%;}
+  .ut-info-panel{padding:1.2rem 1rem;width:100%;box-sizing:border-box;}
+  .ut-header{flex-direction:column;gap:.6rem;}
+  .ut-price-badge{align-self:flex-start;}
+  .ut-desc{word-break:break-word;}
 
-  /* Location tab — compact */
-  .loc-body{padding:1rem .85rem;}
-  .map-embed{height:220px;margin-bottom:1.2rem;}
-  .amenities-grid{gap:.85rem;}
-  .amenity-item{padding:.4rem .75rem;font-size:.74rem;}
+  /* Location tab */
+  .loc-body{padding:1.2rem 1rem;}
+  .map-embed{height:240px;}
 
-  /* Bottom CTA — sticky, compact layout (~35% smaller) */
-  .price-bar{position:sticky;bottom:0;z-index:10;flex-direction:row;align-items:center;gap:.4rem;padding:.45rem .75rem;flex-wrap:nowrap;border-top:1px solid rgba(255,255,255,.15);box-shadow:0 -2px 12px rgba(0,0,0,.2);background:rgba(24,41,56,.97);backdrop-filter:blur(8px);}
+  /* Price bar — mobile left-right */
+  .price-bar{flex-direction:row;align-items:center;gap:.75rem;padding:1rem 1.2rem;flex-wrap:nowrap;}
   .pb-left{flex:0 0 auto;min-width:0;}
-  .pb-left .pb-lbl{margin-bottom:0;font-size:.5rem;opacity:.7;}
-  .pb-price{font-size:.95rem;white-space:nowrap;line-height:1.2;}
-  .pb-price span{font-size:.58rem;}
-  .pb-btns{display:flex;flex-direction:row;gap:.35rem;flex:1;justify-content:flex-end;}
-  .pb-btn1{text-align:center;padding:.42rem .7rem;font-size:.68rem;min-height:36px;display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:2px;white-space:nowrap;}
-  .pb-btn2{text-align:center;padding:.42rem .7rem;font-size:.68rem;min-height:36px;display:flex;align-items:center;justify-content:center;border-radius:2px;white-space:nowrap;}
+  .pb-left .pb-lbl{margin-bottom:.1rem;}
+  .pb-price{font-size:1.3rem;white-space:nowrap;}
+  .pb-price span{font-size:.72rem;}
+  .pb-btns{display:flex;flex-direction:column;gap:.4rem;flex:1;min-width:0;}
+  .pb-btn1,.pb-btn2{width:100%;text-align:center;padding:.65rem .5rem;font-size:.72rem;min-height:44px;display:flex;align-items:center;justify-content:center;}
 
   /* RI / VS modals */
   .ri-ov{padding:.75rem;}
@@ -705,63 +679,35 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   /* Detail modal — full-screen */
   .ov{padding:0;}
   .det{height:100svh;max-height:100svh;border-radius:0;}
-  .det-hero{height:24vh;max-height:170px;min-height:130px;}
-  .det-hero-ov{background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.4) 40%,rgba(0,0,0,.15) 100%);}
-  .det-hc{left:.75rem;right:.75rem;bottom:.5rem;}
-  .det-title{font-size:1.05rem;line-height:1.15;}
-  .det-dv{font-size:.68rem;gap:.3rem;}
-  .det-tag-pill{font-size:.52rem;padding:.12rem .45rem;margin-bottom:.15rem;}
-  .det-dev{font-size:.72rem;}
-  /* Hide nav arrows on very small screens, rely on dots + swipe */
-  .det-hero-nav{display:none;}
-  .det-tab{padding:.7rem .6rem;font-size:.66rem;min-height:40px;}
+  .det-hero{height:28vh;max-height:180px;min-height:140px;}
+  .det-hc{left:.85rem;right:.85rem;bottom:.6rem;}
+  .det-title{font-size:1.15rem;}
+  .det-dv{font-size:.72rem;}
+  .det-tag-pill{font-size:.55rem;padding:.15rem .5rem;margin-bottom:.2rem;}
+  .det-dev{font-size:.76rem;}
+  .det-tab{padding:.8rem .65rem;font-size:.68rem;}
   .gal-strip{padding:.15rem;gap:.15rem;}
   .gal-t{height:40px;}
 
-  /* Spec rows — 2-column compact layout for key info */
-  .spec-grid{grid-template-columns:repeat(2,1fr);gap:.6rem;}
-  .spec-key{min-width:0;font-size:.66rem;}
-  .spec-val{font-size:.72rem;}
-  .spec-sec-hd{padding:.45rem .7rem;font-size:.56rem;}
-  .spec-row{padding:.38rem .7rem;gap:.35rem;}
-  .ov-body{padding:.75rem .7rem;}
-  .ov-desc-row{gap:.6rem;margin-bottom:.85rem;}
-  .det-desc-p{padding:.6rem .7rem;font-size:.76rem;line-height:1.6;}
-  .hi-item{padding:.28rem 0;font-size:.72rem;}
-  .hi-list{padding:.45rem .7rem;}
-  .fac-chips{padding:.45rem .7rem;gap:.25rem;}
-  .fac-chip{font-size:.64rem;padding:.18rem .45rem;}
+  /* Spec rows */
+  .spec-key{min-width:100px;font-size:.7rem;}
+  .spec-val{font-size:.74rem;}
 
-  /* Unit type card — simple list format */
-  .ut-card{grid-template-columns:1fr !important;margin-bottom:.75rem;}
-  .ut-img-panel{height:130px;min-height:130px;width:100%;}
-  .ut-img-label{font-size:.56rem;padding:.18rem .5rem;top:.5rem;left:.5rem;}
-  .ut-info-panel{padding:.75rem .7rem;width:100%;box-sizing:border-box;gap:.5rem;}
-  .ut-label-badge{font-size:.58rem;margin-bottom:.15rem;}
-  .ut-name{font-size:1.05rem;}
-  .ut-price-badge{font-size:.88rem;padding:.2rem .6rem;align-self:flex-start;}
-  .ut-header{flex-direction:column;gap:.35rem;}
-  .ut-stats{gap:.3rem;}
-  .ut-stat{padding:.25rem .5rem;font-size:.68rem;}
-  .ut-desc{word-break:break-word;font-size:.74rem;padding:.5rem .7rem;line-height:1.55;}
-  .layouts-body{padding:.7rem .7rem;}
-  .layouts-intro{margin-bottom:.75rem;font-size:.58rem;}
-  .layouts-upgrades{margin-top:.85rem;}
-  .lu-body{padding:.6rem .7rem;font-size:.74rem;}
+  /* Unit type card */
+  .ut-card{grid-template-columns:1fr !important;}
+  .ut-img-panel{height:160px;min-height:160px;width:100%;}
+  .ut-info-panel{padding:1rem .85rem;width:100%;box-sizing:border-box;}
+  .ut-name{font-size:1.2rem;}
+  .ut-price-badge{font-size:.95rem;align-self:flex-start;}
+  .ut-header{flex-direction:column;gap:.5rem;}
+  .ut-stats{gap:.35rem;}
+  .ut-desc{word-break:break-word;font-size:.78rem;}
 
-  /* Location tab — compact */
-  .loc-body{padding:.75rem .7rem;}
-  .map-embed{height:180px;margin-bottom:.85rem;}
-  .amenities-grid{gap:.6rem;}
-  .amenity-hd{padding:.45rem .7rem;font-size:.6rem;}
-  .amenity-item{padding:.35rem .7rem;font-size:.72rem;}
-
-  /* Price bar — ultra-compact sticky */
-  .pb-price{font-size:.88rem;}
-  .pb-price span{font-size:.55rem;}
-  .pb-left .pb-lbl{font-size:.48rem;}
-  .price-bar{padding:.4rem .6rem;gap:.3rem;}
-  .pb-btn1,.pb-btn2{padding:.38rem .55rem;font-size:.62rem;min-height:34px;}
+  /* Price bar */
+  .pb-price{font-size:1.15rem;}
+  .pb-price span{font-size:.65rem;}
+  .price-bar{padding:.85rem .9rem;gap:.6rem;}
+  .pb-btn1,.pb-btn2{padding:.6rem .4rem;font-size:.68rem;}
 
   /* RI / VS modals — full-screen */
   .ri-ov{padding:0;align-items:flex-end;}
@@ -862,40 +808,6 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .ctag2{background:var(--warm);border:1px solid var(--border);font-size:.62rem;padding:.12rem .38rem;color:var(--ink);}
 .add-more{text-align:center;padding:1.8rem;background:var(--warm);border:1px dashed var(--border);margin-top:1rem;}
 .add-more p{color:var(--muted);font-size:.84rem;margin-bottom:.7rem;}
-
-/* ═══ FULLSCREEN GALLERY LIGHTBOX ═══ */
-.lb-overlay{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.96);display:flex;flex-direction:column;animation:fadeIn .2s ease;touch-action:none;user-select:none;}
-.lb-header{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:linear-gradient(to bottom,rgba(0,0,0,.6),transparent);}
-.lb-counter{color:rgba(255,255,255,.8);font-family:var(--sans);font-size:.78rem;font-weight:500;letter-spacing:.04em;}
-.lb-close{width:36px;height:36px;background:rgba(255,255,255,.12);border:none;border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;backdrop-filter:blur(4px);}
-.lb-close:hover{background:rgba(255,255,255,.25);}
-.lb-body{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
-.lb-img-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;touch-action:pinch-zoom pan-x pan-y;}
-.lb-img-wrap img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .15s ease;will-change:transform;}
-.lb-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;backdrop-filter:blur(4px);}
-.lb-nav:hover{background:rgba(255,255,255,.22);}
-.lb-nav.prev{left:.75rem;}
-.lb-nav.next{right:.75rem;}
-.lb-dots{position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);display:flex;gap:.45rem;z-index:10;}
-.lb-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);border:none;padding:0;cursor:pointer;transition:all .18s;}
-.lb-dot.on{background:#fff;transform:scale(1.4);}
-@media(max-width:768px){
-  .lb-nav{width:36px;height:36px;font-size:1rem;opacity:.7;}
-  .lb-nav.prev{left:.4rem;}
-  .lb-nav.next{right:.4rem;}
-}
-@media(max-width:480px){
-  .lb-nav{display:none;}
-  .lb-header{padding:.6rem .75rem;}
-  .lb-close{width:32px;height:32px;font-size:.95rem;}
-  .lb-counter{font-size:.7rem;}
-}
-
-/* Gallery tap cue on hero */
-.det-hero-tap{position:absolute;top:.75rem;left:.75rem;z-index:9;display:flex;align-items:center;gap:.35rem;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);color:rgba(255,255,255,.85);font-family:var(--sans);font-size:.65rem;font-weight:500;letter-spacing:.04em;padding:.3rem .6rem;cursor:pointer;border:none;transition:background .15s;}
-.det-hero-tap:hover{background:rgba(0,0,0,.7);}
-.det-hero-tap svg{flex-shrink:0;opacity:.8;}
-@media(min-width:1024px){.det-hero-tap{display:none;}}
 
 /* ═══ DETAIL MODAL ═══ */
 .ov{position:fixed;inset:0;z-index:200;background:rgba(8,8,10,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;overflow:hidden;animation:fadeIn .22s ease;}
@@ -1957,76 +1869,11 @@ Sent via NB Property website.`
 }
 
 /* ═══════════════════════════════════════
-   FULLSCREEN GALLERY LIGHTBOX
-═══════════════════════════════════════ */
-function GalleryLightbox({images, startIndex=0, onClose}){
-  const [idx, setIdx] = useState(startIndex);
-  const touchRef = React.useRef({startX:0,startY:0,dist:0});
-
-  useEffect(()=>{
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = e => {
-      if(e.key==="Escape"){onClose();}
-      else if(e.key==="ArrowLeft"){setIdx(i=>(i-1+images.length)%images.length);}
-      else if(e.key==="ArrowRight"){setIdx(i=>(i+1)%images.length);}
-    };
-    document.addEventListener("keydown",onKey);
-    return ()=>{document.body.style.overflow=prev;document.removeEventListener("keydown",onKey);};
-  },[onClose,images.length]);
-
-  const onTouchStart = e => {
-    const t = e.touches[0];
-    touchRef.current = {startX:t.clientX, startY:t.clientY, dist:0};
-  };
-  const onTouchMove = e => {
-    const t = e.touches[0];
-    touchRef.current.dist = t.clientX - touchRef.current.startX;
-  };
-  const onTouchEnd = () => {
-    const {dist} = touchRef.current;
-    if(Math.abs(dist) > 50){
-      if(dist > 0) setIdx(i=>(i-1+images.length)%images.length);
-      else setIdx(i=>(i+1)%images.length);
-    }
-    touchRef.current.dist = 0;
-  };
-
-  return (
-    <div className="lb-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="lb-header">
-        <span className="lb-counter">{idx+1} / {images.length}</span>
-        <button className="lb-close" onClick={onClose}>✕</button>
-      </div>
-      <div className="lb-body"
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-      >
-        {images.length>1&&<>
-          <button className="lb-nav prev" onClick={()=>setIdx(i=>(i-1+images.length)%images.length)} aria-label="Previous">‹</button>
-          <button className="lb-nav next" onClick={()=>setIdx(i=>(i+1)%images.length)} aria-label="Next">›</button>
-        </>}
-        <div className="lb-img-wrap">
-          <img src={images[idx]} alt={`Gallery ${idx+1}`} draggable={false} style={{touchAction:"pinch-zoom"}}/>
-        </div>
-      </div>
-      {images.length>1&&(
-        <div className="lb-dots">
-          {images.map((_,i)=><button key={i} className={`lb-dot${idx===i?" on":""}`} onClick={()=>setIdx(i)}/>)}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════
    DETAIL MODAL
 ═══════════════════════════════════════ */
-function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
-  useModalEffect(onClose);
+function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom, pageMode=false}){
+  if(!pageMode) useModalEffect(onClose);
   const [activeImg, setActiveImg] = useState(0);
-  const [showLightbox, setShowLightbox] = useState(false);
   const vt = p.visibleTabs || {};
   const ALL_DET_TABS = [
     { k:"overview", l:"📊 Project Info",  show: vt.overview  !== false },
@@ -2054,30 +1901,24 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
     </div>
   );
 
-  return (
-    <div className="ov" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="det">
-        <button className="det-close" onClick={onClose}>✕</button>
+  const inner = (
+    <div className="det">
+      <button className="det-close" onClick={onClose}>✕</button>
         <div className="det-split">
           {/* ── LEFT: image + gallery ── */}
           <div className="det-left">
-            <div className="det-hero" style={{cursor:"pointer"}} onClick={()=>setShowLightbox(true)}>
+            <div className="det-hero">
               <img src={allImgs[activeImg]} alt={p.name}/>
               <div className="det-hero-ov"/>
-              {/* Tap-to-view gallery cue (mobile only via CSS) */}
-              <button className="det-hero-tap" onClick={e=>{e.stopPropagation();setShowLightbox(true);}}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v18"/><path d="M16 3v18"/></svg>
-                {allImgs.length} Photos
-              </button>
               <div className="det-hc">
                 <div className="det-tag-pill" style={{background:p.tagColor}}>{p.tag}</div>
                 <h2 className="det-title">{p.name}</h2>
                 <div className="det-dv"><IPin/>{p.developer}&nbsp;·&nbsp;<IPin/>{p.location}</div>
               </div>
               {allImgs.length>1&&<>
-                <button className="det-hero-nav prev" onClick={e=>{e.stopPropagation();setActiveImg(i=>(i-1+allImgs.length)%allImgs.length);}} aria-label="Previous image">‹</button>
-                <button className="det-hero-nav next" onClick={e=>{e.stopPropagation();setActiveImg(i=>(i+1)%allImgs.length);}} aria-label="Next image">›</button>
-                <div className="det-hero-dots">{allImgs.map((_,i)=><button key={i} className={`det-hero-dot${activeImg===i?" on":""}`} onClick={e=>{e.stopPropagation();setActiveImg(i);}}/>)}</div>
+                <button className="det-hero-nav prev" onClick={()=>setActiveImg(i=>(i-1+allImgs.length)%allImgs.length)} aria-label="Previous image">‹</button>
+                <button className="det-hero-nav next" onClick={()=>setActiveImg(i=>(i+1)%allImgs.length)} aria-label="Next image">›</button>
+                <div className="det-hero-dots">{allImgs.map((_,i)=><button key={i} className={`det-hero-dot${activeImg===i?" on":""}`} onClick={()=>setActiveImg(i)}/>)}</div>
               </>}
             </div>
             {allImgs.length>1&&(
@@ -2245,7 +2086,110 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom}){
           </div>
         </div>
       </div>
-      {showLightbox && <GalleryLightbox images={allImgs} startIndex={activeImg} onClose={()=>setShowLightbox(false)}/>}
+  );
+
+  if(pageMode){
+    return (<div style={{padding:"1.5rem 1rem",minHeight:"100vh",background:"var(--parchment)"}}>{inner}</div>);
+  }
+
+  return (
+    <div className="ov" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      {inner}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
+   PROJECT PAGE (mobile-first)
+═══════════════════════════════════════ */
+function ProjectPage({p, onClose, onRegisterInterest, onVisitShowroom}){
+  const [activeImg, setActiveImg] = useState(0);
+  const [detTab, setDetTab] = useState('overview');
+  const allImgs = [p.image,...(p.gallery||[])];
+  const scPosRef = React.useRef(0);
+
+  // preserve scroll position when navigating back
+  useEffect(()=>{
+    scPosRef.current = window.scrollY || 0;
+    window.scrollTo({top:0,behavior:'auto'});
+    return ()=>{ try{ window.scrollTo({top: scPosRef.current, behavior:'auto'}); }catch(e){} };
+  },[]);
+
+  // simple touch swipe for carousel
+  useEffect(()=>{
+    let startX = 0, endX = 0;
+    const el = document.getElementById('proj-hero');
+    if(!el) return;
+    const onTouchStart = (e)=> startX = e.touches[0].clientX;
+    const onTouchEnd = (e)=>{ endX = (e.changedTouches && e.changedTouches[0].clientX) || 0; if(startX - endX > 40) setActiveImg(i=> (i+1)%allImgs.length); else if(endX - startX > 40) setActiveImg(i=> (i-1+allImgs.length)%allImgs.length); };
+    el.addEventListener('touchstart', onTouchStart); el.addEventListener('touchend', onTouchEnd);
+    return ()=>{ el.removeEventListener('touchstart', onTouchStart); el.removeEventListener('touchend', onTouchEnd); };
+  },[allImgs.length]);
+
+  const PRICE = p.priceFrom ? `${fmt(p.priceFrom)} – ${fmt(p.priceTo||p.priceFrom)}` : 'Price on request';
+
+  return (
+    <div className="proj-page">
+      <div id="proj-hero" className="proj-hero">
+        <img src={allImgs[activeImg]} loading="lazy" alt={p.name} className="proj-hero-img"/>
+        <div className="proj-hero-ov"/>
+        <div className="proj-hero-top">
+          <button className="proj-back" onClick={onClose}>←</button>
+          <div className="proj-actions"><button className="proj-share">⤴</button><button className="proj-fav">♡</button></div>
+        </div>
+        <div className="proj-hero-body">
+          <div className="proj-tag" style={{background:p.tagColor||'rgba(0,0,0,.3)'}}>{p.tag}</div>
+          <h2 className="proj-name">{p.name}</h2>
+          <div className="proj-sub">{p.developer} · {p.location}</div>
+        </div>
+      </div>
+
+      <div className="proj-tabs-wrap">
+        <div className="proj-tabs">
+          {['overview','location','layouts'].map(k=>{
+            const lab = k==='overview'?'Project Info':k==='location'?'Location':'Unit Info';
+            return <button key={k} className={`proj-tab${detTab===k? ' on':''}`} onClick={()=>{ setDetTab(k); const el=document.getElementById(`proj-sec-${k}`); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }}>{lab}</button>;
+          })}
+        </div>
+      </div>
+
+      <div className="proj-content">
+        <section id="proj-sec-overview" className="proj-sec">
+          <div className="kv-grid">
+            <div className="kv"><strong>Developer</strong><span>{p.developer}</span></div>
+            <div className="kv"><strong>Location</strong><span>{p.location}</span></div>
+            <div className="kv"><strong>Tenure</strong><span>{p.tenure}</span></div>
+            <div className="kv"><strong>Completion</strong><span>{p.completion}</span></div>
+            <div className="kv"><strong>Total Units</strong><span>{p.totalUnits||'—'}</span></div>
+            <div className="kv"><strong>Residential Start</strong><span>{p.residentialStartLevel||'—'}</span></div>
+          </div>
+          <div className="proj-desc">{p.description}</div>
+        </section>
+
+        <section id="proj-sec-location" className="proj-sec">
+          {p.coordinates?.lat ? <iframe src={`https://maps.google.com/maps?q=${p.coordinates.lat},${p.coordinates.lng}&z=15&output=embed`} title="Map" loading="lazy"/> : <div className="map-placeholder">Map not available</div>}
+        </section>
+
+        <section id="proj-sec-layouts" className="proj-sec">
+          <div className="kv-grid">
+            <div className="kv"><strong>Total Units</strong><span>{p.totalUnits||'—'}</span></div>
+            <div className="kv"><strong>Public / Bumi</strong><span>{p.unitsBreakdown||'—'}</span></div>
+            <div className="kv"><strong>Bedrooms</strong><span>{Array.isArray(p.bedrooms)?bLbl(p.bedrooms):p.bedrooms||'—'}</span></div>
+            <div className="kv"><strong>Built-up</strong><span>{p.sizeSqft?.[0] ? `${p.sizeSqft[0]} – ${p.sizeSqft[1]} sf` : '—'}</span></div>
+          </div>
+          <div className="unit-list">
+            {(p.unitTypes||[]).map((u,i)=>(<div key={i} className="unit-row"><div className="unit-name">{u.name||u.label}</div><div className="unit-meta">{u.beds} Bed · {u.size}</div></div>))}
+          </div>
+        </section>
+      </div>
+
+      <div className="proj-cta">
+        <div className="proj-price">{PRICE}</div>
+        <div className="proj-cta-actions">
+          <button className="proj-cta-primary" onClick={onRegisterInterest}>Register Interest</button>
+          {p.showroom && <button className="proj-cta-secondary" onClick={onVisitShowroom}>Visit Showroom</button>}
+        </div>
+      </div>
     </div>
   );
 }
@@ -3566,9 +3510,39 @@ export default function App(){
   const openVS = useCallback((proj=null) => setVsProject(proj||"general"), []);
   const closeVS = useCallback(()=>setVsProject(null),[]);
   const [mobileNavOpen,setMobileNavOpen]=useState(false);
+  const [isProjectRoute,setIsProjectRoute]=useState(false);
+  const [isMobileView, setIsMobileView] = useState(()=>typeof window !== 'undefined' ? window.matchMedia('(max-width:1023px)').matches : true);
 
   // Track page view whenever the listings tab is shown
   useEffect(()=>{ if(tab==="listings") trackEvent("page_view"); },[tab]);
+
+  // Handle direct /project/:id links and browser navigation (back/forward)
+  useEffect(()=>{
+    const applyPath = ()=>{
+      try{
+        const m = window.location.pathname.match(/^\/project\/(\d+)$/);
+        if(m){ const id = Number(m[1]); const proj = projects.find(p=>p.id===id); if(proj){ setSelected(proj); setIsProjectRoute(true); setTab("listings"); return; } }
+      }catch(e){}
+      // default: clear route state
+      setIsProjectRoute(false);
+    };
+    applyPath();
+    const onPop = ()=>applyPath();
+    window.addEventListener('popstate', onPop);
+    // media query listener for mobile view
+    const mq = window.matchMedia('(max-width:1023px)');
+    const mql = (e)=>setIsMobileView(e.matches);
+    try{ mq.addEventListener ? mq.addEventListener('change', mql) : mq.addListener(mql); }catch(e){}
+    return ()=>window.removeEventListener('popstate', onPop);
+  },[projects]);
+
+  // ensure we cleanup media listener on unmount
+  useEffect(()=>{
+    const mq = window.matchMedia('(max-width:1023px)');
+    const mql = (e)=>setIsMobileView(e.matches);
+    try{ mq.addEventListener ? mq.addEventListener('change', mql) : mq.addListener(mql); }catch(e){}
+    return ()=>{ try{ mq.removeEventListener ? mq.removeEventListener('change', mql) : mq.removeListener(mql); }catch(e){} };
+  },[]);
 
   const LOCS  = useMemo(()=>["All Areas",...new Set(projects.map(p=>p.location))],[projects]);
   const TYPES = useMemo(()=>["All Types",...new Set(projects.map(p=>p.type))],[projects]);
@@ -3589,6 +3563,40 @@ export default function App(){
   return (
     <>
       <style>{css}</style>
+      <style>{`
+/* Project page (mobile-first) styles */
+.proj-page{min-height:100vh;background:var(--parchment);}
+.proj-hero{position:relative;height:44vh;min-height:220px;overflow:hidden;border-bottom:1px solid var(--border);} 
+.proj-hero-img{width:100%;height:100%;object-fit:cover;display:block;}
+.proj-hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 45%);}
+.proj-hero-top{position:absolute;top:8px;left:8px;right:8px;display:flex;align-items:center;justify-content:space-between;padding:6px;z-index:6}
+.proj-back{background:rgba(255,255,255,.12);border:none;color:#fff;padding:.45rem .6rem;border-radius:8px;font-size:1rem}
+.proj-actions button{margin-left:.5rem;background:rgba(255,255,255,.08);border:none;color:#fff;padding:.4rem .6rem;border-radius:8px}
+.proj-hero-body{position:absolute;left:16px;right:16px;bottom:12px;z-index:6;color:#fff}
+.proj-tag{display:inline-block;padding:.18rem .5rem;border-radius:999px;font-size:.64rem;margin-bottom:.35rem}
+.proj-name{font-size:1.1rem;font-family:var(--serif);margin:0;line-height:1.15;max-height:2.4rem;overflow:hidden}
+.proj-sub{font-size:.76rem;opacity:.95;margin-top:.28rem}
+.proj-tabs-wrap{position:sticky;top:64px;z-index:40;background:var(--parchment);border-bottom:1px solid var(--border)}
+.proj-tabs{display:flex;overflow-x:auto;gap:.5rem;padding:.6rem;}
+.proj-tab{background:transparent;border:none;padding:.45rem .7rem;font-weight:500;color:var(--muted)}
+.proj-tab.on{border-bottom:3px solid var(--gold);color:var(--ink);font-weight:700}
+.proj-content{padding:1rem}
+.proj-sec{margin-bottom:1rem}
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.kv{background:var(--card);padding:.6rem;border:1px solid var(--border);font-size:.86rem}
+.kv strong{display:block;color:var(--muted);font-size:.72rem;margin-bottom:.25rem}
+.proj-desc{margin-top:.6rem;color:var(--muted);font-size:.9rem}
+.unit-list{margin-top:.6rem}
+.unit-row{padding:.5rem 0;border-bottom:1px dashed var(--border)}
+.proj-cta{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(255,255,255,0),#fff);display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;border-top:1px solid var(--border)}
+.proj-price{flex:1;font-family:var(--serif);font-size:1rem}
+.proj-cta-actions{display:flex;gap:.5rem}
+.proj-cta-primary{background:var(--cta);color:#fff;border:none;padding:.6rem 1rem;border-radius:8px}
+.proj-cta-secondary{background:transparent;border:1px solid var(--cta);color:var(--cta);padding:.5rem .9rem;border-radius:8px}
+@media(min-width:1024px){
+  .proj-page{display:none}
+}
+`}</style>
 
       {/* ── Mobile side-nav overlay ── */}
       <div className={`mob-drawer-ov${mobileNavOpen?" open":""}`} onClick={()=>setMobileNavOpen(false)}/>
@@ -3697,7 +3705,7 @@ export default function App(){
           <div className="grid">
             {filtered.length===0?<div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">No projects found</div><p className="empty-s">Try adjusting filters.</p></div>
             :filtered.map(p=>(
-              <div key={p.id} className={`card${cmpIds.includes(p.id)?" sel":""}`} onClick={()=>{trackEvent("project_click",{projectName:p.name});setSelected(p);}}>
+              <div key={p.id} className={`card${cmpIds.includes(p.id)?" sel":""}`} onClick={()=>{trackEvent("project_click",{projectName:p.name}); try{ window.history.pushState({projectId:p.id}, "", `/project/${p.id}`); }catch(e){} setSelected(p); setIsProjectRoute(true); }}>
                 <div className="cimg"><img src={p.image} alt={p.name}/><div className="ctag" style={{background:p.tagColor}}>{p.tag}</div><div className="cstat">{p.status}</div><button className={`cbtn${cmpIds.includes(p.id)?" on":""}`} onClick={e=>toggleCmp(e,p.id)} title="Compare">{cmpIds.includes(p.id)?"✓":"+"}</button></div>
                 <div className="cbody">
                   <div className="ctype">{p.type}</div><div className="cname">{p.name}</div><div className="cdev">by {p.developer}</div>
@@ -3777,7 +3785,11 @@ export default function App(){
         </div>
       )}
 
-      {selected&&<DetailModal p={selected} onClose={()=>setSelected(null)} onRegisterInterest={()=>openRI(selected)} onVisitShowroom={()=>openVS(selected)}/>}
+      {selected&&(
+        isProjectRoute && isMobileView
+        ? <ProjectPage p={selected} onClose={()=>{ try{ window.history.pushState({}, "", "/"); }catch(e){} setIsProjectRoute(false); setSelected(null); }} onRegisterInterest={()=>openRI(selected)} onVisitShowroom={()=>openVS(selected)} />
+        : <DetailModal p={selected} onClose={()=>{ if(isProjectRoute){ try{ window.history.pushState({}, "", "/"); }catch(e){} setIsProjectRoute(false); setSelected(null); } else setSelected(null); }} onRegisterInterest={()=>openRI(selected)} onVisitShowroom={()=>openVS(selected)} pageMode={isProjectRoute && !isMobileView} />
+      )}
 
       {/* Register Interest modal */}
       {riProject&&(
