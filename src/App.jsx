@@ -1479,6 +1479,7 @@ function RegisterInterestModal({ project, settings, onClose }) {
   const [name, setName]     = useState("");
   const [email, setEmail]   = useState("");
   const [phone, setPhone]   = useState("");
+  const [phoneCountry, setPhoneCountry] = useState((settings && settings.countryCode) ? String(settings.countryCode) : "60");
   const [sending, setSending] = useState(false);
   const [formErr, setFormErr] = useState("");
 
@@ -1494,6 +1495,7 @@ function RegisterInterestModal({ project, settings, onClose }) {
     if (!name.trim())                         return "Please enter your name.";
     if (!email.trim()||!email.includes("@"))  return "Please enter a valid email address.";
     if (!phone.trim())                        return "Please enter your phone number.";
+    if (!phoneCountry.trim() || !/^[0-9]+$/.test(phoneCountry)) return "Please enter a valid country code.";
     return "";
   };
 
@@ -1505,21 +1507,26 @@ function RegisterInterestModal({ project, settings, onClose }) {
     trackEvent("inquiry_email", { projectName: projName });
     const adminEmail = settings?.adminEmail || "";
     const subject    = encodeURIComponent(`Register Interest — ${projName}`);
-    const body       = encodeURIComponent(
+        // Normalize phone: remove non-digits, strip leading zeros, then prefix with country code
+        const phoneDigits = String(phone).replace(/[^0-9]/g, "");
+        let phoneNormalized = phoneDigits.replace(/^0+/, "");
+        const fullPhone = `+${phoneCountry}${phoneNormalized}`;
+
+        const body       = encodeURIComponent(
       `New enquiry received from NB Property website.
 
-` +
+    ` +
       `Project:  ${projName}
-` +
+    ` +
       `Name:     ${name}
-` +
+    ` +
       `Email:    ${email}
-` +
-      `Phone:    ${phone}
+    ` +
+      `Phone:    ${fullPhone}
 
-` +
+    ` +
       `Sent via NB Property website.`
-    );
+        );
 
     if (adminEmail) {
       window.open(`mailto:${adminEmail}?subject=${subject}&body=${body}`, "_blank");
@@ -1528,7 +1535,7 @@ function RegisterInterestModal({ project, settings, onClose }) {
       const txt = `Project: ${projName}
 Name: ${name}
 Email: ${email}
-Phone: ${phone}`;
+Phone: ${fullPhone}`;
       navigator.clipboard?.writeText(txt).catch(()=>{});
     }
 
@@ -1588,8 +1595,13 @@ Phone: ${phone}`;
                   value={email} onChange={e=>{setEmail(e.target.value);setFormErr("");}}/>
               </div>
               <div className="ri-field">
+                <label className="ri-label">Country Code</label>
+                <input className="ri-inp" type="tel" placeholder="e.g. 60"
+                  value={phoneCountry} onChange={e=>{setPhoneCountry(e.target.value.replace(/[^0-9]/g, ''));setFormErr("");}}/>
+              </div>
+              <div className="ri-field">
                 <label className="ri-label">Phone Number</label>
-                <input className="ri-inp" type="tel" placeholder="e.g. 012-345 6789"
+                <input className="ri-inp" type="tel" placeholder="e.g. 12-345 6789"
                   value={phone} onChange={e=>{setPhone(e.target.value);setFormErr("");}}/>
               </div>
               <button className="ri-submit" onClick={handleSubmit} disabled={sending}>
@@ -1630,6 +1642,7 @@ function VisitShowroomModal({ project, settings, onClose }) {
   const [name, setName]   = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneCountry, setPhoneCountry] = useState((settings && settings.countryCode) ? String(settings.countryCode) : "60");
   const [date, setDate]   = useState("");
   const [time, setTime]   = useState("");
   const [notes, setNotes] = useState("");
@@ -1669,6 +1682,7 @@ function VisitShowroomModal({ project, settings, onClose }) {
     if (!name.trim())                        return "Please enter your name.";
     if (!email.trim()||!email.includes("@")) return "Please enter a valid email address.";
     if (!phone.trim())                       return "Please enter your phone number.";
+    if (!phoneCountry.trim() || !/^[0-9]+$/.test(phoneCountry)) return "Please enter a valid country code.";
     if (!date)                               return "Please select an appointment date.";
     if (!time)                               return "Please select a preferred time slot.";
     return "";
@@ -1686,6 +1700,11 @@ function VisitShowroomModal({ project, settings, onClose }) {
 
     const dateStr = fmtDate(date);
 
+    // Normalize phone for booking
+    const phoneDigits = String(phone).replace(/[^0-9]/g, "");
+    let phoneNormalized = phoneDigits.replace(/^0+/, "");
+    const fullPhone = `+${phoneCountry}${phoneNormalized}`;
+
     // ── WhatsApp message ──
     const waText =
 `Hi ${waSender}, I would like to *book a showroom visit*.
@@ -1696,7 +1715,6 @@ function VisitShowroomModal({ project, settings, onClose }) {
 
 *Name:* ${name}
 *Email:* ${email}
-*Phone:* ${phone}${notes?`\n*Notes:* ${notes}`:""}
 
 Please confirm my appointment. Thanks!`;
     const waURL = `https://api.whatsapp.com/send?phone=${waPhone}&text=${encodeURIComponent(waText)}`;
@@ -1715,7 +1733,7 @@ Visitor Details
 ---------------
 Name:   ${name}
 Email:  ${email}
-Phone:  ${phone}
+Phone:  ${fullPhone}
 ${notes?`\nNotes:\n${notes}\n`:""}
 Sent via NB Property website.`
     );
@@ -1779,8 +1797,13 @@ Sent via NB Property website.`
                 value={email} onChange={e=>{setEmail(e.target.value);setFormErr("");}}/>
             </div>
             <div className="ri-field">
+              <label className="ri-label">Country Code</label>
+              <input className="ri-inp" type="tel" placeholder="e.g. 60"
+                value={phoneCountry} onChange={e=>{setPhoneCountry(e.target.value.replace(/[^0-9]/g, ''));setFormErr("");}}/>
+            </div>
+            <div className="ri-field">
               <label className="ri-label">Phone Number</label>
-              <input className="ri-inp" type="tel" placeholder="e.g. 012-345 6789"
+              <input className="ri-inp" type="tel" placeholder="e.g. 12-345 6789"
                 value={phone} onChange={e=>{setPhone(e.target.value);setFormErr("");}}/>
             </div>
             <div className="ri-field">
@@ -3214,6 +3237,14 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
                 <input className="set-inp" type="text" value={sett.whatsappName} placeholder="e.g. Joel"
                   onChange={e=>setSF("whatsappName",e.target.value)}/>
                 <div className="set-note">Appears in the WhatsApp message as "Hi Joel, …"</div>
+              </div>
+            </div>
+            <div className="a-form-grid" style={{marginBottom:"1rem", marginTop:'.5rem'}}>
+              <div className="set-field">
+                <label className="set-label">Default Country Code</label>
+                <input className="set-inp" type="tel" value={sett.countryCode || "60"} placeholder="e.g. 60"
+                  onChange={e=>setSF("countryCode", e.target.value.replace(/[^0-9]/g, ""))}/>
+                <div className="set-note">Used to prefix mobile numbers in enquiry forms (no +)</div>
               </div>
             </div>
             <div className="set-preview">
