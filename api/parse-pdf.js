@@ -7,7 +7,7 @@ export const config = {
   },
 };
 
-const GEMINI_MODEL = "gemini-2.0-flash";
+const GEMINI_MODEL = "gemini-3-flash-preview";
 
 function normalizeResponse(data) {
   // Unwrap { value, confidence } wrappers — keep confidence in _confidence map
