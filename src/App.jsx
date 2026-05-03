@@ -574,9 +574,8 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .cmp-pg{padding:1.5rem 1rem 5rem;}
   .cmp-title{font-size:1.7rem;}
 
-  /* Detail modal */
-  .ov{padding:.5rem;}
-  .det{height:100svh;max-height:100svh;}
+  /* Detail page — mobile */
+  .det{height:auto;max-height:none;min-height:calc(100vh - 64px);}
   .det-hero{height:30vh;max-height:220px;flex-shrink:0;}
   .det-hc{left:1rem;right:1rem;bottom:.75rem;}
   .det-title{font-size:1.35rem;}
@@ -809,12 +808,22 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .add-more{text-align:center;padding:1.8rem;background:var(--warm);border:1px dashed var(--border);margin-top:1rem;}
 .add-more p{color:var(--muted);font-size:.84rem;margin-bottom:.7rem;}
 
-/* ═══ DETAIL MODAL ═══ */
-.ov{position:fixed;inset:0;z-index:200;background:rgba(8,8,10,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;overflow:hidden;animation:fadeIn .22s ease;}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.det{background:var(--parchment);width:100%;max-width:1060px;height:calc(100svh - 3rem);max-height:calc(100svh - 3rem);position:relative;animation:slideUp .28s ease;overflow:hidden;display:flex;flex-direction:column;}
-@media(min-width:1024px){.det{max-width:1280px;}}
+/* ═══ DETAIL PAGE (replaces overlay modal) ═══ */
+/* ════════════════════════════════════════════
+   DETAIL PAGE — MOBILE (full-page scroll)
+════════════════════════════════════════════ */
+.det-pg{display:flex;flex-direction:column;min-height:100vh;background:var(--bg);}
+.det-pg-inner{width:100%;flex:1;display:flex;flex-direction:column;min-height:0;}
+
+/* Back button — floating icon on image */
+.det-back-btn{position:absolute;top:1rem;left:1rem;z-index:20;width:40px;height:40px;background:rgba(0,0,0,.45);border:none;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px);transition:background .18s,transform .18s;font-size:1.2rem;padding:0;line-height:1;}
+.det-back-btn:hover{background:rgba(0,0,0,.75);transform:scale(1.08);}
+
+/* ─── Shared base styles (mobile-first) ─── */
+.det{background:var(--parchment);width:100%;flex:1;position:relative;display:flex;flex-direction:column;}
 @keyframes slideUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* Hero — mobile */
 .det-hero{position:relative;height:360px;overflow:hidden;flex-shrink:0;}
 .det-hero img{width:100%;height:100%;object-fit:cover;}
 .det-hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.1) 55%,transparent 100%);}
@@ -822,26 +831,31 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .det-tag-pill{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;padding:.22rem .65rem;margin-bottom:.6rem;}
 .det-title{font-family:var(--serif);font-size:2.2rem;font-weight:600;color:#fff;line-height:1.1;margin-bottom:.35rem;}
 .det-dv{color:rgba(255,255,255,.6);font-size:.84rem;display:flex;align-items:center;gap:.5rem;}
-.det-close{position:absolute;top:1rem;right:1rem;z-index:10;width:36px;height:36px;background:rgba(0,0,0,.55);border:none;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
-.det-close:hover{background:rgba(0,0,0,.9);}
+.det-close{display:none;}
+
+/* Gallery strip */
 .gal-strip{display:flex;gap:.3rem;padding:.3rem;background:var(--ink);flex-shrink:0;}
 .gal-t{flex:1;height:72px;overflow:hidden;cursor:pointer;opacity:.6;transition:opacity .18s;}
 .gal-t:hover,.gal-t.on{opacity:1;}
 .gal-t.on{outline:2px solid var(--gold);outline-offset:-2px;}
 .gal-t img{width:100%;height:100%;object-fit:cover;}
+
+/* Tabs */
 .det-tabs{display:flex;background:#243C4C;border-bottom:1px solid #3d5a6e;flex-shrink:0;position:relative;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.15);}
-.det-content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;min-height:0;}
 .det-tab{flex:1;padding:.85rem 1rem;background:transparent;border:none;border-bottom:2px solid transparent;color:#ACBCBF;font-family:var(--sans);font-size:.76rem;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;transition:color .18s,border-color .18s;text-align:center;}
 .det-tab:hover{color:#ccc;}
 .det-tab.on{color:var(--gold);border-bottom-color:var(--gold);}
 
-/* Desktop split layout — left image / right content */
-.det-split{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
-.det-left{flex-shrink:0;}
-.det-right{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+/* Content scroll area — mobile */
+.det-content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;min-height:0;}
+
+/* Split container */
+.det-split{display:flex;flex-direction:column;flex:1;min-height:0;}
+.det-left{flex-shrink:0;position:relative;}
+.det-right{display:flex;flex-direction:column;flex:1;min-height:0;}
 .det-right-hd{display:none;}
 
-/* Hero image nav — mobile only */
+/* Hero nav arrows — shown on mobile, hidden on desktop */
 .det-hero-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:8;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .18s;}
 .det-hero-nav:hover{background:rgba(0,0,0,.75);}
 .det-hero-nav.prev{left:.75rem;}
@@ -849,25 +863,13 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .det-hero-dots{position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:8;display:flex;gap:.4rem;}
 .det-hero-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);border:none;padding:0;cursor:pointer;transition:background .18s,transform .18s;}
 .det-hero-dot.on{background:#fff;transform:scale(1.3);}
+
 @media(min-width:1024px){.det-hero-nav,.det-hero-dots{display:none !important;}}
 @media(max-width:1023px){.gal-strip{display:none !important;}}
-@media(min-width:1024px){
-.det-split{flex-direction:row;flex:1;}
-.det-left{width:44%;min-width:380px;max-width:520px;display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;}
-.det-left .det-hero{height:100%;min-height:320px;flex:1;}
-.det-left .det-hero-ov{background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.18) 50%,transparent 100%);}
-.det-left .det-hc{left:1.8rem;right:1.8rem;bottom:1.5rem;}
-.det-left .det-title{font-size:1.8rem;}
-.det-left .gal-strip{flex-shrink:0;}
-.det-right{width:56%;flex:1;border-left:1px solid var(--border);}
-.det-right-hd{display:none;}
-.det-close{z-index:15;background:var(--ink);color:#fff;border-radius:50%;}
-.det-sticky-bar{flex-shrink:0;border-top:1px solid var(--border);}
-}
 
-/* Overview tab */
+/* ─── Base content styles — declared BEFORE desktop overrides so media query wins cascade ─── */
 .ov-body{padding:2rem 2.2rem;}
-.spec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;margin-bottom:2rem;}
+.spec-grid{display:grid;grid-template-columns:1fr;gap:1.5rem;margin-bottom:2rem;}
 .spec-section{background:var(--card);border:1px solid var(--border);overflow:hidden;}
 .spec-sec-hd{display:flex;align-items:center;gap:.55rem;padding:.65rem 1rem;background:var(--ink);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;}
 .spec-sec-hd span{font-size:.95rem;}
@@ -876,7 +878,7 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .spec-key{font-size:.72rem;color:var(--muted);min-width:140px;flex-shrink:0;padding-top:.1rem;}
 .spec-val{font-size:.78rem;color:var(--ink);font-weight:500;flex:1;line-height:1.5;}
 .spec-section.full{grid-column:1/-1;}
-.ov-desc-row{display:grid;grid-template-columns:1.2fr 1fr;gap:1.5rem;margin-bottom:2rem;}
+.ov-desc-row{display:grid;grid-template-columns:1fr;gap:1.5rem;margin-bottom:2rem;}
 .ov-desc-row .spec-section{margin:0;}
 .hi-list{padding:.6rem 1rem;}
 .hi-item{display:flex;align-items:flex-start;gap:.6rem;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.78rem;color:var(--ink);}
@@ -895,8 +897,6 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .pb-btn1:hover{opacity:.88;}
 .pb-btn2{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.25);padding:.65rem 1.5rem;font-family:var(--sans);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;}
 .pb-btn2:hover{border-color:var(--gold);color:var(--gold);}
-
-/* Location tab */
 .loc-body{padding:2rem 2.2rem;}
 .map-embed{width:100%;height:300px;border:1px solid var(--border);background:#e0ddd6;margin-bottom:1.8rem;overflow:hidden;}
 .map-embed iframe{width:100%;height:100%;border:none;display:block;}
@@ -907,10 +907,151 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .amenity-item{padding:.5rem .9rem;font-size:.78rem;color:var(--ink);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.55rem;}
 .amenity-item:last-child{border-bottom:none;}
 .amenity-dot{width:5px;height:5px;background:var(--gold);flex-shrink:0;}
-
-/* ═══ LAYOUTS TAB — redesigned ═══ */
 .layouts-body{padding:2rem 2.2rem;}
 .layouts-intro{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:1.4rem;}
+
+/* ════════════════════════════════════════════
+   DETAIL PAGE — DESKTOP (viewport-locked)
+   Full 100vh, no outer scroll, 3-zone right
+════════════════════════════════════════════ */
+@media(min-width:1024px){
+
+  /* 1. Lock the page to 100vh — no outer scroll */
+  body:has(.det-pg){overflow:hidden;}
+  .det-pg{
+    height:100vh;
+    max-height:100vh;
+    overflow:hidden;
+  }
+  .det-pg-inner{
+    height:100%;
+    max-height:100%;
+    overflow:hidden;
+  }
+
+  /* 2. Inner shell fills the page */
+  .det{
+    height:100%;
+    max-height:100%;
+    overflow:hidden;
+  }
+
+  /* 3. Horizontal split — fills 100% height */
+  .det-split{
+    flex-direction:row;
+    height:100%;
+    max-height:100%;
+    overflow:hidden;
+    flex:1;
+  }
+
+  /* ── LEFT: image column ── */
+  .det-left{
+    width:45%;
+    min-width:380px;
+    max-width:540px;
+    height:100%;
+    flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    position:relative;
+  }
+  /* Hero fills the entire left column */
+  .det-left .det-hero{
+    flex:1;
+    height:100%;
+    min-height:0;
+    position:relative;
+    overflow:hidden;
+  }
+  .det-left .det-hero img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .det-left .det-hero-ov{
+    background:linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.1) 40%,transparent 100%);
+  }
+  .det-left .det-hc{left:1.8rem;right:1.8rem;bottom:1.5rem;}
+  .det-left .det-title{font-size:1.75rem;}
+  /* Gallery strip pinned at bottom of left col */
+  .det-left .gal-strip{flex-shrink:0;}
+
+  /* ── RIGHT: 3-zone flex column ── */
+  .det-right{
+    flex:1;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;       /* clip children — only .det-content scrolls */
+    border-left:1px solid var(--border);
+  }
+
+  /* ZONE 1 — Tabs (fixed height, never scrolls) */
+  .det-tabs{
+    flex-shrink:0;
+    height:52px;
+    z-index:10;
+    box-shadow:0 2px 12px rgba(0,0,0,.18);
+  }
+  .det-tab{padding:.7rem 1rem;}
+
+  /* ZONE 2 — Scrollable content (flex:1 = takes remaining space) */
+  .det-content{
+    flex:1;
+    min-height:0;          /* ← prevents overflow escape */
+    overflow-y:auto;
+    overflow-x:hidden;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:1rem;   /* breathing room above CTA */
+    /* Subtle custom scrollbar */
+    scrollbar-width:thin;
+    scrollbar-color:rgba(82,137,173,.3) transparent;
+  }
+  .det-content::-webkit-scrollbar{width:5px;}
+  .det-content::-webkit-scrollbar-track{background:transparent;}
+  .det-content::-webkit-scrollbar-thumb{background:rgba(82,137,173,.3);border-radius:3px;}
+  .det-content::-webkit-scrollbar-thumb:hover{background:rgba(82,137,173,.55);}
+
+  /* ZONE 3 — Bottom CTA bar (fixed height, always visible) */
+  .det-sticky-bar{
+    flex-shrink:0;
+    position:relative;     /* relative so ::before gradient works */
+    z-index:10;
+    border-top:1px solid var(--border);
+    box-shadow:0 -6px 20px rgba(0,0,0,.1);
+  }
+  /* Gradient fade above CTA to signal more content below */
+  .det-sticky-bar::before{
+    content:'';
+    position:absolute;
+    top:-24px;
+    left:0;
+    right:0;
+    height:24px;
+    background:linear-gradient(to top,rgba(236,232,225,.95),transparent);
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* Compact the ov-body padding on desktop to reclaim vertical space */
+  .ov-body{padding:1.4rem 1.8rem;}
+  .spec-grid{gap:1rem;margin-bottom:1.4rem;}
+  .ov-desc-row{gap:1rem;margin-bottom:1.4rem;}
+  .spec-row{padding:.45rem .9rem;}
+  .hi-item{padding:.3rem 0;}
+  .loc-body{padding:1.4rem 1.8rem;}
+  .layouts-body{padding:1.4rem 1.8rem;}
+  .map-embed{height:240px;margin-bottom:1.2rem;}
+
+  .det-right-hd{display:none;}
+  .det-close{display:none;}
+}
+
+/* ═══ LAYOUTS TAB — redesigned ═══ */
 
 /* Each unit type is a full horizontal card: image left, info right */
 .ut-card{background:var(--card);border:1px solid var(--border);display:grid;grid-template-columns:320px 1fr;overflow:hidden;margin-bottom:1.4rem;transition:box-shadow .25s;max-width:100%;}
@@ -1871,9 +2012,9 @@ Sent via NB Property website.`
 /* ═══════════════════════════════════════
    DETAIL MODAL
 ═══════════════════════════════════════ */
-function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom, pageMode=false}){
-  if(!pageMode) useModalEffect(onClose);
+function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
   const [activeImg, setActiveImg] = useState(0);
+  useEffect(()=>{ window.scrollTo(0,0); },[]);
   const vt = p.visibleTabs || {};
   const ALL_DET_TABS = [
     { k:"overview", l:"📊 Project Info",  show: vt.overview  !== false },
@@ -1901,15 +2042,17 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom, pageMode=
     </div>
   );
 
-  const inner = (
-    <div className="det">
-      <button className="det-close" onClick={onClose}>✕</button>
+  return (
+    <div className="det-pg">
+      <div className="det det-pg-inner">
         <div className="det-split">
           {/* ── LEFT: image + gallery ── */}
           <div className="det-left">
             <div className="det-hero">
               <img src={allImgs[activeImg]} alt={p.name}/>
               <div className="det-hero-ov"/>
+              {/* Back button — icon overlay on image top-left */}
+              <button className="det-back-btn" onClick={onClose} aria-label="Back to listings">&#8592;</button>
               <div className="det-hc">
                 <div className="det-tag-pill" style={{background:p.tagColor}}>{p.tag}</div>
                 <h2 className="det-title">{p.name}</h2>
@@ -2084,110 +2227,6 @@ function DetailModal({p, onClose, onRegisterInterest, onVisitShowroom, pageMode=
               </div>
             )}
           </div>
-        </div>
-      </div>
-  );
-
-  if(pageMode){
-    return (<div style={{padding:"1.5rem 1rem",minHeight:"100vh",background:"var(--parchment)"}}>{inner}</div>);
-  }
-
-  return (
-    <div className="ov" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      {inner}
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════
-   PROJECT PAGE (mobile-first)
-═══════════════════════════════════════ */
-function ProjectPage({p, onClose, onRegisterInterest, onVisitShowroom}){
-  const [activeImg, setActiveImg] = useState(0);
-  const [detTab, setDetTab] = useState('overview');
-  const allImgs = [p.image,...(p.gallery||[])];
-  const scPosRef = React.useRef(0);
-
-  // preserve scroll position when navigating back
-  useEffect(()=>{
-    scPosRef.current = window.scrollY || 0;
-    window.scrollTo({top:0,behavior:'auto'});
-    return ()=>{ try{ window.scrollTo({top: scPosRef.current, behavior:'auto'}); }catch(e){} };
-  },[]);
-
-  // simple touch swipe for carousel
-  useEffect(()=>{
-    let startX = 0, endX = 0;
-    const el = document.getElementById('proj-hero');
-    if(!el) return;
-    const onTouchStart = (e)=> startX = e.touches[0].clientX;
-    const onTouchEnd = (e)=>{ endX = (e.changedTouches && e.changedTouches[0].clientX) || 0; if(startX - endX > 40) setActiveImg(i=> (i+1)%allImgs.length); else if(endX - startX > 40) setActiveImg(i=> (i-1+allImgs.length)%allImgs.length); };
-    el.addEventListener('touchstart', onTouchStart); el.addEventListener('touchend', onTouchEnd);
-    return ()=>{ el.removeEventListener('touchstart', onTouchStart); el.removeEventListener('touchend', onTouchEnd); };
-  },[allImgs.length]);
-
-  const PRICE = p.priceFrom ? `${fmt(p.priceFrom)} – ${fmt(p.priceTo||p.priceFrom)}` : 'Price on request';
-
-  return (
-    <div className="proj-page">
-      <div id="proj-hero" className="proj-hero">
-        <img src={allImgs[activeImg]} loading="lazy" alt={p.name} className="proj-hero-img"/>
-        <div className="proj-hero-ov"/>
-        <div className="proj-hero-top">
-          <button className="proj-back" onClick={onClose}>←</button>
-          <div className="proj-actions"><button className="proj-share">⤴</button><button className="proj-fav">♡</button></div>
-        </div>
-        <div className="proj-hero-body">
-          <div className="proj-tag" style={{background:p.tagColor||'rgba(0,0,0,.3)'}}>{p.tag}</div>
-          <h2 className="proj-name">{p.name}</h2>
-          <div className="proj-sub">{p.developer} · {p.location}</div>
-        </div>
-      </div>
-
-      <div className="proj-tabs-wrap">
-        <div className="proj-tabs">
-          {['overview','location','layouts'].map(k=>{
-            const lab = k==='overview'?'Project Info':k==='location'?'Location':'Unit Info';
-            return <button key={k} className={`proj-tab${detTab===k? ' on':''}`} onClick={()=>{ setDetTab(k); const el=document.getElementById(`proj-sec-${k}`); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }}>{lab}</button>;
-          })}
-        </div>
-      </div>
-
-      <div className="proj-content">
-        <section id="proj-sec-overview" className="proj-sec">
-          <div className="kv-grid">
-            <div className="kv"><strong>Developer</strong><span>{p.developer}</span></div>
-            <div className="kv"><strong>Location</strong><span>{p.location}</span></div>
-            <div className="kv"><strong>Tenure</strong><span>{p.tenure}</span></div>
-            <div className="kv"><strong>Completion</strong><span>{p.completion}</span></div>
-            <div className="kv"><strong>Total Units</strong><span>{p.totalUnits||'—'}</span></div>
-            <div className="kv"><strong>Residential Start</strong><span>{p.residentialStartLevel||'—'}</span></div>
-          </div>
-          <div className="proj-desc">{p.description}</div>
-        </section>
-
-        <section id="proj-sec-location" className="proj-sec">
-          {p.coordinates?.lat ? <iframe src={`https://maps.google.com/maps?q=${p.coordinates.lat},${p.coordinates.lng}&z=15&output=embed`} title="Map" loading="lazy"/> : <div className="map-placeholder">Map not available</div>}
-        </section>
-
-        <section id="proj-sec-layouts" className="proj-sec">
-          <div className="kv-grid">
-            <div className="kv"><strong>Total Units</strong><span>{p.totalUnits||'—'}</span></div>
-            <div className="kv"><strong>Public / Bumi</strong><span>{p.unitsBreakdown||'—'}</span></div>
-            <div className="kv"><strong>Bedrooms</strong><span>{Array.isArray(p.bedrooms)?bLbl(p.bedrooms):p.bedrooms||'—'}</span></div>
-            <div className="kv"><strong>Built-up</strong><span>{p.sizeSqft?.[0] ? `${p.sizeSqft[0]} – ${p.sizeSqft[1]} sf` : '—'}</span></div>
-          </div>
-          <div className="unit-list">
-            {(p.unitTypes||[]).map((u,i)=>(<div key={i} className="unit-row"><div className="unit-name">{u.name||u.label}</div><div className="unit-meta">{u.beds} Bed · {u.size}</div></div>))}
-          </div>
-        </section>
-      </div>
-
-      <div className="proj-cta">
-        <div className="proj-price">{PRICE}</div>
-        <div className="proj-cta-actions">
-          <button className="proj-cta-primary" onClick={onRegisterInterest}>Register Interest</button>
-          {p.showroom && <button className="proj-cta-secondary" onClick={onVisitShowroom}>Visit Showroom</button>}
         </div>
       </div>
     </div>
@@ -3510,39 +3549,9 @@ export default function App(){
   const openVS = useCallback((proj=null) => setVsProject(proj||"general"), []);
   const closeVS = useCallback(()=>setVsProject(null),[]);
   const [mobileNavOpen,setMobileNavOpen]=useState(false);
-  const [isProjectRoute,setIsProjectRoute]=useState(false);
-  const [isMobileView, setIsMobileView] = useState(()=>typeof window !== 'undefined' ? window.matchMedia('(max-width:1023px)').matches : true);
 
   // Track page view whenever the listings tab is shown
   useEffect(()=>{ if(tab==="listings") trackEvent("page_view"); },[tab]);
-
-  // Handle direct /project/:id links and browser navigation (back/forward)
-  useEffect(()=>{
-    const applyPath = ()=>{
-      try{
-        const m = window.location.pathname.match(/^\/project\/(\d+)$/);
-        if(m){ const id = Number(m[1]); const proj = projects.find(p=>p.id===id); if(proj){ setSelected(proj); setIsProjectRoute(true); setTab("listings"); return; } }
-      }catch(e){}
-      // default: clear route state
-      setIsProjectRoute(false);
-    };
-    applyPath();
-    const onPop = ()=>applyPath();
-    window.addEventListener('popstate', onPop);
-    // media query listener for mobile view
-    const mq = window.matchMedia('(max-width:1023px)');
-    const mql = (e)=>setIsMobileView(e.matches);
-    try{ mq.addEventListener ? mq.addEventListener('change', mql) : mq.addListener(mql); }catch(e){}
-    return ()=>window.removeEventListener('popstate', onPop);
-  },[projects]);
-
-  // ensure we cleanup media listener on unmount
-  useEffect(()=>{
-    const mq = window.matchMedia('(max-width:1023px)');
-    const mql = (e)=>setIsMobileView(e.matches);
-    try{ mq.addEventListener ? mq.addEventListener('change', mql) : mq.addListener(mql); }catch(e){}
-    return ()=>{ try{ mq.removeEventListener ? mq.removeEventListener('change', mql) : mq.removeListener(mql); }catch(e){} };
-  },[]);
 
   const LOCS  = useMemo(()=>["All Areas",...new Set(projects.map(p=>p.location))],[projects]);
   const TYPES = useMemo(()=>["All Types",...new Set(projects.map(p=>p.type))],[projects]);
@@ -3563,46 +3572,12 @@ export default function App(){
   return (
     <>
       <style>{css}</style>
-      <style>{`
-/* Project page (mobile-first) styles */
-.proj-page{min-height:100vh;background:var(--parchment);}
-.proj-hero{position:relative;height:44vh;min-height:220px;overflow:hidden;border-bottom:1px solid var(--border);} 
-.proj-hero-img{width:100%;height:100%;object-fit:cover;display:block;}
-.proj-hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 45%);}
-.proj-hero-top{position:absolute;top:8px;left:8px;right:8px;display:flex;align-items:center;justify-content:space-between;padding:6px;z-index:6}
-.proj-back{background:rgba(255,255,255,.12);border:none;color:#fff;padding:.45rem .6rem;border-radius:8px;font-size:1rem}
-.proj-actions button{margin-left:.5rem;background:rgba(255,255,255,.08);border:none;color:#fff;padding:.4rem .6rem;border-radius:8px}
-.proj-hero-body{position:absolute;left:16px;right:16px;bottom:12px;z-index:6;color:#fff}
-.proj-tag{display:inline-block;padding:.18rem .5rem;border-radius:999px;font-size:.64rem;margin-bottom:.35rem}
-.proj-name{font-size:1.1rem;font-family:var(--serif);margin:0;line-height:1.15;max-height:2.4rem;overflow:hidden}
-.proj-sub{font-size:.76rem;opacity:.95;margin-top:.28rem}
-.proj-tabs-wrap{position:sticky;top:64px;z-index:40;background:var(--parchment);border-bottom:1px solid var(--border)}
-.proj-tabs{display:flex;overflow-x:auto;gap:.5rem;padding:.6rem;}
-.proj-tab{background:transparent;border:none;padding:.45rem .7rem;font-weight:500;color:var(--muted)}
-.proj-tab.on{border-bottom:3px solid var(--gold);color:var(--ink);font-weight:700}
-.proj-content{padding:1rem}
-.proj-sec{margin-bottom:1rem}
-.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-.kv{background:var(--card);padding:.6rem;border:1px solid var(--border);font-size:.86rem}
-.kv strong{display:block;color:var(--muted);font-size:.72rem;margin-bottom:.25rem}
-.proj-desc{margin-top:.6rem;color:var(--muted);font-size:.9rem}
-.unit-list{margin-top:.6rem}
-.unit-row{padding:.5rem 0;border-bottom:1px dashed var(--border)}
-.proj-cta{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(255,255,255,0),#fff);display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;border-top:1px solid var(--border)}
-.proj-price{flex:1;font-family:var(--serif);font-size:1rem}
-.proj-cta-actions{display:flex;gap:.5rem}
-.proj-cta-primary{background:var(--cta);color:#fff;border:none;padding:.6rem 1rem;border-radius:8px}
-.proj-cta-secondary{background:transparent;border:1px solid var(--cta);color:var(--cta);padding:.5rem .9rem;border-radius:8px}
-@media(min-width:1024px){
-  .proj-page{display:none}
-}
-`}</style>
 
-      {/* ── Mobile side-nav overlay ── */}
-      <div className={`mob-drawer-ov${mobileNavOpen?" open":""}`} onClick={()=>setMobileNavOpen(false)}/>
+      {/* ── Mobile side-nav overlay — hidden on detail page ── */}
+      {tab!=="detail"&&<div className={`mob-drawer-ov${mobileNavOpen?" open":""}`} onClick={()=>setMobileNavOpen(false)}/>}
 
-      {/* ── Mobile side-nav drawer ── */}
-      <div className={`mob-drawer${mobileNavOpen?" open":""}`}>
+      {/* ── Mobile side-nav drawer — hidden on detail page ── */}
+      {tab!=="detail"&&<div className={`mob-drawer${mobileNavOpen?" open":""}`}>
         <div className="mob-drawer-hd">
           <div className="mob-drawer-logo" onClick={()=>{setTab("listings");setMobileNavOpen(false);}}>NB<span>Property</span></div>
           <button className="mob-drawer-x" onClick={()=>setMobileNavOpen(false)}>✕</button>
@@ -3623,10 +3598,10 @@ export default function App(){
         <div className="mob-drawer-ft">
           <button className="mob-drawer-cta" onClick={()=>{openRI(null);setMobileNavOpen(false);}}>Register Interest</button>
         </div>
-      </div>
+      </div>}
 
-      {/* ── Top navigation ── */}
-      <nav className="nav">
+      {/* ── Top navigation — hidden on detail page ── */}
+      <nav className="nav" style={tab==="detail"?{display:"none"}:undefined}>
         <div className="nav-logo" onClick={()=>setTab("listings")}>NB<span>Property</span></div>
         {/* Desktop tabs (centered) */}
         <div className="nav-tabs">
@@ -3705,7 +3680,7 @@ export default function App(){
           <div className="grid">
             {filtered.length===0?<div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">No projects found</div><p className="empty-s">Try adjusting filters.</p></div>
             :filtered.map(p=>(
-              <div key={p.id} className={`card${cmpIds.includes(p.id)?" sel":""}`} onClick={()=>{trackEvent("project_click",{projectName:p.name}); try{ window.history.pushState({projectId:p.id}, "", `/project/${p.id}`); }catch(e){} setSelected(p); setIsProjectRoute(true); }}>
+              <div key={p.id} className={`card${cmpIds.includes(p.id)?" sel":""}`} onClick={()=>{trackEvent("project_click",{projectName:p.name});setSelected(p);setTab("detail");}}>
                 <div className="cimg"><img src={p.image} alt={p.name}/><div className="ctag" style={{background:p.tagColor}}>{p.tag}</div><div className="cstat">{p.status}</div><button className={`cbtn${cmpIds.includes(p.id)?" on":""}`} onClick={e=>toggleCmp(e,p.id)} title="Compare">{cmpIds.includes(p.id)?"✓":"+"}</button></div>
                 <div className="cbody">
                   <div className="ctype">{p.type}</div><div className="cname">{p.name}</div><div className="cdev">by {p.developer}</div>
@@ -3785,11 +3760,7 @@ export default function App(){
         </div>
       )}
 
-      {selected&&(
-        isProjectRoute && isMobileView
-        ? <ProjectPage p={selected} onClose={()=>{ try{ window.history.pushState({}, "", "/"); }catch(e){} setIsProjectRoute(false); setSelected(null); }} onRegisterInterest={()=>openRI(selected)} onVisitShowroom={()=>openVS(selected)} />
-        : <DetailModal p={selected} onClose={()=>{ if(isProjectRoute){ try{ window.history.pushState({}, "", "/"); }catch(e){} setIsProjectRoute(false); setSelected(null); } else setSelected(null); }} onRegisterInterest={()=>openRI(selected)} onVisitShowroom={()=>openVS(selected)} pageMode={isProjectRoute && !isMobileView} />
-      )}
+      {tab==="detail"&&selected&&<DetailPage p={selected} onClose={()=>{setSelected(null);setTab("listings");}} onRegisterInterest={()=>openRI(selected)} onVisitShowroom={()=>openVS(selected)}/>}
 
       {/* Register Interest modal */}
       {riProject&&(
