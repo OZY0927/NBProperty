@@ -1368,6 +1368,12 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .ai-result-bar.fallback .ai-field-tag{background:rgba(82,137,173,.15);border-color:rgba(82,137,173,.25);color:var(--a-gold);}
 .ai-result-txt{font-size:.75rem;color:#2d9e6b;font-weight:600;}
 .ai-result-count{font-size:.7rem;color:var(--a-muted);}
+.ai-field-flash{animation:ai-field-pop .4s ease;border-radius:6px;}
+@keyframes ai-field-pop{0%{background:#0d2318;transform:scale(1.015);}60%{background:#0d2318;}100%{background:transparent;transform:scale(1);}}
+.ai-inp.ai-hl,.ai-txt.ai-hl,.ai-sel.ai-hl{border-color:#22c55e!important;background:#0d2318!important;box-shadow:0 0 0 3px #22c55e1a;transition:all .3s ease;}
+.ai-autofill-badge{display:inline-flex;align-items:center;margin-left:6px;font-size:9px;font-weight:700;color:#22c55e;background:#0a1f12;border:1px solid #22c55e55;border-radius:3px;padding:1px 5px;letter-spacing:.3px;vertical-align:middle;animation:ai-badge-in .25s ease;}
+@keyframes ai-badge-in{from{opacity:0;transform:translateY(-3px) scale(.85);}to{opacity:1;transform:translateY(0) scale(1);}}
+.ai-result-ico{font-size:20px;margin-bottom:2px;}
 .ai-err-bar{display:flex;align-items:flex-start;gap:.6rem;margin-top:.75rem;padding:.7rem 1rem;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.25);font-size:.75rem;color:#e63946;line-height:1.5;}
 .ai-filled-fields{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem;}
 .ai-field-tag{background:rgba(45,158,107,.15);border:1px solid rgba(45,158,107,.2);color:#2d9e6b;font-size:.62rem;padding:.12rem .45rem;}
@@ -2448,36 +2454,137 @@ function AIPDFWidget({ onAutofill }) {
   };
 
   // Shared: map result object → form patch + filled list
+  // Handles both direct-key matches AND aliased keys from AI (projectName→name etc.)
   const applyResult = (result) => {
     const filled = [];
     const formPatch = {};
-    const FIELD_LABELS = {
+
+    // Normalise: merge AI aliased keys into canonical form keys
+    const r = { ...result };
+    const ALIASES = {
+      name:                  ["projectName","project_name","project","title"],
+      developer:             ["developerName","developer_name","developedBy"],
+      location:              ["address","projectLocation","project_location"],
+      type:                  ["propertyType","property_type","projectType"],
+      status:                ["projectStatus","project_status","currentStatus"],
+      completion:            ["completionDate","completion_date","expectedCompletion","targetCompletion"],
+      tenure:                ["landTenure"],
+      landSize:              ["land_size","siteArea","site_area","plotSize"],
+      constructionStage:     ["construction_stage","buildingStage","currentStage","stage"],
+      totalBlocks:           ["total_blocks","numBlocks","numberOfBlocks","blocks"],
+      floors:                ["totalFloors","total_floors","numFloors","numberOfFloors","storeys"],
+      totalUnits:            ["total_units","numUnits","numberOfUnits","units"],
+      residentialStartLevel: ["residentialStart","residential_start","startLevel"],
+      unitsBreakdown:        ["units_breakdown","bumiBreakdown","publicBumiBreakdown"],
+      unitsPerTower:         ["units_per_tower","unitsPerBlock"],
+      bedrooms:              ["bedroom","beds","numBedrooms","numberOfBedrooms"],
+      bathrooms:             ["bathroom","baths","numBathrooms","numberOfBathrooms"],
+      sizeSqft:              ["builtUpArea","built_up_area","size","unitSize","builtUp","sizeRange","builtUpAreaMin"],
+      carParkLevels:         ["car_park_levels","parkingLevels","carpark_levels"],
+      numberOfCarParks:      ["carparks","numberOfCarparks","numCarParks","parkingBays","car_parks"],
+      parkingNotes:          ["parking_notes","parkingInfo","parking_info"],
+      numberOfLifts:         ["lifts","numLifts","elevators","numberOfElevators"],
+      priceFrom:             ["priceMin","price_from","price_min","startingPrice","starting_price","fromPrice"],
+      priceTo:               ["priceMax","price_to","price_max","maxPrice","toPrice"],
+      maintenanceFee:        ["maintenance_fee","service_charge","maintenanceCharge","maintFee"],
+      sinkingFund:           ["sinking_fund","sinkFund"],
+      showroom:              ["showroomInfo","showroom_info","showroomLocation","gallery"],
+      scaleModel:            ["scale_model","modelUnit","model_unit"],
+      description:           ["projectDescription","project_description","overview","about"],
+      highlights:            ["keyHighlights","key_highlights","sellingPoints","selling_points","features"],
+      facilities:            ["amenities","projectFacilities","project_facilities","facilityList"],
+      upgrades:              ["specifications","specs","finishes","interior","interiorSpecs"],
+      image:                 ["mainImage","main_image","coverImage","cover_image","heroImage","imageUrl","imageURL"],
+      gallery:               ["galleryImages","gallery_images","images","photos"],
+      tag:                   ["projectTag","project_tag","badge","label"],
+    };
+    for (const [canonical, alts] of Object.entries(ALIASES)) {
+      if (!r[canonical] || r[canonical] === null || r[canonical] === "") {
+        for (const alt of alts) {
+          if (r[alt] !== null && r[alt] !== undefined && r[alt] !== "") {
+            r[canonical] = r[alt];
+            break;
+          }
+        }
+      }
+    }
+
+    // String fields: join arrays, skip nulls
+    const STRING_FIELDS = {
       name:"Project Name", developer:"Developer", location:"Location", type:"Property Type",
-      status:"Status", completion:"Completion", tenure:"Tenure", landSize:"Land Size",
+      status:"Status", completion:"Completion Date", tenure:"Tenure", landSize:"Land Size",
       constructionStage:"Construction Stage", totalBlocks:"Total Blocks", floors:"Total Floors",
       totalUnits:"Total Units", residentialStartLevel:"Residential Start Level",
       unitsBreakdown:"Units Breakdown", unitsPerTower:"Units per Tower",
       bedrooms:"Bedrooms", bathrooms:"Bathrooms", sizeSqft:"Size (sqft)",
       carParkLevels:"Car Park Levels", numberOfCarParks:"No. of Car Parks",
       parkingNotes:"Parking Notes", numberOfLifts:"No. of Lifts",
-      priceFrom:"Price From", priceTo:"Price To",
       maintenanceFee:"Maintenance Fee", sinkingFund:"Sinking Fund",
       showroom:"Showroom", scaleModel:"Scale Model",
       description:"Description", highlights:"Highlights", facilities:"Facilities",
-      upgrades:"Upgrades",
+      upgrades:"Upgrades", image:"Main Image", tag:"Badge Tag",
     };
-    for (const [k, label] of Object.entries(FIELD_LABELS)) {
-      const v = result[k];
+    for (const [k, label] of Object.entries(STRING_FIELDS)) {
+      const v = r[k];
       if (v !== null && v !== undefined && v !== "") {
         formPatch[k] = Array.isArray(v) ? v.join(", ") : String(v);
         filled.push(label);
       }
     }
-    if (Array.isArray(result.totalFloorsPerTower) && result.totalFloorsPerTower.length) {
-      formPatch.totalFloorsPerTower = result.totalFloorsPerTower.join(", ");
+
+    // Price: extract numeric value if string contains currency
+    const parsePrice = (v) => {
+      if (typeof v === "number") return v;
+      if (typeof v === "string") {
+        const clean = v.replace(/[^\d.]/g, "");
+        const n = parseFloat(clean);
+        if (/mil/i.test(v)) return n * 1000000;
+        if (/k$/i.test(v)) return n * 1000;
+        return n;
+      }
+      return null;
+    };
+    if (r.priceFrom !== null && r.priceFrom !== undefined && r.priceFrom !== "") {
+      const n = parsePrice(r.priceFrom);
+      if (n && !isNaN(n)) { formPatch.priceFrom = String(Math.round(n)); filled.push("Price From"); }
+    }
+    if (r.priceTo !== null && r.priceTo !== undefined && r.priceTo !== "") {
+      const n = parsePrice(r.priceTo);
+      if (n && !isNaN(n)) { formPatch.priceTo = String(Math.round(n)); filled.push("Price To"); }
+    }
+
+    // totalFloorsPerTower — array → comma string
+    if (Array.isArray(r.totalFloorsPerTower) && r.totalFloorsPerTower.length) {
+      formPatch.totalFloorsPerTower = r.totalFloorsPerTower.join(", ");
+      filled.push("Floors per Tower");
+    } else if (typeof r.totalFloorsPerTower === "string" && r.totalFloorsPerTower) {
+      formPatch.totalFloorsPerTower = r.totalFloorsPerTower;
       filled.push("Floors per Tower");
     }
-    const unitTypes = Array.isArray(result.unitTypes) ? result.unitTypes : [];
+
+    // Gallery — array → comma string of URLs
+    if (Array.isArray(r.gallery) && r.gallery.length) {
+      formPatch.gallery = r.gallery.join(", ");
+      filled.push("Gallery Images");
+    }
+
+    // Coordinates — can come as { lat, lng } object or flat keys
+    const lat = r.coordinateLat ?? r.coordinates?.lat ?? r.lat ?? r.latitude;
+    const lng = r.coordinateLng ?? r.coordinates?.lng ?? r.lng ?? r.longitude;
+    if (lat && !isNaN(parseFloat(lat))) { formPatch.coordinateLat = String(parseFloat(lat).toFixed(6)); filled.push("Latitude"); }
+    if (lng && !isNaN(parseFloat(lng))) { formPatch.coordinateLng = String(parseFloat(lng).toFixed(6)); filled.push("Longitude"); }
+
+    // nearbyAmenities — serialise to JSON string if it's an array/object
+    if (r.nearbyAmenities && r.nearbyAmenities !== "") {
+      formPatch.nearbyAmenities = typeof r.nearbyAmenities === "string"
+        ? r.nearbyAmenities
+        : JSON.stringify(r.nearbyAmenities);
+      filled.push("Nearby Amenities");
+    }
+
+    // unitTypes — must stay as structured array, passed separately
+    const unitTypes = Array.isArray(r.unitTypes) ? r.unitTypes : [];
+
     return { formPatch, filled, unitTypes };
   };
 
@@ -2631,11 +2738,12 @@ function AIPDFWidget({ onAutofill }) {
 
         {step==="done" && filledFields.length > 0 && (
           <div className="ai-result-bar">
-            <div className="ai-result-txt">✓ AI successfully filled {filledFields.length} field{filledFields.length!==1?"s":""}!</div>
+            <div className="ai-result-ico">✅</div>
+            <div className="ai-result-txt">AI filled <strong>{filledFields.length} field{filledFields.length!==1?"s":""}</strong> — watch them light up in the form below!</div>
             <div className="ai-filled-fields">
-              {filledFields.map(f=><span key={f} className="ai-field-tag">{f}</span>)}
+              {filledFields.map(f=><span key={f} className="ai-field-tag">✓ {f}</span>)}
             </div>
-            <div className="ai-result-count">Review all tabs and adjust any values as needed.</div>
+            <div className="ai-result-count">Review all tabs — scroll down and check each highlighted field.</div>
           </div>
         )}
 
@@ -2861,14 +2969,25 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
     onSave({...form,unitTypes:JSON.stringify(unitTypesList)}, vis, sections);
   };
 
-  // AI autofill handler
+  // AI autofill handler — stagger field highlights for visual feedback
+  const [highlightedFields, setHighlightedFields] = useState({});
   const handleAIAutofill = (formPatch, unitTypes) => {
     setForm(f => ({ ...f, ...formPatch }));
     if (unitTypes && unitTypes.length > 0) setUnitTypesList(unitTypes);
+    // Flash each filled field green briefly
+    const keys = Object.keys(formPatch);
+    const newHighlights = {};
+    keys.forEach((k, i) => {
+      setTimeout(() => {
+        setHighlightedFields(prev => ({ ...prev, [k]: true }));
+        setTimeout(() => setHighlightedFields(prev => { const n={...prev}; delete n[k]; return n; }), 1800);
+      }, i * 60);
+    });
   };
-  const ff=(label,k,ph="",type="text",hint)=>(<div className="a-ff"><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}</label><input className="a-inp" type={type} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
-  const ft=(label,k,ph="",rows=2,hint)=>(<div className="a-ff"><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}</label><textarea className="a-txt" rows={rows} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
-  const fs=(label,k,opts)=>(<div className="a-ff"><label className="a-flbl">{label}</label><select className="a-sel" value={form[k]??""} onChange={e=>set(k,e.target.value)}>{opts.map(o=><option key={o}>{o}</option>)}</select></div>);
+  const hl=(k)=>highlightedFields[k]?"ai-hl":"";
+  const ff=(label,k,ph="",type="text",hint)=>(<div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label><input className={`a-inp ${hl(k)}`} type={type} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
+  const ft=(label,k,ph="",rows=2,hint)=>(<div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label><textarea className={`a-txt ${hl(k)}`} rows={rows} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
+  const fs=(label,k,opts)=>(<div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}><label className="a-flbl">{label}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label><select className={`a-sel ${hl(k)}`} value={form[k]??""} onChange={e=>set(k,e.target.value)}>{opts.map(o=><option key={o}>{o}</option>)}</select></div>);
   return(
     <div className="a-modal-ov" onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div className="a-modal">
