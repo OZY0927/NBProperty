@@ -1,18 +1,16 @@
-// Vercel Serverless Function — POST /api/parse-pdf
-// Uses Groq API with a text Llama model (free via Groq)
-// This implementation extracts text from PDF locally using `pdf-parse`
-// Set GROQ_API_KEY in Vercel Environment Variables
-// Get free key at: https://console.groq.com
+// ✅ Free Google Gemini API — native PDF support, no pdf-parse needed
+// Get your free API key at: https://aistudio.google.com/app/apikey
 
-import pdfParse from 'pdf-parse';
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "6mb",
+    },
+  },
+};
 
-const GROQ_MODEL = "llama-3.1-70b-versatile";
+const GEMINI_MODEL = "gemini-1.5-flash"; // Free tier model
 
-/**
- * Normalizes API response to extract values and mark low-confidence fields
- * @param {Object} data - Raw response from Gemini API with confidence scores
- * @returns {Object} Normalized data with extracted values and confidence metadata
- */
 function normalizeResponse(data) {
   const normalized = {};
   const confidenceMetadata = {};
@@ -23,7 +21,7 @@ function normalizeResponse(data) {
       confidenceMetadata[key] = field.confidence || 0;
     } else {
       normalized[key] = field;
-      confidenceMetadata[key] = 100; // Assume high confidence for legacy fields
+      confidenceMetadata[key] = 100;
     }
   }
 
@@ -33,77 +31,40 @@ function normalizeResponse(data) {
   };
 }
 
-const SYSTEM_PROMPT = `You are an expert data extraction engine for real estate project PDFs.
+function safeJSONParse(text) {
+  try {
+    const cleaned = text.replace(/```json\s*|```\s*/g, "").trim();
+    return JSON.parse(cleaned);
+  } catch {
+    return null;
+  }
+}
 
-Your task is to extract structured property project information from raw PDF text and return ONLY valid JSON with confidence scores.
+const PROMPT = `You are an expert data extraction engine for real estate project PDFs.
+Analyze the provided PDF and extract all relevant property data.
 
-Rules:
+Return ONLY a valid JSON object — no markdown, no explanation, no preamble.
 
-1. Extract information into the exact JSON schema provided.
-2. If a field is missing, return null.
-3. If a numeric value contains formatting (e.g. "RM 374,680"), remove symbols and commas, return number only.
-4. If a range exists (e.g. "RM 374,680 - RM 551,520"), split into min and max.
-5. Ignore unrelated notes, booking instructions, sales admin notes, promotional text, and miscellaneous paragraphs unless they match schema fields.
-6. If multiple values exist for a field, preserve them in arrays.
-7. Preserve important text formatting for descriptive fields.
-8. Infer values only when clearly indicated in the text. Otherwise use null.
-9. Normalize field names exactly as defined in the schema.
-10. For each field, provide a confidence score (0-100) indicating extraction certainty.
-
-Important field mappings:
-- "Freehold / Leasehold" → tenure
-- "Total Blocks" → totalBlocks
-- "Total Units" → totalUnits
-- "Expected Completion Date" → completionDate
-- "Gross Price Range" → priceRange
-- "Maintenance Fee + Sinking Fund" → maintenanceFee
-- "Panel Bank" → panelBanks
-- "Layout Size" → layouts
-
-Return ONLY JSON. No explanation, no markdown.
-
-Return data in this schema (ALL fields must have confidence scores):
+The JSON should include fields like:
 {
-  "projectName": { "value": string | null, "confidence": number },
-  "projectLocation": { "value": string | null, "confidence": number },
-  "developer": { "value": string | null, "confidence": number },
-  "titleType": { "value": string | null, "confidence": number },
-  "landSize": { "value": string | null, "confidence": number },
-  "constructionStage": { "value": string | null, "confidence": number },
-  "completionDate": { "value": string | null, "confidence": number },
-  "tenure": { "value": string | null, "confidence": number },
-  "totalBlocks": { "value": string | null, "confidence": number },
-  "totalFloors": { "value": string | null, "confidence": number },
-  "totalUnits": { "value": number | null, "confidence": number },
-  "carParks": { "value": string | null, "confidence": number },
-  "liftsPerBlock": { "value": string | null, "confidence": number },
-  "layouts": { "value": [{ "type": string, "sizeSqft": number }], "confidence": number },
-  "ceilingHeight": { "value": string | null, "confidence": number },
-  "maintenanceFee": { "value": string | null, "confidence": number },
-  "securityTiers": { "value": string | null, "confidence": number },
-  "priceRange": { "value": { "min": number | null, "max": number | null }, "confidence": number },
-  "showroom": { "value": string | null, "confidence": number },
-  "scaleModel": { "value": string | null, "confidence": number },
-  "bumiDiscount": { "value": string | null, "confidence": number },
-  "bookingFee": { "value": string | null, "confidence": number },
-  "cancellationFee": { "value": string | null, "confidence": number },
-  "spaLegalFee": { "value": string | null, "confidence": number },
-  "loanLegalFee": { "value": string | null, "confidence": number },
-  "spaDisbursementFee": { "value": string | null, "confidence": number },
-  "loanDisbursementFee": { "value": string | null, "confidence": number },
-  "spaStampDuty": { "value": string | null, "confidence": number },
-  "loanStampDuty": { "value": string | null, "confidence": number },
-  "motStampDuty": { "value": string | null, "confidence": number },
-  "motLegalFee": { "value": string | null, "confidence": number },
-  "panelBanks": { "value": [string], "confidence": number },
-  "panelLawyer": { "value": string | null, "confidence": number },
-  "salesGalleryLocation": { "value": string | null, "confidence": number },
-  "operatingHours": { "value": string | null, "confidence": number },
-  "additionalInformation": { "value": [string], "confidence": number }
-}`;
+  "projectName":    { "value": "...", "confidence": 95 },
+  "developerName":  { "value": "...", "confidence": 90 },
+  "location":       { "value": "...", "confidence": 88 },
+  "propertyType":   { "value": "...", "confidence": 92 },
+  "totalUnits":     { "value": "...", "confidence": 85 },
+  "priceRange":     { "value": "...", "confidence": 80 },
+  "builtUpArea":    { "value": "...", "confidence": 78 },
+  "completionDate": { "value": "...", "confidence": 70 },
+  "amenities":      { "value": ["...", "..."], "confidence": 75 },
+  "contactInfo":    { "value": "...", "confidence": 65 }
+}
+
+Only include fields actually found in the document.
+Use null for value if a field cannot be found.
+Confidence is 0-100 based on how clearly the data appears.`;
 
 export default async function handler(req, res) {
-  // CORS headers
+  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -113,84 +74,106 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: "GROQ_API_KEY not configured" });
+    return res.status(500).json({ error: "Missing GEMINI_API_KEY in environment" });
   }
 
   try {
     const { base64Data } = req.body;
+
     if (!base64Data || typeof base64Data !== "string") {
       return res.status(400).json({ error: "Missing base64Data in request body" });
     }
 
-    // Limit payload size (~20 MB base64)
-    if (base64Data.length > 28 * 1024 * 1024) {
-      return res.status(413).json({ error: "File too large" });
+    if (base64Data.length > 5 * 1024 * 1024) {
+      return res.status(413).json({ error: "File too large (max ~5MB base64)" });
     }
 
-    // Convert base64 PDF to Buffer and extract text using pdf-parse
-    let pdfText = "";
+    // Timeout protection
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
+
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+
+    let geminiRes;
     try {
-      const pdfBuffer = Buffer.from(base64Data, "base64");
-      const pdfData = await pdfParse(pdfBuffer);
-      pdfText = (pdfData && pdfData.text) ? String(pdfData.text) : "";
-    } catch (pdfErr) {
-      console.error("pdf-parse error:", pdfErr);
-      return res.status(500).json({ error: "Failed to parse PDF on server" });
-    }
-
-    // Call Groq text model with extracted PDF text
-    const url = `https://api.groq.com/openai/v1/chat/completions`;
-
-    // Protect the remote model from extremely large inputs. Truncate to a sensible length
-    // so we avoid oversized request bodies and model input length issues during debugging.
-    const MAX_MODEL_INPUT_CHARS = 150000; // ~150KB of text
-    const userContent = `Extract structured property project data from the following PDF text:\n\n${pdfText.slice(0, MAX_MODEL_INPUT_CHARS)}`;
-
-    let groqRes;
-    try {
-      groqRes = await fetch(url, {
+      geminiRes = await fetch(geminiUrl, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: GROQ_MODEL,
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: userContent },
+          contents: [
+            {
+              parts: [
+                {
+                  // Native PDF support via inline base64
+                  inline_data: {
+                    mime_type: "application/pdf",
+                    data: base64Data,
+                  },
+                },
+                {
+                  text: PROMPT,
+                },
+              ],
+            },
           ],
-          temperature: 0.1,
-          max_tokens: 4096,
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 2048,
+          },
         }),
+        signal: controller.signal,
       });
-    } catch (fetchErr) {
-      console.error("Network/fetch error when calling Groq API:", fetchErr);
-      return res.status(502).json({ error: "Network error calling Groq API" });
+    } catch (err) {
+      if (err.name === "AbortError") {
+        return res.status(504).json({ error: "Request timed out after 20s" });
+      }
+      console.error("Gemini fetch error:", err);
+      return res.status(502).json({ error: "Failed to reach Gemini API", message: err.message });
+    } finally {
+      clearTimeout(timeout);
     }
 
-    if (!groqRes.ok) {
-      const errBody = await groqRes.text().catch(() => "<unreadable response>");
-      const truncated = errBody.length > 2000 ? errBody.slice(0, 2000) + "...[truncated]" : errBody;
-      console.error("Groq API error:", groqRes.status, truncated);
-      return res.status(502).json({ error: `Groq API error ${groqRes.status}`, details: truncated });
+    if (!geminiRes.ok) {
+      const errText = await geminiRes.text().catch(() => "");
+      console.error("Gemini API error:", geminiRes.status, errText);
+      return res.status(502).json({
+        error: "Gemini API returned an error",
+        status: geminiRes.status,
+        details: errText,
+      });
     }
 
-    const data = await groqRes.json();
-    const rawText = data?.choices?.[0]?.message?.content || "";
+    const result = await geminiRes.json();
 
-    // Parse the JSON from Groq's response
-    const clean = rawText.replace(/```json|```/g, "").trim();
-    const parsed = JSON.parse(clean);
+    // Extract text from Gemini response
+    const rawText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-    // Normalize response to extract values and attach confidence metadata
+    if (!rawText) {
+      return res.status(500).json({ error: "Gemini returned an empty response" });
+    }
+
+    const parsed = safeJSONParse(rawText);
+
+    if (!parsed) {
+      console.error("Gemini returned non-JSON:", rawText.slice(0, 500));
+      return res.status(500).json({
+        error: "Gemini returned invalid JSON",
+        preview: rawText.slice(0, 500),
+      });
+    }
+
     const normalized = normalizeResponse(parsed);
-
     return res.status(200).json(normalized);
+
   } catch (err) {
-    console.error("parse-pdf error:", err);
-    return res.status(500).json({ error: err.message || "Internal server error" });
+    console.error("Unhandled error:", err);
+    return res.status(500).json({
+      error: "Internal server error",
+      message: err.message,
+    });
   }
 }
