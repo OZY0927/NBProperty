@@ -142,27 +142,40 @@ export default async function handler(req, res) {
 
     // Call Groq text model with extracted PDF text
     const url = `https://api.groq.com/openai/v1/chat/completions`;
-    const groqRes = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: GROQ_MODEL,
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: `Extract structured property project data from the following PDF text:\n\n${pdfText}` },
-        ],
-        temperature: 0.1,
-        max_tokens: 4096,
-      }),
-    });
+
+    // Protect the remote model from extremely large inputs. Truncate to a sensible length
+    // so we avoid oversized request bodies and model input length issues during debugging.
+    const MAX_MODEL_INPUT_CHARS = 150000; // ~150KB of text
+    const userContent = `Extract structured property project data from the following PDF text:\n\n${pdfText.slice(0, MAX_MODEL_INPUT_CHARS)}`;
+
+    let groqRes;
+    try {
+      groqRes = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: GROQ_MODEL,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: userContent },
+          ],
+          temperature: 0.1,
+          max_tokens: 4096,
+        }),
+      });
+    } catch (fetchErr) {
+      console.error("Network/fetch error when calling Groq API:", fetchErr);
+      return res.status(502).json({ error: "Network error calling Groq API" });
+    }
 
     if (!groqRes.ok) {
-      const errBody = await groqRes.text();
-      console.error("Groq API error:", groqRes.status, errBody);
-      return res.status(502).json({ error: `Groq API error ${groqRes.status}` });
+      const errBody = await groqRes.text().catch(() => "<unreadable response>");
+      const truncated = errBody.length > 2000 ? errBody.slice(0, 2000) + "...[truncated]" : errBody;
+      console.error("Groq API error:", groqRes.status, truncated);
+      return res.status(502).json({ error: `Groq API error ${groqRes.status}`, details: truncated });
     }
 
     const data = await groqRes.json();
