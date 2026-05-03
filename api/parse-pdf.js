@@ -9,7 +9,7 @@ export const config = {
   },
 };
 
-const GEMINI_MODEL = "gemini-2.5-flash"; // Free tier model
+const GEMINI_MODEL = "gemini-3-flash-preview"; // Free tier model
 
 function normalizeResponse(data) {
   const normalized = {};
