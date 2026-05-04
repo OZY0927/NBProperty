@@ -9,6 +9,15 @@ import { getApp } from "firebase/app";
 const crmDb = () => getFirestore(getApp());
 const leadsCol = () => collection(crmDb(), "leads");
 const activitiesCol = (leadId) => collection(crmDb(), "leads", leadId, "activities");
+const normalizeCrmLead = (lead) => ({
+  ...lead,
+  nextFollowUpDate:
+    lead?.nextFollowUpDate ||
+    lead?.followUpDate ||
+    lead?.followupDate ||
+    lead?.nextFollowUp ||
+    "",
+});
 
 async function crmAddLead(data) {
   return addDoc(leadsCol(), { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
@@ -21,7 +30,7 @@ async function crmDeleteLead(id) {
 }
 function crmLeadsListener(cb) {
   return onSnapshot(query(leadsCol(), orderBy("createdAt", "desc")), snap => {
-    cb(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    cb(snap.docs.map(d => normalizeCrmLead({ id: d.id, ...d.data() })));
   });
 }
 async function crmAddActivity(leadId, data) {
@@ -3749,7 +3758,7 @@ const LeadBadge=({status})=>(<span className="crm-badge" style={{color:CRM_STATU
 const CRMScoreBar=({score})=>{const color=score>=75?"#2d9e6b":score>=50?"#c9a84c":score>=25?"#ff9500":"#e63946";return(<span className="crm-score" style={{color}}>{score}<span className="crm-score-bar"><span className="crm-score-fill" style={{width:`${score}%`,background:color}}/></span></span>);};
 function LeadForm({lead,projects,onSave,onClose}){
   const blank={name:"",phone:"",email:"",budget:"",propertyInterest:"",source:"website",status:"new",assignedAgent:"",nextFollowUpDate:"",notes:""};
-  const [f,setF]=useState({...blank,...(lead&&lead!=="new"?lead:{})});
+  const [f,setF]=useState({...blank,...(lead&&lead!=="new"?normalizeCrmLead(lead):{})});
   const upd=(k,v)=>setF(p=>({...p,[k]:v}));
   const [busy,setBusy]=useState(false);
   const handleSave=async()=>{if(!f.name.trim()){alert("Name is required.");return;}setBusy(true);await onSave({...f,budget:f.budget?Number(f.budget):0});setBusy(false);};
