@@ -40,6 +40,26 @@ async function crmGetActivities(leadId) {
   const snap = await getDocs(query(activitiesCol(leadId), orderBy("timestamp", "desc")));
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
+async function crmCreateWebsiteEnquiryLead(data) {
+  const leadRef = await crmAddLead({
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    source: "website",
+    status: "new",
+    propertyInterest: data.projectName || "",
+    assignedAgent: "",
+    nextFollowUpDate: "",
+    budget: 0,
+    notes: data.notes || `Website enquiry submitted${data.projectName ? ` for ${data.projectName}` : ""}.`,
+  });
+  await crmAddActivity(leadRef.id, {
+    type: "note",
+    createdBy: "website",
+    content: `New website enquiry${data.projectName ? ` for ${data.projectName}` : ""}.`,
+  });
+  return leadRef;
+}
 
 /* ═══ CRM — constants ═══ */
 const CRM_STATUSES = ["new","contacted","qualified","viewing","closed"];
@@ -2102,47 +2122,28 @@ function RegisterInterestModal({ project, settings, onClose }) {
     return "";
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const err = validate();
     if (err) { setFormErr(err); return; }
     setFormErr("");
     setSending(true);
-    trackEvent("inquiry_email", { projectName: projName });
-    const adminEmail = settings?.adminEmail || "";
-    const subject    = encodeURIComponent(`Register Interest — ${projName}`);
-        // Normalize phone: remove non-digits, strip leading zeros, then prefix with country code
-        const phoneDigits = String(phone).replace(/[^0-9]/g, "");
-        let phoneNormalized = phoneDigits.replace(/^0+/, "");
-        const fullPhone = `+${phoneCountry}${phoneNormalized}`;
-
-        const body       = encodeURIComponent(
-      `New enquiry received from NB Property website.
-
-    ` +
-      `Project:  ${projName}
-    ` +
-      `Name:     ${name}
-    ` +
-      `Email:    ${email}
-    ` +
-      `Phone:    ${fullPhone}
-
-    ` +
-      `Sent via NB Property website.`
-        );
-
-    if (adminEmail) {
-      window.open(`mailto:${adminEmail}?subject=${subject}&body=${body}`, "_blank");
-    } else {
-      // Fallback: copy details
-      const txt = `Project: ${projName}
-Name: ${name}
-Email: ${email}
-Phone: ${fullPhone}`;
-      navigator.clipboard?.writeText(txt).catch(()=>{});
+    trackEvent("inquiry_submit", { projectName: projName });
+    const phoneDigits = String(phone).replace(/[^0-9]/g, "");
+    const phoneNormalized = phoneDigits.replace(/^0+/, "");
+    const fullPhone = `+${phoneCountry}${phoneNormalized}`;
+    try {
+      await crmCreateWebsiteEnquiryLead({
+        name: name.trim(),
+        email: email.trim(),
+        phone: fullPhone,
+        projectName: projName,
+      });
+      setSending(false);
+      setMode("sent");
+    } catch (e) {
+      setSending(false);
+      setFormErr(e?.message || "Failed to submit enquiry. Please try again.");
     }
-
-    setTimeout(() => { setSending(false); setMode("sent"); }, 600);
   };
 
   return (
@@ -2165,9 +2166,7 @@ Phone: ${fullPhone}`;
             <div className="ri-success-title">Enquiry Sent!</div>
             <p className="ri-success-sub">
               Thank you, <strong>{name}</strong>. Your interest in <strong>{projName}</strong> has been noted.<br/>
-              {settings?.adminEmail
-                ? "Your email client has been opened — please send the pre-filled email to complete your enquiry."
-                : "Our team will be in touch with you shortly."}
+              Your details have been added to our CRM and our team will be in touch with you shortly.
             </p>
           </div>
         )}
@@ -2176,7 +2175,7 @@ Phone: ${fullPhone}`;
         {mode!=="sent" && <>
           <div className="ri-options">
             <button className={`ri-opt-btn${mode==="form"?" on":""}`} onClick={()=>setMode("form")}>
-              ✉️ Send Enquiry
+              📝 Submit Enquiry
             </button>
             <button className={`ri-opt-btn${mode==="whatsapp"?" on":""}`} onClick={()=>setMode("whatsapp")}>
               💬 WhatsApp
@@ -2209,11 +2208,6 @@ Phone: ${fullPhone}`;
               <button className="ri-submit" onClick={handleSubmit} disabled={sending}>
                 {sending ? "Sending…" : "Submit Enquiry →"}
               </button>
-              {!settings?.adminEmail && (
-                <div style={{fontSize:".68rem",color:"var(--muted)",marginTop:".65rem",textAlign:"center",lineHeight:1.5}}>
-                  ⚠ Admin email not configured. Set it in Admin → Settings to enable email delivery.
-                </div>
-              )}
             </div>
           )}
 
@@ -4240,8 +4234,8 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
           <div className="set-card">
             <div className="set-card-title">✉️ Admin Email</div>
             <div className="set-card-sub">
-              When a user submits an enquiry form, their details will be sent to this email address via the user's default email client.<br/>
-              Leave blank to disable email enquiries.
+              Register Interest submissions are now saved directly into the CRM leads pipeline.<br/>
+              This email is only used for other admin contact flows that still rely on email, such as showroom booking follow-up.
             </div>
             <div className="set-field">
               <label className="set-label">Admin Email Address</label>
