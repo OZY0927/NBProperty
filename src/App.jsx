@@ -799,12 +799,12 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 .lbl-col{width:150px;min-width:120px;}
 .lbl-cell{padding:.7rem .9rem;font-size:.74rem;font-weight:600;color:var(--ink);border-bottom:1px solid var(--border);border-right:1px solid var(--border);height:50px;display:flex;align-items:center;background:var(--warm);}
 .sec-hd{padding:.55rem .9rem;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;background:var(--ink);border-bottom:1px solid #3d5a6e;border-right:1px solid #3d5a6e;height:34px;display:flex;align-items:center;}
-.val-cell{padding:.7rem .9rem;font-size:.8rem;color:var(--ink);border-bottom:1px solid var(--border);border-right:1px solid var(--border);height:50px;display:flex;align-items:center;background:var(--card);}
+.val-cell{padding:.7rem .9rem;font-size:.8rem;color:var(--ink);border-bottom:1px solid var(--border);border-right:1px solid var(--border);min-height:50px;height:auto;display:flex;align-items:center;background:var(--card);overflow:hidden;}
 .val-cell.best-cell{background:#ddeef7;}
 .val-cell.sec{background:var(--ink);border-bottom:1px solid #3d5a6e;border-right:1px solid #3d5a6e;height:34px;}
 .best-tag{background:var(--gold);color:var(--ink);font-size:.56rem;font-weight:700;letter-spacing:.06em;padding:.1rem .38rem;margin-left:.4rem;white-space:nowrap;}
-.tw{display:flex;flex-wrap:wrap;gap:.2rem;}
-.ctag2{background:var(--warm);border:1px solid var(--border);font-size:.62rem;padding:.12rem .38rem;color:var(--ink);}
+.tw{display:flex;flex-wrap:wrap;gap:.3rem;overflow:hidden;max-width:100%;}
+.ctag2{background:var(--warm);border:1px solid var(--border);font-size:.62rem;padding:.15rem .45rem;color:var(--ink);max-width:100%;word-break:break-word;white-space:normal;line-height:1.4;}
 .add-more{text-align:center;padding:1.8rem;background:var(--warm);border:1px dashed var(--border);margin-top:1rem;}
 .add-more p{color:var(--muted);font-size:.84rem;margin-bottom:.7rem;}
 
@@ -3866,8 +3866,6 @@ export default function App(){
                       <Row l="Layout Types" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const ut=p.unitTypes;return Array.isArray(ut)?`${ut.length} types`:"—";}}/>
                       <Sec l="HIGHLIGHTS"/>
                       <Row l="Highlights" r={p=>{const a=cvArr(p,"overview.highlights",p.highlights);return a?<div className="tw">{a.map(h=><span key={h} className="ctag2">{h}</span>)}</div>:"—";}}/>
-                      <Sec l="FACILITIES"/>
-                      <Row l="Amenities" r={p=>{const a=cvArr(p,"overview.facList",p.facilities);return a?<div className="tw">{a.map(f=><span key={f} className="ctag2">{f}</span>)}</div>:"—";}}/>
                     </>);
                   })()}</tbody>
                 </table>
