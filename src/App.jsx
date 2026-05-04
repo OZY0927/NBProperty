@@ -851,6 +851,7 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 /* Lead detail drawer */
 .crm-drawer-ov{position:fixed;inset:0;z-index:350;background:rgba(5,7,12,.55);animation:fadeIn .2s ease;}
 .crm-drawer{position:fixed;top:0;right:0;bottom:0;width:min(500px,100vw);background:var(--a-bg);border-left:1px solid var(--a-border);display:flex;flex-direction:column;animation:slideLeft .28s ease;overflow:hidden;}
+.crm-drawer{z-index:360;}
 @keyframes slideLeft{from{opacity:0;transform:translateX(32px);}to{opacity:1;transform:translateX(0);}}
 .crm-drawer-hd{padding:1.2rem 1.4rem;border-bottom:1px solid var(--a-border);display:flex;align-items:flex-start;gap:1rem;flex-shrink:0;background:linear-gradient(180deg,var(--a-surface),var(--a-bg));}
 .crm-drawer-body{flex:1;overflow-y:auto;padding:1.2rem 1.4rem;display:flex;flex-direction:column;gap:1.2rem;}
