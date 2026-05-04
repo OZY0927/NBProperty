@@ -1,6 +1,45 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, migrateAnalytics, deleteAllAnalytics } from "./firebase/firestore";
 import COUNTRY_CODES from "./data/countryCodes";
+// Firebase SDK — reuses the app already initialised by ./firebase/firestore
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
+import { getApp } from "firebase/app";
+
+/* ═══ CRM — Firestore helpers ═══ */
+const crmDb = () => getFirestore(getApp());
+const leadsCol = () => collection(crmDb(), "leads");
+const activitiesCol = (leadId) => collection(crmDb(), "leads", leadId, "activities");
+
+async function crmAddLead(data) {
+  return addDoc(leadsCol(), { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+}
+async function crmUpdateLead(id, data) {
+  return updateDoc(doc(crmDb(), "leads", id), { ...data, updatedAt: serverTimestamp() });
+}
+async function crmDeleteLead(id) {
+  return deleteDoc(doc(crmDb(), "leads", id));
+}
+function crmLeadsListener(cb) {
+  return onSnapshot(query(leadsCol(), orderBy("createdAt", "desc")), snap => {
+    cb(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+  });
+}
+async function crmAddActivity(leadId, data) {
+  return addDoc(activitiesCol(leadId), { ...data, timestamp: serverTimestamp() });
+}
+async function crmGetActivities(leadId) {
+  const snap = await getDocs(query(activitiesCol(leadId), orderBy("timestamp", "desc")));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+/* ═══ CRM — constants ═══ */
+const CRM_STATUSES = ["new","contacted","qualified","viewing","closed"];
+const CRM_STATUS_LABELS = { new:"New Lead", contacted:"Contacted", qualified:"Qualified", viewing:"Viewing", closed:"Closed" };
+const CRM_STATUS_COLORS = { new:"#3a86ff", contacted:"#ff9500", qualified:"#c9a84c", viewing:"#5289AD", closed:"#2d9e6b" };
+const CRM_STATUS_BG    = { new:"rgba(58,134,255,.12)", contacted:"rgba(255,149,0,.12)", qualified:"rgba(201,168,76,.12)", viewing:"rgba(82,137,173,.12)", closed:"rgba(45,158,107,.12)" };
+const CRM_SOURCES = ["website","fb_ads","referral","walk_in","other"];
+const CRM_SOURCE_LABELS = { website:"Website", fb_ads:"Facebook Ads", referral:"Referral", walk_in:"Walk-in", other:"Other" };
+const EMPTY_LEAD = { name:"", phone:"", email:"", budget:"", propertyInterest:"", source:"website", status:"new", assignedAgent:"", nextFollowUpDate:"", notes:"" };
 
 /* ═══════════════════════════════════════════════
    DATA  –  unitTypes is now an array of objects,
@@ -724,7 +763,134 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
   .a-main{padding:1rem .75rem;}
   .a-login-box{padding:1.8rem 1.2rem;}
 }
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.8rem;}
+
+/* ═══════════════════════════════════════════
+   CRM — Lead Management System styles
+═══════════════════════════════════════════ */
+/* CRM sub-nav */
+.crm-subnav{display:flex;gap:.3rem;margin-bottom:1.5rem;border-bottom:1px solid var(--a-border);padding-bottom:.5rem;}
+.crm-subbtn{background:transparent;border:none;padding:.5rem 1rem;font-family:var(--sans);font-size:.76rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--a-muted);cursor:pointer;border-radius:6px 6px 0 0;transition:all .18s;}
+.crm-subbtn:hover{color:var(--a-text);}
+.crm-subbtn.on{background:var(--a-surface2);color:var(--a-gold);}
+
+/* Status badge */
+.crm-badge{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.2rem .6rem;border-radius:999px;white-space:nowrap;}
+
+/* Lead table */
+.crm-toolbar{display:flex;align-items:center;gap:.65rem;margin-bottom:1rem;flex-wrap:wrap;}
+.crm-search{flex:1;min-width:180px;background:var(--a-surface);border:1px solid var(--a-border);color:var(--a-text);padding:.55rem .9rem;font-family:var(--sans);font-size:.82rem;outline:none;border-radius:4px;}
+.crm-search:focus{border-color:var(--a-gold);}
+.crm-select{background:var(--a-surface);border:1px solid var(--a-border);color:var(--a-text);padding:.55rem 2rem .55rem .85rem;font-family:var(--sans);font-size:.8rem;cursor:pointer;outline:none;border-radius:4px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a5168' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center;}
+
+/* Lead table */
+.crm-tbl-wrap{overflow-x:auto;border:1px solid var(--a-border);border-radius:6px;margin-bottom:1rem;}
+.crm-tbl{width:100%;border-collapse:collapse;min-width:700px;}
+.crm-tbl thead tr{background:var(--a-surface2);}
+.crm-tbl th{padding:.65rem .9rem;text-align:left;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--a-muted);font-weight:700;border-bottom:1px solid var(--a-border);cursor:pointer;user-select:none;white-space:nowrap;}
+.crm-tbl th:hover{color:var(--a-text);}
+.crm-tbl td{padding:.7rem .9rem;font-size:.81rem;color:var(--a-text);border-bottom:1px solid var(--a-border);}
+.crm-tbl tr:last-child td{border-bottom:none;}
+.crm-tbl tbody tr{transition:background .15s;cursor:pointer;}
+.crm-tbl tbody tr:hover{background:rgba(255,255,255,.025);}
+.crm-score{display:inline-flex;align-items:center;gap:.3rem;font-size:.74rem;font-weight:700;}
+.crm-score-bar{height:6px;border-radius:999px;background:rgba(255,255,255,.08);width:48px;overflow:hidden;}
+.crm-score-fill{height:100%;border-radius:999px;}
+.crm-wa-link{display:inline-flex;align-items:center;gap:.35rem;color:#25d366;font-size:.76rem;font-weight:600;text-decoration:none;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:999px;padding:.22rem .65rem;transition:all .18s;}
+.crm-wa-link:hover{background:rgba(37,211,102,.18);}
+.crm-row-act{display:flex;gap:.3rem;}
+.crm-ico{width:28px;height:28px;background:transparent;border:1px solid var(--a-border);color:var(--a-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:4px;transition:all .15s;font-size:.8rem;}
+.crm-ico:hover{border-color:var(--a-gold);color:var(--a-gold);}
+.crm-ico.del:hover{border-color:var(--a-red);color:var(--a-red);}
+
+/* Kanban */
+.crm-kanban{display:flex;gap:1rem;overflow-x:auto;padding-bottom:1rem;min-height:520px;-webkit-overflow-scrolling:touch;}
+.crm-col{flex:0 0 240px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;display:flex;flex-direction:column;max-height:calc(100vh - 220px);}
+.crm-col-hd{padding:.7rem .9rem;border-bottom:1px solid var(--a-border);display:flex;align-items:center;gap:.5rem;flex-shrink:0;border-radius:8px 8px 0 0;}
+.crm-col-hd-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--a-text);flex:1;}
+.crm-col-count{background:var(--a-bg);color:var(--a-muted);font-size:.62rem;font-weight:700;padding:.1rem .42rem;border-radius:999px;}
+.crm-col-body{flex:1;overflow-y:auto;padding:.5rem;display:flex;flex-direction:column;gap:.5rem;scrollbar-width:thin;scrollbar-color:var(--a-border) transparent;}
+.crm-col-body.drag-over{background:rgba(82,137,173,.06);outline:2px dashed rgba(82,137,173,.3);outline-offset:-4px;border-radius:0 0 8px 8px;}
+.crm-card{background:var(--a-bg);border:1px solid var(--a-border);border-radius:6px;padding:.75rem .85rem;cursor:grab;transition:all .2s ease;user-select:none;}
+.crm-card:hover{border-color:rgba(82,137,173,.35);box-shadow:0 4px 14px rgba(0,0,0,.2);transform:translateY(-1px);}
+.crm-card.dragging{opacity:.45;cursor:grabbing;}
+.crm-card-name{font-size:.84rem;font-weight:700;color:var(--a-text);margin-bottom:.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.crm-card-meta{font-size:.72rem;color:var(--a-muted);margin-bottom:.5rem;line-height:1.5;}
+.crm-card-foot{display:flex;align-items:center;justify-content:space-between;gap:.4rem;}
+.crm-card-src{font-size:.6rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--a-muted);}
+.crm-card-score{font-size:.68rem;font-weight:700;}
+.crm-overdue{color:#e63946;font-size:.64rem;font-weight:700;margin-top:.35rem;display:flex;align-items:center;gap:.25rem;}
+
+/* Lead form modal */
+.crm-modal-ov{position:fixed;inset:0;z-index:400;background:rgba(5,7,12,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeIn .2s ease;}
+.crm-modal{background:var(--a-surface);border:1px solid var(--a-border);width:100%;max-width:640px;max-height:90vh;display:flex;flex-direction:column;border-radius:8px;overflow:hidden;animation:slideUp .25s ease;}
+.crm-modal-hd{background:var(--a-bg);padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--a-border);flex-shrink:0;}
+.crm-modal-title{font-family:var(--serif);font-size:1.35rem;color:#fff;font-weight:400;}
+.crm-modal-title em{color:var(--a-gold);font-style:italic;}
+.crm-modal-x{width:32px;height:32px;background:transparent;border:1px solid var(--a-border);color:var(--a-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:4px;transition:all .15s;}
+.crm-modal-x:hover{border-color:var(--a-red);color:var(--a-red);}
+.crm-modal-body{padding:1.4rem 1.5rem;overflow-y:auto;flex:1;}
+.crm-modal-ft{padding:1rem 1.5rem;border-top:1px solid var(--a-border);display:flex;justify-content:flex-end;gap:.65rem;flex-shrink:0;}
+.crm-field{margin-bottom:.95rem;}
+.crm-label{display:block;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--a-muted);font-weight:700;margin-bottom:.35rem;}
+.crm-inp{width:100%;background:var(--a-bg);border:1px solid var(--a-border);color:var(--a-text);padding:.6rem .85rem;font-family:var(--sans);font-size:.84rem;outline:none;border-radius:4px;transition:border-color .18s;}
+.crm-inp:focus{border-color:var(--a-gold);}
+.crm-inp::placeholder{color:var(--a-muted);}
+.crm-grid2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
+.crm-textarea{width:100%;background:var(--a-bg);border:1px solid var(--a-border);color:var(--a-text);padding:.6rem .85rem;font-family:var(--sans);font-size:.84rem;outline:none;border-radius:4px;resize:vertical;min-height:72px;transition:border-color .18s;}
+.crm-textarea:focus{border-color:var(--a-gold);}
+.crm-btn-pri{background:var(--a-cta);color:var(--a-bg);border:none;padding:.6rem 1.4rem;font-family:var(--sans);font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:opacity .2s;}
+.crm-btn-pri:hover{opacity:.88;}
+.crm-btn-sec{background:transparent;border:1px solid var(--a-border);color:var(--a-muted);padding:.6rem 1.2rem;font-family:var(--sans);font-size:.8rem;cursor:pointer;border-radius:4px;transition:all .18s;}
+.crm-btn-sec:hover{border-color:var(--a-text);color:var(--a-text);}
+
+/* Lead detail drawer */
+.crm-drawer-ov{position:fixed;inset:0;z-index:350;background:rgba(5,7,12,.55);animation:fadeIn .2s ease;}
+.crm-drawer{position:fixed;top:0;right:0;bottom:0;width:min(500px,100vw);background:var(--a-bg);border-left:1px solid var(--a-border);display:flex;flex-direction:column;animation:slideLeft .28s ease;overflow:hidden;}
+@keyframes slideLeft{from{opacity:0;transform:translateX(32px);}to{opacity:1;transform:translateX(0);}}
+.crm-drawer-hd{padding:1.2rem 1.4rem;border-bottom:1px solid var(--a-border);display:flex;align-items:flex-start;gap:1rem;flex-shrink:0;background:linear-gradient(180deg,var(--a-surface),var(--a-bg));}
+.crm-drawer-body{flex:1;overflow-y:auto;padding:1.2rem 1.4rem;display:flex;flex-direction:column;gap:1.2rem;}
+.crm-drawer-name{font-family:var(--serif);font-size:1.3rem;font-weight:600;color:#fff;flex:1;}
+.crm-drawer-sec{background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow:hidden;}
+.crm-drawer-sec-hd{padding:.6rem 1rem;background:var(--a-surface2);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--a-gold);font-weight:700;border-bottom:1px solid var(--a-border);}
+.crm-drawer-sec-body{padding:.85rem 1rem;}
+.crm-detail-row{display:flex;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--a-border);font-size:.8rem;}
+.crm-detail-row:last-child{border-bottom:none;}
+.crm-detail-key{color:var(--a-muted);font-size:.72rem;min-width:110px;flex-shrink:0;font-weight:600;letter-spacing:.04em;padding-top:.05rem;}
+.crm-detail-val{color:var(--a-text);flex:1;font-weight:500;line-height:1.5;}
+
+/* Activity feed */
+.crm-activity-list{display:flex;flex-direction:column;gap:.6rem;}
+.crm-activity-item{display:flex;gap:.75rem;font-size:.79rem;}
+.crm-activity-dot{width:30px;height:30px;border-radius:50%;background:var(--a-surface2);border:1px solid var(--a-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem;}
+.crm-activity-content{flex:1;padding-top:.2rem;}
+.crm-activity-text{color:var(--a-text);line-height:1.5;margin-bottom:.18rem;}
+.crm-activity-time{color:var(--a-muted);font-size:.68rem;}
+.crm-note-form{display:flex;gap:.5rem;margin-top:.65rem;}
+.crm-note-inp{flex:1;background:var(--a-bg);border:1px solid var(--a-border);color:var(--a-text);padding:.55rem .8rem;font-family:var(--sans);font-size:.82rem;outline:none;border-radius:4px;}
+.crm-note-inp:focus{border-color:var(--a-gold);}
+.crm-note-add{background:var(--a-cta);color:var(--a-bg);border:none;padding:.55rem 1rem;font-family:var(--sans);font-size:.76rem;font-weight:700;cursor:pointer;border-radius:4px;white-space:nowrap;}
+
+/* Analytics cards */
+.crm-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.85rem;margin-bottom:1.5rem;}
+.crm-stat{background:var(--a-surface);border:1px solid var(--a-border);padding:1rem 1.2rem;border-radius:8px;}
+.crm-stat-lbl{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--a-muted);margin-bottom:.45rem;font-weight:600;}
+.crm-stat-val{font-family:var(--serif);font-size:1.9rem;font-weight:600;color:#fff;line-height:1;}
+.crm-stat-sub{font-size:.72rem;color:var(--a-muted);margin-top:.25rem;}
+/* SVG chart */
+.crm-chart-card{background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:1.1rem 1.3rem;margin-bottom:1rem;}
+.crm-chart-title{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--a-gold);font-weight:700;margin-bottom:1rem;}
+.crm-bar-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.55rem;font-size:.78rem;}
+.crm-bar-lbl{width:90px;flex-shrink:0;color:var(--a-muted);text-align:right;font-size:.72rem;}
+.crm-bar-track{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;}
+.crm-bar-fill{height:100%;border-radius:999px;transition:width .5s ease;}
+.crm-bar-val{width:32px;flex-shrink:0;color:var(--a-text);font-weight:700;font-size:.76rem;}
+
+@media(max-width:768px){
+  .crm-kanban{flex-direction:column;}
+  .crm-col{flex:0 0 auto;max-height:320px;}
+  .crm-grid2{grid-template-columns:1fr;}
+  .crm-drawer{width:100vw;}
+}
 
 .card{background:var(--card);border:1px solid var(--border);cursor:pointer;overflow:hidden;transition:transform .25s,box-shadow .25s;position:relative;}
 .card:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(0,0,0,.1);}
@@ -3568,6 +3734,314 @@ function AnalyticsDashboard() {
   );
 }
 
+/* ═══ CRM / LEAD MANAGEMENT ═══ */
+const crmScore=(lead)=>{let s=0;if(lead.email)s+=15;if(lead.phone)s+=20;if(lead.budget&&Number(lead.budget)>0)s+=20;if(lead.propertyInterest)s+=10;if(lead.assignedAgent)s+=15;if(lead.nextFollowUpDate)s+=10;if(lead.notes&&lead.notes.length>20)s+=10;const age=lead.createdAt&&lead.createdAt.toMillis?(Date.now()-lead.createdAt.toMillis())/86400000:0;if(age<3)s+=5;else if(age>14)s=Math.max(0,s-15);return Math.min(100,s);};
+const crmFmtDate=(ts)=>{if(!ts)return"—";const d=ts.toDate?ts.toDate():new Date(ts);const diff=(Date.now()-d)/1000;if(diff<60)return"just now";if(diff<3600)return`${Math.floor(diff/60)}m ago`;if(diff<86400)return`${Math.floor(diff/3600)}h ago`;if(diff<604800)return`${Math.floor(diff/86400)}d ago`;return d.toLocaleDateString("en-MY",{day:"numeric",month:"short",year:"2-digit"});};
+const crmWaLink=(phone,name,project)=>{const p=(phone||"").replace(/[^0-9]/g,"");const msg=encodeURIComponent(`Hi, I'm following up on your enquiry${project?` about ${project}`:""}. Are you still interested?`);return{href:`https://wa.me/${p}?text=${msg}`,label:phone||""};};
+const crmExportCSV=(leads)=>{const esc=v=>`"${String(v||"").replace(/"/g,'""')}"`;const headers=["Name","Phone","Email","Source","Status","Budget","Interest","Agent","Follow-up","Created","Notes"];const rows=leads.map(l=>[l.name,l.phone,l.email,l.source,l.status,l.budget,l.propertyInterest,l.assignedAgent,l.nextFollowUpDate,l.createdAt&&l.createdAt.toDate?l.createdAt.toDate().toISOString().split("T")[0]:"",l.notes].map(esc).join(","));const csv=[headers.join(","),...rows].join("\n");const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`leads_${new Date().toISOString().split("T")[0]}.csv`;a.click();URL.revokeObjectURL(url);};
+const LeadBadge=({status})=>(<span className="crm-badge" style={{color:CRM_STATUS_COLORS[status]||"var(--a-muted)",background:CRM_STATUS_BG[status]||"transparent",border:`1px solid ${(CRM_STATUS_COLORS[status]||"#333")}44`}}>{CRM_STATUS_LABELS[status]||status}</span>);
+const CRMScoreBar=({score})=>{const color=score>=75?"#2d9e6b":score>=50?"#c9a84c":score>=25?"#ff9500":"#e63946";return(<span className="crm-score" style={{color}}>{score}<span className="crm-score-bar"><span className="crm-score-fill" style={{width:`${score}%`,background:color}}/></span></span>);};
+function LeadForm({lead,projects,onSave,onClose}){
+  const blank={name:"",phone:"",email:"",budget:"",propertyInterest:"",source:"website",status:"new",assignedAgent:"",nextFollowUpDate:"",notes:""};
+  const [f,setF]=useState({...blank,...(lead&&lead!=="new"?lead:{})});
+  const upd=(k,v)=>setF(p=>({...p,[k]:v}));
+  const [busy,setBusy]=useState(false);
+  const handleSave=async()=>{if(!f.name.trim()){alert("Name is required.");return;}setBusy(true);await onSave({...f,budget:f.budget?Number(f.budget):0});setBusy(false);};
+  useEffect(()=>{const h=e=>{if(e.key==="Escape")onClose();};document.addEventListener("keydown",h);return()=>document.removeEventListener("keydown",h);},[onClose]);
+  return(
+    <div className="crm-modal-ov" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="crm-modal">
+        <div className="crm-modal-hd">
+          <div className="crm-modal-title">{lead&&lead!=="new"?"Edit":"New"} <em>Lead</em></div>
+          <button className="crm-modal-x" onClick={onClose}>✕</button>
+        </div>
+        <div className="crm-modal-body">
+          <div className="crm-grid2">
+            <div className="crm-field"><label className="crm-label">Full Name *</label><input className="crm-inp" value={f.name} onChange={e=>upd("name",e.target.value)} placeholder="Ahmad bin Ali"/></div>
+            <div className="crm-field"><label className="crm-label">Phone</label><input className="crm-inp" value={f.phone} onChange={e=>upd("phone",e.target.value)} placeholder="+60 12-345 6789" type="tel"/></div>
+          </div>
+          <div className="crm-grid2">
+            <div className="crm-field"><label className="crm-label">Email</label><input className="crm-inp" value={f.email} onChange={e=>upd("email",e.target.value)} placeholder="email@example.com" type="email"/></div>
+            <div className="crm-field"><label className="crm-label">Budget (RM)</label><input className="crm-inp" value={f.budget} onChange={e=>upd("budget",e.target.value)} placeholder="650000" type="number" min="0"/></div>
+          </div>
+          <div className="crm-grid2">
+            <div className="crm-field"><label className="crm-label">Source</label><select className="crm-inp" value={f.source} onChange={e=>upd("source",e.target.value)}>{CRM_SOURCES.map(s=><option key={s} value={s}>{CRM_SOURCE_LABELS[s]}</option>)}</select></div>
+            <div className="crm-field"><label className="crm-label">Status</label><select className="crm-inp" value={f.status} onChange={e=>upd("status",e.target.value)}>{CRM_STATUSES.map(s=><option key={s} value={s}>{CRM_STATUS_LABELS[s]}</option>)}</select></div>
+          </div>
+          <div className="crm-grid2">
+            <div className="crm-field"><label className="crm-label">Property Interest</label><select className="crm-inp" value={f.propertyInterest} onChange={e=>upd("propertyInterest",e.target.value)}><option value="">— Any —</option>{(projects||[]).map(p=><option key={p.id} value={p.name}>{p.name}</option>)}</select></div>
+            <div className="crm-field"><label className="crm-label">Assigned Agent</label><input className="crm-inp" value={f.assignedAgent} onChange={e=>upd("assignedAgent",e.target.value)} placeholder="Agent name"/></div>
+          </div>
+          <div className="crm-field"><label className="crm-label">Next Follow-up Date</label><input className="crm-inp" value={f.nextFollowUpDate} onChange={e=>upd("nextFollowUpDate",e.target.value)} type="date"/></div>
+          <div className="crm-field"><label className="crm-label">Notes</label><textarea className="crm-textarea" value={f.notes} onChange={e=>upd("notes",e.target.value)} placeholder="Quick notes about this lead…"/></div>
+        </div>
+        <div className="crm-modal-ft">
+          <button className="crm-btn-sec" onClick={onClose}>Cancel</button>
+          <button className="crm-btn-pri" onClick={handleSave} disabled={busy}>{busy?"Saving…":"Save Lead"}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+function LeadDrawer({lead,activities,projects,onClose,onUpdate,onAddActivity,onEdit,onDelete}){
+  const [note,setNote]=useState("");
+  const [noteType,setNoteType]=useState("note");
+  const [busy,setBusy]=useState(false);
+  const score=crmScore(lead);
+  const wa=lead.phone?crmWaLink(lead.phone,lead.name,lead.propertyInterest):null;
+  const isOverdue=lead.nextFollowUpDate&&new Date(lead.nextFollowUpDate)<new Date();
+  const addNote=async()=>{if(!note.trim())return;setBusy(true);await onAddActivity({type:noteType,content:note.trim(),createdBy:"admin"});setNote("");setBusy(false);};
+  const typeIcons={note:"📝",call:"📞",email:"✉️",status_change:"🔄",assignment:"👤"};
+  return(
+    <>
+      <div className="crm-drawer-ov" onClick={onClose}/>
+      <div className="crm-drawer">
+        <div className="crm-drawer-hd">
+          <div style={{flex:1}}>
+            <div className="crm-drawer-name">{lead.name}</div>
+            <div style={{marginTop:".35rem",display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}><LeadBadge status={lead.status}/><span style={{fontSize:".72rem",color:"var(--a-muted)"}}>{CRM_SOURCE_LABELS[lead.source]||lead.source}</span><CRMScoreBar score={score}/></div>
+          </div>
+          <div style={{display:"flex",gap:".4rem"}}>
+            <button className="crm-ico" onClick={onEdit} title="Edit">✏️</button>
+            <button className="crm-ico del" onClick={()=>{if(window.confirm(`Delete lead "${lead.name}"?`)){onDelete(lead.id);}}} title="Delete">🗑</button>
+            <button className="crm-ico" onClick={onClose} title="Close">✕</button>
+          </div>
+        </div>
+        <div className="crm-drawer-body">
+          <div className="crm-drawer-sec">
+            <div className="crm-drawer-sec-hd">Contact Info</div>
+            <div className="crm-drawer-sec-body" style={{padding:0}}>
+              <div className="crm-detail-row" style={{padding:".5rem 1rem"}}><span className="crm-detail-key">Phone</span><span className="crm-detail-val">{wa?<a href={wa.href} className="crm-wa-link" onClick={e=>e.stopPropagation()} target="_blank" rel="noopener noreferrer">💬 {wa.label}</a>:"—"}</span></div>
+              <div className="crm-detail-row" style={{padding:".5rem 1rem"}}><span className="crm-detail-key">Email</span><span className="crm-detail-val">{lead.email||"—"}</span></div>
+              <div className="crm-detail-row" style={{padding:".5rem 1rem"}}><span className="crm-detail-key">Budget</span><span className="crm-detail-val">{lead.budget?`RM ${Number(lead.budget).toLocaleString()}`:"—"}</span></div>
+              <div className="crm-detail-row" style={{padding:".5rem 1rem"}}><span className="crm-detail-key">Interest</span><span className="crm-detail-val">{lead.propertyInterest||"Any"}</span></div>
+              <div className="crm-detail-row" style={{padding:".5rem 1rem"}}><span className="crm-detail-key">Agent</span><span className="crm-detail-val">{lead.assignedAgent||"Unassigned"}</span></div>
+              <div className="crm-detail-row" style={{padding:".5rem 1rem",borderBottom:"none"}}><span className="crm-detail-key">Follow-up</span><span className="crm-detail-val" style={{color:isOverdue?"#e63946":"inherit"}}>{lead.nextFollowUpDate||"—"}{isOverdue?" ⚠":""}</span></div>
+            </div>
+          </div>
+          <div className="crm-drawer-sec">
+            <div className="crm-drawer-sec-hd">Move Stage</div>
+            <div className="crm-drawer-sec-body" style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
+              {CRM_STATUSES.map(s=><button key={s} onClick={()=>onUpdate({status:s})} style={{background:lead.status===s?CRM_STATUS_BG[s]:"transparent",border:`1px solid ${lead.status===s?CRM_STATUS_COLORS[s]:"var(--a-border)"}`,color:lead.status===s?CRM_STATUS_COLORS[s]:"var(--a-muted)",padding:".35rem .75rem",borderRadius:999,font:"600 .7rem var(--sans)",cursor:"pointer",letterSpacing:".06em",textTransform:"uppercase",transition:"all .18s"}}>{CRM_STATUS_LABELS[s]}</button>)}
+            </div>
+          </div>
+          {lead.notes&&<div className="crm-drawer-sec"><div className="crm-drawer-sec-hd">Notes</div><div className="crm-drawer-sec-body" style={{fontSize:".82rem",color:"var(--a-text)",lineHeight:1.6,whiteSpace:"pre-wrap"}}>{lead.notes}</div></div>}
+          <div className="crm-drawer-sec">
+            <div className="crm-drawer-sec-hd">Activity ({(activities||[]).length})</div>
+            <div className="crm-drawer-sec-body">
+              <div className="crm-activity-list">
+                {(activities||[]).length===0&&<div style={{color:"var(--a-muted)",fontSize:".78rem",textAlign:"center",padding:"1rem 0"}}>No activity yet.</div>}
+                {(activities||[]).map(a=><div key={a.id} className="crm-activity-item"><div className="crm-activity-dot">{typeIcons[a.type]||"📌"}</div><div className="crm-activity-content"><div className="crm-activity-text">{a.content}</div><div className="crm-activity-time">{crmFmtDate(a.timestamp)} · {a.createdBy||"admin"}</div></div></div>)}
+              </div>
+              <div className="crm-note-form" style={{marginTop:".85rem"}}>
+                <select value={noteType} onChange={e=>setNoteType(e.target.value)} style={{background:"var(--a-surface)",border:"1px solid var(--a-border)",color:"var(--a-muted)",borderRadius:4,padding:".5rem",font:"600 .76rem var(--sans)",cursor:"pointer",flexShrink:0}}>
+                  <option value="note">📝 Note</option>
+                  <option value="call">📞 Call</option>
+                  <option value="email">✉️ Email</option>
+                </select>
+                <input className="crm-note-inp" value={note} onChange={e=>setNote(e.target.value)} placeholder="Log a note, call, or email…" onKeyDown={e=>e.key==="Enter"&&addNote()}/>
+                <button className="crm-note-add" onClick={addNote} disabled={busy||!note.trim()}>Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete}){
+  const [srch,setSrch]=useState("");
+  const [statF,setStatF]=useState("all");
+  const [srcF,setSrcF]=useState("all");
+  const [sort,setSort]=useState({k:"createdAt",asc:false});
+  const sortBy=k=>setSort(s=>({k,asc:s.k===k?!s.asc:false}));
+  const filtered=useMemo(()=>{
+    let rows=[...leads];
+    if(statF!=="all")rows=rows.filter(l=>l.status===statF);
+    if(srcF!=="all")rows=rows.filter(l=>l.source===srcF);
+    if(srch){const q=srch.toLowerCase();rows=rows.filter(l=>(l.name||"").toLowerCase().includes(q)||(l.phone||"").includes(q)||(l.email||"").toLowerCase().includes(q)||(l.propertyInterest||"").toLowerCase().includes(q));}
+    rows.sort((a,b)=>{let av=a[sort.k],bv=b[sort.k];if(sort.k==="createdAt"){av=av&&av.toMillis?av.toMillis():0;bv=bv&&bv.toMillis?bv.toMillis():0;}else if(sort.k==="score"){av=crmScore(a);bv=crmScore(b);}else{av=(av||"").toString().toLowerCase();bv=(bv||"").toString().toLowerCase();}return sort.asc?(av>bv?1:-1):(av<bv?1:-1);});
+    return rows;
+  },[leads,srch,statF,srcF,sort]);
+  const SortIco=({k})=><span style={{opacity:sort.k===k?1:.3,fontSize:".6rem",marginLeft:".2rem"}}>{sort.k===k?(sort.asc?"▲":"▼"):"⇅"}</span>;
+  return(
+    <div>
+      <div className="crm-toolbar">
+        <input className="crm-search" placeholder="Search name, phone, email…" value={srch} onChange={e=>setSrch(e.target.value)}/>
+        <select className="crm-select" value={statF} onChange={e=>setStatF(e.target.value)}><option value="all">All Status</option>{CRM_STATUSES.map(s=><option key={s} value={s}>{CRM_STATUS_LABELS[s]}</option>)}</select>
+        <select className="crm-select" value={srcF} onChange={e=>setSrcF(e.target.value)}><option value="all">All Sources</option>{CRM_SOURCES.map(s=><option key={s} value={s}>{CRM_SOURCE_LABELS[s]}</option>)}</select>
+        <button className="crm-btn-pri" onClick={onAdd}>＋ Add Lead</button>
+        <button className="crm-btn-sec" onClick={()=>crmExportCSV(filtered)} title="Export leads to CSV">⬇ CSV</button>
+      </div>
+      <div className="crm-tbl-wrap">
+        <table className="crm-tbl">
+          <thead><tr>
+            <th onClick={()=>sortBy("name")}>Name<SortIco k="name"/></th>
+            <th>Phone / WA</th>
+            <th onClick={()=>sortBy("status")}>Status<SortIco k="status"/></th>
+            <th onClick={()=>sortBy("source")}>Source<SortIco k="source"/></th>
+            <th onClick={()=>sortBy("budget")}>Budget<SortIco k="budget"/></th>
+            <th>Interest</th>
+            <th onClick={()=>sortBy("score")}>Score<SortIco k="score"/></th>
+            <th onClick={()=>sortBy("nextFollowUpDate")}>Follow-up<SortIco k="nextFollowUpDate"/></th>
+            <th/>
+          </tr></thead>
+          <tbody>
+            {filtered.length===0&&<tr><td colSpan={9} style={{textAlign:"center",padding:"2.5rem",color:"var(--a-muted)"}}>No leads found.</td></tr>}
+            {filtered.map(l=>{const wa=l.phone?crmWaLink(l.phone,l.name,l.propertyInterest):null;const overdue=l.nextFollowUpDate&&new Date(l.nextFollowUpDate)<new Date();return(
+              <tr key={l.id} onClick={()=>onSelect(l)}>
+                <td><div style={{fontWeight:700,color:"#fff"}}>{l.name}</div><div style={{fontSize:".7rem",color:"var(--a-muted)"}}>{l.email}</div></td>
+                <td>{wa?<a href={wa.href} className="crm-wa-link" onClick={e=>e.stopPropagation()} target="_blank" rel="noopener noreferrer">💬 {wa.label}</a>:"—"}</td>
+                <td><LeadBadge status={l.status}/></td>
+                <td style={{color:"var(--a-muted)",fontSize:".76rem"}}>{CRM_SOURCE_LABELS[l.source]||l.source||"—"}</td>
+                <td style={{color:"var(--a-text)"}}>{l.budget?`RM ${Number(l.budget).toLocaleString()}`:"—"}</td>
+                <td style={{color:"var(--a-muted)",fontSize:".76rem"}}>{l.propertyInterest||"Any"}</td>
+                <td><CRMScoreBar score={crmScore(l)}/></td>
+                <td style={{color:overdue?"#e63946":"var(--a-muted)",fontSize:".76rem"}}>{l.nextFollowUpDate||"—"}{overdue?" ⚠":""}</td>
+                <td><div className="crm-row-act" onClick={e=>e.stopPropagation()}>
+                  <button className="crm-ico" onClick={e=>{e.stopPropagation();onEdit(l);}} title="Edit">✏️</button>
+                  <button className="crm-ico del" onClick={e=>{e.stopPropagation();if(window.confirm(`Delete "${l.name}"?`))onDelete(l.id);}} title="Delete">🗑</button>
+                </div></td>
+              </tr>
+            );})}
+          </tbody>
+        </table>
+      </div>
+      <div style={{color:"var(--a-muted)",fontSize:".74rem",textAlign:"right",marginTop:".4rem"}}>{filtered.length} lead{filtered.length!==1?"s":""} · Showing {leads.length} total</div>
+    </div>
+  );
+}
+function KanbanBoard({leads,onSelect,onStatusChange}){
+  const [dragId,setDragId]=useState(null);
+  const [overCol,setOverCol]=useState(null);
+  const cols=CRM_STATUSES.map(s=>({status:s,leads:leads.filter(l=>l.status===s)}));
+  return(
+    <div className="crm-kanban">
+      {cols.map(col=>(
+        <div key={col.status} className="crm-col"
+          onDragOver={e=>{e.preventDefault();setOverCol(col.status);}}
+          onDragLeave={()=>setOverCol(null)}
+          onDrop={e=>{e.preventDefault();if(dragId){const l=leads.find(x=>x.id===dragId);if(l&&l.status!==col.status)onStatusChange(dragId,col.status);}setDragId(null);setOverCol(null);}}>
+          <div className="crm-col-hd">
+            <span style={{width:8,height:8,borderRadius:"50%",background:CRM_STATUS_COLORS[col.status],flexShrink:0,display:"inline-block"}}/>
+            <span className="crm-col-hd-label">{CRM_STATUS_LABELS[col.status]}</span>
+            <span className="crm-col-count">{col.leads.length}</span>
+          </div>
+          <div className={`crm-col-body${overCol===col.status?" drag-over":""}`}>
+            {col.leads.length===0&&<div style={{color:"var(--a-muted)",fontSize:".72rem",textAlign:"center",padding:"1.2rem",opacity:.5}}>Drag here</div>}
+            {col.leads.map(l=>{const wa=l.phone?crmWaLink(l.phone,l.name,l.propertyInterest):null;const overdue=l.nextFollowUpDate&&new Date(l.nextFollowUpDate)<new Date();return(
+              <div key={l.id} className={`crm-card${dragId===l.id?" dragging":""}`} draggable onDragStart={()=>setDragId(l.id)} onDragEnd={()=>setDragId(null)} onClick={()=>onSelect(l)}>
+                <div className="crm-card-name">{l.name}</div>
+                <div className="crm-card-meta">
+                  {l.budget?`RM ${Number(l.budget).toLocaleString()}`:""}{l.budget&&l.propertyInterest?" · ":""}{l.propertyInterest||""}
+                  {l.assignedAgent&&<div style={{marginTop:".2rem",opacity:.7,fontSize:".7rem"}}>👤 {l.assignedAgent}</div>}
+                  {overdue&&<div className="crm-overdue">⚠ Overdue: {l.nextFollowUpDate}</div>}
+                </div>
+                <div className="crm-card-foot">
+                  <span className="crm-card-src">{CRM_SOURCE_LABELS[l.source]||l.source}</span>
+                  <span className="crm-card-score" style={{color:crmScore(l)>=60?"#2d9e6b":"var(--a-muted)"}}>●{crmScore(l)}</span>
+                  {wa&&<a href={wa.href} className="crm-wa-link" onClick={e=>e.stopPropagation()} target="_blank" rel="noopener noreferrer" style={{fontSize:".62rem",padding:".15rem .45rem"}}>💬</a>}
+                </div>
+              </div>
+            );})}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+function CRMAnalytics({leads}){
+  const total=leads.length;
+  const closed=leads.filter(l=>l.status==="closed").length;
+  const viewing=leads.filter(l=>l.status==="viewing").length;
+  const overdue=leads.filter(l=>l.nextFollowUpDate&&new Date(l.nextFollowUpDate)<new Date()).length;
+  const budgetLeads=leads.filter(l=>l.budget>0);
+  const avgBudget=budgetLeads.reduce((a,l)=>a+Number(l.budget),0)/Math.max(1,budgetLeads.length);
+  const maxStatus=Math.max(1,...CRM_STATUSES.map(s=>leads.filter(l=>l.status===s).length));
+  const maxSource=Math.max(1,...CRM_SOURCES.map(s=>leads.filter(l=>l.source===s).length));
+  return(
+    <div>
+      <div className="crm-stats">
+        <div className="crm-stat"><div className="crm-stat-lbl">Total Leads</div><div className="crm-stat-val">{total}</div><div className="crm-stat-sub">all time</div></div>
+        <div className="crm-stat"><div className="crm-stat-lbl">Closed / Won</div><div className="crm-stat-val" style={{color:"#2d9e6b"}}>{closed}</div><div className="crm-stat-sub">{total?((closed/total)*100).toFixed(0):0}% conversion</div></div>
+        <div className="crm-stat"><div className="crm-stat-lbl">Viewing Sched.</div><div className="crm-stat-val" style={{color:"#5289AD"}}>{viewing}</div><div className="crm-stat-sub">in pipeline</div></div>
+        <div className="crm-stat"><div className="crm-stat-lbl">Overdue</div><div className="crm-stat-val" style={{color:"#e63946"}}>{overdue}</div><div className="crm-stat-sub">need attention</div></div>
+        <div className="crm-stat"><div className="crm-stat-lbl">Avg Budget</div><div className="crm-stat-val" style={{fontSize:"1.3rem"}}>{budgetLeads.length?`RM ${Math.round(avgBudget/1000)}k`:"—"}</div><div className="crm-stat-sub">{budgetLeads.length} with budget</div></div>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:"1rem"}}>
+        <div className="crm-chart-card">
+          <div className="crm-chart-title">Leads by Stage</div>
+          {CRM_STATUSES.map(s=>{const c=leads.filter(l=>l.status===s).length;return(<div key={s} className="crm-bar-row"><span className="crm-bar-lbl">{CRM_STATUS_LABELS[s]}</span><div className="crm-bar-track"><div className="crm-bar-fill" style={{width:`${(c/maxStatus)*100}%`,background:CRM_STATUS_COLORS[s]}}/></div><span className="crm-bar-val" style={{color:CRM_STATUS_COLORS[s]}}>{c}</span></div>);})}
+        </div>
+        <div className="crm-chart-card">
+          <div className="crm-chart-title">Leads by Source</div>
+          {CRM_SOURCES.map(s=>{const c=leads.filter(l=>l.source===s).length;return(<div key={s} className="crm-bar-row"><span className="crm-bar-lbl">{CRM_SOURCE_LABELS[s]}</span><div className="crm-bar-track"><div className="crm-bar-fill" style={{width:`${(c/maxSource)*100}%`,background:"var(--a-gold)"}}/></div><span className="crm-bar-val">{c}</span></div>);})}
+        </div>
+      </div>
+    </div>
+  );
+}
+function CRMPanel({projects}){
+  const [leads,setLeads]=useState([]);
+  const [crmTab,setCrmTab]=useState("table");
+  const [selectedLead,setSelectedLead]=useState(null);
+  const [editLead,setEditLead]=useState(null);
+  const [activities,setActivities]=useState([]);
+  const [loading,setLoading]=useState(true);
+  useEffect(()=>{
+    try{const unsub=crmLeadsListener(data=>{setLeads(data);setLoading(false);});return unsub;}
+    catch(e){console.warn("CRM listener:",e);setLoading(false);}
+  },[]);
+  useEffect(()=>{
+    if(!selectedLead){setActivities([]);return;}
+    crmGetActivities(selectedLead.id).then(data=>setActivities(data)).catch(()=>setActivities([]));
+  },[selectedLead?.id]);
+  // Keep selected lead in sync with realtime leads
+  useEffect(()=>{
+    if(!selectedLead)return;
+    const fresh=leads.find(l=>l.id===selectedLead.id);
+    if(fresh)setSelectedLead(fresh);
+  },[leads]);
+  const handleSaveLead=async(formData)=>{
+    try{if(!editLead||editLead==="new"){await crmAddLead(formData);}else{await crmUpdateLead(editLead.id,formData);}setEditLead(null);}
+    catch(e){alert("Failed to save: "+e.message);}
+  };
+  const handleDeleteLead=async(id)=>{
+    try{await crmDeleteLead(id);if(selectedLead?.id===id)setSelectedLead(null);}
+    catch(e){alert("Delete failed: "+e.message);}
+  };
+  const handleStatusChange=async(id,status)=>{try{await crmUpdateLead(id,{status});}catch(e){alert("Update failed: "+e.message);}};
+  const handleAddActivity=async(data)=>{
+    if(!selectedLead)return;
+    try{await crmAddActivity(selectedLead.id,data);const a=await crmGetActivities(selectedLead.id);setActivities(a);}
+    catch(e){alert("Failed to log activity: "+e.message);}
+  };
+  const handleUpdateLead=async(patch)=>{
+    if(!selectedLead)return;
+    try{
+      await crmUpdateLead(selectedLead.id,patch);
+      if(patch.status){await crmAddActivity(selectedLead.id,{type:"status_change",content:`Status → "${CRM_STATUS_LABELS[patch.status]}"`,createdBy:"admin"});const a=await crmGetActivities(selectedLead.id);setActivities(a);}
+    }catch(e){alert("Update failed: "+e.message);}
+  };
+  return(
+    <div>
+      <div className="a-pg-title">Lead <em>CRM</em></div>
+      <div className="a-pg-sub">Manage enquiries, track pipeline and log activities.</div>
+      <div className="crm-subnav">
+        <button className={`crm-subbtn${crmTab==="table"?" on":""}`} onClick={()=>setCrmTab("table")}>📋 Table</button>
+        <button className={`crm-subbtn${crmTab==="kanban"?" on":""}`} onClick={()=>setCrmTab("kanban")}>🗂 Kanban</button>
+        <button className={`crm-subbtn${crmTab==="analytics"?" on":""}`} onClick={()=>setCrmTab("analytics")}>📊 Analytics</button>
+      </div>
+      {loading&&<div style={{color:"var(--a-muted)",textAlign:"center",padding:"3rem",fontSize:".86rem"}}>Loading leads…</div>}
+      {!loading&&crmTab==="table"&&<LeadTable leads={leads} projects={projects} onSelect={l=>setSelectedLead(l)} onAdd={()=>setEditLead("new")} onEdit={l=>setEditLead(l)} onDelete={handleDeleteLead}/>}
+      {!loading&&crmTab==="kanban"&&<KanbanBoard leads={leads} onSelect={l=>setSelectedLead(l)} onStatusChange={handleStatusChange}/>}
+      {!loading&&crmTab==="analytics"&&<CRMAnalytics leads={leads}/>}
+      {selectedLead&&<LeadDrawer lead={selectedLead} activities={activities} projects={projects} onClose={()=>setSelectedLead(null)} onUpdate={handleUpdateLead} onAddActivity={handleAddActivity} onEdit={()=>setEditLead(selectedLead)} onDelete={handleDeleteLead}/>}
+      {editLead&&<LeadForm lead={editLead} projects={projects} onSave={handleSaveLead} onClose={()=>setEditLead(null)}/>}
+    </div>
+  );
+}
+
 /* ═══ ADMIN PANEL ═══ */
 const PAGE_SZ=8;
 function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:externalATab,setATab:externalSetATab}){
@@ -3662,6 +4136,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
         <div className={`a-sb-item${aTab==="analytics"?" on":""}`} onClick={()=>setATab("analytics")}>📊 Analytics</div>
         <div className={`a-sb-item${aTab==="dashboard"?" on":""}`} onClick={()=>setATab("dashboard")}><IGrid/> Dashboard</div>
         <div className={`a-sb-item${aTab==="projects"?" on":""}`} onClick={()=>setATab("projects")}><IList/> Projects<span style={{marginLeft:"auto",background:"var(--a-gold)",color:"var(--a-bg)",borderRadius:999,fontSize:".6rem",fontWeight:700,padding:".05rem .38rem"}}>{projects.length}</span></div>
+        <div className={`a-sb-item${aTab==="crm"?" on":""}`} onClick={()=>setATab("crm")}>👥 Leads CRM</div>
         <div className={`a-sb-item${aTab==="settings"?" on":""}`} onClick={()=>setATab("settings")}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</div>
         <div style={{height:1,background:"var(--a-border)",margin:"1rem 0"}}/>
         <div className="a-sidebar-sec">Account</div>
@@ -3669,6 +4144,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
       </aside>
       <div className="a-main">
         {aTab==="analytics"&&<AnalyticsDashboard/>}
+        {aTab==="crm"&&<CRMPanel projects={projects}/>}
         {aTab==="dashboard"&&<>
           <div className="a-pg-title">Admin <em>Dashboard</em></div>
           <div className="a-pg-sub">Overview of all NB Property listings.</div>
@@ -3976,6 +4452,7 @@ export default function App(){
               <button className={`mob-admin-sub-item${adminTab==="analytics"?" on":""}`} onClick={()=>{setAdminTab("analytics");setMobileNavOpen(false);}}>📊 Analytics</button>
               <button className={`mob-admin-sub-item${adminTab==="dashboard"?" on":""}`} onClick={()=>{setAdminTab("dashboard");setMobileNavOpen(false);}}>📋 Dashboard</button>
               <button className={`mob-admin-sub-item${adminTab==="projects"?" on":""}`} onClick={()=>{setAdminTab("projects");setMobileNavOpen(false);}}>📁 Projects</button>
+              <button className={`mob-admin-sub-item${adminTab==="crm"?" on":""}`} onClick={()=>{setAdminTab("crm");setMobileNavOpen(false);}}>👥 Leads CRM</button>
               <button className={`mob-admin-sub-item${adminTab==="settings"?" on":""}`} onClick={()=>{setAdminTab("settings");setMobileNavOpen(false);}}>⚙️ Settings</button>
             </div>
           )}
