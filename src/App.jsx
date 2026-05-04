@@ -546,6 +546,11 @@ body{font-family:var(--sans);background:var(--parchment);color:var(--ink);}
 
 /* ── Card-based project listing ── */
 .a-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;margin-bottom:1rem;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.list-pager{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:1rem;margin-bottom:1.2rem;}
+.list-pager button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.45rem .7rem;border-radius:4px;cursor:pointer;}
+.list-pager button.on{background:var(--gold);color:var(--card);border-color:var(--gold);}
+.list-pager .page-info{font-size:.82rem;color:var(--muted);}
 .a-proj-card{background:var(--a-surface);border:1px solid var(--a-border);display:flex;flex-direction:column;transition:border-color .18s,box-shadow .18s;position:relative;}
 .a-proj-card:hover{border-color:var(--a-gold);box-shadow:0 2px 12px rgba(0,0,0,.18);}
 .a-proj-card.dimmed{opacity:.55;}
@@ -4423,6 +4428,18 @@ export default function App(){
   const COMPLETION_OPTS = useMemo(()=>{const s=new Set();projects.forEach(p=>{if(p.completion)s.add(p.completion);});return ["All Completion",...[...s].sort()];},[projects]);
 
   const filtered=useMemo(()=>{return projects.filter(p=>{if(p.visible===false)return false;if(type!=="All Types"&&p.type!==type)return false;if(loc!=="All Areas"&&p.location!==loc)return false;if(stat!=="All Status"&&p.status!==stat)return false;if(p.priceFrom>priceMax||p.priceTo<priceMin)return false;if(fBed!=="All Beds"&&!(p.bedrooms||[]).includes(Number(fBed)))return false;if(fBath!=="All Baths"&&!(p.bathrooms||[]).includes(Number(fBath)))return false;if(fTenure!=="All Tenure"&&p.tenure!==fTenure)return false;if(fCompletion!=="All Completion"&&p.completion!==fCompletion)return false;if(fSizeMin){const mn=Number(fSizeMin);if(!isNaN(mn)&&mn>0&&(p.sizeSqft?.[1]||0)<mn)return false;}if(fSizeMax){const mx=Number(fSizeMax);if(!isNaN(mx)&&mx>0&&(p.sizeSqft?.[0]||0)>mx)return false;}if(search){const q=search.toLowerCase();if(!p.name.toLowerCase().includes(q)&&!p.location.toLowerCase().includes(q)&&!p.developer.toLowerCase().includes(q)&&!p.type.toLowerCase().includes(q))return false;}return true;});},[projects,search,type,loc,stat,priceMin,priceMax,fBed,fBath,fTenure,fCompletion,fSizeMin,fSizeMax]);
+  // Desktop-only pagination: show 3 columns x 3 rows = 9 items per page on desktop
+  const [isDesktop,setIsDesktop]=useState(typeof window!=='undefined'?window.innerWidth>=992:true);
+  useEffect(()=>{
+    const h=()=>setIsDesktop(window.innerWidth>=992);
+    h();window.addEventListener('resize',h);
+    return ()=>window.removeEventListener('resize',h);
+  },[]);
+  const [listPage,setListPage]=useState(1);
+  useEffect(()=>setListPage(1),[filtered,isDesktop]);
+  const itemsPerPage = isDesktop?9:filtered.length||9999;
+  const totalPages = isDesktop?Math.max(1,Math.ceil(filtered.length/itemsPerPage)):1;
+  const visibleProjects = isDesktop?filtered.slice((listPage-1)*itemsPerPage,listPage*itemsPerPage):filtered;
   const cmpProjects=useMemo(()=>projects.filter(p=>cmpIds.includes(p.id)&&p.visible!==false),[projects,cmpIds]);
   const toggleCmp=useCallback((e,id)=>{e.stopPropagation();setCmpIds(prev=>prev.includes(id)?prev.filter(x=>x!==id):prev.length>=5?prev:[...prev,id]);},[]);
   const cheapest=cmpProjects.length?cmpProjects.reduce((a,b)=>a.priceFrom<b.priceFrom?a:b).id:null;
@@ -4540,8 +4557,8 @@ export default function App(){
             <PriceRangeSlider minVal={priceMin} maxVal={priceMax} onChange={(mn,mx)=>{setPriceMin(mn);setPriceMax(mx);}}/>
           </div>
           <div className="grid">
-            {filtered.length===0?<div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">No projects found</div><p className="empty-s">Try adjusting filters.</p></div>
-            :filtered.map(p=>(
+            {filtered.length===0 ? <div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">No projects found</div><p className="empty-s">Try adjusting filters.</p></div>
+            : visibleProjects.map(p => (
               <div key={p.id} className={`card${cmpIds.includes(p.id)?" sel":""}`} onClick={()=>{trackEvent("project_click",{projectName:p.name});setSelected(p);setTab("detail");}}>
                 <div className="cimg"><img src={p.image} alt={p.name}/><div className="ctag" style={{background:p.tagColor}}>{p.tag}</div><div className="cstat">{p.status}</div><button className={`cbtn${cmpIds.includes(p.id)?" on":""}`} onClick={e=>toggleCmp(e,p.id)} title="Compare">{cmpIds.includes(p.id)?"✓":"+"}</button></div>
                 <div className="cbody">
@@ -4556,6 +4573,13 @@ export default function App(){
               </div>
             ))}
           </div>
+          {isDesktop && totalPages>1 && (
+            <div className="list-pager">
+              <button onClick={()=>setListPage(p=>Math.max(1,p-1))} disabled={listPage===1}>Prev</button>
+              <div className="page-info">Page {listPage} of {totalPages}</div>
+              <button onClick={()=>setListPage(p=>Math.min(totalPages,p+1))} disabled={listPage===totalPages}>Next</button>
+            </div>
+          )}
         </main>
         <footer className="ft"><div>© 2025 <span>NB Property</span> · All rights reserved · Penang, Malaysia</div></footer>
         <div className={`tray${cmpIds.length>0?" show":""}`}>
