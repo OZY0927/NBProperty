@@ -453,7 +453,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#F9FAFB 0%,#f1f5f
 .filter-panel,.card,.proj-card,.spec-section,.amenity-cat,.layouts-upgrades,.ri-box,.set-card,.a-login-box,.a-stat,.a-tbl-wrap,.a-modal,.vis-master-card,.vis-tab-card,.vis-preview,.vis-group-hd,.vis-group-body,.map-embed,.a-map-preview,.map-picker-container,.map-picker-modal,.crm-tbl-wrap,.crm-col,.crm-card,.crm-modal,.crm-drawer-sec,.crm-stat,.crm-chart-card,.tray,.tslot,.add-more,.price-panel{border-radius:var(--r-md);}
 .card,.proj-card,.ri-box,.a-tbl-wrap,.a-modal,.map-embed,.a-map-preview,.map-picker-modal,.crm-tbl-wrap,.crm-col,.crm-modal,.crm-drawer-sec,.tray,.tslot,.add-more,.filter-panel,.spec-section,.amenity-cat,.layouts-upgrades{overflow:hidden;}
 .list-pager button,.pdf-btn,.go-btn,.a-add-btn,.a-pg-btn,.a-ico-btn,.a-card-menu-btn,.a-modal-x,.ri-x,.ri-wa-btn,.ri-submit,.set-save-btn,.a-login-btn,.map-picker-expand,.map-picker-modal-x,.crm-search,.crm-select,.crm-ico,.crm-inp,.crm-textarea,.crm-btn-pri,.crm-btn-sec,.crm-note-inp,.crm-note-add,.a-search,.a-fsel,.a-inp,.a-txt,.a-sel,.set-inp,.a-login-inp,.fsel,.fmore-btn,.fsize-inp,.fclear-btn,.price-reset,.s-inp,.cbtn,.cstat,.proj-rm,.pb-btn1,.pb-btn2{border-radius:var(--r-sm);}
-.a-proj-card,.ut-card,.hero-card,.hero-pill,.det-tabs,.gal-strip,.det-hero-dots,.fac-chip,.ctag2,.det-meta-chip,.layouts-intro,.crm-subbtn,.crm-badge,.crm-wa-link,.crm-col-count,.crm-score-bar,.crm-bar-track,.a-schip,.vis-prev-tab,.tpre,.tag-presets .tpre,.ri-err,.a-login-err{border-radius:var(--r-sm);}
+.a-proj-card,.ut-card,.hero-pill,.det-tabs,.gal-strip,.det-hero-dots,.fac-chip,.ctag2,.det-meta-chip,.layouts-intro,.crm-subbtn,.crm-badge,.crm-wa-link,.crm-col-count,.crm-score-bar,.crm-bar-track,.a-schip,.vis-prev-tab,.tpre,.tag-presets .tpre,.ri-err,.a-login-err{border-radius:var(--r-sm);}
 
 .nav{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#0F172A 0%,#162033 52%,#1E293B 100%);backdrop-filter:blur(14px);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-bottom:1px solid rgba(229,192,123,.16);box-shadow:0 10px 24px rgba(15,23,42,.18);}
 .nav-logo{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--gold);letter-spacing:.04em;white-space:nowrap;cursor:pointer;}
@@ -525,19 +525,10 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#F9FAFB 0%,#f1f5f
 .hero-line{position:absolute;border:1px solid rgba(229,192,123,.28);border-radius:999px;opacity:.7;animation:heroPulse 6s ease-in-out infinite;}
 .hero-line.l1{width:420px;height:420px;right:-110px;top:-180px;}
 .hero-line.l2{width:300px;height:300px;left:-120px;bottom:-120px;animation-delay:-2s;}
-.hero-card{position:absolute;min-width:176px;background:rgba(255,255,255,.72);backdrop-filter:blur(14px);border:1px solid rgba(229,192,123,.32);box-shadow:0 22px 48px rgba(15,23,42,.1);border-radius:18px;padding:.9rem 1rem;text-align:left;animation:heroCardFloat 7.5s ease-in-out infinite;}
-.hero-card::before{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(229,192,123,.12),transparent 60%);pointer-events:none;}
-.hero-card.c1{left:8%;top:18%;animation-delay:-1s;}
-.hero-card.c2{right:11%;top:22%;animation-delay:-3.5s;}
-.hero-card.c3{right:18%;bottom:14%;animation-delay:-5s;}
-.hero-card-k{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.42rem;font-weight:700;position:relative;z-index:1;}
-.hero-card-v{font-family:var(--serif);font-size:1.25rem;color:var(--ink);line-height:1;position:relative;z-index:1;}
-.hero-card-s{margin-top:.4rem;font-size:.74rem;color:var(--muted);position:relative;z-index:1;}
 .hero-pill{position:absolute;left:50%;bottom:1.2rem;transform:translateX(-50%);display:flex;align-items:center;gap:.65rem;padding:.72rem 1rem;border-radius:999px;background:rgba(15,23,42,.88);color:#F8FAFC;box-shadow:0 16px 36px rgba(15,23,42,.18);border:1px solid rgba(229,192,123,.22);font-size:.76rem;letter-spacing:.04em;animation:heroPillRise 5.5s ease-in-out infinite;}
 .hero-pill strong{color:var(--gold);font-weight:700;}
 .hero-pill-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 6px rgba(229,192,123,.14);}
 @keyframes heroFloat{0%,100%{transform:translate3d(0,0,0);}50%{transform:translate3d(0,-16px,0);}}
-@keyframes heroCardFloat{0%,100%{transform:translate3d(0,0,0);}50%{transform:translate3d(0,-12px,0);}}
 @keyframes heroPulse{0%,100%{transform:scale(1);opacity:.42;}50%{transform:scale(1.04);opacity:.78;}}
 @keyframes heroGridDrift{0%{transform:perspective(900px) rotateX(70deg) translateY(0) scale(1.15);}50%{transform:perspective(900px) rotateX(70deg) translateY(10px) scale(1.17);}100%{transform:perspective(900px) rotateX(70deg) translateY(0) scale(1.15);}}
 @keyframes heroPillRise{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-6px);}}
@@ -658,12 +649,6 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#F9FAFB 0%,#f1f5f
   .hero{padding:3rem 1.25rem 2.5rem;}
   .h-sub{font-size:.88rem;}
   .hero-grid{background-size:48px 48px;opacity:.42;}
-  .hero-card{min-width:140px;padding:.75rem .85rem;border-radius:14px;}
-  .hero-card.c1{left:2%;top:12%;}
-  .hero-card.c2{right:3%;top:18%;}
-  .hero-card.c3{display:none;}
-  .hero-card-v{font-size:1rem;}
-  .hero-card-s{font-size:.68rem;}
   .hero-pill{bottom:.8rem;padding:.6rem .82rem;font-size:.68rem;max-width:calc(100% - 2rem);}
 
   /* Main / Grid — single column on mobile */
@@ -756,7 +741,6 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#F9FAFB 0%,#f1f5f
 
   /* Hero */
   .hero{padding:2.5rem 1rem 2rem;}
-  .hero-card{display:none;}
   .hero-line{display:none;}
   .hero-orb.o1{width:160px;height:160px;left:-50px;top:18px;}
   .hero-orb.o2{width:180px;height:180px;right:-60px;top:20px;}
@@ -4564,21 +4548,6 @@ export default function App(){
             <div className="hero-orb o3"/>
             <div className="hero-line l1"/>
             <div className="hero-line l2"/>
-            <div className="hero-card c1">
-              <div className="hero-card-k">Investment Lens</div>
-              <div className="hero-card-v">Prime ROI</div>
-              <div className="hero-card-s">Curated launches with strong demand corridors</div>
-            </div>
-            <div className="hero-card c2">
-              <div className="hero-card-k">Market Focus</div>
-              <div className="hero-card-v">Island + Mainland</div>
-              <div className="hero-card-s">A balanced view across Penang growth zones</div>
-            </div>
-            <div className="hero-card c3">
-              <div className="hero-card-k">Portfolio Ready</div>
-              <div className="hero-card-v">New Launch Picks</div>
-              <div className="hero-card-s">Shortlist assets by budget, tenure, and completion stage</div>
-            </div>
           </div>
           <div className="h-eye">✦ Penang's Premier New Launches</div>
           <h1 className="h-ttl">Discover Your<br/><em>Dream Property</em></h1>
