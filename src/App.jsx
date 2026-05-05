@@ -4,6 +4,8 @@ import COUNTRY_CODES from "./data/countryCodes";
 // Firebase SDK — reuses the app already initialised by ./firebase/firestore
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
 import { getApp } from "firebase/app";
+import { auth } from "./firebase/config";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 
 /* ═══ CRM — Firestore helpers ═══ */
 const crmDb = () => getFirestore(getApp());
@@ -3943,15 +3945,19 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
     setPwMsg("");
     if (!newPw.trim()) { setPwMsg("New password cannot be empty."); return; }
     if (newPw !== newPw2) { setPwMsg("New passwords do not match."); return; }
+    if (newPw.length < 6) { setPwMsg("New password must be at least 6 characters."); return; }
     setPwBusy(true);
-    const ok = await verifyPassword(curPw, settings);
-    if (!ok) { setPwMsg("Current password is incorrect."); setPwBusy(false); return; }
-    const salt = genSalt();
-    const hash = await hashPassword(newPw, salt);
-    const updated = { ...sett, adminPasswordHash: hash, adminPasswordSalt: salt };
-    setSett(updated);
-    try { await onSaveSettings(updated); showToast("Password changed.","success"); setCurPw(""); setNewPw(""); setNewPw2(""); }
-    catch { showToast("Failed to save password.","error"); }
+    try {
+      const user = auth.currentUser;
+      if (!user || !user.email) { setPwMsg("No authenticated session found."); setPwBusy(false); return; }
+      const credential = EmailAuthProvider.credential(user.email, curPw);
+      await reauthenticateWithCredential(user, credential);
+      await updatePassword(user, newPw);
+      showToast("Password changed.","success"); setCurPw(""); setNewPw(""); setNewPw2("");
+    } catch(e) {
+      const bad=["auth/wrong-password","auth/invalid-credential"];
+      setPwMsg(bad.includes(e.code)?"Current password is incorrect.":"Failed to change password. "+(e.message||""));
+    }
     setPwBusy(false);
   };
   // Build preview WhatsApp URL
@@ -4144,7 +4150,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
             {pwMsg && <div className="set-note" style={{color:"#8E8A84"}}>{pwMsg}</div>}
             <div style={{marginTop:".6rem"}}>
               <button className="set-save-btn" onClick={handleChangePassword} disabled={pwBusy}>{pwBusy?"Updating…":"Change Password"}</button>
-              <div className="set-note" style={{marginTop:".6rem"}}>The password is stored securely (hashed) in settings.</div>
+              <div className="set-note" style={{marginTop:".6rem"}}>Password is managed via Firebase Authentication.</div>
             </div>
           </div>
 
@@ -4200,25 +4206,33 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
 }
 
 /* ═══ ADMIN LOGIN ═══ */
-function AdminLogin({onLogin, settings}){
+function AdminLogin(){
+  const [email,setEmail]=useState("");
   const [pw,setPw]=useState("");
-  const [err,setErr]=useState(false);
+  const [err,setErr]=useState("");
   const [checking,setChecking]=useState(false);
   const go=async()=>{
-    setChecking(true);
-    const ok = await verifyPassword(pw, settings);
-    setChecking(false);
-    if(ok) onLogin(); else { setErr(true); setTimeout(()=>setErr(false),2000); }
+    if(!email.trim()||!pw){setErr("Please enter your email and password.");return;}
+    setChecking(true);setErr("");
+    try{
+      await signInWithEmailAndPassword(auth,email.trim(),pw);
+    }catch(e){
+      const bad=["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-email"];
+      setErr(bad.includes(e.code)?"Incorrect email or password.":"Sign-in failed. Please try again.");
+      setChecking(false);
+    }
   };
   return(
     <div className="a-login">
       <div className="a-login-box">
         <div className="a-login-logo">NB<span>Property</span></div>
         <div className="a-login-sub">Admin Portal — Restricted Access</div>
-        {err&&<div className="a-login-err">Incorrect password.</div>}
+        {err&&<div className="a-login-err">{err}</div>}
+        <label className="a-login-lbl">Email</label>
+        <input className="a-login-inp" type="email" placeholder="admin@example.com" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()}/>
         <label className="a-login-lbl">Password</label>
-        <input className="a-login-inp" type="password" placeholder="Enter admin password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()}/>
-        <button className="a-login-btn" onClick={go} disabled={checking}>{checking?"Checking…":"Sign In"}</button>
+        <input className="a-login-inp" type="password" placeholder="Enter password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()}/>
+        <button className="a-login-btn" onClick={go} disabled={checking}>{checking?"Signing in…":"Sign In"}</button>
       </div>
     </div>
   );
@@ -4299,6 +4313,7 @@ export default function App(){
   const [cmpIds,setCmpIds]=useState([]);
   const [pdfBusy,setPdfBusy]=useState(false);
   const [adminAuthed,setAdminAuthed]=useState(false);
+  useEffect(()=>{ const unsub=onAuthStateChanged(auth,user=>setAdminAuthed(!!user)); return unsub; },[]);
   const [riProject,setRiProject]=useState(null);  // project for Register Interest modal
   const openRI = useCallback((proj=null) => setRiProject(proj||"general"), []);
   const closeRI = useCallback(()=>setRiProject(null),[]);
@@ -4463,8 +4478,8 @@ export default function App(){
       </nav>
 
       {tab==="admin"&&(adminAuthed
-        ? <AdminPanel projects={projects} onSave={saveProjects} settings={settings} onSaveSettings={saveSettings} onLogout={()=>setAdminAuthed(false)} aTab={adminTab} setATab={setAdminTab}/>
-        : <AdminLogin settings={settings} onLogin={()=>setAdminAuthed(true)}/>
+        ? <AdminPanel projects={projects} onSave={saveProjects} settings={settings} onSaveSettings={saveSettings} onLogout={()=>signOut(auth)} aTab={adminTab} setATab={setAdminTab}/>
+        : <AdminLogin/>
       )}
 
       {tab==="listings"&&<>
