@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, migrateAnalytics, deleteAllAnalytics } from "./firebase/firestore";
+import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, migrateAnalytics, deleteAllAnalytics, getSettings as fsGetSettings, saveSettings as fsSaveSettings } from "./firebase/firestore";
 import COUNTRY_CODES from "./data/countryCodes";
 // Firebase SDK — reuses the app already initialised by ./firebase/firestore
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
@@ -4238,7 +4238,7 @@ export default function App(){
       console.error('Failed to load projects from Firestore', err);
       setProjects(DEFAULT_PROJECTS);
     }
-    try{const s=await window.storage.get(SETTINGS_KEY);setSettings({...DEFAULT_SETTINGS,...JSON.parse(s.value)});}catch{}
+    try{ const s = await fsGetSettings(); if(s) setSettings({...DEFAULT_SETTINGS,...s}); }catch{}
 
     // Migrate any existing analytics stored in browser localStorage into Firestore (one-time)
     try{
@@ -4277,7 +4277,7 @@ export default function App(){
       }
     }catch(e){ console.error('Firestore sync failed', e); }
   },[]);
-  const saveSettings=useCallback(async updated=>{setSettings(updated);try{await window.storage.set(SETTINGS_KEY,JSON.stringify(updated));}catch{}},[]);
+  const saveSettings=useCallback(async updated=>{setSettings(updated);try{await fsSaveSettings(updated);}catch{}},[]);
 
   const [tab,setTab]=useState("listings");
   const [adminTab,setAdminTab]=useState("projects");
