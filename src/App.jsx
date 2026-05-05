@@ -51,8 +51,8 @@ async function crmGetActivities(leadId) {
   const snap = await getDocs(query(activitiesCol(leadId), orderBy("timestamp", "desc")));
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
-async function crmCreateWebsiteEnquiryLead(data) {
-  const leadRef = await crmAddLead({
+async function crmCreateWebsiteEnquiryLead(data, settings) {
+  const lead = {
     name: data.name,
     email: data.email,
     countryCode: data.countryCode || "+60",
@@ -64,12 +64,14 @@ async function crmCreateWebsiteEnquiryLead(data) {
     nextFollowUpDate: "",
     budget: 0,
     notes: data.notes || `Website enquiry submitted${data.projectName ? ` for ${data.projectName}` : ""}.`,
-  });
+  };
+  const leadRef = await crmAddLead(lead);
   await crmAddActivity(leadRef.id, {
     type: "note",
     createdBy: "website",
     content: `New website enquiry${data.projectName ? ` for ${data.projectName}` : ""}.`,
   });
+  await sendTelegramNotification({ ...lead, projectName: data.projectName }, settings);
   return leadRef;
 }
 
@@ -111,7 +113,36 @@ const DEFAULT_SETTINGS = {
   emailjsServiceId: "",
   emailjsTemplateId:"",
   emailjsPublicKey: "",
+  telegramEnabled:  false,
+  telegramBotToken: "",
+  telegramChatId:   "",
 };
+
+async function sendTelegramNotification(lead, settings) {
+  if (!settings?.telegramEnabled) return;
+  const botToken = (settings?.telegramBotToken || "").trim();
+  const chatId   = (settings?.telegramChatId   || "").trim();
+  if (!botToken || !chatId) return;
+  const phone = lead.countryCode ? `${lead.countryCode} ${lead.phone || ""}` : (lead.phone || "—");
+  const text = [
+    "🔥 *New Lead Received*",
+    "",
+    `👤 *Name:* ${lead.name || "—"}`,
+    `📞 *Phone:* [${phone}](tel:${phone.replace(/\s/g,"")})`,
+    `📧 *Email:* ${lead.email || "—"}`,
+    `📍 *Project:* ${lead.propertyInterest || lead.projectName || "—"}`,
+    `🏷 *Source:* ${lead.source || "website"}`,
+  ].join("\n");
+  try {
+    await fetch(`/api/send-telegram`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ botToken, chatId, text }),
+    });
+  } catch (e) {
+    console.warn("Telegram notify failed:", e);
+  }
+}
 
 // country codes are loaded from src/data/countryCodes.js
 const PROP_TYPES   = ["Condominium","Semi-Detached","Serviced Apartment","Shophouse","Terrace House","SoHo / Office","Bungalow","Duplex"];
@@ -1940,7 +1971,7 @@ function RegisterInterestModal({ project, settings, onClose }) {
         countryCode: `+${phoneCountry}`,
         phone: phoneNormalized,
         projectName: projName,
-      });
+      }, settings);
       setSending(false);
       setMode("sent");
     } catch (e) {
@@ -3798,7 +3829,7 @@ function CRMAnalytics({leads}){
     </div>
   );
 }
-function CRMPanel({projects}){
+function CRMPanel({projects, settings}){
   const [leads,setLeads]=useState([]);
   const [crmTab,setCrmTab]=useState("table");
   const [selectedLead,setSelectedLead]=useState(null);
@@ -3820,8 +3851,17 @@ function CRMPanel({projects}){
     if(fresh)setSelectedLead(fresh);
   },[leads]);
   const handleSaveLead=async(formData)=>{
-    try{if(!editLead||editLead==="new"){await crmAddLead(formData);}else{await crmUpdateLead(editLead.id,formData);}setEditLead(null);}
+    try{
+      if(!editLead||editLead==="new"){
+        await crmAddLead(formData);
+        await sendTelegramNotification(formData, settings);
+      }else{
+        await crmUpdateLead(editLead.id,formData);
+      }
+      setEditLead(null);
+    }
     catch(e){alert("Failed to save: "+e.message);}
+  };
   };
   const handleDeleteLead=async(id)=>{
     try{await crmDeleteLead(id);if(selectedLead?.id===id)setSelectedLead(null);}
@@ -3961,7 +4001,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
       </aside>
       <div className="a-main">
         {aTab==="analytics"&&<AnalyticsDashboard/>}
-        {aTab==="crm"&&<CRMPanel projects={projects}/>}
+        {aTab==="crm"&&<CRMPanel projects={projects} settings={sett}/>}
         {aTab==="dashboard"&&<>
           <div className="a-pg-title">Admin <em>Dashboard</em></div>
           <div className="a-pg-sub">Overview of all NB Property listings.</div>
@@ -4106,6 +4146,46 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
             <div style={{marginTop:".6rem"}}>
               <button className="set-save-btn" onClick={handleChangePassword} disabled={pwBusy}>{pwBusy?"Updating…":"Change Password"}</button>
               <div className="set-note" style={{marginTop:".6rem"}}>The password is stored securely (hashed) in settings.</div>
+            </div>
+          </div>
+
+          {/* Telegram Notification Settings */}
+          <div className="set-card">
+            <div className="set-card-title">🔔 Telegram Notification Settings</div>
+            <div className="set-card-sub">
+              Send an instant Telegram message every time a new lead is received. Your bot token is stored securely and never exposed to the browser — it is forwarded server-side through <code>/api/send-telegram</code>.
+            </div>
+            <div className="set-field" style={{marginBottom:".75rem"}}>
+              <label className="set-label" style={{display:"flex",alignItems:"center",gap:".5rem",cursor:"pointer"}}>
+                <input type="checkbox" checked={!!sett.telegramEnabled} onChange={e=>setSF("telegramEnabled",e.target.checked)} style={{width:16,height:16,accentColor:"var(--a-gold)",cursor:"pointer"}}/>
+                Enable Telegram Notifications
+              </label>
+            </div>
+            <div className="a-form-grid" style={{marginBottom:"1rem"}}>
+              <div className="set-field">
+                <label className="set-label">Bot Token</label>
+                <input className="set-inp" type="text" value={sett.telegramBotToken||""} placeholder="123456:ABC-DEF…"
+                  onChange={e=>setSF("telegramBotToken",e.target.value.trim())}/>
+                <div className="set-note">From @BotFather → /mybots → API Token</div>
+              </div>
+              <div className="set-field">
+                <label className="set-label">Chat ID</label>
+                <input className="set-inp" type="text" value={sett.telegramChatId||""} placeholder="e.g. 123456789"
+                  onChange={e=>setSF("telegramChatId",e.target.value.trim())}/>
+                <div className="set-note">Your personal or group chat ID (use @userinfobot to find it)</div>
+              </div>
+            </div>
+            <div style={{display:"flex",gap:".6rem",alignItems:"center",flexWrap:"wrap"}}>
+              <button className="set-save-btn" onClick={async()=>{
+                const botToken=(sett.telegramBotToken||"").trim();
+                const chatId=(sett.telegramChatId||"").trim();
+                if(!botToken||!chatId){showToast("Enter Bot Token and Chat ID first.","error");return;}
+                try{
+                  const res=await fetch("/api/send-telegram",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({botToken,chatId,text:"✅ *Test Notification*\n\nYour NB Property Telegram notifications are working correctly."})});
+                  if(res.ok){showToast("Test message sent!","success");}else{showToast("Failed — check your Bot Token & Chat ID.","error");}
+                }catch{showToast("Network error sending test.","error");}
+              }}>Send Test Message</button>
+              <span style={{fontSize:".72rem",color:"var(--a-muted)"}}>Sends a sample message to verify the configuration.</span>
             </div>
           </div>
 
