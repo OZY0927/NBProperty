@@ -1422,15 +1422,17 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .pb-left .pb-lbl{color:rgba(255,255,255,.55);font-weight:600;}
 .pb-price{font-size:1.95rem;letter-spacing:-.01em;text-shadow:0 1px 8px rgba(13,13,24,.2);}
 .pb-btn1{
-  background:linear-gradient(135deg,var(--cta),var(--cta-l));
+  background:linear-gradient(135deg,var(--gold-l),var(--gold));
+  color:var(--ink);
   border-radius:6px;font-weight:700;
-  box-shadow:0 6px 18px -4px rgba(13,13,24,.5),inset 0 1px 0 rgba(255,255,255,.2);
+  box-shadow:0 6px 18px -4px rgba(191,155,78,.4),inset 0 1px 0 rgba(255,255,255,.3);
   transition:all .2s ease;letter-spacing:.08em;
   padding:.75rem 1.7rem;
 }
-.pb-btn1:hover{transform:translateY(-2px);box-shadow:0 10px 24px -6px rgba(13,13,24,.55),inset 0 1px 0 rgba(255,255,255,.25);opacity:1;}
+.pb-btn1:hover{transform:translateY(-2px);box-shadow:0 10px 24px -6px rgba(191,155,78,.55),inset 0 1px 0 rgba(255,255,255,.4);opacity:1;}
 .pb-btn2{
   border-radius:6px;border:1.5px solid rgba(255,255,255,.3);font-weight:600;
+  color:var(--card);
   transition:all .2s ease;letter-spacing:.08em;
   padding:.75rem 1.5rem;
 }
