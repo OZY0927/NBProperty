@@ -44,6 +44,7 @@ async function crmCreateWebsiteEnquiryLead(data) {
   const leadRef = await crmAddLead({
     name: data.name,
     email: data.email,
+    countryCode: data.countryCode || "+60",
     phone: data.phone,
     source: "website",
     status: "new",
@@ -2158,12 +2159,13 @@ function RegisterInterestModal({ project, settings, onClose }) {
     trackEvent("inquiry_submit", { projectName: projName });
     const phoneDigits = String(phone).replace(/[^0-9]/g, "");
     const phoneNormalized = phoneDigits.replace(/^0+/, "");
-    const fullPhone = `+${phoneCountry}${phoneNormalized}`;
+    // Separate country code and phone as requested
     try {
       await crmCreateWebsiteEnquiryLead({
         name: name.trim(),
         email: email.trim(),
-        phone: fullPhone,
+        countryCode: `+${phoneCountry}`,
+        phone: phoneNormalized,
         projectName: projName,
       });
       setSending(false);
