@@ -506,8 +506,35 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#F9FAFB 0%,#f1f5f
 .mob-admin-chevron{margin-left:auto;font-size:.6rem;transition:transform .25s;color:#76859a;}
 .mob-admin-chevron.open{transform:rotate(180deg);}
 
-.hero{background:linear-gradient(145deg,#F9FAFB 0%,#eef2f7 52%,#e8edf5 100%);padding:5rem 2.5rem 4rem;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid rgba(15,23,42,.06);}
+.hero{background:linear-gradient(145deg,#F9FAFB 0%,#eef2f7 52%,#e8edf5 100%);padding:5rem 2.5rem 4rem;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid rgba(15,23,42,.06);isolation:isolate;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(15,23,42,.06) 0%,transparent 45%),radial-gradient(circle at 18% 22%,rgba(229,192,123,.16) 0%,transparent 28%),radial-gradient(circle at 82% 18%,rgba(30,41,59,.08) 0%,transparent 24%);}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(249,250,251,.9) 0%,rgba(249,250,251,.3) 25%,rgba(249,250,251,.1) 50%,rgba(249,250,251,.3) 75%,rgba(249,250,251,.9) 100%);pointer-events:none;z-index:0;}
+.hero>*{position:relative;z-index:2;}
+.hero-art{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+.hero-grid{position:absolute;inset:-8% -4% auto -4%;height:88%;background-image:linear-gradient(rgba(15,23,42,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.05) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 92%);opacity:.55;transform:perspective(900px) rotateX(70deg) scale(1.15);transform-origin:top center;animation:heroGridDrift 16s linear infinite;}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.75;animation:heroFloat 8s ease-in-out infinite;}
+.hero-orb.o1{width:220px;height:220px;left:-40px;top:26px;background:radial-gradient(circle at 30% 30%,rgba(229,192,123,.42),rgba(229,192,123,0) 72%);}
+.hero-orb.o2{width:280px;height:280px;right:-70px;top:12px;background:radial-gradient(circle at 50% 50%,rgba(30,41,59,.16),rgba(30,41,59,0) 72%);animation-delay:-3s;}
+.hero-orb.o3{width:180px;height:180px;right:18%;bottom:-32px;background:radial-gradient(circle at 50% 50%,rgba(122,162,214,.24),rgba(122,162,214,0) 72%);animation-delay:-5s;}
+.hero-line{position:absolute;border:1px solid rgba(229,192,123,.28);border-radius:999px;opacity:.7;animation:heroPulse 6s ease-in-out infinite;}
+.hero-line.l1{width:420px;height:420px;right:-110px;top:-180px;}
+.hero-line.l2{width:300px;height:300px;left:-120px;bottom:-120px;animation-delay:-2s;}
+.hero-card{position:absolute;min-width:176px;background:rgba(255,255,255,.72);backdrop-filter:blur(14px);border:1px solid rgba(229,192,123,.32);box-shadow:0 22px 48px rgba(15,23,42,.1);border-radius:18px;padding:.9rem 1rem;text-align:left;animation:heroCardFloat 7.5s ease-in-out infinite;}
+.hero-card::before{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(229,192,123,.12),transparent 60%);pointer-events:none;}
+.hero-card.c1{left:8%;top:18%;animation-delay:-1s;}
+.hero-card.c2{right:11%;top:22%;animation-delay:-3.5s;}
+.hero-card.c3{right:18%;bottom:14%;animation-delay:-5s;}
+.hero-card-k{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.42rem;font-weight:700;position:relative;z-index:1;}
+.hero-card-v{font-family:var(--serif);font-size:1.25rem;color:var(--ink);line-height:1;position:relative;z-index:1;}
+.hero-card-s{margin-top:.4rem;font-size:.74rem;color:var(--muted);position:relative;z-index:1;}
+.hero-pill{position:absolute;left:50%;bottom:1.2rem;transform:translateX(-50%);display:flex;align-items:center;gap:.65rem;padding:.72rem 1rem;border-radius:999px;background:rgba(15,23,42,.88);color:#F8FAFC;box-shadow:0 16px 36px rgba(15,23,42,.18);border:1px solid rgba(229,192,123,.22);font-size:.76rem;letter-spacing:.04em;animation:heroPillRise 5.5s ease-in-out infinite;}
+.hero-pill strong{color:var(--gold);font-weight:700;}
+.hero-pill-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 6px rgba(229,192,123,.14);}
+@keyframes heroFloat{0%,100%{transform:translate3d(0,0,0);}50%{transform:translate3d(0,-16px,0);}}
+@keyframes heroCardFloat{0%,100%{transform:translate3d(0,0,0);}50%{transform:translate3d(0,-12px,0);}}
+@keyframes heroPulse{0%,100%{transform:scale(1);opacity:.42;}50%{transform:scale(1.04);opacity:.78;}}
+@keyframes heroGridDrift{0%{transform:perspective(900px) rotateX(70deg) translateY(0) scale(1.15);}50%{transform:perspective(900px) rotateX(70deg) translateY(10px) scale(1.17);}100%{transform:perspective(900px) rotateX(70deg) translateY(0) scale(1.15);}}
+@keyframes heroPillRise{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-6px);}}
 .h-eye{position:relative;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;font-weight:500;}
 .h-ttl{position:relative;font-family:var(--serif);font-size:clamp(2.4rem,5vw,4rem);font-weight:300;color:var(--ink);line-height:1.15;margin-bottom:1rem;}
 .h-ttl em{font-style:italic;color:var(--gold);}
@@ -624,6 +651,14 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#F9FAFB 0%,#f1f5f
   /* Hero */
   .hero{padding:3rem 1.25rem 2.5rem;}
   .h-sub{font-size:.88rem;}
+  .hero-grid{background-size:48px 48px;opacity:.42;}
+  .hero-card{min-width:140px;padding:.75rem .85rem;border-radius:14px;}
+  .hero-card.c1{left:2%;top:12%;}
+  .hero-card.c2{right:3%;top:18%;}
+  .hero-card.c3{display:none;}
+  .hero-card-v{font-size:1rem;}
+  .hero-card-s{font-size:.68rem;}
+  .hero-pill{bottom:.8rem;padding:.6rem .82rem;font-size:.68rem;max-width:calc(100% - 2rem);}
 
   /* Main / Grid — single column on mobile */
   .main{padding:2rem 1rem;}
@@ -715,6 +750,12 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#F9FAFB 0%,#f1f5f
 
   /* Hero */
   .hero{padding:2.5rem 1rem 2rem;}
+  .hero-card{display:none;}
+  .hero-line{display:none;}
+  .hero-orb.o1{width:160px;height:160px;left:-50px;top:18px;}
+  .hero-orb.o2{width:180px;height:180px;right:-60px;top:20px;}
+  .hero-orb.o3{display:none;}
+  .hero-pill{position:relative;left:auto;bottom:auto;transform:none;margin:1rem auto 0;width:max-content;max-width:100%;}
 
   /* Main / Grid */
   .main{padding:1.25rem .75rem;}
@@ -4510,10 +4551,34 @@ export default function App(){
 
       {tab==="listings"&&<>
         <section className="hero">
+          <div className="hero-art" aria-hidden="true">
+            <div className="hero-grid"/>
+            <div className="hero-orb o1"/>
+            <div className="hero-orb o2"/>
+            <div className="hero-orb o3"/>
+            <div className="hero-line l1"/>
+            <div className="hero-line l2"/>
+            <div className="hero-card c1">
+              <div className="hero-card-k">Investment Lens</div>
+              <div className="hero-card-v">Prime ROI</div>
+              <div className="hero-card-s">Curated launches with strong demand corridors</div>
+            </div>
+            <div className="hero-card c2">
+              <div className="hero-card-k">Market Focus</div>
+              <div className="hero-card-v">Island + Mainland</div>
+              <div className="hero-card-s">A balanced view across Penang growth zones</div>
+            </div>
+            <div className="hero-card c3">
+              <div className="hero-card-k">Portfolio Ready</div>
+              <div className="hero-card-v">New Launch Picks</div>
+              <div className="hero-card-s">Shortlist assets by budget, tenure, and completion stage</div>
+            </div>
+          </div>
           <div className="h-eye">✦ Penang's Premier New Launches</div>
           <h1 className="h-ttl">Discover Your<br/><em>Dream Property</em></h1>
           <p className="h-sub">Explore curated new development projects across Penang Island and Seberang Perai.</p>
           <div className="s-wrap"><input className="s-inp" placeholder="Search by project name, area, or developer…" value={search} onChange={e=>setSearch(e.target.value)}/><span className="s-ico"><ISearch/></span></div>
+          <div className="hero-pill"><span className="hero-pill-dot"/><span>Track <strong>new launches</strong>, compare pricing, and filter by investor priorities</span></div>
         </section>
         <main className="main">
           <div className="filter-panel">
