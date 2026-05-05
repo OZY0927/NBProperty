@@ -3943,10 +3943,10 @@ function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete}){
           </tr></thead>
           <tbody>
             {filtered.length===0&&<tr><td colSpan={9} style={{textAlign:"center",padding:"2.5rem",color:"var(--a-muted)"}}>No leads found.</td></tr>}
-            {filtered.map(l=>{const wa=l.phone?crmWaLink(l.phone,l.name,l.propertyInterest):null;const overdue=l.nextFollowUpDate&&new Date(l.nextFollowUpDate)<new Date();return(
+            {filtered.map(l=>{const wa=l.phone?crmWaLink(l.countryCode,l.phone,l.name,l.propertyInterest):null;const overdue=l.nextFollowUpDate&&new Date(l.nextFollowUpDate)<new Date();return(
               <tr key={l.id} onClick={()=>onSelect(l)}>
                 <td><div style={{fontWeight:700,color:"#fff"}}>{l.name}</div><div style={{fontSize:".7rem",color:"var(--a-muted)"}}>{l.email}</div></td>
-                <td>{wa?<a href={wa.href} className="crm-wa-link" onClick={e=>e.stopPropagation()} target="_blank" rel="noopener noreferrer">💬 {wa.label}</a>:"—"}</td>
+                <td>{wa?<a href={wa.href} className="crm-wa-link" onClick={e=>e.stopPropagation()} target="_blank" rel="noopener noreferrer">💬 {l.countryCode} {l.phone}</a>:"—"}</td>
                 <td><LeadBadge status={l.status}/></td>
                 <td style={{color:"var(--a-muted)",fontSize:".76rem"}}>{CRM_SOURCE_LABELS[l.source]||l.source||"—"}</td>
                 <td style={{color:"var(--a-text)"}}>{l.budget?`RM ${Number(l.budget).toLocaleString()}`:"—"}</td>
