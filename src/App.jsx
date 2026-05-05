@@ -336,6 +336,46 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 @keyframes heroFloat{0%,100%{transform:translate3d(0,0,0);}50%{transform:translate3d(0,-16px,0);}}
 @keyframes heroPulse{0%,100%{transform:scale(1);opacity:.42;}50%{transform:scale(1.04);opacity:.78;}}
 @keyframes heroGridDrift{0%{transform:perspective(900px) rotateX(70deg) translateY(0) scale(1.15);}50%{transform:perspective(900px) rotateX(70deg) translateY(10px) scale(1.17);}100%{transform:perspective(900px) rotateX(70deg) translateY(0) scale(1.15);}}
+@keyframes heroRise{0%{opacity:0;transform:translateY(0) scale(1)}30%{opacity:.85}80%{opacity:.45}100%{opacity:0;transform:translateY(-75px) scale(.4)}}
+@keyframes heroDiamond{0%,100%{transform:rotate(45deg) scale(1);opacity:.28}50%{transform:rotate(45deg) scale(1.1);opacity:.6}}
+@keyframes heroScan{0%{left:-32%}100%{left:118%}}
+@keyframes heroBlink{0%,100%{opacity:.07;transform:scale(.65)}50%{opacity:.8;transform:scale(1)}}
+@keyframes heroBadge1{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-13px) rotate(0deg)}}
+@keyframes heroBadge2{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-10px) rotate(3.5deg)}}
+.hero-particles{position:absolute;inset:0;pointer-events:none;}
+.hero-pt{position:absolute;border-radius:50%;background:var(--gold);}
+.hero-pt.pt1{width:3px;height:3px;left:8%;bottom:22%;animation:heroRise 4.2s ease-in 0s infinite;opacity:.7;}
+.hero-pt.pt2{width:2px;height:2px;left:15%;bottom:16%;animation:heroRise 5.1s ease-in .6s infinite;opacity:.5;}
+.hero-pt.pt3{width:3px;height:3px;left:23%;bottom:28%;animation:heroRise 4.7s ease-in 1.2s infinite;opacity:.6;}
+.hero-pt.pt4{width:2px;height:2px;left:33%;bottom:12%;animation:heroRise 5.4s ease-in .3s infinite;opacity:.45;}
+.hero-pt.pt5{width:3px;height:3px;left:42%;bottom:20%;animation:heroRise 4.0s ease-in 1.8s infinite;opacity:.65;}
+.hero-pt.pt6{width:2px;height:2px;left:53%;bottom:14%;animation:heroRise 5.8s ease-in .9s infinite;opacity:.4;}
+.hero-pt.pt7{width:3px;height:3px;left:62%;bottom:24%;animation:heroRise 4.5s ease-in 2.1s infinite;opacity:.6;}
+.hero-pt.pt8{width:2px;height:2px;left:72%;bottom:10%;animation:heroRise 5.2s ease-in .4s infinite;opacity:.5;}
+.hero-pt.pt9{width:3px;height:3px;left:78%;bottom:22%;animation:heroRise 4.8s ease-in 1.5s infinite;opacity:.55;}
+.hero-pt.pt10{width:2px;height:2px;left:85%;bottom:17%;animation:heroRise 5.0s ease-in 2.4s infinite;opacity:.45;}
+.hero-pt.pt11{width:3px;height:3px;left:91%;bottom:26%;animation:heroRise 4.3s ease-in .7s infinite;opacity:.6;}
+.hero-pt.pt12{width:2px;height:2px;left:96%;bottom:11%;animation:heroRise 5.6s ease-in 1.9s infinite;opacity:.4;}
+.hero-city{position:absolute;bottom:0;left:0;width:100%;height:200px;pointer-events:none;}
+.hero-diamond{position:absolute;border:1.5px solid rgba(191,155,78,.32);pointer-events:none;animation:heroDiamond 6s ease-in-out infinite;}
+.hero-diamond.hd1{width:78px;height:78px;right:11%;top:10%;transform:rotate(45deg);}
+.hero-diamond.hd2{width:48px;height:48px;left:7%;top:18%;transform:rotate(45deg);animation-delay:-2s;}
+.hero-diamond.hd3{width:32px;height:32px;right:27%;bottom:22%;transform:rotate(45deg);animation-delay:-4s;}
+.hero-diamond.hd1-inner{width:52px;height:52px;right:calc(11% + 13px);top:calc(10% + 13px);border-color:rgba(191,155,78,.14);transform:rotate(45deg);animation-delay:-.5s;}
+.hero-scan{position:absolute;top:0;bottom:0;width:28%;background:linear-gradient(90deg,transparent,rgba(191,155,78,.055),transparent);pointer-events:none;animation:heroScan 7s ease-in-out infinite;}
+.hero-star{position:absolute;width:3px;height:3px;border-radius:50%;background:#BF9B4E;pointer-events:none;animation:heroBlink var(--bd,3s) ease-in-out var(--bdd,0s) infinite;}
+.hero-star.hs1{left:5%;top:12%;--bd:2.8s;--bdd:.2s}
+.hero-star.hs2{left:18%;top:8%;--bd:3.5s;--bdd:1.1s}
+.hero-star.hs3{left:35%;top:14%;--bd:2.5s;--bdd:.5s}
+.hero-star.hs4{left:50%;top:7%;--bd:3.2s;--bdd:1.8s}
+.hero-star.hs5{left:65%;top:13%;--bd:2.9s;--bdd:.8s}
+.hero-star.hs6{left:80%;top:8%;--bd:3.8s;--bdd:2.2s}
+.hero-star.hs7{left:93%;top:16%;--bd:2.6s;--bdd:.4s}
+.hero-star.hs8{left:27%;top:5%;--bd:3.1s;--bdd:1.5s}
+.hero-badge{position:absolute;background:rgba(255,255,255,.92);border:1px solid rgba(191,155,78,.28);border-radius:14px;padding:.7rem .9rem;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(13,13,24,.1),inset 0 1px 0 rgba(255,255,255,.8);backdrop-filter:blur(14px);pointer-events:none;}
+.hero-badge.hb1{left:4%;top:30%;animation:heroBadge1 5s ease-in-out infinite;}
+.hero-badge.hb2{right:4%;top:36%;animation:heroBadge2 5.5s ease-in-out infinite;}
+@media(max-width:900px){.hero-badge{display:none;}.hero-diamond.hd2{display:none;}.hero-city{height:140px;}}
 .h-eye{position:relative;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;font-weight:500;}
 .h-ttl{position:relative;font-family:var(--serif);font-size:clamp(2.4rem,5vw,4rem);font-weight:300;color:var(--ink);line-height:1.15;margin-bottom:1rem;}
 .h-ttl em{font-style:italic;color:var(--gold);}
@@ -4491,6 +4531,52 @@ export default function App(){
             <div className="hero-orb o3"/>
             <div className="hero-line l1"/>
             <div className="hero-line l2"/>
+            <div className="hero-scan"/>
+            <div className="hero-star hs1"/><div className="hero-star hs2"/><div className="hero-star hs3"/>
+            <div className="hero-star hs4"/><div className="hero-star hs5"/><div className="hero-star hs6"/>
+            <div className="hero-star hs7"/><div className="hero-star hs8"/>
+            <div className="hero-diamond hd1"/>
+            <div className="hero-diamond hd1-inner"/>
+            <div className="hero-diamond hd2"/>
+            <div className="hero-diamond hd3"/>
+            <div className="hero-particles">
+              <div className="hero-pt pt1"/><div className="hero-pt pt2"/><div className="hero-pt pt3"/>
+              <div className="hero-pt pt4"/><div className="hero-pt pt5"/><div className="hero-pt pt6"/>
+              <div className="hero-pt pt7"/><div className="hero-pt pt8"/><div className="hero-pt pt9"/>
+              <div className="hero-pt pt10"/><div className="hero-pt pt11"/><div className="hero-pt pt12"/>
+            </div>
+            <svg className="hero-city" viewBox="0 0 1400 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="city-win" x="0" y="0" width="10" height="12" patternUnits="userSpaceOnUse">
+                  <rect x="1.5" y="1.5" width="6" height="8" fill="rgba(191,155,78,.38)" rx="0.5"/>
+                </pattern>
+                <clipPath id="city-clip">
+                  <polygon points="0,165 28,165 28,148 52,148 52,158 68,158 68,138 92,138 92,128 115,128 115,145 138,145 138,122 162,122 162,115 175,115 175,108 190,108 190,115 208,115 208,100 228,100 228,92 242,92 242,80 254,72 266,80 266,92 285,92 285,110 305,110 305,102 325,102 325,88 342,88 342,78 360,78 368,62 376,78 394,78 394,92 412,92 412,105 430,105 430,118 455,118 475,118 475,105 498,105 498,88 518,88 518,72 536,72 536,58 546,52 556,58 556,68 566,60 578,60 578,78 598,78 598,92 620,92 620,80 642,80 642,78 658,78 658,90 675,90 675,100 695,100 695,112 718,112 718,98 738,98 738,108 760,108 760,120 782,120 782,108 805,108 805,120 828,120 828,130 850,130 850,118 872,118 872,130 895,130 895,140 918,140 918,128 940,128 940,140 965,140 965,150 988,150 988,140 1012,140 1012,150 1035,150 1035,160 1058,160 1058,148 1082,148 1082,158 1108,158 1108,148 1132,148 1132,158 1158,158 1158,165 1182,165 1182,155 1208,155 1208,165 1235,165 1235,172 1262,172 1262,162 1288,162 1288,170 1315,170 1315,162 1342,162 1342,170 1370,170 1370,178 1400,178 1400,200 0,200"/>
+                </clipPath>
+              </defs>
+              <polygon points="0,165 28,165 28,148 52,148 52,158 68,158 68,138 92,138 92,128 115,128 115,145 138,145 138,122 162,122 162,115 175,115 175,108 190,108 190,115 208,115 208,100 228,100 228,92 242,92 242,80 254,72 266,80 266,92 285,92 285,110 305,110 305,102 325,102 325,88 342,88 342,78 360,78 368,62 376,78 394,78 394,92 412,92 412,105 430,105 430,118 455,118 475,118 475,105 498,105 498,88 518,88 518,72 536,72 536,58 546,52 556,58 556,68 566,60 578,60 578,78 598,78 598,92 620,92 620,80 642,80 642,78 658,78 658,90 675,90 675,100 695,100 695,112 718,112 718,98 738,98 738,108 760,108 760,120 782,120 782,108 805,108 805,120 828,120 828,130 850,130 850,118 872,118 872,130 895,130 895,140 918,140 918,128 940,128 940,140 965,140 965,150 988,150 988,140 1012,140 1012,150 1035,150 1035,160 1058,160 1058,148 1082,148 1082,158 1108,158 1108,148 1132,148 1132,158 1158,158 1158,165 1182,165 1182,155 1208,155 1208,165 1235,165 1235,172 1262,172 1262,162 1288,162 1288,170 1315,170 1315,162 1342,162 1342,170 1370,170 1370,178 1400,178 1400,200 0,200" fill="rgba(191,155,78,.07)"/>
+              <rect x="0" y="0" width="1400" height="200" fill="url(#city-win)" clipPath="url(#city-clip)" opacity="0.55"/>
+              <polyline points="0,165 28,165 28,148 52,148 52,158 68,158 68,138 92,138 92,128 115,128 115,145 138,145 138,122 162,122 162,115 175,115 175,108 190,108 190,115 208,115 208,100 228,100 228,92 242,92 242,80 254,72 266,80 266,92 285,92 285,110 305,110 305,102 325,102 325,88 342,88 342,78 360,78 368,62 376,78 394,78 394,92 412,92 412,105 430,105 430,118 455,118 475,118 475,105 498,105 498,88 518,88 518,72 536,72 536,58 546,52 556,58 556,68 566,60 578,60 578,78 598,78 598,92 620,92 620,80 642,80 642,78 658,78 658,90 675,90 675,100 695,100 695,112 718,112 718,98 738,98 738,108 760,108 760,120 782,120 782,108 805,108 805,120 828,120 828,130 850,130 850,118 872,118 872,130 895,130 895,140 918,140 918,128 940,128 940,140 965,140 965,150 988,150 988,140 1012,140 1012,150 1035,150 1035,160 1058,160 1058,148 1082,148 1082,158 1108,158 1108,148 1132,148 1132,158 1158,158 1158,165 1182,165 1182,155 1208,155 1208,165 1235,165 1235,172 1262,172 1262,162 1288,162 1288,170 1315,170 1315,162 1342,162 1342,170 1370,170 1370,178 1400,178" stroke="rgba(191,155,78,.22)" strokeWidth="1" fill="none"/>
+              <line x1="368" y1="62" x2="368" y2="40" stroke="rgba(191,155,78,.5)" strokeWidth="1.5"/>
+              <circle cx="368" cy="38" r="2.5" fill="rgba(191,155,78,.7)"/>
+              <line x1="546" y1="52" x2="546" y2="28" stroke="rgba(191,155,78,.5)" strokeWidth="1.5"/>
+              <circle cx="546" cy="26" r="2.5" fill="rgba(191,155,78,.7)"/>
+              <rect x="553" y="58" width="14" height="3" fill="rgba(191,155,78,.18)" rx="1"/>
+            </svg>
+            <div className="hero-badge hb1">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#BF9B4E" strokeWidth="1.5" strokeLinejoin="round">
+                <path d="M3 22V10L12 3l9 7v12H3z"/>
+                <path d="M9 22v-6h6v6"/>
+              </svg>
+            </div>
+            <div className="hero-badge hb2">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#BF9B4E" strokeWidth="1.5" strokeLinejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <path d="M8 21h8M12 17v4"/>
+                <circle cx="7" cy="8" r="1" fill="#BF9B4E"/><circle cx="12" cy="8" r="1" fill="#BF9B4E"/><circle cx="17" cy="8" r="1" fill="#BF9B4E"/>
+                <circle cx="7" cy="12" r="1" fill="#BF9B4E"/><circle cx="12" cy="12" r="1" fill="#BF9B4E"/><circle cx="17" cy="12" r="1" fill="#BF9B4E"/>
+              </svg>
+            </div>
           </div>
           <div className="h-eye">✦ Penang's Premier New Launches</div>
           <h1 className="h-ttl">Discover Your<br/><em>Dream Property</em></h1>
