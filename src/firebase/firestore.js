@@ -1,5 +1,5 @@
 // Firestore helpers for NBProperty
-import { getFirestore, collection, doc, writeBatch, setDoc, addDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, doc, writeBatch, setDoc, addDoc, getDocs, deleteDoc, getDoc } from "firebase/firestore";
 import app from "./config";
 
 const db = getFirestore(app);
@@ -66,4 +66,14 @@ async function deleteProjectById(id){
   return { ok: true, id: String(id) };
 }
 
-export { db, seedProjects, addProject, setProjectById, getAllProjects, deleteProjectById, addAnalytic, getAllAnalytics, migrateAnalytics, deleteAllAnalytics };
+async function getSettings() {
+  const snap = await getDoc(doc(db, "settings", "main"));
+  return snap.exists() ? snap.data() : null;
+}
+
+async function saveSettings(data = {}) {
+  await setDoc(doc(db, "settings", "main"), data);
+  return { ok: true };
+}
+
+export { db, seedProjects, addProject, setProjectById, getAllProjects, deleteProjectById, addAnalytic, getAllAnalytics, migrateAnalytics, deleteAllAnalytics, getSettings, saveSettings };
