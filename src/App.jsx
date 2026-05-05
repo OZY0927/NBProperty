@@ -4547,9 +4547,6 @@ export default function App(){
             </div>
           )}
         </div>
-        <div className="mob-drawer-ft">
-          <button className="mob-drawer-cta" onClick={()=>{openRI(null);setMobileNavOpen(false);}}>Register Interest</button>
-        </div>
       </div>}
 
       {/* ── Top navigation — hidden on detail page ── */}
