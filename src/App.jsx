@@ -3862,7 +3862,6 @@ function CRMPanel({projects, settings}){
     }
     catch(e){alert("Failed to save: "+e.message);}
   };
-  };
   const handleDeleteLead=async(id)=>{
     try{await crmDeleteLead(id);if(selectedLead?.id===id)setSelectedLead(null);}
     catch(e){alert("Delete failed: "+e.message);}
