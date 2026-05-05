@@ -4464,10 +4464,33 @@ export default function App(){
     h();window.addEventListener('resize',h);
     return ()=>window.removeEventListener('resize',h);
   },[]);
-  const [listPage,setListPage]=useState(1);
+  const [listPage,setListPage]=useState(()=>{
+    // Restore the page the user was on when they open a detail and come back
+    const saved=sessionStorage.getItem("listingPage");
+    return saved?Number(saved):1;
+  });
   useEffect(()=>setListPage(1),[filtered,isDesktop]);
   const itemsPerPage = isDesktop?9:filtered.length||9999;
   const totalPages = isDesktop?Math.max(1,Math.ceil(filtered.length/itemsPerPage)):1;
+
+  // ── Scroll-position restore when returning to listings ─────────────────────
+  useEffect(()=>{
+    if(tab!=="listings")return;
+    const savedY=sessionStorage.getItem("listingScrollY");
+    const savedPage=sessionStorage.getItem("listingPage");
+    if(!savedY&&!savedPage)return;
+    // Restore page first (state update), then scroll on next paint
+    if(savedPage)setListPage(Number(savedPage));
+    const target=parseInt(savedY||"0",10);
+    // Use rAF to let React flush the DOM before scrolling
+    const raf=requestAnimationFrame(()=>{
+      window.scrollTo({top:target,behavior:"instant"});
+    });
+    // Clean up so normal filter resets still work
+    sessionStorage.removeItem("listingScrollY");
+    sessionStorage.removeItem("listingPage");
+    return ()=>cancelAnimationFrame(raf);
+  },[tab]); // eslint-disable-line react-hooks/exhaustive-deps
   const visibleProjects = isDesktop?filtered.slice((listPage-1)*itemsPerPage,listPage*itemsPerPage):filtered;
   const cmpProjects=useMemo(()=>projects.filter(p=>cmpIds.includes(p.id)&&p.visible!==false),[projects,cmpIds]);
   const toggleCmp=useCallback((e,id)=>{e.stopPropagation();setCmpIds(prev=>prev.includes(id)?prev.filter(x=>x!==id):prev.length>=5?prev:[...prev,id]);},[]);
@@ -4596,7 +4619,14 @@ export default function App(){
           <div className="grid">
             {filtered.length===0 ? <div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">No projects found</div><p className="empty-s">Try adjusting filters.</p></div>
             : visibleProjects.map(p => (
-              <div key={p.id} className={`card${cmpIds.includes(p.id)?" sel":""}`} onClick={()=>{trackEvent("project_click",{projectName:p.name});setSelected(p);setTab("detail");}}>
+              <div key={p.id} className={`card${cmpIds.includes(p.id)?" sel":""}`} onClick={()=>{
+                // Save scroll position and current page before entering detail
+                sessionStorage.setItem("listingScrollY",String(window.scrollY));
+                sessionStorage.setItem("listingPage",String(listPage));
+                trackEvent("project_click",{projectName:p.name});
+                setSelected(p);
+                setTab("detail");
+              }}>
                 <div className="cimg"><img src={p.image} alt={p.name}/><div className="ctag" style={{background:p.tagColor}}>{p.tag}</div><div className="cstat">{p.status}</div><button className={`cbtn${cmpIds.includes(p.id)?" on":""}`} onClick={e=>toggleCmp(e,p.id)} title="Compare">{cmpIds.includes(p.id)?"✓":"+"}</button></div>
                 <div className="cbody">
                   <div className="ctype">{p.type}</div><div className="cname">{p.name}</div><div className="cdev">by {p.developer}</div>
