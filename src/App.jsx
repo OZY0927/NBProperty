@@ -4610,7 +4610,7 @@ export default function App(){
                     <input className="fsize-inp" type="number" placeholder="Max" value={fSizeMax} onChange={e=>setFSizeMax(e.target.value)} min="0"/>
                   </div>
                 </div>
-                <button className="fclear-btn" onClick={()=>{setFBed("All Beds");setFBath("All Baths");setFTenure("All Tenure");setFCompletion("All Completion");setFSizeMin("");setFSizeMax("");}}>Clear Filters</button>
+                <button className="fclear-btn" onClick={()=>{setSearch("");setType("All Types");setLoc("All Areas");setStat("All Status");setPriceMin(PRICE_SLIDER_MIN);setPriceMax(PRICE_SLIDER_MAX);setFBed("All Beds");setFBath("All Baths");setFTenure("All Tenure");setFCompletion("All Completion");setFSizeMin("");setFSizeMax("");}}>Clear Filters</button>
               </div>
             )}
             {/* Price slider — full width */}
