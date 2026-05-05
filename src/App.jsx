@@ -9,15 +9,26 @@ import { getApp } from "firebase/app";
 const crmDb = () => getFirestore(getApp());
 const leadsCol = () => collection(crmDb(), "leads");
 const activitiesCol = (leadId) => collection(crmDb(), "leads", leadId, "activities");
-const normalizeCrmLead = (lead) => ({
-  ...lead,
-  nextFollowUpDate:
-    lead?.nextFollowUpDate ||
-    lead?.followUpDate ||
-    lead?.followupDate ||
-    lead?.nextFollowUp ||
-    "",
-});
+const normalizeCrmLead = (lead) => {
+  let { countryCode, phone } = lead || {};
+  // If countryCode is missing but phone already contains it (e.g. "+60121234567"), split them
+  if (!countryCode && phone && phone.startsWith("+")) {
+    const match = phone.match(/^(\+\d{1,4})(\d+)$/);
+    if (match) { countryCode = match[1]; phone = match[2]; }
+  }
+  if (!countryCode) countryCode = "+60";
+  return {
+    ...lead,
+    countryCode,
+    phone: phone || "",
+    nextFollowUpDate:
+      lead?.nextFollowUpDate ||
+      lead?.followUpDate ||
+      lead?.followupDate ||
+      lead?.nextFollowUp ||
+      "",
+  };
+};
 
 async function crmAddLead(data) {
   return addDoc(leadsCol(), { ...data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
@@ -3776,7 +3787,7 @@ function AnalyticsDashboard() {
 /* ═══ CRM / LEAD MANAGEMENT ═══ */
 const crmScore=(lead)=>{let s=0;if(lead.email)s+=15;if(lead.phone)s+=20;if(lead.budget&&Number(lead.budget)>0)s+=20;if(lead.propertyInterest)s+=10;if(lead.assignedAgent)s+=15;if(lead.nextFollowUpDate)s+=10;if(lead.notes&&lead.notes.length>20)s+=10;const age=lead.createdAt&&lead.createdAt.toMillis?(Date.now()-lead.createdAt.toMillis())/86400000:0;if(age<3)s+=5;else if(age>14)s=Math.max(0,s-15);return Math.min(100,s);};
 const crmFmtDate=(ts)=>{if(!ts)return"—";const d=ts.toDate?ts.toDate():new Date(ts);const diff=(Date.now()-d)/1000;if(diff<60)return"just now";if(diff<3600)return`${Math.floor(diff/60)}m ago`;if(diff<86400)return`${Math.floor(diff/3600)}h ago`;if(diff<604800)return`${Math.floor(diff/86400)}d ago`;return d.toLocaleDateString("en-MY",{day:"numeric",month:"short",year:"2-digit"});};
-const crmWaLink=(phone,name,project)=>{const p=(phone||"").replace(/[^0-9]/g,"");const msg=encodeURIComponent(`Hi, I'm following up on your enquiry${project?` about ${project}`:""}. Are you still interested?`);return{href:`https://wa.me/${p}?text=${msg}`,label:phone||""};};
+const crmWaLink=(countryCode,phone,name,project)=>{const full=`${countryCode||'+60'}${phone||""}`;const p=full.replace(/[^0-9]/g,"");const msg=encodeURIComponent(`Hi, I'm following up on your enquiry${project?` about ${project}`:""}. Are you still interested?`);return{href:`https://wa.me/${p}?text=${msg}`,label:`${countryCode||'+60'} ${phone||""}`};};;
 const crmExportCSV=(leads)=>{const esc=v=>`"${String(v||"").replace(/"/g,'""')}"`;const headers=["Name","Phone","Email","Source","Status","Budget","Interest","Agent","Follow-up","Created","Notes"];const rows=leads.map(l=>[l.name,l.phone,l.email,l.source,l.status,l.budget,l.propertyInterest,l.assignedAgent,l.nextFollowUpDate,l.createdAt&&l.createdAt.toDate?l.createdAt.toDate().toISOString().split("T")[0]:"",l.notes].map(esc).join(","));const csv=[headers.join(","),...rows].join("\n");const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`leads_${new Date().toISOString().split("T")[0]}.csv`;a.click();URL.revokeObjectURL(url);};
 const LeadBadge=({status})=>(<span className="crm-badge" style={{color:CRM_STATUS_COLORS[status]||"var(--a-muted)",background:CRM_STATUS_BG[status]||"transparent",border:`1px solid ${(CRM_STATUS_COLORS[status]||"#333")}44`}}>{CRM_STATUS_LABELS[status]||status}</span>);
 const CRMScoreBar=({score})=>{const color=score>=75?"#4E9A72":score>=50?"#BF9B4E":score>=25?"#5E8FD0":"#C4543E";return(<span className="crm-score" style={{color}}>{score}<span className="crm-score-bar"><span className="crm-score-fill" style={{width:`${score}%`,background:color}}/></span></span>);};
@@ -3832,7 +3843,7 @@ function LeadDrawer({lead,activities,projects,onClose,onUpdate,onAddActivity,onE
   const [noteType,setNoteType]=useState("note");
   const [busy,setBusy]=useState(false);
   const score=crmScore(lead);
-  const wa=lead.phone?crmWaLink(lead.phone,lead.name,lead.propertyInterest):null;
+  const wa=lead.phone?crmWaLink(lead.countryCode,lead.phone,lead.name,lead.propertyInterest):null;
   const isOverdue=lead.nextFollowUpDate&&new Date(lead.nextFollowUpDate)<new Date();
   const addNote=async()=>{if(!note.trim())return;setBusy(true);await onAddActivity({type:noteType,content:note.trim(),createdBy:"admin"});setNote("");setBusy(false);};
   const typeIcons={note:"📝",call:"📞",email:"✉️",status_change:"🔄",assignment:"👤"};
