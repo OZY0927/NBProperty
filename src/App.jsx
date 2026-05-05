@@ -4359,7 +4359,59 @@ export default function App(){
   const cheapest=cmpProjects.length?cmpProjects.reduce((a,b)=>a.priceFrom<b.priceFrom?a:b).id:null;
   const largest =cmpProjects.length?cmpProjects.reduce((a,b)=>a.sizeSqft[1]>b.sizeSqft[1]?a:b).id:null;
 
-  if(!ready) return (<><style>{css}</style><div style={{minHeight:"100vh",background:"var(--ink)",display:"flex",alignItems:"center",justifyContent:"center",color:"#555",fontFamily:"var(--sans)"}}>Loading…</div></>);
+  if(!ready) return (<><style>{css}</style><style>{`
+    @keyframes nb-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    @keyframes nb-pulse{0%,100%{opacity:.25;transform:scale(.88)}50%{opacity:1;transform:scale(1)}}
+    @keyframes nb-fade-up{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes nb-shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+    @keyframes nb-orbit{0%{transform:rotate(0deg) translateX(28px) rotate(0deg)}100%{transform:rotate(360deg) translateX(28px) rotate(-360deg)}}
+    @keyframes nb-orbit2{0%{transform:rotate(180deg) translateX(20px) rotate(-180deg)}100%{transform:rotate(540deg) translateX(20px) rotate(-540deg)}}
+    .nb-loader-screen{min-height:100vh;background:radial-gradient(ellipse at 60% 30%,#1a1628 0%,#0D0D18 60%,#060610 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'DM Sans',system-ui,sans-serif;position:relative;overflow:hidden;}
+    .nb-loader-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(191,155,78,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(191,155,78,.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+    .nb-loader-glow1{position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(191,155,78,.13) 0%,transparent 70%);top:-120px;right:-80px;pointer-events:none;}
+    .nb-loader-glow2{position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(191,155,78,.09) 0%,transparent 70%);bottom:-100px;left:-60px;pointer-events:none;}
+    .nb-loader-orbit-wrap{position:relative;width:90px;height:90px;display:flex;align-items:center;justify-content:center;margin-bottom:2.2rem;}
+    .nb-loader-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(191,155,78,.18);box-sizing:border-box;}
+    .nb-loader-ring-spin{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:#BF9B4E;border-right-color:rgba(191,155,78,.35);box-sizing:border-box;animation:nb-spin 1.2s cubic-bezier(.6,.1,.4,.9) infinite;}
+    .nb-loader-ring2{position:absolute;inset:10px;border-radius:50%;border:1.5px solid transparent;border-bottom-color:#D4B880;border-left-color:rgba(212,184,128,.3);box-sizing:border-box;animation:nb-spin 1.9s cubic-bezier(.6,.1,.4,.9) infinite reverse;}
+    .nb-loader-dot{position:absolute;width:7px;height:7px;border-radius:50%;background:#BF9B4E;box-shadow:0 0 10px rgba(191,155,78,.8);animation:nb-orbit 1.2s linear infinite;}
+    .nb-loader-dot2{position:absolute;width:5px;height:5px;border-radius:50%;background:#D4B880;box-shadow:0 0 8px rgba(212,184,128,.7);animation:nb-orbit2 1.9s linear infinite;}
+    .nb-loader-icon{width:30px;height:30px;display:flex;align-items:center;justify-content:center;}
+    .nb-loader-logo{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.1rem;font-weight:600;color:#BF9B4E;letter-spacing:.06em;animation:nb-fade-up .7s ease both;}
+    .nb-loader-logo span{color:#FAF8F3;font-weight:400;}
+    .nb-loader-tagline{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(212,184,128,.55);margin-top:.35rem;animation:nb-fade-up .7s .15s ease both;}
+    .nb-loader-bar-wrap{width:180px;height:2px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:2.4rem;overflow:hidden;animation:nb-fade-up .7s .3s ease both;}
+    .nb-loader-bar{height:100%;width:45%;border-radius:2px;background:linear-gradient(90deg,transparent,#BF9B4E,#D4B880,transparent);background-size:400px 100%;animation:nb-shimmer 1.4s linear infinite;}
+    .nb-loader-dots{display:flex;gap:.45rem;margin-top:1.2rem;animation:nb-fade-up .7s .45s ease both;}
+    .nb-loader-dots span{width:5px;height:5px;border-radius:50%;background:#BF9B4E;animation:nb-pulse 1.2s ease-in-out infinite;}
+    .nb-loader-dots span:nth-child(2){animation-delay:.2s;}
+    .nb-loader-dots span:nth-child(3){animation-delay:.4s;}
+    .nb-loader-msg{font-size:.73rem;color:rgba(212,184,128,.45);letter-spacing:.1em;margin-top:.9rem;animation:nb-fade-up .7s .55s ease both;}
+  `}</style>
+  <div className="nb-loader-screen">
+    <div className="nb-loader-grid"/>
+    <div className="nb-loader-glow1"/>
+    <div className="nb-loader-glow2"/>
+    <div className="nb-loader-orbit-wrap">
+      <div className="nb-loader-ring"/>
+      <div className="nb-loader-ring-spin"/>
+      <div className="nb-loader-ring2"/>
+      <div className="nb-loader-dot"/>
+      <div className="nb-loader-dot2"/>
+      <div className="nb-loader-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M3 22V10L12 3l9 7v12H3z" stroke="#BF9B4E" strokeWidth="1.5" strokeLinejoin="round"/>
+          <path d="M9 22v-6h6v6" stroke="#BF9B4E" strokeWidth="1.5" strokeLinejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div className="nb-loader-logo">NB<span>Property</span></div>
+    <div className="nb-loader-tagline">Luxury Real Estate</div>
+    <div className="nb-loader-bar-wrap"><div className="nb-loader-bar"/></div>
+    <div className="nb-loader-dots"><span/><span/><span/></div>
+    <div className="nb-loader-msg">Loading your experience…</div>
+  </div>
+</>);
 
   return (
     <>
