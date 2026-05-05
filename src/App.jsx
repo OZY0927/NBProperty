@@ -3779,7 +3779,7 @@ const crmExportCSV=(leads)=>{const esc=v=>`"${String(v||"").replace(/"/g,'""')}"
 const LeadBadge=({status})=>(<span className="crm-badge" style={{color:CRM_STATUS_COLORS[status]||"var(--a-muted)",background:CRM_STATUS_BG[status]||"transparent",border:`1px solid ${(CRM_STATUS_COLORS[status]||"#333")}44`}}>{CRM_STATUS_LABELS[status]||status}</span>);
 const CRMScoreBar=({score})=>{const color=score>=75?"#4E9A72":score>=50?"#BF9B4E":score>=25?"#5E8FD0":"#C4543E";return(<span className="crm-score" style={{color}}>{score}<span className="crm-score-bar"><span className="crm-score-fill" style={{width:`${score}%`,background:color}}/></span></span>);};
 function LeadForm({lead,projects,onSave,onClose}){
-  const blank={name:"",phone:"",email:"",budget:"",propertyInterest:"",source:"website",status:"new",assignedAgent:"",nextFollowUpDate:"",notes:""};
+  const blank={name:"",countryCode:"+60",phone:"",email:"",budget:"",propertyInterest:"",source:"website",status:"new",assignedAgent:"",nextFollowUpDate:"",notes:""};
   const [f,setF]=useState({...blank,...(lead&&lead!=="new"?normalizeCrmLead(lead):{})});
   const upd=(k,v)=>setF(p=>({...p,[k]:v}));
   const [busy,setBusy]=useState(false);
@@ -3795,7 +3795,12 @@ function LeadForm({lead,projects,onSave,onClose}){
         <div className="crm-modal-body">
           <div className="crm-grid2">
             <div className="crm-field"><label className="crm-label">Full Name *</label><input className="crm-inp" value={f.name} onChange={e=>upd("name",e.target.value)} placeholder="Ahmad bin Ali"/></div>
-            <div className="crm-field"><label className="crm-label">Phone</label><input className="crm-inp" value={f.phone} onChange={e=>upd("phone",e.target.value)} placeholder="+60 12-345 6789" type="tel"/></div>
+            <div className="crm-field"><label className="crm-label">Phone</label>
+              <div style={{display:"flex",gap:".4rem"}}>
+                <input className="crm-inp" value={f.countryCode} onChange={e=>upd("countryCode",e.target.value)} placeholder="+60" style={{flex:"0 0 70px",textAlign:"center"}}/>
+                <input className="crm-inp" value={f.phone} onChange={e=>upd("phone",e.target.value)} placeholder="12-345 6789" type="tel" style={{flex:1}}/>
+              </div>
+            </div>
           </div>
           <div className="crm-grid2">
             <div className="crm-field"><label className="crm-label">Email</label><input className="crm-inp" value={f.email} onChange={e=>upd("email",e.target.value)} placeholder="email@example.com" type="email"/></div>
