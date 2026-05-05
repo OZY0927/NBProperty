@@ -1000,7 +1000,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#F9FAFB 0%,#f1f5f
 .empty-h{font-family:var(--serif);font-size:1.8rem;margin-bottom:.5rem;}
 .empty-s{color:var(--muted);font-size:.9rem;}
 
-.tray{position:fixed;bottom:0;left:0;right:0;z-index:90;background:#0e1420;border-top:1px solid #1e2d48;padding:.8rem 1.5rem;display:flex;align-items:center;gap:1rem;transform:translateY(100%);transition:transform .3s;}
+.tray{position:fixed;bottom:0;left:0;right:0;z-index:90;background:#0e1420;border-top:1px solid #1e2d48;padding:.8rem 1.5rem;display:flex;align-items:center;gap:1rem;transform:translateY(100%);transition:transform .3s;border-radius:var(--r-md) var(--r-md) 0 0;}
 .tray.show{transform:translateY(0);}
 .tray-lbl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#94a3c8;white-space:nowrap;}
 .tray-slots{display:flex;gap:.4rem;flex:1;overflow-x:auto;}
