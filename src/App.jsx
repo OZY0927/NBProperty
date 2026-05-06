@@ -4563,14 +4563,6 @@ function LoanCalculator({settings}){
             {isForeign&&<div className="lc-foreign-note">⚠️ Foreign buyer: 8% MOT (flat) + 3% Levy + State Fee ({isCommercial?"RM 20,000":"RM 10,000"}) applies</div>}
           </div>
 
-          {/* Saved */}
-          {saved&&<div className="lc-card lc-saved-card">
-            <div className="lc-card-hd">💾 Saved Calculation</div>
-            <div style={{fontSize:".78rem",color:"var(--muted)",marginBottom:".6rem"}}>
-              RM {(saved.price||0).toLocaleString()} · {fmtRM(saved.monthly)}/mo · {new Date(saved.ts).toLocaleDateString("en-MY")}
-            </div>
-            <button className="lc-btn-sec" onClick={loadSaved}>↩ Restore</button>
-          </div>}
         </div>
 
         {/* ─── RIGHT: Results ─── */}
