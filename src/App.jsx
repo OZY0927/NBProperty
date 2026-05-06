@@ -516,18 +516,25 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   .cmp-pg{padding:1.5rem 1rem 5rem;}
   .cmp-title{font-size:1.7rem;}
 
-  /* Detail page — mobile */
-  .det{height:auto;max-height:none;min-height:calc(100vh - 64px);}
-  .det-hero{height:30vh;max-height:220px;flex-shrink:0;}
+  /* Detail page — mobile: single continuous scroll */
+  .det-pg{min-height:100svh;height:auto;}
+  .det-pg-inner{height:auto;}
+  .det{height:auto;max-height:none;min-height:0;overflow:visible;}
+  .det-split{height:auto;overflow:visible;}
+  .det-right{height:auto;min-height:0;overflow:visible;}
+  .det-hero{height:55vw;min-height:220px;max-height:320px;flex-shrink:0;}
   .det-hc{left:1rem;right:1rem;bottom:.75rem;}
   .det-title{font-size:1.35rem;}
   .det-tag-pill{margin-bottom:.3rem;}
-  .det-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;}
-  .det-tab{flex:0 0 auto;padding:.85rem .8rem;font-size:.72rem;white-space:nowrap;}
+  .det-tabs{display:none !important;}
   .gal-strip{display:none;}
+  .det-content{overflow:visible !important;height:auto !important;min-height:0 !important;padding-bottom:96px;}
+  .det-pane{display:block !important;}
+  .det-pane+.det-pane{border-top:6px solid var(--warm);}
+  .det-sticky-bar{position:fixed !important;bottom:0;left:0;right:0;z-index:200;box-shadow:0 -4px 24px rgba(0,0,0,.22);padding-bottom:env(safe-area-inset-bottom,0);}
 
   /* Overview tab */
-  .ov-body{padding:1.4rem 1rem;overflow-y:auto;}
+  .ov-body{padding:1.4rem 1rem;}
   .ov-desc-row{grid-template-columns:1fr;}
   .spec-grid{grid-template-columns:1fr;}
   .spec-key{min-width:115px;}
@@ -1122,6 +1129,9 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 
   .det-right-hd{display:none;}
   .det-close{display:none;}
+  /* Tab panes — only active pane shown on desktop */
+  .det-pane{display:none;}
+  .det-pane.on{display:block;}
 }
 
 /* ════════════════════════════════════════════
@@ -2410,9 +2420,9 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
 
             <div className="det-content">
         {/* ── OVERVIEW ── */}
-        {activeTab==="overview"&&(
-          <div>
-            <div className="ov-body">
+        {visDetTabs.some(t=>t.k==="overview")&&(
+          <div className={`det-pane${activeTab==="overview"?" on":""}`}>
+          <div className="ov-body">
               {/* Description + Highlights row — each independently gated */}
               {(sec("overview","description")||sec("overview","highlights"))&&(
                 <div className="ov-desc-row" style={{gridTemplateColumns:sec("overview","description")&&sec("overview","highlights")?"1.2fr 1fr":"1fr"}}>
@@ -2447,12 +2457,13 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                   <div className="fac-chips">{(p.facilities||[]).map(f=><span key={f} className="fac-chip">{f}</span>)}</div>
                 </div>
               )}
-            </div>
-            </div>
+          </div>
+          </div>
         )}
 
         {/* ── LOCATION ── */}
-        {activeTab==="location"&&(
+        {visDetTabs.some(t=>t.k==="location")&&(
+          <div className={`det-pane${activeTab==="location"?" on":""}`}>
           <div className="loc-body">
             <div style={{display:"flex",alignItems:"center",gap:".6rem",fontSize:".82rem",color:"var(--muted)",marginBottom:"1.2rem"}}><IMapPin/><strong style={{color:"var(--ink)"}}>{p.name}</strong> — {p.location}</div>
             {sec("location","map")&&(
@@ -2482,10 +2493,12 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
               </>
             )}
           </div>
+          </div>
         )}
 
         {/* ── UNIT LAYOUTS ── */}
-        {activeTab==="layouts"&&(
+        {visDetTabs.some(t=>t.k==="layouts")&&(
+          <div className={`det-pane${activeTab==="layouts"?" on":""}`}>
           <div className="layouts-body">
             {sec("layouts","unitTypes")&&(
               unitTypes.length===0 ? (
@@ -2533,6 +2546,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
             {!sec("layouts","unitTypes")&&!sec("layouts","upgrades")&&(
               <div className="ut-empty"><span>🔒</span>Content hidden by admin settings.</div>
             )}
+          </div>
           </div>
         )}
             </div>
