@@ -546,7 +546,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 
   /* Overview tab */
   .ov-body{padding:1.4rem 1rem;overflow:visible;height:auto;}
-  .ov-desc-row{grid-template-columns:1fr;}
+  .ov-desc-row{grid-template-columns:1fr !important;}
   .spec-grid{grid-template-columns:1fr;}
   .spec-key{min-width:115px;}
 
@@ -1131,7 +1131,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   /* Compact the ov-body padding on desktop to reclaim vertical space */
   .ov-body{padding:1.4rem 1.8rem;}
   .spec-grid{gap:1rem;margin-bottom:1.4rem;}
-  .ov-desc-row{gap:1rem;margin-bottom:1.4rem;grid-template-columns:1fr;}
+  .ov-desc-row{gap:1rem;margin-bottom:1.4rem;}
   .spec-row{padding:.45rem .9rem;}
   .hi-item{padding:.3rem 0;}
   .loc-body{padding:1.4rem 1.8rem;}
@@ -1400,7 +1400,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   /* Two-column spec grid on desktop for better density */
   .spec-grid{grid-template-columns:repeat(2,1fr);gap:1rem;}
   .spec-section.full{grid-column:1/-1;}
-  .ov-desc-row{grid-template-columns:1fr;}
+  .ov-desc-row{grid-template-columns:1.3fr 1fr;}
   .price-bar{padding:1.1rem 1.8rem;}
   .pb-price{font-size:1.85rem;}
   .ut-card{grid-template-columns:340px 1fr;}
@@ -1570,7 +1570,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .a-modal-title em{color:var(--a-gold);font-style:italic;}
 .a-modal-x{width:34px;height:34px;background:transparent;border:1px solid var(--a-border);color:var(--a-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .15s;}
 .a-modal-x:hover{border-color:var(--a-red);color:var(--a-red);}
-.a-modal-body{padding:1.8rem 2rem;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
+.a-modal-body{padding:1.8rem 2rem;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
 
 /* ── Toggle Switch ── */
 .tog-wrap{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;user-select:none;}
@@ -1617,7 +1617,8 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .vis-sec-desc{font-size:.68rem;color:var(--a-muted);margin-top:.08rem;}
 .vis-tab-disabled-note{font-size:.68rem;color:var(--a-red);font-style:italic;margin-left:auto;white-space:nowrap;}
 
-.a-form-tabs{display:flex;border-bottom:1px solid var(--a-border);margin-bottom:1.5rem;}
+.a-form-tabs{display:flex;border-bottom:1px solid var(--a-border);margin-bottom:1.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.a-form-tabs::-webkit-scrollbar{display:none;}
 .a-form-tab{padding:.6rem 1.2rem;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--a-muted);font-family:var(--sans);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:color .15s,border-color .15s;}
 .a-form-tab.on{color:var(--a-gold);border-bottom-color:var(--a-gold);}
 .a-form-sec{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--a-gold);font-weight:700;margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--a-border);}
@@ -2433,7 +2434,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
             <div className="ov-body">
               {/* Description + Highlights row — each independently gated */}
               {(sec("overview","description")||sec("overview","highlights"))&&(
-                <div className="ov-desc-row">
+                <div className="ov-desc-row" style={{gridTemplateColumns:sec("overview","description")&&sec("overview","highlights")?"1.2fr 1fr":"1fr"}}>
                   {sec("overview","description")&&(
                     <div className="spec-section">
                       <div className="spec-sec-hd"><span>📝</span>Description</div>
