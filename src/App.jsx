@@ -756,9 +756,10 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .crm-drawer{z-index:360;}
 @keyframes slideLeft{from{opacity:0;transform:translateX(32px);}to{opacity:1;transform:translateX(0);}}
 .crm-drawer-hd{padding:1.2rem 1.4rem;border-bottom:1px solid var(--a-border);display:flex;align-items:flex-start;gap:1rem;flex-shrink:0;background:linear-gradient(180deg,var(--a-surface),var(--a-bg));}
-.crm-drawer-body{flex:1;overflow-y:auto;padding:1.2rem 1.4rem;display:flex;flex-direction:column;gap:1.2rem;}
+.crm-drawer-body{flex:1 1 0;min-height:0;height:0;overflow-y:scroll;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:1.2rem 1.4rem;}
 .crm-drawer-name{font-family:var(--serif);font-size:1.3rem;font-weight:600;color:#fff;flex:1;}
-.crm-drawer-sec{background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow:hidden;}
+.crm-drawer-sec{background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow:hidden;margin-bottom:1.2rem;}
+.crm-drawer-sec:last-child{margin-bottom:0;}
 .crm-drawer-sec-hd{padding:.6rem 1rem;background:var(--a-surface2);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--a-gold);font-weight:700;border-bottom:1px solid var(--a-border);}
 .crm-drawer-sec-body{padding:.85rem 1rem;}
 .crm-detail-row{display:flex;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--a-border);font-size:.8rem;}
