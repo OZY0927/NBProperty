@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import FALLBACK_IMG from "./assets/nblogo.jpg";
 import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, migrateAnalytics, deleteAllAnalytics, getSettings as fsGetSettings, saveSettings as fsSaveSettings } from "./firebase/firestore";
 import COUNTRY_CODES from "./data/countryCodes";
 // Firebase SDK — reuses the app already initialised by ./firebase/firestore
@@ -2386,7 +2387,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
           {/* ── LEFT: image + gallery ── */}
           <div className="det-left">
             <div className="det-hero">
-              <img src={allImgs[activeImg]} alt={p.name}/>
+              <img src={allImgs[activeImg]} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
               <div className="det-hero-ov"/>
               {/* Back button — icon overlay on image top-left */}
               <button className="det-back-btn" onClick={onClose} aria-label="Back to listings">&#8592;</button>
@@ -2411,7 +2412,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
               <div className="gal-strip">
                 {allImgs.map((img,i)=>(
                   <div key={i} className={`gal-t${activeImg===i?" on":""}`} onClick={()=>setActiveImg(i)}>
-                    <img src={img} alt=""/>
+                    <img src={img} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
                   </div>
                 ))}
               </div>
@@ -4095,7 +4096,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
             {items.length===0?<div className="a-card-empty">No projects found.</div>:items.map(p=>(
               <div key={p.id} className={`a-proj-card${p.visible===false?" dimmed":""}`}>
                 <div className="a-card-img-wrap">
-                  <img className="a-card-img" src={p.image} alt={p.name}/>
+                  <img className="a-card-img" src={p.image} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
                   <div className="a-card-status"><SChip s={p.status}/></div>
                   <div className={`a-card-vis-badge${p.visible===false?" hidden":""}`}>{p.visible!==false?"Live":"Hidden"}</div>
                 </div>
@@ -4659,7 +4660,7 @@ export default function App(){
                 setSelected(p);
                 setTab("detail");
               }}>
-                <div className="cimg"><img src={p.image} alt={p.name}/><div className="ctag" style={{background:p.tagColor}}>{p.tag}</div><div className="cstat">{p.status}</div><button className={`cbtn${cmpIds.includes(p.id)?" on":""}`} onClick={e=>toggleCmp(e,p.id)} title="Compare">{cmpIds.includes(p.id)?"✓":"+"}</button></div>
+                <div className="cimg"><img src={p.image} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="ctag" style={{background:p.tagColor}}>{p.tag}</div><div className="cstat">{p.status}</div><button className={`cbtn${cmpIds.includes(p.id)?" on":""}`} onClick={e=>toggleCmp(e,p.id)} title="Compare">{cmpIds.includes(p.id)?"✓":"+"}</button></div>
                 <div className="cbody">
                   <div className="ctype">{p.type}</div><div className="cname">{p.name}</div><div className="cdev">by {p.developer}</div>
                   <div className="cloc"><IPin/> {p.location}</div>
@@ -4683,7 +4684,7 @@ export default function App(){
         <footer className="ft"><div>© 2025 <span>NB Property</span> · All rights reserved · Penang, Malaysia</div></footer>
         <div className={`tray${cmpIds.length>0?" show":""}`}>
           <span className="tray-lbl">Compare ({cmpIds.length}/5)</span>
-          <div className="tray-slots">{[...Array(5)].map((_,i)=>{const p=cmpProjects[i];return p?(<div key={p.id} className="tslot fill"><img src={p.image} alt=""/><div className="tslot-nm">{p.name}</div><button className="tslot-x" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div>):<div key={i} className="tslot">empty</div>;})}</div>
+          <div className="tray-slots">{[...Array(5)].map((_,i)=>{const p=cmpProjects[i];return p?(<div key={p.id} className="tslot fill"><img src={p.image} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="tslot-nm">{p.name}</div><button className="tslot-x" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div>):<div key={i} className="tslot">empty</div>;})}</div>
           {cmpIds.length>=2&&<button className="tray-go" onClick={()=>setTab("compare")}>Compare →</button>}
           <button className="tray-clr" onClick={()=>setCmpIds([])}>Clear</button>
         </div>
@@ -4701,7 +4702,7 @@ export default function App(){
                 <table className="ctbl">
                   <thead><tr>
                     <td className="lbl-col"><div className="sec-hd" style={{color:"#fff",fontSize:".72rem",letterSpacing:".04em",textTransform:"none"}}>Project</div></td>
-                    {cmpProjects.map(p=>(<td key={p.id} className="proj-col" style={{padding:"0 .5rem .5rem",verticalAlign:"top",borderRight:"1px solid var(--border)"}}><div className="proj-card"><img className="proj-img" src={p.image} alt={p.name}/><div className="proj-info"><div className="proj-type">{p.type}</div><div className="proj-nm">{p.name}</div><div className="proj-dv">by {p.developer}</div></div><button className="proj-rm" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div></td>))}
+                    {cmpProjects.map(p=>(<td key={p.id} className="proj-col" style={{padding:"0 .5rem .5rem",verticalAlign:"top",borderRight:"1px solid var(--border)"}}><div className="proj-card"><img className="proj-img" src={p.image} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="proj-info"><div className="proj-type">{p.type}</div><div className="proj-nm">{p.name}</div><div className="proj-dv">by {p.developer}</div></div><button className="proj-rm" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div></td>))}
                   </tr></thead>
                   <tbody>{(()=>{
                     const vs=p=>(p.visibleSections||{});
