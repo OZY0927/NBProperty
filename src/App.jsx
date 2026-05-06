@@ -905,32 +905,48 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .lc-top{margin-bottom:2rem;}
 .lc-title{font-family:var(--serif);font-size:2.2rem;font-weight:300;margin-bottom:.35rem;}
 .lc-title em{font-style:italic;color:var(--gold);}
-.lc-sub{color:var(--muted);font-size:.84rem;}
+.lc-sub{color:var(--muted);font-size:.84rem;margin-top:.2rem;}
 .lc-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;}
 .lc-col{display:flex;flex-direction:column;gap:1rem;}
 .lc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:1.2rem;}
+.lc-saved-card{background:rgba(191,155,78,.05);border-color:rgba(191,155,78,.2);}
 .lc-card-hd{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:.9rem;}
 .lc-fields{display:flex;flex-direction:column;gap:.9rem;}
 .lc-field{display:flex;flex-direction:column;gap:.3rem;}
+.lc-row2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
 .lc-lbl{font-size:.78rem;font-weight:600;color:var(--ink);}
+.lc-hint{font-size:.72rem;margin-top:.15rem;}
+.lc-hint-grn{color:#16a34a;font-weight:600;}
 .lc-inp{background:var(--warm);border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .85rem;font-family:var(--sans);font-size:.88rem;color:var(--ink);outline:none;transition:border-color .2s;width:100%;box-sizing:border-box;}
 .lc-inp:focus{border-color:var(--gold);}
 .lc-slider{width:100%;accent-color:var(--gold);height:4px;cursor:pointer;}
 .lc-slider-ends{display:flex;justify-content:space-between;font-size:.69rem;color:var(--muted);margin-top:.15rem;}
+.lc-adj-banner{display:flex;justify-content:space-between;align-items:center;background:rgba(191,155,78,.08);border:1px solid rgba(191,155,78,.2);border-radius:var(--r-sm);padding:.6rem .9rem;font-size:.8rem;}
+.lc-adj-banner strong{color:var(--gold);font-weight:700;}
+.lc-rebate-note{font-size:.72rem;color:var(--muted);background:var(--warm);border:1px solid var(--border);border-radius:var(--r-sm);padding:.5rem .75rem;line-height:1.5;}
+.lc-foreign-note{margin-top:.75rem;padding:.65rem .9rem;background:rgba(191,155,78,.08);border:1px solid rgba(191,155,78,.2);border-radius:var(--r-sm);font-size:.76rem;color:var(--gold);}
 .lc-toggle-group{display:flex;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--border);}
 .lc-toggle{padding:.42rem .85rem;font-family:var(--sans);font-size:.74rem;font-weight:500;background:var(--warm);color:var(--muted);border:none;cursor:pointer;transition:background .15s,color .15s;flex:1;white-space:nowrap;}
 .lc-toggle.on{background:var(--gold);color:var(--ink);font-weight:700;}
+.lc-badge-bm{background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.38rem .85rem;border-radius:999px;white-space:nowrap;align-self:flex-start;}
+.lc-savings-bar{display:inline-flex;align-items:center;gap:.65rem;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);border-radius:var(--r-sm);padding:.5rem 1rem;margin-top:.8rem;font-size:.8rem;}
+.lc-savings-bar strong{color:#16a34a;font-weight:700;}
+.lc-savings-pct{color:var(--muted);font-size:.75rem;}
 .lc-hero-card{background:linear-gradient(135deg,var(--ink) 0%,#1a1a2e 100%);border-radius:var(--r-lg);padding:1.8rem;text-align:center;position:relative;overflow:hidden;}
 .lc-hero-card::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;border:2px solid rgba(191,155,78,.15);border-radius:50%;}
 .lc-hero-lbl{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(212,184,128,.7);margin-bottom:.6rem;}
 .lc-hero-val{font-family:var(--serif);font-size:2.6rem;font-weight:300;color:#BF9B4E;line-height:1;margin-bottom:.4rem;}
 .lc-hero-sub{font-size:.74rem;color:rgba(255,255,255,.4);}
 .lc-pie-wrap{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.2rem;}
+.lc-pie-dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:.35rem;vertical-align:middle;}
 .lc-pie-legend{text-align:left;font-size:.72rem;color:rgba(255,255,255,.55);line-height:2;}
 .lc-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;}
 .lc-sum-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:.85rem 1rem;}
 .lc-sum-lbl{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem;}
 .lc-sum-val{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--ink);}
+.lc-netcash-card{background:linear-gradient(135deg,#14532d 0%,#166534 100%);border:1px solid rgba(74,222,128,.2);border-radius:var(--r-md);padding:1.2rem 1.4rem;}
+.lc-netcash-lbl{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(134,239,172,.7);margin-bottom:.4rem;}
+.lc-netcash-val{font-family:var(--serif);font-size:2rem;font-weight:300;color:#4ade80;line-height:1.1;}
 .lc-breakdown-btn{width:100%;padding:1rem 1.2rem;background:var(--warm);border:none;font-family:var(--sans);font-size:.8rem;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;letter-spacing:.04em;transition:background .15s;}
 .lc-breakdown-btn:hover{background:var(--border);}
 .lc-btn-pri{background:var(--ink);color:#D4B880;border:1px solid rgba(212,184,128,.3);padding:.62rem 1.4rem;font-family:var(--sans);font-size:.76rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:var(--r-sm);transition:border-color .2s;}
@@ -942,8 +958,10 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .lc-mob-bar{display:none;}
 @media(max-width:768px){
   .lc-layout{grid-template-columns:1fr;}
+  .lc-row2{grid-template-columns:1fr 1fr;}
   .lc-pg{padding:1.4rem 1rem 5.5rem;}
   .lc-hero-val{font-size:2rem;}
+  .lc-netcash-val{font-size:1.6rem;}
   .lc-mob-bar{display:flex;align-items:center;justify-content:space-between;position:fixed;bottom:0;left:0;right:0;z-index:90;background:var(--ink);border-top:1px solid rgba(191,155,78,.2);padding:.9rem 1.2rem;padding-bottom:calc(.9rem + env(safe-area-inset-bottom));}
   .lc-mob-wa{background:var(--gold);color:var(--ink);font-family:var(--sans);font-size:.8rem;font-weight:700;padding:.58rem 1.3rem;border-radius:var(--r-sm);text-decoration:none;}
 }
@@ -4348,46 +4366,56 @@ function AdminLogin(){
 }
 
 /* ═══ LOAN CALCULATOR (Tools tab) ═══ */
-const fmtRM=(n)=>isNaN(n)||n==null?"RM 0":"RM "+Math.round(n).toLocaleString("en-MY");
-function calculateLoan(price,dp,rate,years){
-  const loanAmt=price-dp;
-  if(loanAmt<=0||rate<=0||years<=0)return{monthly:0,totalPay:0,totalInterest:0};
-  const r=rate/12/100; const n=years*12;
-  const monthly=loanAmt*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
-  const totalPay=monthly*n;
-  return{monthly,totalPay,totalInterest:totalPay-loanAmt,loanAmt};
+const fmtRM=(n)=>(!n&&n!==0)||isNaN(n)?"RM 0":"RM "+Math.round(n).toLocaleString("en-MY");
+const fmtPct=(n)=>(+n||0).toFixed(2).replace(/\.?0+$/,"")+" %";
+
+function calculateAdjustedPrice(price,discountPct){
+  const discountAmt=price*(discountPct/100);
+  return{discountAmt,adjustedPrice:price-discountAmt};
 }
-function calculateLegalFee(amount){
+function lcLegalFee(amount){
   if(!amount||amount<=0)return 0;
   if(amount<=500000)return amount*0.0125;
   return 500000*0.0125+(amount-500000)*0.01;
 }
-function calculateMOT(price,isForeign){
-  if(!price||price<=0)return 0;
-  if(isForeign)return price*0.08;
-  let mot=0;
-  if(price<=100000)return price*0.01;
-  mot+=100000*0.01;
-  if(price<=500000)return mot+(price-100000)*0.02;
-  mot+=400000*0.02;
-  if(price<=1000000)return mot+(price-500000)*0.03;
-  mot+=500000*0.03;
-  return mot+(price-1000000)*0.04;
+function lcMOT(adjPrice,isForeign){
+  if(!adjPrice||adjPrice<=0)return 0;
+  if(isForeign)return adjPrice*0.08;
+  let m=0;
+  if(adjPrice<=100000)return adjPrice*0.01;
+  m+=100000*0.01;
+  if(adjPrice<=500000)return m+(adjPrice-100000)*0.02;
+  m+=400000*0.02;
+  if(adjPrice<=1000000)return m+(adjPrice-500000)*0.03;
+  m+=500000*0.03;
+  return m+(adjPrice-1000000)*0.04;
 }
-function calculateInitialCash(price,dpAmt,rate,years,isForeign,isPropCommercial){
-  const loanAmt=price-dpAmt;
-  const legalSPA=calculateLegalFee(price);
-  const legalLoan=calculateLegalFee(loanAmt);
+function calculateLoan(loanAmt,rate,years){
+  if(loanAmt<=0||rate<=0||years<=0)return{monthly:0,totalPay:0,totalInterest:0};
+  const r=rate/12/100,n=years*12;
+  const monthly=loanAmt*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
+  const totalPay=monthly*n;
+  return{monthly,totalPay,totalInterest:totalPay-loanAmt};
+}
+function calculateInitialCash(adjPrice,loanAmt,dpAmt,isForeign,isCommercial){
+  const legalSPA=lcLegalFee(adjPrice);
+  const legalLoan=lcLegalFee(loanAmt);
   const spaStamp=40;
   const loanStamp=loanAmt*0.005;
-  const mot=calculateMOT(price,isForeign);
-  const foreignLevy=isForeign?price*0.03:0;
-  const stateFee=isForeign?(isPropCommercial?20000:10000):0;
-  const total=dpAmt+legalSPA+legalLoan+spaStamp+loanStamp+mot+foreignLevy+stateFee;
-  return{legalSPA,legalLoan,spaStamp,loanStamp,mot,foreignLevy,stateFee,total};
+  const mot=lcMOT(adjPrice,isForeign);
+  const levy=isForeign?adjPrice*0.03:0;
+  const stateFee=isForeign?(isCommercial?20000:10000):0;
+  const total=dpAmt+legalSPA+legalLoan+spaStamp+loanStamp+mot+levy+stateFee;
+  return{legalSPA,legalLoan,spaStamp,loanStamp,mot,levy,stateFee,total};
 }
+function calculateNetCash(totalInitialCash,rebateAmt){
+  return totalInitialCash-rebateAmt;
+}
+
 function LoanCalculator({settings}){
   const [price,setPrice]=useState(500000);
+  const [discountPct,setDiscountPct]=useState(0);
+  const [rebatePct,setRebatePct]=useState(0);
   const [dpPct,setDpPct]=useState(10);
   const [rate,setRate]=useState(4);
   const [years,setYears]=useState(35);
@@ -4397,61 +4425,108 @@ function LoanCalculator({settings}){
   const [showBreakdown,setShowBreakdown]=useState(false);
   const [saved,setSaved]=useState(null);
 
-  const dpAmt=zeroDp?0:Math.round(price*(dpPct/100));
-  const loan=calculateLoan(price,dpAmt,rate,years);
-  const cash=calculateInitialCash(price,dpAmt,rate,years,isForeign,isCommercial);
-  const piePct=loan.loanAmt>0?Math.round((loan.loanAmt/loan.totalPay)*100):0;
+  // ── Core calculations in correct order ──
+  const {discountAmt,adjustedPrice}=calculateAdjustedPrice(price,discountPct);
+  const rebateAmt=adjustedPrice*(rebatePct/100);
+  const dpAmt=zeroDp?0:Math.round(adjustedPrice*(dpPct/100));
+  const loanAmt=Math.max(0,adjustedPrice-dpAmt);
+  const loan=calculateLoan(loanAmt,rate,years);
+  const cash=calculateInitialCash(adjustedPrice,loanAmt,dpAmt,isForeign,isCommercial);
+  const netCash=calculateNetCash(cash.total,rebateAmt);
+  const totalSavings=discountAmt+rebateAmt;
+  const savingsPct=price>0?(totalSavings/price)*100:0;
+  const isBelowMarket=savingsPct>10;
+  const piePct=loan.totalPay>0?Math.round((loanAmt/loan.totalPay)*100):0;
 
-  const waPhone=(settings?.whatsappPhone||"60129846080").replace(/[^0-9]/g,"");
+  const waPhone=(settings?.whatsappPhone||"60129846080").replace(/\D/g,"");
   const waName=settings?.whatsappName||"Joel";
-  const waMsg=`Hi ${waName}, I used the loan calculator — Property RM ${price.toLocaleString()}, Monthly Installment ${fmtRM(loan.monthly)}, Initial Cash ${fmtRM(cash.total)}. Can you advise?`;
+  const waMsg=`Hi ${waName}, I used the NB Property Loan Calculator.\n\nProperty: RM ${price.toLocaleString()}\nAdjusted SPA: ${fmtRM(adjustedPrice)}\nMonthly Installment: ${fmtRM(loan.monthly)}\nNet Cash Out: ${fmtRM(netCash)}\n\nCan you advise?`;
   const waUrl=`https://api.whatsapp.com/send?phone=${waPhone}&text=${encodeURIComponent(waMsg)}`;
 
   const saveCalc=()=>{
-    const data={price,dpPct,dpAmt,rate,years,isForeign,isCommercial,zeroDp,monthly:loan.monthly,initialCash:cash.total,ts:Date.now()};
+    const data={price,discountPct,rebatePct,dpPct,rate,years,isForeign,isCommercial,zeroDp,monthly:loan.monthly,netCash,ts:Date.now()};
     localStorage.setItem("nb_calc_saved",JSON.stringify(data));
     setSaved(data);
   };
   useEffect(()=>{
-    try{const s=localStorage.getItem("nb_calc_saved");if(s){const d=JSON.parse(s);setSaved(d);}}catch{}
+    try{const s=localStorage.getItem("nb_calc_saved");if(s)setSaved(JSON.parse(s));}catch{}
   },[]);
   const loadSaved=()=>{
     if(!saved)return;
-    setPrice(saved.price||500000);setDpPct(saved.dpPct||10);setRate(saved.rate||4);setYears(saved.years||35);
-    setIsForeign(saved.isForeign||false);setIsCommercial(saved.isCommercial||false);setZeroDp(saved.zeroDp||false);
+    setPrice(saved.price||500000);setDiscountPct(saved.discountPct||0);setRebatePct(saved.rebatePct||0);
+    setDpPct(saved.dpPct||10);setRate(saved.rate||4);setYears(saved.years||35);
+    setIsForeign(!!saved.isForeign);setIsCommercial(!!saved.isCommercial);setZeroDp(!!saved.zeroDp);
   };
 
-  const inp=(val,set,min=0,max=99999999)=>e=>{const v=parseFloat(e.target.value.replace(/,/g,""));if(!isNaN(v)&&v>=min&&v<=max)set(v);};
-  const Row=({label,value,bold,accent})=>(
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".55rem 0",borderBottom:"1px solid rgba(13,13,24,.07)"}}>
-      <span style={{fontSize:".82rem",color:"var(--muted)"}}>{label}</span>
-      <span style={{fontSize:".85rem",fontWeight:bold?"700":"500",color:accent?"var(--gold)":"var(--ink)"}}>{value}</span>
+  const numInp=(set,min=0,max=99999999)=>e=>{const v=parseFloat(String(e.target.value).replace(/,/g,""));if(!isNaN(v)&&v>=min&&v<=max)set(v);};
+  const BRow=({label,value,bold,accent,green,dim,divider})=>(
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".5rem 0",borderBottom:divider?"2px solid var(--gold)":"1px solid rgba(13,13,24,.07)"}}>
+      <span style={{fontSize:".8rem",color:dim?"var(--muted)":"var(--ink)",fontWeight:bold?"600":"400"}}>{label}</span>
+      <span style={{fontSize:".82rem",fontWeight:bold?"700":"500",color:green?"#16a34a":accent?"var(--gold)":"var(--ink)"}}>{value}</span>
     </div>
   );
 
   return(
     <div className="lc-pg">
+      {/* Header */}
       <div className="lc-top">
-        <h2 className="lc-title">Loan <em>Calculator</em></h2>
-        <p className="lc-sub">Malaysia Property Loan &amp; Cost Estimator — Residential &amp; Commercial</p>
+        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:"1rem"}}>
+          <div>
+            <h2 className="lc-title">Loan <em>Calculator</em></h2>
+            <p className="lc-sub">Malaysia Property — Accurate Loan &amp; Cost Estimator with Discount &amp; Rebate Logic</p>
+          </div>
+          {isBelowMarket&&<div className="lc-badge-bm">🏷️ Below Market Deal</div>}
+        </div>
+        {totalSavings>0&&<div className="lc-savings-bar">
+          <span>💰 You Save</span>
+          <strong>{fmtRM(totalSavings)}</strong>
+          <span className="lc-savings-pct">({fmtPct(savingsPct)} off market)</span>
+        </div>}
       </div>
+
       <div className="lc-layout">
-        {/* ─ LEFT: Inputs ─ */}
+        {/* ─── LEFT: Inputs ─── */}
         <div className="lc-col">
+
+          {/* Price & Adjustments */}
           <div className="lc-card">
-            <div className="lc-card-hd">Property Details</div>
+            <div className="lc-card-hd">Property Price &amp; Adjustments</div>
             <div className="lc-fields">
               <div className="lc-field">
-                <label className="lc-lbl">Property Price (RM)</label>
-                <input className="lc-inp" type="number" min="0" value={price} onChange={inp(price,setPrice)} onFocus={e=>e.target.select()}/>
+                <label className="lc-lbl">Listing / Market Price (RM)</label>
+                <input className="lc-inp" type="number" min="0" value={price} onChange={numInp(setPrice)} onFocus={e=>e.target.select()}/>
               </div>
+              <div className="lc-row2">
+                <div className="lc-field">
+                  <label className="lc-lbl">Discount (%)</label>
+                  <input className="lc-inp" type="number" min="0" max="50" step="0.5" value={discountPct} onChange={numInp(setDiscountPct,0,50)} onFocus={e=>e.target.select()}/>
+                  {discountAmt>0&&<div className="lc-hint lc-hint-grn">−{fmtRM(discountAmt)}</div>}
+                </div>
+                <div className="lc-field">
+                  <label className="lc-lbl">Rebate / Cashback (%)</label>
+                  <input className="lc-inp" type="number" min="0" max="20" step="0.5" value={rebatePct} onChange={numInp(setRebatePct,0,20)} onFocus={e=>e.target.select()}/>
+                  {rebateAmt>0&&<div className="lc-hint lc-hint-grn">−{fmtRM(rebateAmt)}</div>}
+                </div>
+              </div>
+              {(discountPct>0||rebatePct>0)&&<div className="lc-adj-banner">
+                <span>SPA Price (after discount)</span>
+                <strong>{fmtRM(adjustedPrice)}</strong>
+              </div>}
+              {rebatePct>0&&<div className="lc-rebate-note">ℹ️ Rebate reduces your cash out only — legal fees &amp; MOT are based on the SPA price.</div>}
+            </div>
+          </div>
+
+          {/* Loan Terms */}
+          <div className="lc-card">
+            <div className="lc-card-hd">Loan Terms</div>
+            <div className="lc-fields">
               <div className="lc-field">
-                <label className="lc-lbl">Interest Rate (% p.a.) — {rate}%</label>
+                <label className="lc-lbl">Interest Rate — <strong>{rate}%</strong> p.a.</label>
                 <input className="lc-slider" type="range" min="1" max="12" step="0.05" value={rate} onChange={e=>setRate(parseFloat(e.target.value))}/>
                 <div className="lc-slider-ends"><span>1%</span><span>12%</span></div>
               </div>
               <div className="lc-field">
-                <label className="lc-lbl">Loan Tenure — {years} years</label>
+                <label className="lc-lbl">Loan Tenure — <strong>{years} years</strong></label>
                 <input className="lc-slider" type="range" min="5" max="35" step="1" value={years} onChange={e=>setYears(parseInt(e.target.value))}/>
                 <div className="lc-slider-ends"><span>5 yrs</span><span>35 yrs</span></div>
               </div>
@@ -4467,11 +4542,12 @@ function LoanCalculator({settings}){
                   <input className="lc-slider" type="range" min="5" max="30" step="5" value={dpPct} onChange={e=>setDpPct(parseInt(e.target.value))}/>
                   <div className="lc-slider-ends"><span>5%</span><span style={{color:"var(--gold)",fontWeight:600}}>{dpPct}% = {fmtRM(dpAmt)}</span><span>30%</span></div>
                 </>}
-                {zeroDp&&<div style={{fontSize:".78rem",color:"var(--gold)",paddingTop:".4rem"}}>Down payment waived</div>}
+                {zeroDp&&<div className="lc-hint" style={{color:"var(--gold)"}}>Down payment waived (0%)</div>}
               </div>
             </div>
           </div>
 
+          {/* Buyer & Property Type */}
           <div className="lc-card">
             <div className="lc-card-hd">Buyer &amp; Property Type</div>
             <div style={{display:"flex",gap:".75rem",flexWrap:"wrap"}}>
@@ -4484,89 +4560,120 @@ function LoanCalculator({settings}){
                 <button className={`lc-toggle${isCommercial?" on":""}`} onClick={()=>setIsCommercial(true)}>🏢 Commercial</button>
               </div>
             </div>
-            {isForeign&&<div style={{marginTop:".75rem",padding:".65rem .9rem",background:"rgba(191,155,78,.08)",border:"1px solid rgba(191,155,78,.2)",borderRadius:8,fontSize:".76rem",color:"var(--gold)"}}>⚠️ Foreign buyer: 8% MOT flat rate + 3% Levy + State Fee ({isCommercial?"RM 20,000":"RM 10,000"}) applies</div>}
+            {isForeign&&<div className="lc-foreign-note">⚠️ Foreign buyer: 8% MOT (flat) + 3% Levy + State Fee ({isCommercial?"RM 20,000":"RM 10,000"}) applies</div>}
           </div>
 
-          {saved&&<div className="lc-card" style={{background:"rgba(191,155,78,.06)",border:"1px solid rgba(191,155,78,.2)"}}>
+          {/* Saved */}
+          {saved&&<div className="lc-card lc-saved-card">
             <div className="lc-card-hd">💾 Saved Calculation</div>
-            <div style={{fontSize:".78rem",color:"var(--muted)",marginBottom:".6rem"}}>RM {(saved.price||0).toLocaleString()} · {fmtRM(saved.monthly)}/mo · Last saved {new Date(saved.ts).toLocaleDateString("en-MY")}</div>
+            <div style={{fontSize:".78rem",color:"var(--muted)",marginBottom:".6rem"}}>
+              RM {(saved.price||0).toLocaleString()} · {fmtRM(saved.monthly)}/mo · {new Date(saved.ts).toLocaleDateString("en-MY")}
+            </div>
             <button className="lc-btn-sec" onClick={loadSaved}>↩ Restore</button>
           </div>}
         </div>
 
-        {/* ─ RIGHT: Results ─ */}
+        {/* ─── RIGHT: Results ─── */}
         <div className="lc-col">
-          {/* Hero monthly card */}
+
+          {/* Monthly Installment hero */}
           <div className="lc-hero-card">
             <div className="lc-hero-lbl">Monthly Installment</div>
             <div className="lc-hero-val">{fmtRM(loan.monthly)}</div>
-            <div className="lc-hero-sub">Over {years} years · {rate}% p.a.</div>
-            {/* Mini pie chart */}
+            <div className="lc-hero-sub">{years} years · {rate}% p.a. · Loan {fmtRM(loanAmt)}</div>
             <div className="lc-pie-wrap">
-              <svg width="80" height="80" viewBox="0 0 80 80">
-                <circle cx="40" cy="40" r="30" fill="none" stroke="rgba(191,155,78,.2)" strokeWidth="12"/>
-                <circle cx="40" cy="40" r="30" fill="none" stroke="#BF9B4E" strokeWidth="12"
-                  strokeDasharray={`${piePct*1.885} ${(100-piePct)*1.885}`}
-                  strokeDashoffset="47.1" strokeLinecap="round"/>
+              <svg width="76" height="76" viewBox="0 0 76 76">
+                <circle cx="38" cy="38" r="28" fill="none" stroke="rgba(191,155,78,.18)" strokeWidth="11"/>
+                <circle cx="38" cy="38" r="28" fill="none" stroke="#BF9B4E" strokeWidth="11"
+                  strokeDasharray={`${piePct*1.759} ${(100-piePct)*1.759}`}
+                  strokeDashoffset="44" strokeLinecap="round"/>
               </svg>
               <div className="lc-pie-legend">
-                <div><span style={{background:"#BF9B4E",width:10,height:10,borderRadius:2,display:"inline-block",marginRight:4}}/>Principal {piePct}%</div>
-                <div><span style={{background:"rgba(191,155,78,.2)",width:10,height:10,borderRadius:2,display:"inline-block",marginRight:4}}/>Interest {100-piePct}%</div>
+                <div><span className="lc-pie-dot" style={{background:"#BF9B4E"}}/>Principal {piePct}%</div>
+                <div><span className="lc-pie-dot" style={{background:"rgba(191,155,78,.25)"}}/>Interest {100-piePct}%</div>
+                <div style={{marginTop:".3rem",fontSize:".68rem",color:"rgba(255,255,255,.35)"}}>Total: {fmtRM(loan.totalPay)}</div>
               </div>
             </div>
           </div>
 
-          {/* Summary cards */}
+          {/* Key Summary */}
           <div className="lc-summary-grid">
             <div className="lc-sum-card">
+              <div className="lc-sum-lbl">Adjusted SPA Price</div>
+              <div className="lc-sum-val">{fmtRM(adjustedPrice)}</div>
+            </div>
+            <div className="lc-sum-card">
               <div className="lc-sum-lbl">Loan Amount</div>
-              <div className="lc-sum-val">{fmtRM(loan.loanAmt)}</div>
+              <div className="lc-sum-val">{fmtRM(loanAmt)}</div>
             </div>
             <div className="lc-sum-card">
-              <div className="lc-sum-lbl">Total Repayment</div>
-              <div className="lc-sum-val">{fmtRM(loan.totalPay)}</div>
-            </div>
-            <div className="lc-sum-card">
-              <div className="lc-sum-lbl">Total Interest</div>
-              <div className="lc-sum-val" style={{color:"var(--gold)"}}>{fmtRM(loan.totalInterest)}</div>
-            </div>
-            <div className="lc-sum-card" style={{border:"1px solid rgba(191,155,78,.4)",background:"rgba(191,155,78,.06)"}}>
               <div className="lc-sum-lbl">Total Initial Cash</div>
               <div className="lc-sum-val" style={{color:"var(--gold)"}}>{fmtRM(cash.total)}</div>
             </div>
+            {rebateAmt>0?<div className="lc-sum-card">
+              <div className="lc-sum-lbl">Rebate Received</div>
+              <div className="lc-sum-val" style={{color:"#16a34a"}}>−{fmtRM(rebateAmt)}</div>
+            </div>:<div className="lc-sum-card">
+              <div className="lc-sum-lbl">Total Interest Paid</div>
+              <div className="lc-sum-val" style={{color:"var(--muted)",fontSize:"1rem"}}>{fmtRM(loan.totalInterest)}</div>
+            </div>}
           </div>
 
-          {/* Breakdown toggle */}
+          {/* Net Cash Out — star card */}
+          <div className="lc-netcash-card">
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:".5rem"}}>
+              <div>
+                <div className="lc-netcash-lbl">✅ Net Cash Out <span style={{fontWeight:400,fontSize:".7rem",opacity:.65}}>(actual money you pay)</span></div>
+                <div className="lc-netcash-val">{fmtRM(netCash)}</div>
+              </div>
+              {rebateAmt>0&&<div style={{textAlign:"right"}}>
+                <div style={{fontSize:".68rem",color:"rgba(255,255,255,.45)",letterSpacing:".06em"}}>REBATE SAVES YOU</div>
+                <div style={{fontSize:"1.1rem",fontWeight:700,color:"#4ade80"}}>−{fmtRM(rebateAmt)}</div>
+              </div>}
+            </div>
+          </div>
+
+          {/* Breakdown */}
           <div className="lc-card" style={{padding:0,overflow:"hidden"}}>
             <button className="lc-breakdown-btn" onClick={()=>setShowBreakdown(v=>!v)}>
-              📋 Initial Cash Breakdown {showBreakdown?"▲":"▼"}
+              📋 Full Cost Breakdown {showBreakdown?"▲":"▼"}
             </button>
-            {showBreakdown&&(
-              <div style={{padding:"0 1.2rem 1rem"}}>
-                <Row label="Down Payment" value={fmtRM(dpAmt)} bold/>
-                <Row label="Legal Fee (SPA)" value={fmtRM(cash.legalSPA)}/>
-                <Row label="Legal Fee (Loan Agreement)" value={fmtRM(cash.legalLoan)}/>
-                <Row label="SPA Stamp Duty (4 copies × RM10)" value={fmtRM(cash.spaStamp)}/>
-                <Row label="Loan Stamp Duty (0.5% of loan)" value={fmtRM(cash.loanStamp)}/>
-                <Row label={`MOT / Transfer Stamp Duty${isForeign?" (8% flat)":""}`} value={fmtRM(cash.mot)}/>
-                {isForeign&&<Row label="Foreign Buyer Levy (3%)" value={fmtRM(cash.foreignLevy)} accent/>}
-                {isForeign&&<Row label={`State Fee (${isCommercial?"Commercial":"Residential"})`} value={fmtRM(cash.stateFee)} accent/>}
-                <div style={{display:"flex",justifyContent:"space-between",marginTop:".6rem",padding:".6rem 0 0",borderTop:"2px solid var(--gold)"}}>
-                  <span style={{fontWeight:700,fontSize:".85rem"}}>Total Initial Cash</span>
-                  <span style={{fontWeight:700,fontSize:".9rem",color:"var(--gold)"}}>{fmtRM(cash.total)}</span>
-                </div>
-                <div style={{fontSize:".7rem",color:"var(--muted)",marginTop:".5rem",lineHeight:1.5}}>
-                  * Estimates only. Actual fees may vary. Legal fees subject to solicitor's discretion. MOT as per Stamp Act 1949.
-                </div>
+            {showBreakdown&&<div style={{padding:"0 1.2rem 1rem"}}>
+              <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,padding:".6rem 0 .3rem"}}>Price</div>
+              <BRow label="Original Listing Price" value={fmtRM(price)} dim/>
+              {discountAmt>0&&<BRow label={`Discount (${discountPct}%)`} value={`−${fmtRM(discountAmt)}`} green/>}
+              <BRow label="Adjusted SPA Price" value={fmtRM(adjustedPrice)} bold/>
+              {rebateAmt>0&&<BRow label={`Rebate / Cashback (${rebatePct}%)`} value={`−${fmtRM(rebateAmt)}`} green/>}
+              <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,padding:".75rem 0 .3rem"}}>Down Payment &amp; Loan</div>
+              <BRow label={`Down Payment (${zeroDp?"0":dpPct}%)`} value={fmtRM(dpAmt)} bold/>
+              <BRow label="Loan Amount" value={fmtRM(loanAmt)}/>
+              <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,padding:".75rem 0 .3rem"}}>Legal &amp; Stamp Fees</div>
+              <BRow label="Legal Fee — SPA (based on SPA price)" value={fmtRM(cash.legalSPA)}/>
+              <BRow label="Legal Fee — Loan Agreement" value={fmtRM(cash.legalLoan)}/>
+              <BRow label="SPA Stamp Duty (RM40 fixed)" value={fmtRM(cash.spaStamp)}/>
+              <BRow label="Loan Stamp Duty (0.5% of loan)" value={fmtRM(cash.loanStamp)}/>
+              <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,padding:".75rem 0 .3rem"}}>Transfer &amp; Taxes</div>
+              <BRow label={`MOT / Transfer Stamp Duty${isForeign?" (8% flat)":""}`} value={fmtRM(cash.mot)} accent/>
+              {isForeign&&<BRow label="Foreign Buyer Levy (3% of SPA)" value={fmtRM(cash.levy)} accent/>}
+              {isForeign&&<BRow label={`State Fee (${isCommercial?"Commercial":"Residential"})`} value={fmtRM(cash.stateFee)} accent/>}
+              <div style={{height:"1rem"}}/>
+              <BRow label="Total Initial Cash" value={fmtRM(cash.total)} bold accent divider/>
+              {rebateAmt>0&&<BRow label={`Rebate Deducted (${rebatePct}%)`} value={`−${fmtRM(rebateAmt)}`} green/>}
+              <div style={{display:"flex",justifyContent:"space-between",padding:".7rem 0 .2rem"}}>
+                <span style={{fontWeight:700,fontSize:".88rem"}}>✅ Net Cash Out</span>
+                <span style={{fontWeight:700,fontSize:".95rem",color:"#16a34a"}}>{fmtRM(netCash)}</span>
               </div>
-            )}
+              <div style={{fontSize:".68rem",color:"var(--muted)",marginTop:".5rem",lineHeight:1.6,paddingTop:".6rem",borderTop:"1px solid var(--border)"}}>
+                * Estimates only. Legal fees subject to solicitor discretion. MOT per Stamp Act 1949 (Amendment 2019). Foreign buyer fees vary by state.
+              </div>
+            </div>}
           </div>
 
-          {/* Action buttons */}
-          <div style={{display:"flex",gap:".65rem",flexWrap:"wrap",marginTop:".25rem"}}>
-            <button className="lc-btn-pri" onClick={saveCalc}>💾 Save Calculation</button>
+          {/* Actions */}
+          <div style={{display:"flex",gap:".65rem",flexWrap:"wrap"}}>
+            <button className="lc-btn-pri" onClick={saveCalc}>💾 Save</button>
             <a href={waUrl} target="_blank" rel="noopener noreferrer" className="lc-btn-wa">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
               WhatsApp Agent
             </a>
           </div>
@@ -4576,8 +4683,9 @@ function LoanCalculator({settings}){
       {/* Mobile sticky bar */}
       <div className="lc-mob-bar">
         <div>
-          <div style={{fontSize:".65rem",color:"rgba(255,255,255,.6)",letterSpacing:".08em",textTransform:"uppercase"}}>Monthly</div>
-          <div style={{fontSize:"1.2rem",fontWeight:700,color:"#BF9B4E"}}>{fmtRM(loan.monthly)}</div>
+          <div style={{fontSize:".6rem",color:"rgba(255,255,255,.5)",letterSpacing:".08em",textTransform:"uppercase"}}>Monthly</div>
+          <div style={{fontSize:"1.15rem",fontWeight:700,color:"#BF9B4E",lineHeight:1.1}}>{fmtRM(loan.monthly)}</div>
+          <div style={{fontSize:".62rem",color:"rgba(255,255,255,.4)"}}>Net Cash {fmtRM(netCash)}</div>
         </div>
         <a href={waUrl} target="_blank" rel="noopener noreferrer" className="lc-mob-wa">Contact Agent</a>
       </div>
