@@ -518,29 +518,30 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 
   /* Detail page — mobile */
   .det{height:auto;max-height:none;min-height:unset;}
-  .det-hero{height:56vw;max-height:280px;min-height:200px;flex-shrink:0;overflow:hidden;}
+  .det-hero{height:56vw;max-height:300px;min-height:180px;flex-shrink:0;overflow:hidden;}
   .det-hc{left:1rem;right:1rem;bottom:.75rem;}
   .det-title{font-size:1.35rem;}
   .det-tag-pill{margin-bottom:.3rem;}
   .gal-strip{display:none;}
 
-  /* ── Mobile: everything is ONE body scroll ── */
-  .det-pg{min-height:unset;height:auto;overflow:visible;display:block;}
-  .det-pg-inner{height:auto;min-height:unset;overflow:visible;flex:none;display:block;}
-  .det{overflow:visible;height:auto;min-height:unset;flex:none;display:block;}
-  .det-split{overflow:visible;height:auto;min-height:unset;flex:none;display:block;}
-  .det-left{display:block;position:relative;}
-  .det-right{overflow:visible;height:auto;min-height:unset;flex:none;display:block;}
-  .det-content{overflow:visible;height:auto;min-height:unset;flex:none;
-    -webkit-overflow-scrolling:unset;scroll-behavior:unset;display:block;}
+  /* ── Mobile: hero image + tabs + content = ONE continuous body scroll ── */
+  .det-pg{display:block !important;height:auto !important;min-height:unset !important;overflow:visible !important;}
+  .det-pg-inner{display:block !important;height:auto !important;min-height:unset !important;overflow:visible !important;}
+  .det{display:block !important;height:auto !important;min-height:unset !important;overflow:visible !important;flex:none !important;}
+  .det-split{display:block !important;height:auto !important;min-height:unset !important;overflow:visible !important;flex:none !important;}
+  .det-left{display:block !important;height:auto !important;width:100% !important;max-width:100% !important;min-width:0 !important;overflow:visible !important;flex:none !important;}
+  .det-left .det-hero{height:56vw !important;max-height:300px !important;min-height:180px !important;flex:none !important;}
+  .det-right{display:block !important;height:auto !important;min-height:unset !important;overflow:visible !important;flex:none !important;border-left:none !important;}
+  .det-content{display:block !important;height:auto !important;min-height:unset !important;overflow:visible !important;flex:none !important;
+    -webkit-overflow-scrolling:unset !important;scroll-behavior:unset !important;}
 
-  /* Tabs stick to top of viewport while body scrolls */
-  .det-tabs{position:sticky;top:0;z-index:30;overflow-x:auto;-webkit-overflow-scrolling:touch;
-    flex-shrink:unset;display:flex;width:100%;box-sizing:border-box;}
+  /* Tabs: sticky to viewport top as user scrolls */
+  .det-tabs{position:sticky !important;top:0 !important;z-index:30 !important;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    display:flex !important;width:100%;box-sizing:border-box;flex-shrink:0 !important;height:auto !important;}
   .det-tab{flex:0 0 auto;padding:.85rem .8rem;font-size:.72rem;white-space:nowrap;}
 
-  /* CTA bar sticks to bottom */
-  .det-sticky-bar{position:sticky;bottom:0;z-index:20;}
+  /* CTA bar: sticky to viewport bottom */
+  .det-sticky-bar{position:sticky !important;bottom:0 !important;z-index:20;flex-shrink:0;}
   .det-sticky-bar::before{display:none;}
 
   /* Overview tab */
