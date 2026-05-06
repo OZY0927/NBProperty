@@ -526,8 +526,20 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   .det-tab{flex:0 0 auto;padding:.85rem .8rem;font-size:.72rem;white-space:nowrap;}
   .gal-strip{display:none;}
 
+  /* ── Mobile: single body scroll for detail page ── */
+  /* Let the page grow naturally; kill every inner scroll zone */
+  .det-pg{min-height:unset;height:auto;overflow:visible;}
+  .det-pg-inner{height:auto;min-height:unset;overflow:visible;flex:none;}
+  .det{overflow:visible;height:auto;min-height:unset;flex:none;}
+  .det-split{overflow:visible;height:auto;min-height:unset;flex:none;}
+  .det-right{overflow:visible;height:auto;min-height:unset;flex:none;}
+  .det-content{overflow:visible;height:auto;min-height:unset;flex:none;
+    -webkit-overflow-scrolling:unset;scroll-behavior:unset;}
+  .det-sticky-bar{position:sticky;bottom:0;z-index:20;}
+  .det-sticky-bar::before{display:none;}
+
   /* Overview tab */
-  .ov-body{padding:1.4rem 1rem;}
+  .ov-body{padding:1.4rem 1rem;overflow:visible;height:auto;}
   .ov-desc-row{grid-template-columns:1fr;}
   .spec-grid{grid-template-columns:1fr;}
   .spec-key{min-width:115px;}
@@ -795,9 +807,8 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .crm-bar-val{width:32px;flex-shrink:0;color:var(--a-text);font-weight:700;font-size:.76rem;}
 
 @media(max-width:768px){
-  .crm-kanban{flex-direction:column;overflow-x:visible;}
-  .crm-col{flex:0 0 auto;max-height:none;}
-  .crm-col-body{overflow-y:visible;height:auto;}
+  .crm-kanban{flex-direction:column;}
+  .crm-col{flex:0 0 auto;max-height:320px;}
   .crm-grid2{grid-template-columns:1fr;}
   .crm-drawer{width:100vw;}
 }
@@ -920,8 +931,8 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .det-tab:hover{color:#D4B880;}
 .det-tab.on{color:var(--gold);border-bottom-color:var(--gold);}
 
-/* Content scroll area — desktop uses overflow-y:auto via @media(min-width:1024px) */
-.det-content{flex:1;overflow-y:visible;overflow-x:hidden;scroll-behavior:smooth;min-height:0;}
+/* Content scroll area — mobile */
+.det-content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;min-height:0;}
 
 /* Split container */
 .det-split{display:flex;flex-direction:column;flex:1;min-height:0;}
