@@ -2373,12 +2373,11 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
   const vs = p.visibleSections || {};
   const sec = (tabKey, secKey) => vs[`${tabKey}.${secKey}`] !== false;
 
-  const SpecSection=({icon,title,rows})=>(
-    <div className="spec-section">
-      <div className="spec-sec-hd"><span>{icon}</span>{title}</div>
-      {rows.map(([k,v],i)=>v?(<div key={i} className="spec-row"><div className="spec-key">{k}</div><div className="spec-val">{v}</div></div>):null)}
-    </div>
-  );
+  const SpecSection=({icon,title,rows})=>{
+    const filled=rows.filter(([,v])=>v!=null&&String(v).trim()!==''&&String(v).trim()!=='—'&&!String(v).includes('undefined')&&!String(v).includes('NaN'));
+    if(!filled.length)return null;
+    return(<div className="spec-section"><div className="spec-sec-hd"><span>{icon}</span>{title}</div>{filled.map(([k,v],i)=><div key={i} className="spec-row"><div className="spec-key">{k}</div><div className="spec-val">{v}</div></div>)}</div>);
+  };
 
   return (
     <div className="det-pg">
@@ -2434,15 +2433,16 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
           <div>
             <div className="ov-body">
               {/* Description + Highlights row — each independently gated */}
-              {(sec("overview","description")||sec("overview","highlights"))&&(
-                <div className="ov-desc-row" style={{gridTemplateColumns:sec("overview","description")&&sec("overview","highlights")?"1.2fr 1fr":"1fr"}}>
-                  {sec("overview","description")&&(
+              {(sec("overview","description")||sec("overview","highlights"))&&
+               (p.description||(p.highlights||[]).length>0)&&(
+                <div className="ov-desc-row" style={{gridTemplateColumns:sec("overview","description")&&p.description&&sec("overview","highlights")&&(p.highlights||[]).length>0?"1.2fr 1fr":"1fr"}}>
+                  {sec("overview","description")&&p.description&&(
                     <div className="spec-section">
                       <div className="spec-sec-hd"><span>📝</span>Description</div>
-                      <p className="det-desc-p">{p.description||"—"}</p>
+                      <p className="det-desc-p">{p.description}</p>
                     </div>
                   )}
-                  {sec("overview","highlights")&&(
+                  {sec("overview","highlights")&&(p.highlights||[]).length>0&&(
                     <div className="spec-section">
                       <div className="spec-sec-hd"><span>✨</span>Key Highlights</div>
                       <div className="hi-list">
@@ -2454,14 +2454,14 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
               )}
               <div className="spec-grid">
                 {sec("overview","basicInfo")&&<SpecSection icon="🏢" title="Basic Project Info" rows={[["Project Name",p.name],["Location",p.location],["Developer",p.developer],["Property Type",p.type],["Land Size",p.landSize],["Construction Stage",p.constructionStage],["Completion Date",p.completion],["Tenure",p.tenure]]}/>}
-                {sec("overview","development")&&<SpecSection icon="🏗" title="Development Details" rows={[["Total Blocks",p.totalBlocks],["Floors / Levels",(p.totalFloorsPerTower||[]).join(" | ")],["Residential Start",p.residentialStartLevel],["Total Floors",`${p.floors} floors`]]}/>}
-                {sec("overview","unitInfo")&&<SpecSection icon="🏠" title="Unit Information" rows={[["Total Units",`${p.totalUnits} units`],["Public / Bumi",p.unitsBreakdown],["Units per Tower",p.unitsPerTower],["Bedrooms",bLbl(p.bedrooms)+" bed"],["Bathrooms",bLbl(p.bathrooms)+" bath"],["Size Range",`${p.sizeSqft?.[0]?.toLocaleString()}–${p.sizeSqft?.[1]?.toLocaleString()} sf`]]}/>}
+                {sec("overview","development")&&<SpecSection icon="🏗" title="Development Details" rows={[["Total Blocks",p.totalBlocks],["Floors / Levels",(p.totalFloorsPerTower||[]).join(" | ")],["Residential Start",p.residentialStartLevel],["Total Floors",p.floors?`${p.floors} floors`:null]]}/>}
+                {sec("overview","unitInfo")&&<SpecSection icon="🏠" title="Unit Information" rows={[["Total Units",p.totalUnits?`${p.totalUnits} units`:null],["Public / Bumi",p.unitsBreakdown],["Units per Tower",p.unitsPerTower],["Bedrooms",p.bedrooms?.length?bLbl(p.bedrooms)+" bed":null],["Bathrooms",p.bathrooms?.length?bLbl(p.bathrooms)+" bath":null],["Size Range",p.sizeSqft?.[0]&&p.sizeSqft?.[1]?`${p.sizeSqft[0].toLocaleString()}–${p.sizeSqft[1].toLocaleString()} sf`:null]]}/>}
                 {sec("overview","parking")&&<SpecSection icon="🚗" title="Parking" rows={[["Car Park Levels",p.carParkLevels],["Number of Bays",p.numberOfCarParks],["Notes",p.parkingNotes]]}/>}
                 {sec("overview","facilities")&&<SpecSection icon="🛗" title="Facilities & Access" rows={[["Lifts per Tower",p.numberOfLifts],["Facilities",(p.facilities||[]).join(", ")]]}/>}
-                {sec("overview","financial")&&<SpecSection icon="💰" title="Financial Info" rows={[["Price Range",`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`],["Starting Price",fmt(p.priceFrom)],["Maintenance Fee",p.maintenanceFee],["Sinking Fund",p.sinkingFund]]}/>}
+                {sec("overview","financial")&&<SpecSection icon="💰" title="Financial Info" rows={[["Price Range",p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:null],["Starting Price",p.priceFrom?fmt(p.priceFrom):null],["Maintenance Fee",p.maintenanceFee],["Sinking Fund",p.sinkingFund]]}/>}
                 {sec("overview","sales")&&<SpecSection icon="🏢" title="Sales & Marketing" rows={[["Showroom",p.showroom],["Scale Model",p.scaleModel]]}/>}
               </div>
-              {sec("overview","facList")&&(
+              {sec("overview","facList")&&(p.facilities||[]).length>0&&(
                 <div className="spec-section full" style={{marginTop:"1rem"}}>
                   <div className="spec-sec-hd"><span>🏊</span>Full Facilities List</div>
                   <div className="fac-chips">{(p.facilities||[]).map(f=><span key={f} className="fac-chip">{f}</span>)}</div>
