@@ -533,7 +533,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   .det-left{display:block !important;height:auto !important;width:100% !important;max-width:100% !important;min-width:0 !important;overflow:visible !important;flex:none !important;}
   .det-left .det-hero{height:56vw !important;max-height:300px !important;min-height:180px !important;flex:none !important;}
   .det-right{display:block !important;height:auto !important;min-height:100svh !important;overflow:visible !important;flex:none !important;border-left:none !important;}
-  .det-content{display:block !important;height:auto !important;min-height:unset !important;overflow:visible !important;flex:none !important;
+  .det-content{display:block !important;height:auto !important;min-height:100svh !important;overflow:visible !important;flex:none !important;
     -webkit-overflow-scrolling:unset !important;scroll-behavior:unset !important;}
 
   /* Tabs: sticky to viewport top as user scrolls */
