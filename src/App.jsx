@@ -671,7 +671,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 
   /* RI / VS modals — slide up from bottom with rounded top corners */
   .ri-ov{padding:0;align-items:flex-end;}
-  .ri-box{max-height:96svh;border-radius:var(--r-lg) var(--r-lg) 0 0;width:100%;max-width:100%;}
+  .ri-box{max-height:96svh;border-radius:var(--r-lg);width:100%;max-width:100%;}
   .ri-body,.ri-wa-body,.ri-success{padding:1.2rem 1.1rem;}
   .ri-hd{padding:1.1rem 1.2rem;}
 
