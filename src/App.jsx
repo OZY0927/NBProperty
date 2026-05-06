@@ -386,7 +386,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .s-inp:focus{border-color:var(--gold);}
 .s-ico{position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none;}
 
-.main{max-width:1280px;margin:0 auto;padding:3rem 2rem;}
+.main{width:100%;padding:3rem 2rem;}
 /* ── Filter Panel ── */
 .filter-panel{background:var(--card);border:1px solid var(--border);margin-bottom:2.5rem;}
 .filter-top{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;padding:.9rem 1.2rem;border-bottom:1px solid var(--border);}
@@ -443,7 +443,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 
 /* ── Card-based project listing ── */
 .a-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;margin-bottom:1rem;}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;}
 .list-pager{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:1rem;margin-bottom:1.2rem;}
 .list-pager button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.45rem .7rem;border-radius:4px;cursor:pointer;}
 .list-pager button.on{background:var(--gold);color:var(--card);border-color:var(--gold);}
@@ -860,7 +860,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .tray-clr{background:transparent;color:#D4B880;border:1px solid #0D0D18;padding:.48rem .9rem;font-family:var(--sans);font-size:.72rem;cursor:pointer;}
 .tray-clr:hover{color:#ccc;}
 
-.cmp-pg{max-width:1280px;margin:0 auto;padding:2.5rem 2rem 5rem;}
+.cmp-pg{width:100%;padding:2.5rem 2rem 5rem;}
 .cmp-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
 .cmp-title{font-family:var(--serif);font-size:2.2rem;font-weight:300;}
 .cmp-title em{font-style:italic;color:var(--gold);}
