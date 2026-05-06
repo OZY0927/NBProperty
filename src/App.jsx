@@ -517,24 +517,29 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   .cmp-title{font-size:1.7rem;}
 
   /* Detail page — mobile */
-  .det{height:auto;max-height:none;min-height:calc(100vh - 64px);}
-  .det-hero{height:30vh;max-height:220px;flex-shrink:0;}
+  .det{height:auto;max-height:none;min-height:unset;}
+  .det-hero{height:56vw;max-height:280px;min-height:200px;flex-shrink:0;overflow:hidden;}
   .det-hc{left:1rem;right:1rem;bottom:.75rem;}
   .det-title{font-size:1.35rem;}
   .det-tag-pill{margin-bottom:.3rem;}
-  .det-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;}
-  .det-tab{flex:0 0 auto;padding:.85rem .8rem;font-size:.72rem;white-space:nowrap;}
   .gal-strip{display:none;}
 
-  /* ── Mobile: single body scroll for detail page ── */
-  /* Let the page grow naturally; kill every inner scroll zone */
-  .det-pg{min-height:unset;height:auto;overflow:visible;}
-  .det-pg-inner{height:auto;min-height:unset;overflow:visible;flex:none;}
-  .det{overflow:visible;height:auto;min-height:unset;flex:none;}
-  .det-split{overflow:visible;height:auto;min-height:unset;flex:none;}
-  .det-right{overflow:visible;height:auto;min-height:unset;flex:none;}
+  /* ── Mobile: everything is ONE body scroll ── */
+  .det-pg{min-height:unset;height:auto;overflow:visible;display:block;}
+  .det-pg-inner{height:auto;min-height:unset;overflow:visible;flex:none;display:block;}
+  .det{overflow:visible;height:auto;min-height:unset;flex:none;display:block;}
+  .det-split{overflow:visible;height:auto;min-height:unset;flex:none;display:block;}
+  .det-left{display:block;position:relative;}
+  .det-right{overflow:visible;height:auto;min-height:unset;flex:none;display:block;}
   .det-content{overflow:visible;height:auto;min-height:unset;flex:none;
-    -webkit-overflow-scrolling:unset;scroll-behavior:unset;}
+    -webkit-overflow-scrolling:unset;scroll-behavior:unset;display:block;}
+
+  /* Tabs stick to top of viewport while body scrolls */
+  .det-tabs{position:sticky;top:0;z-index:30;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    flex-shrink:unset;display:flex;width:100%;box-sizing:border-box;}
+  .det-tab{flex:0 0 auto;padding:.85rem .8rem;font-size:.72rem;white-space:nowrap;}
+
+  /* CTA bar sticks to bottom */
   .det-sticky-bar{position:sticky;bottom:0;z-index:20;}
   .det-sticky-bar::before{display:none;}
 
