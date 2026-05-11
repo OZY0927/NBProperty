@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import FALLBACK_IMG from "./assets/nblogo.jpg";
 import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, migrateAnalytics, deleteAllAnalytics, getSettings as fsGetSettings, saveSettings as fsSaveSettings } from "./firebase/firestore";
 import COUNTRY_CODES from "./data/countryCodes";
@@ -1856,7 +1857,198 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 @media(max-width:768px){.an-stats{grid-template-columns:1fr 1fr;}.an-row{flex-direction:column;}}
 
 /* (layout overrides already handled in the 768px/480px blocks above) */
+
+/* ═══════════════════════════════════════
+   DARK LUXURY THEME OVERRIDES
+═══════════════════════════════════════ */
+html{background:#080812;}
+body{background:#080812;color:#E8E4F0;}
+.main{background:#080812;}
+.card{background:rgba(14,14,30,0.92);border:1px solid rgba(191,155,78,.16);backdrop-filter:blur(16px);box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(191,155,78,.32),0 0 40px rgba(191,155,78,.07);border-color:rgba(191,155,78,.42);}
+.cimg img{filter:brightness(.9);}
+.cbody{background:rgba(12,12,26,.96);}
+.cname{color:#F0EDE6;}
+.cdev{color:#6E6A84;}
+.cloc{color:#6E6A84;}
+.cdiv{background:rgba(191,155,78,.15);}
+.cplbl{color:#6E6A84;}
+.cprice{color:#BF9B4E;}
+.cmeta{color:#6E6A84;}
+.empty-h{color:#F0EDE6;}
+.filter-panel{background:rgba(10,10,22,.97);border:1px solid rgba(191,155,78,.18);backdrop-filter:blur(16px);}
+.filter-top{background:rgba(10,10,22,.97);border-bottom:1px solid rgba(191,155,78,.12);}
+.filter-row2{background:rgba(8,8,18,.97);border-bottom:1px solid rgba(191,155,78,.12);}
+.flbl{color:#6E6A84;}
+.fsel{background:rgba(20,18,38,.9);border:1px solid rgba(191,155,78,.2);color:#D0CCE0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%236E6A84' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");}
+.fsel:focus{border-color:#BF9B4E;}
+.fmore-btn{background:rgba(20,18,38,.8);border:1px solid rgba(191,155,78,.2);color:#8E8AA4;}
+.fmore-btn:hover{border-color:#BF9B4E;color:#BF9B4E;}
+.fclear-btn{color:#6E6A84;border:1px solid rgba(191,155,78,.2);background:transparent;}
+.fclear-btn:hover{border-color:#C4543E;color:#C4543E;}
+.rcnt{color:#6E6A84;}
+.rcnt strong{color:#D0CCE0;}
+.filter-divider{background:rgba(191,155,78,.2);}
+.fsize-inp{background:rgba(20,18,38,.9);border:1px solid rgba(191,155,78,.2);color:#D0CCE0;}
+.fsize-inp::placeholder{color:#6E6A84;}
+.fsize-inp:focus{border-color:#BF9B4E;}
+.fsize-sep{color:#6E6A84;}
+.s-inp{background:rgba(10,10,22,.9);border:1px solid rgba(191,155,78,.28);color:#E8E4F0;backdrop-filter:blur(16px);}
+.s-inp::placeholder{color:#6E6A84;}
+.s-inp:focus{border-color:#BF9B4E;}
+.price-panel{background:rgba(10,10,22,.97);}
+.price-panel-label{color:#6E6A84;}
+.price-panel-value{color:#F0EDE6;}
+.ps-rail{background:rgba(191,155,78,.15);}
+.ps-tick-lbl{color:#6E6A84;}
+.price-reset{color:#6E6A84;border:1px solid rgba(191,155,78,.2);background:transparent;}
+.price-reset:hover{border-color:#BF9B4E;color:#BF9B4E;}
+.list-pager button{background:transparent;border:1px solid rgba(191,155,78,.2);color:#6E6A84;}
+.list-pager button:hover{border-color:#BF9B4E;color:#BF9B4E;}
+.list-pager button.on{background:#BF9B4E;color:#0A0A16;border-color:#BF9B4E;}
+.list-pager .page-info{color:#6E6A84;}
+.cmp-pg{background:#080812;min-height:100vh;}
+.cmp-title{color:#F0EDE6;}
+.cmp-sub{color:#6E6A84;}
+.cmp-nil-h{color:#F0EDE6;}
+.cmp-nil-s{color:#6E6A84;}
+.lbl-cell{background:rgba(14,14,30,.97);color:#D0CCE0;border-color:rgba(191,155,78,.12);}
+.val-cell{background:rgba(10,10,22,.9);color:#D0CCE0;border-color:rgba(191,155,78,.12);}
+.val-cell.best-cell{background:rgba(20,16,38,.97);}
+.proj-card{background:rgba(14,14,30,.97);border:1px solid rgba(191,155,78,.15);}
+.proj-nm{color:#F0EDE6;}
+.ctag2{background:rgba(20,18,38,.8);border:1px solid rgba(191,155,78,.2);color:#D0CCE0;}
+.add-more{background:rgba(14,14,30,.8);border:1px dashed rgba(191,155,78,.2);}
+.add-more p{color:#6E6A84;}
+.go-btn{background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#0A0A16;font-weight:700;}
+.lc-pg{background:#080812;min-height:100vh;}
+.lc-title{color:#F0EDE6;}
+.lc-sub{color:#6E6A84;}
+.lc-card{background:rgba(14,14,30,.92);border:1px solid rgba(191,155,78,.15);}
+.lc-lbl{color:#C0BCCC;}
+.lc-inp{background:rgba(20,18,38,.9);border:1px solid rgba(191,155,78,.2);color:#E8E4F0;}
+.lc-inp:focus{border-color:#BF9B4E;}
+.lc-slider-ends{color:#6E6A84;}
+.lc-toggle{background:rgba(20,18,38,.9);color:#6E6A84;border:none;}
+.lc-toggle-group{border:1px solid rgba(191,155,78,.2);}
+.lc-adj-banner{background:rgba(191,155,78,.1);border:1px solid rgba(191,155,78,.25);}
+.lc-rebate-note{background:rgba(14,14,30,.9);border:1px solid rgba(191,155,78,.15);color:#6E6A84;}
+.lc-sum-card{background:rgba(14,14,30,.92);border:1px solid rgba(191,155,78,.15);}
+.lc-sum-lbl{color:#6E6A84;}
+.lc-sum-val{color:#F0EDE6;}
+.lc-breakdown-btn{background:rgba(20,18,38,.9);color:#D0CCE0;}
+.lc-breakdown-btn:hover{background:rgba(30,28,48,.9);}
+.lc-hint{color:#6E6A84;}
+.lc-hint-grn{color:#4ade80;font-weight:600;}
+.lc-foreign-note{background:rgba(191,155,78,.08);border:1px solid rgba(191,155,78,.2);color:#BF9B4E;}
+.lc-saved-card{background:rgba(191,155,78,.07);border-color:rgba(191,155,78,.22);}
+
+/* ── Luxury Hero ── */
+.lux-hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:#04040E;}
+.lux-hero-bg{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=80');background-size:cover;background-position:center;filter:brightness(.28);transform:scale(1.04);transition:transform 10s ease;}
+.lux-hero:hover .lux-hero-bg{transform:scale(1.08);}
+.lux-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(4,4,14,.45) 0%,rgba(4,4,14,.15) 45%,rgba(4,4,14,.85) 100%);}
+.lux-hero-side-glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(191,155,78,.07) 0%,transparent 70%);pointer-events:none;}
+.lux-hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(191,155,78,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(191,155,78,.03) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(0,0,0,.4),transparent);}
+.lux-hero-content{position:relative;z-index:2;text-align:center;padding:2rem 1.5rem 8rem;max-width:960px;width:100%;}
+.lux-eyebrow{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:#BF9B4E;margin-bottom:1.8rem;display:flex;align-items:center;justify-content:center;gap:.8rem;font-weight:500;}
+.lux-eyebrow::before,.lux-eyebrow::after{content:'';display:block;width:40px;height:1px;background:rgba(191,155,78,.45);}
+.lux-h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:300;color:#F0EDE6;line-height:1.06;margin-bottom:1.5rem;letter-spacing:-.01em;}
+.lux-h1 em{font-style:italic;color:#BF9B4E;}
+.lux-tagline{font-size:clamp(.88rem,1.5vw,1.05rem);color:rgba(240,237,230,.55);max-width:500px;margin:0 auto 2.5rem;line-height:1.75;font-weight:300;}
+.lux-ctas{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.8rem;}
+.lux-btn-pri{background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#0A0A16;padding:.88rem 2.2rem;border:none;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.lux-btn-pri::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.12);opacity:0;transition:opacity .2s;}
+.lux-btn-pri:hover::after{opacity:1;}
+.lux-btn-pri:hover{box-shadow:0 0 40px rgba(191,155,78,.5),0 8px 32px rgba(0,0,0,.4);transform:translateY(-2px);}
+.lux-btn-sec{background:transparent;color:#F0EDE6;padding:.86rem 2.2rem;border:1px solid rgba(240,237,230,.28);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.lux-btn-sec:hover{border-color:rgba(191,155,78,.6);color:#BF9B4E;box-shadow:0 0 20px rgba(191,155,78,.15);transform:translateY(-2px);}
+.lux-hero-search{width:100%;max-width:600px;margin:0 auto;position:relative;}
+.lux-hero-search-inp{width:100%;padding:1.1rem 3.5rem 1.1rem 1.8rem;background:rgba(8,8,20,.88);border:1px solid rgba(191,155,78,.32);color:#E8E4F0;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;backdrop-filter:blur(20px);transition:all .3s;box-sizing:border-box;}
+.lux-hero-search-inp::placeholder{color:rgba(200,196,216,.45);}
+.lux-hero-search-inp:focus{border-color:#BF9B4E;box-shadow:0 0 30px rgba(191,155,78,.18);}
+.lux-hero-search-ico{position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);color:#BF9B4E;pointer-events:none;}
+.lux-stats-bar{position:absolute;bottom:0;left:0;right:0;z-index:3;background:rgba(4,4,14,.88);border-top:1px solid rgba(191,155,78,.16);backdrop-filter:blur(20px);padding:1.4rem 2rem;display:flex;justify-content:center;gap:0;}
+.lux-stat{flex:0 1 200px;text-align:center;padding:0 2rem;border-right:1px solid rgba(191,155,78,.14);}
+.lux-stat:last-child{border-right:none;}
+.lux-stat-num{font-family:'Cormorant Garamond',Georgia,serif;font-size:2rem;font-weight:600;color:#BF9B4E;line-height:1;margin-bottom:.28rem;}
+.lux-stat-lbl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(200,196,216,.45);font-weight:500;}
+@media(max-width:768px){
+  .lux-h1{font-size:2.6rem;}
+  .lux-stats-bar{padding:1rem;flex-wrap:wrap;}
+  .lux-stat{flex:0 1 50%;padding:.6rem 0;}
+  .lux-stat:nth-child(2){border-right:none;}
+  .lux-hero-content{padding:2rem 1rem 9rem;}
+}
+
+/* ── Why Choose Us ── */
+.wcu-sec{padding:7rem 2rem;background:#080812;position:relative;overflow:hidden;}
+.wcu-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 50%,rgba(191,155,78,.04) 0%,transparent 70%);pointer-events:none;}
+.wcu-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.wcu-img-wrap{position:relative;flex-shrink:0;}
+.wcu-img{width:100%;aspect-ratio:4/5;object-fit:cover;filter:brightness(.82);display:block;}
+.wcu-img-frame{position:absolute;inset:0;border:1px solid rgba(191,155,78,.22);transform:translate(16px,16px);pointer-events:none;}
+.wcu-img-badge{position:absolute;bottom:-24px;left:-24px;background:linear-gradient(135deg,#BF9B4E,#D4B880);padding:1.2rem 1.5rem;text-align:center;}
+.wcu-img-badge-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:#0A0A16;line-height:1;}
+.wcu-img-badge-lbl{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,10,22,.7);font-weight:600;margin-top:.25rem;}
+.wcu-eyebrow{font-size:.66rem;letter-spacing:.25em;text-transform:uppercase;color:#BF9B4E;font-weight:600;margin-bottom:1rem;}
+.wcu-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:#F0EDE6;line-height:1.2;margin-bottom:1rem;}
+.wcu-title em{font-style:italic;color:#BF9B4E;}
+.wcu-desc{color:rgba(200,196,216,.58);font-size:.88rem;line-height:1.82;margin-bottom:2.5rem;}
+.wcu-features{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.wcu-feat{background:rgba(14,14,30,.85);border:1px solid rgba(191,155,78,.12);padding:1.2rem;transition:border-color .3s,transform .3s,box-shadow .3s;}
+.wcu-feat:hover{border-color:rgba(191,155,78,.42);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.4);}
+.wcu-feat-icon{font-size:1.5rem;margin-bottom:.6rem;}
+.wcu-feat-title{font-size:.82rem;font-weight:600;color:#F0EDE6;margin-bottom:.35rem;letter-spacing:.02em;}
+.wcu-feat-desc{font-size:.74rem;color:rgba(200,196,216,.52);line-height:1.62;}
+@media(max-width:768px){
+  .wcu-inner{grid-template-columns:1fr;gap:3rem;}
+  .wcu-img-wrap{display:none;}
+  .wcu-sec{padding:4rem 1.25rem;}
+}
+
+/* ── Section label ── */
+.sec-label{text-align:center;padding:5rem 2rem 2.5rem;background:#080812;}
+.sec-label-eye{font-size:.66rem;letter-spacing:.25em;text-transform:uppercase;color:#BF9B4E;font-weight:600;margin-bottom:.7rem;}
+.sec-label-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:300;color:#F0EDE6;}
+.sec-label-title em{font-style:italic;color:#BF9B4E;}
+.sec-label-sub{color:rgba(200,196,216,.52);font-size:.86rem;margin-top:.5rem;}
+
+/* ── Showcase Banner ── */
+.showcase-sec{position:relative;height:55vh;min-height:380px;overflow:hidden;}
+.showcase-bg{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80');background-size:cover;background-position:center 35%;filter:brightness(.38);transition:transform 8s ease;}
+.showcase-sec:hover .showcase-bg{transform:scale(1.04);}
+.showcase-ov{position:absolute;inset:0;background:linear-gradient(135deg,rgba(4,4,14,.75) 0%,rgba(4,4,14,.25) 60%,rgba(4,4,14,.5) 100%);}
+.showcase-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:4rem;max-width:700px;}
+.showcase-eyebrow{font-size:.63rem;letter-spacing:.28em;text-transform:uppercase;color:#BF9B4E;margin-bottom:1rem;font-weight:600;}
+.showcase-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:#F0EDE6;line-height:1.18;margin-bottom:1.2rem;}
+.showcase-title em{font-style:italic;color:#BF9B4E;}
+.showcase-sub{color:rgba(240,237,230,.55);font-size:.88rem;line-height:1.72;margin-bottom:2rem;max-width:440px;}
+@media(max-width:768px){
+  .showcase-content{padding:2rem 1.5rem;}
+  .showcase-title{font-size:1.9rem;}
+}
+
+/* ── Luxury Footer ── */
+.lux-ft{background:#04040E;border-top:1px solid rgba(191,155,78,.15);padding:4rem 2rem 2.5rem;margin-top:0;}
+.lux-ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.lux-ft-logo{font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:600;color:#BF9B4E;letter-spacing:.04em;margin-bottom:.8rem;}
+.lux-ft-logo span{color:#F0EDE6;font-weight:300;}
+.lux-ft-tagline{font-size:.78rem;color:rgba(200,196,216,.42);line-height:1.72;max-width:280px;}
+.lux-ft-col-title{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:#BF9B4E;font-weight:600;margin-bottom:1.2rem;}
+.lux-ft-links{display:flex;flex-direction:column;gap:.65rem;}
+.lux-ft-link{font-size:.8rem;color:rgba(200,196,216,.48);cursor:pointer;transition:color .2s;text-decoration:none;background:none;border:none;text-align:left;font-family:'DM Sans',sans-serif;padding:0;}
+.lux-ft-link:hover{color:#BF9B4E;}
+.lux-ft-divider{height:1px;background:rgba(191,155,78,.1);max-width:1200px;margin:0 auto 1.5rem;}
+.lux-ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;}
+.lux-ft-copy{font-size:.7rem;color:rgba(200,196,216,.28);}
+.lux-ft-copy span{color:rgba(191,155,78,.55);}
+@media(max-width:768px){
+  .lux-ft-inner{grid-template-columns:1fr;gap:2rem;}
+  .lux-ft{padding:3rem 1.25rem 2rem;}
+}
 `;
+
 
 
 /* ═══ PRICE RANGE SLIDER ═══ */
@@ -4678,6 +4870,214 @@ function LoanCalculator({settings}){
 }
 
 /* ═══ MAIN APP ═══ */
+/* ═══════════════════════════════════════
+   LUXURY SECTIONS
+═══════════════════════════════════════ */
+function LuxuryHero({ search, onSearch, onExplore, onContact }) {
+  const stats = [
+    { num: "250+", label: "Premium Projects" },
+    { num: "15+", label: "Years Experience" },
+    { num: "RM1.2B+", label: "Properties Sold" },
+    { num: "98%", label: "Client Satisfaction" },
+  ];
+  return (
+    <section className="lux-hero">
+      <div className="lux-hero-bg"/>
+      <div className="lux-hero-overlay"/>
+      <div className="lux-hero-side-glow"/>
+      <div className="lux-hero-grid"/>
+      <motion.div
+        className="lux-hero-content"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.1, ease: [0.25, 0.1, 0.25, 1] }}
+      >
+        <motion.div className="lux-eyebrow" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.8 }}>
+          Penang's Premier Property Platform
+        </motion.div>
+        <motion.h1
+          className="lux-h1"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          Discover Your<br/><em>Dream Property</em>
+        </motion.h1>
+        <motion.p
+          className="lux-tagline"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+        >
+          Explore curated new development projects across Penang Island and Seberang Perai. Premium living, redefined.
+        </motion.p>
+        <motion.div
+          className="lux-ctas"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65, duration: 0.7 }}
+        >
+          <motion.button className="lux-btn-pri" onClick={onExplore} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+            Explore Listings
+          </motion.button>
+          <motion.button className="lux-btn-sec" onClick={onContact} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+            Contact Agent
+          </motion.button>
+        </motion.div>
+        <motion.div
+          className="lux-hero-search"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.7 }}
+        >
+          <input
+            className="lux-hero-search-inp"
+            placeholder="Search by project name, area, or developer…"
+            value={search}
+            onChange={e => onSearch(e.target.value)}
+          />
+          <span className="lux-hero-search-ico"><ISearch/></span>
+        </motion.div>
+      </motion.div>
+      <div className="lux-stats-bar">
+        {stats.map((s, i) => (
+          <motion.div
+            key={s.label}
+            className="lux-stat"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0 + i * 0.12, duration: 0.6 }}
+          >
+            <div className="lux-stat-num">{s.num}</div>
+            <div className="lux-stat-lbl">{s.label}</div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function WhyChooseUs() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const features = [
+    { icon: "🏆", title: "Premium Listings Only", desc: "Carefully curated new launches from Penang's top developers." },
+    { icon: "📊", title: "Expert Market Insights", desc: "Real-time data and analysis for smart investment decisions." },
+    { icon: "🤝", title: "Dedicated Agent Support", desc: "Personal guidance from enquiry through to key collection." },
+    { icon: "🔒", title: "Secure Transactions", desc: "Fully verified projects and transparent pricing guaranteed." },
+  ];
+  return (
+    <section className="wcu-sec" ref={ref}>
+      <div className="wcu-inner">
+        <motion.div
+          className="wcu-img-wrap"
+          initial={{ opacity: 0, x: -50 }}
+          animate={isInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+        >
+          <img
+            className="wcu-img"
+            src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=900&q=80"
+            alt="Luxury Interior"
+          />
+          <div className="wcu-img-frame"/>
+          <div className="wcu-img-badge">
+            <div className="wcu-img-badge-num">15+</div>
+            <div className="wcu-img-badge-lbl">Years of Excellence</div>
+          </div>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={isInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
+        >
+          <div className="wcu-eyebrow">Why Choose NB Property</div>
+          <h2 className="wcu-title">The Standard of<br/><em>Luxury Living</em></h2>
+          <p className="wcu-desc">We connect discerning buyers with Penang's most prestigious properties. Our deep market knowledge and client-first approach ensures you find not just a property, but the perfect home.</p>
+          <div className="wcu-features">
+            {features.map((f, i) => (
+              <motion.div
+                key={f.title}
+                className="wcu-feat"
+                initial={{ opacity: 0, y: 24 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.4 + i * 0.1, duration: 0.55 }}
+              >
+                <div className="wcu-feat-icon">{f.icon}</div>
+                <div className="wcu-feat-title">{f.title}</div>
+                <div className="wcu-feat-desc">{f.desc}</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function ShowcaseBanner({ onExplore }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  return (
+    <section className="showcase-sec" ref={ref}>
+      <div className="showcase-bg"/>
+      <div className="showcase-ov"/>
+      <motion.div
+        className="showcase-content"
+        initial={{ opacity: 0, x: -50 }}
+        animate={isInView ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 0.9, ease: "easeOut" }}
+      >
+        <div className="showcase-eyebrow">Exceptional Properties</div>
+        <h2 className="showcase-title">Live Where<br/><em>Luxury Meets</em><br/>Lifestyle</h2>
+        <p className="showcase-sub">From panoramic sea views to world-class amenities — discover properties that redefine the art of modern living in Penang.</p>
+        <motion.button
+          className="lux-btn-pri"
+          onClick={onExplore}
+          whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(191,155,78,0.5)" }}
+          whileTap={{ scale: 0.97 }}
+        >
+          View All Properties
+        </motion.button>
+      </motion.div>
+    </section>
+  );
+}
+
+function LuxuryFooter({ onTab, onRI }) {
+  return (
+    <footer className="lux-ft">
+      <div className="lux-ft-inner">
+        <div>
+          <div className="lux-ft-logo">NB<span>Property</span></div>
+          <div className="lux-ft-tagline">Penang's premier destination for luxury new property launches. Discover your perfect investment with us.</div>
+        </div>
+        <div>
+          <div className="lux-ft-col-title">Navigation</div>
+          <div className="lux-ft-links">
+            <button className="lux-ft-link" onClick={() => onTab("listings")}>Listings</button>
+            <button className="lux-ft-link" onClick={() => onTab("compare")}>Compare Projects</button>
+            <button className="lux-ft-link" onClick={() => onTab("tools")}>Loan Calculator</button>
+          </div>
+        </div>
+        <div>
+          <div className="lux-ft-col-title">Contact Us</div>
+          <div className="lux-ft-links">
+            <button className="lux-ft-link" onClick={() => onRI && onRI()}>Register Interest</button>
+            <span className="lux-ft-link" style={{cursor:"default"}}>Penang, Malaysia</span>
+            <span className="lux-ft-link" style={{cursor:"default"}}>WhatsApp Available</span>
+          </div>
+        </div>
+      </div>
+      <div className="lux-ft-divider"/>
+      <div className="lux-ft-bottom">
+        <div className="lux-ft-copy">© 2025 <span>NB Property</span> · All rights reserved</div>
+        <div className="lux-ft-copy">Penang Island &amp; Seberang Perai, Malaysia</div>
+      </div>
+    </footer>
+  );
+}
+
 export default function App(){
   const [projects,setProjects]=useState([]);
   const [settings,setSettings]=useState(DEFAULT_SETTINGS);
@@ -4926,67 +5326,19 @@ export default function App(){
       {tab==="tools"&&<LoanCalculator settings={settings}/>}
 
       {tab==="listings"&&<>
-        <section className="hero">
-          <div className="hero-art" aria-hidden="true">
-            <div className="hero-grid"/>
-            <div className="hero-orb o1"/>
-            <div className="hero-orb o2"/>
-            <div className="hero-orb o3"/>
-            <div className="hero-line l1"/>
-            <div className="hero-line l2"/>
-            <div className="hero-scan"/>
-            <div className="hero-star hs1"/><div className="hero-star hs2"/><div className="hero-star hs3"/>
-            <div className="hero-star hs4"/><div className="hero-star hs5"/><div className="hero-star hs6"/>
-            <div className="hero-star hs7"/><div className="hero-star hs8"/>
-            <div className="hero-diamond hd1"/>
-            <div className="hero-diamond hd1-inner"/>
-            <div className="hero-diamond hd2"/>
-            <div className="hero-diamond hd3"/>
-            <div className="hero-particles">
-              <div className="hero-pt pt1"/><div className="hero-pt pt2"/><div className="hero-pt pt3"/>
-              <div className="hero-pt pt4"/><div className="hero-pt pt5"/><div className="hero-pt pt6"/>
-              <div className="hero-pt pt7"/><div className="hero-pt pt8"/><div className="hero-pt pt9"/>
-              <div className="hero-pt pt10"/><div className="hero-pt pt11"/><div className="hero-pt pt12"/>
-            </div>
-            <svg className="hero-city" viewBox="0 0 1400 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="city-win" x="0" y="0" width="10" height="12" patternUnits="userSpaceOnUse">
-                  <rect x="1.5" y="1.5" width="6" height="8" fill="rgba(191,155,78,.38)" rx="0.5"/>
-                </pattern>
-                <clipPath id="city-clip">
-                  <polygon points="0,165 28,165 28,148 52,148 52,158 68,158 68,138 92,138 92,128 115,128 115,145 138,145 138,122 162,122 162,115 175,115 175,108 190,108 190,115 208,115 208,100 228,100 228,92 242,92 242,80 254,72 266,80 266,92 285,92 285,110 305,110 305,102 325,102 325,88 342,88 342,78 360,78 368,62 376,78 394,78 394,92 412,92 412,105 430,105 430,118 455,118 475,118 475,105 498,105 498,88 518,88 518,72 536,72 536,58 546,52 556,58 556,68 566,60 578,60 578,78 598,78 598,92 620,92 620,80 642,80 642,78 658,78 658,90 675,90 675,100 695,100 695,112 718,112 718,98 738,98 738,108 760,108 760,120 782,120 782,108 805,108 805,120 828,120 828,130 850,130 850,118 872,118 872,130 895,130 895,140 918,140 918,128 940,128 940,140 965,140 965,150 988,150 988,140 1012,140 1012,150 1035,150 1035,160 1058,160 1058,148 1082,148 1082,158 1108,158 1108,148 1132,148 1132,158 1158,158 1158,165 1182,165 1182,155 1208,155 1208,165 1235,165 1235,172 1262,172 1262,162 1288,162 1288,170 1315,170 1315,162 1342,162 1342,170 1370,170 1370,178 1400,178 1400,200 0,200"/>
-                </clipPath>
-              </defs>
-              <polygon points="0,165 28,165 28,148 52,148 52,158 68,158 68,138 92,138 92,128 115,128 115,145 138,145 138,122 162,122 162,115 175,115 175,108 190,108 190,115 208,115 208,100 228,100 228,92 242,92 242,80 254,72 266,80 266,92 285,92 285,110 305,110 305,102 325,102 325,88 342,88 342,78 360,78 368,62 376,78 394,78 394,92 412,92 412,105 430,105 430,118 455,118 475,118 475,105 498,105 498,88 518,88 518,72 536,72 536,58 546,52 556,58 556,68 566,60 578,60 578,78 598,78 598,92 620,92 620,80 642,80 642,78 658,78 658,90 675,90 675,100 695,100 695,112 718,112 718,98 738,98 738,108 760,108 760,120 782,120 782,108 805,108 805,120 828,120 828,130 850,130 850,118 872,118 872,130 895,130 895,140 918,140 918,128 940,128 940,140 965,140 965,150 988,150 988,140 1012,140 1012,150 1035,150 1035,160 1058,160 1058,148 1082,148 1082,158 1108,158 1108,148 1132,148 1132,158 1158,158 1158,165 1182,165 1182,155 1208,155 1208,165 1235,165 1235,172 1262,172 1262,162 1288,162 1288,170 1315,170 1315,162 1342,162 1342,170 1370,170 1370,178 1400,178 1400,200 0,200" fill="rgba(191,155,78,.07)"/>
-              <rect x="0" y="0" width="1400" height="200" fill="url(#city-win)" clipPath="url(#city-clip)" opacity="0.55"/>
-              <polyline points="0,165 28,165 28,148 52,148 52,158 68,158 68,138 92,138 92,128 115,128 115,145 138,145 138,122 162,122 162,115 175,115 175,108 190,108 190,115 208,115 208,100 228,100 228,92 242,92 242,80 254,72 266,80 266,92 285,92 285,110 305,110 305,102 325,102 325,88 342,88 342,78 360,78 368,62 376,78 394,78 394,92 412,92 412,105 430,105 430,118 455,118 475,118 475,105 498,105 498,88 518,88 518,72 536,72 536,58 546,52 556,58 556,68 566,60 578,60 578,78 598,78 598,92 620,92 620,80 642,80 642,78 658,78 658,90 675,90 675,100 695,100 695,112 718,112 718,98 738,98 738,108 760,108 760,120 782,120 782,108 805,108 805,120 828,120 828,130 850,130 850,118 872,118 872,130 895,130 895,140 918,140 918,128 940,128 940,140 965,140 965,150 988,150 988,140 1012,140 1012,150 1035,150 1035,160 1058,160 1058,148 1082,148 1082,158 1108,158 1108,148 1132,148 1132,158 1158,158 1158,165 1182,165 1182,155 1208,155 1208,165 1235,165 1235,172 1262,172 1262,162 1288,162 1288,170 1315,170 1315,162 1342,162 1342,170 1370,170 1370,178 1400,178" stroke="rgba(191,155,78,.22)" strokeWidth="1" fill="none"/>
-              <line x1="368" y1="62" x2="368" y2="40" stroke="rgba(191,155,78,.5)" strokeWidth="1.5"/>
-              <circle cx="368" cy="38" r="2.5" fill="rgba(191,155,78,.7)"/>
-              <line x1="546" y1="52" x2="546" y2="28" stroke="rgba(191,155,78,.5)" strokeWidth="1.5"/>
-              <circle cx="546" cy="26" r="2.5" fill="rgba(191,155,78,.7)"/>
-              <rect x="553" y="58" width="14" height="3" fill="rgba(191,155,78,.18)" rx="1"/>
-            </svg>
-            <div className="hero-badge hb1">
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#BF9B4E" strokeWidth="1.5" strokeLinejoin="round">
-                <path d="M3 22V10L12 3l9 7v12H3z"/>
-                <path d="M9 22v-6h6v6"/>
-              </svg>
-            </div>
-            <div className="hero-badge hb2">
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#BF9B4E" strokeWidth="1.5" strokeLinejoin="round">
-                <rect x="2" y="3" width="20" height="14" rx="2"/>
-                <path d="M8 21h8M12 17v4"/>
-                <circle cx="7" cy="8" r="1" fill="#BF9B4E"/><circle cx="12" cy="8" r="1" fill="#BF9B4E"/><circle cx="17" cy="8" r="1" fill="#BF9B4E"/>
-                <circle cx="7" cy="12" r="1" fill="#BF9B4E"/><circle cx="12" cy="12" r="1" fill="#BF9B4E"/><circle cx="17" cy="12" r="1" fill="#BF9B4E"/>
-              </svg>
-            </div>
-          </div>
-          <div className="h-eye">✦ Penang's Premier New Launches</div>
-          <h1 className="h-ttl">Discover Your<br/><em>Dream Property</em></h1>
-          <p className="h-sub">Explore curated new development projects across Penang Island and Seberang Perai.</p>
-          <div className="s-wrap"><input className="s-inp" placeholder="Search by project name, area, or developer…" value={search} onChange={e=>setSearch(e.target.value)}/><span className="s-ico"><ISearch/></span></div>
-        </section>
-        <main className="main">
+        <LuxuryHero
+          search={search}
+          onSearch={setSearch}
+          onExplore={()=>{ const el=document.getElementById("listings-main"); if(el)el.scrollIntoView({behavior:"smooth"}); }}
+          onContact={()=>openRI()}
+        />
+        <WhyChooseUs/>
+        <div className="sec-label">
+          <div className="sec-label-eye">Curated Properties</div>
+          <h2 className="sec-label-title">Featured <em>Listings</em></h2>
+          <p className="sec-label-sub">Explore our collection of premium new development projects across Penang</p>
+        </div>
+        <main className="main" id="listings-main">
           <div className="filter-panel">
             {/* Row 1: primary filters */}
             <div className="filter-top">
@@ -5033,15 +5385,22 @@ export default function App(){
           </div>
           <div className="grid">
             {filtered.length===0 ? <div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">No projects found</div><p className="empty-s">Try adjusting filters.</p></div>
-            : visibleProjects.map(p => (
-              <div key={p.id} className={`card${cmpIds.includes(p.id)?" sel":""}`} onClick={()=>{
-                // Save scroll position and current page before entering detail
-                sessionStorage.setItem("listingScrollY",String(window.scrollY));
-                sessionStorage.setItem("listingPage",String(listPage));
-                trackEvent("project_click",{projectName:p.name});
-                setSelected(p);
-                setTab("detail");
-              }}>
+            : visibleProjects.map((p, idx) => (
+              <motion.div
+                key={p.id}
+                className={`card${cmpIds.includes(p.id)?" sel":""}`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.55, delay: (idx % 9) * 0.06, ease: "easeOut" }}
+                onClick={()=>{
+                  sessionStorage.setItem("listingScrollY",String(window.scrollY));
+                  sessionStorage.setItem("listingPage",String(listPage));
+                  trackEvent("project_click",{projectName:p.name});
+                  setSelected(p);
+                  setTab("detail");
+                }}
+              >
                 <div className="cimg"><img src={p.image} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="ctag" style={{background:p.tagColor}}>{p.tag}</div><div className="cstat">{p.status}</div><button className={`cbtn${cmpIds.includes(p.id)?" on":""}`} onClick={e=>toggleCmp(e,p.id)} title="Compare">{cmpIds.includes(p.id)?"✓":"+"}</button></div>
                 <div className="cbody">
                   <div className="ctype">{p.type}</div><div className="cname">{p.name}</div><div className="cdev">by {p.developer}</div>
@@ -5052,7 +5411,7 @@ export default function App(){
                     <div className="cmeta"><span><IBed/>{bLbl(p.bedrooms)} bed</span><span><IArea/>{p.sizeSqft?.[0]?.toLocaleString()}+ sf</span></div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
           {isDesktop && totalPages>1 && (
@@ -5063,7 +5422,8 @@ export default function App(){
             </div>
           )}
         </main>
-        <footer className="ft"><div>© 2025 <span>NB Property</span> · All rights reserved · Penang, Malaysia</div></footer>
+        <ShowcaseBanner onExplore={()=>{ const el=document.getElementById("listings-main"); if(el)el.scrollIntoView({behavior:"smooth"}); }}/>
+        <LuxuryFooter onTab={setTab} onRI={openRI}/>
         <div className={`tray${cmpIds.length>0?" show":""}`}>
           <span className="tray-lbl">Compare ({cmpIds.length}/5)</span>
           <div className="tray-slots">{[...Array(5)].map((_,i)=>{const p=cmpProjects[i];return p?(<div key={p.id} className="tslot fill"><img src={p.image} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="tslot-nm">{p.name}</div><button className="tslot-x" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div>):<div key={i} className="tslot">empty</div>;})}</div>
