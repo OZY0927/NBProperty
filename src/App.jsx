@@ -444,7 +444,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 
 /* ── Card-based project listing ── */
 .a-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;margin-bottom:1rem;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
 .list-pager{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:1rem;margin-bottom:1.2rem;}
 .list-pager button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.45rem .7rem;border-radius:4px;cursor:pointer;}
 .list-pager button.on{background:var(--gold);color:var(--card);border-color:var(--gold);}
@@ -481,6 +481,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 /* ══════════════════════════════
    RESPONSIVE — 768 px
 ══════════════════════════════ */
+@media(min-width:769px) and (max-width:1100px){.grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){
   /* Nav — show hamburger, hide desktop tabs & CTA */
   .nav{padding:0 1rem;gap:.5rem;}
@@ -823,7 +824,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .card{background:var(--card);border:1px solid var(--border);cursor:pointer;overflow:hidden;transition:transform .25s,box-shadow .25s;position:relative;}
 .card:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(0,0,0,.1);}
 .card.sel{outline:2.5px solid var(--gold);}
-.cimg{position:relative;height:220px;overflow:hidden;}
+.cimg{position:relative;height:260px;overflow:hidden;}
 .cimg img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
 .card:hover .cimg img{transform:scale(1.05);}
 .ctag{position:absolute;top:1rem;left:1rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:.25rem .6rem;}
@@ -2056,6 +2057,8 @@ body{background:#080812;color:#E8E4F0;}
 .lux-reveal-up{transform:translateY(30px);}
 .lux-reveal-left{transform:translateX(-48px);}
 .lux-reveal-right{transform:translateX(48px);}
+@keyframes cardFadeUp{0%{opacity:0;transform:translateY(28px);}100%{opacity:1;transform:translateY(0);}}
+.card-anim{opacity:0;animation:cardFadeUp .55s ease forwards;}
 .lux-btn-pri{transition:transform .2s,box-shadow .2s;}
 .lux-btn-pri:hover{transform:translateY(-2px);box-shadow:0 0 36px rgba(191,155,78,.48),0 8px 24px rgba(0,0,0,.4);}
 .lux-btn-sec:hover{transform:translateY(-2px);}
@@ -5367,8 +5370,8 @@ export default function App(){
             : visibleProjects.map((p, idx) => (
               <div
                 key={p.id}
-                className={`card lux-reveal lux-reveal-up lux-revealed${cmpIds.includes(p.id)?" sel":""}`}
-                style={{transitionDelay:`${(idx % 9) * 0.055}s`}}
+                className={`card card-anim${cmpIds.includes(p.id)?" sel":""}`}
+                style={{animationDelay:`${Math.min(idx, 11) * 0.07}s`}}
                 onClick={()=>{
                   sessionStorage.setItem("listingScrollY",String(window.scrollY));
                   sessionStorage.setItem("listingPage",String(listPage));
