@@ -4900,13 +4900,13 @@ function useScrollInView(ref, { once = true, margin = "0px" } = {}) {
 }
 
 /* ═══════════════════════════════════════
-   LUXURY SECTIONS
+   MAIN SECTIONS
 ═══════════════════════════════════════ */
 function LuxuryHero({ search, onSearch, onExplore, onContact }) {
   const stats = [
-    { num: "250+", label: "Premium Projects" },
+    { num: "250+", label: "Projects Listed" },
     { num: "15+", label: "Years Experience" },
-    { num: "RM1.2B+", label: "Properties Sold" },
+    { num: "All Budgets", label: "Catered For" },
     { num: "98%", label: "Client Satisfaction" },
   ];
   return (
@@ -4917,17 +4917,17 @@ function LuxuryHero({ search, onSearch, onExplore, onContact }) {
       <div className="lux-hero-grid"/>
       <div className="lux-hero-content">
         <div className="lux-eyebrow lux-anim" style={{animationDelay:".1s"}}>
-          Penang's Premier Property Platform
+          Penang's Most Complete New Launch Platform
         </div>
         <h1 className="lux-h1 lux-anim" style={{animationDelay:".28s"}}>
-          Discover Your<br/><em>Dream Property</em>
+          Find a Home That<br/><em>Fits Your Life</em>
         </h1>
         <p className="lux-tagline lux-anim" style={{animationDelay:".44s"}}>
-          Explore curated new development projects across Penang Island and Seberang Perai. Premium living, redefined.
+          From first-home condos to spacious family houses — browse every new launch across Penang Island and Seberang Perai, matched to your lifestyle and budget.
         </p>
         <div className="lux-ctas lux-anim" style={{animationDelay:".58s"}}>
-          <button className="lux-btn-pri" onClick={onExplore}>Explore Listings</button>
-          <button className="lux-btn-sec" onClick={onContact}>Contact Agent</button>
+          <button className="lux-btn-pri" onClick={onExplore}>Browse All Projects</button>
+          <button className="lux-btn-sec" onClick={onContact}>Talk to an Agent</button>
         </div>
         <div className="lux-hero-search lux-anim" style={{animationDelay:".72s"}}>
           <input
@@ -4955,10 +4955,10 @@ function WhyChooseUs() {
   const ref = useRef(null);
   const isInView = useScrollInView(ref, { once: true, margin: "-80px" });
   const features = [
-    { icon: "🏆", title: "Premium Listings Only", desc: "Carefully curated new launches from Penang's top developers." },
-    { icon: "📊", title: "Expert Market Insights", desc: "Real-time data and analysis for smart investment decisions." },
-    { icon: "🤝", title: "Dedicated Agent Support", desc: "Personal guidance from enquiry through to key collection." },
-    { icon: "🔒", title: "Secure Transactions", desc: "Fully verified projects and transparent pricing guaranteed." },
+    { icon: "�", title: "All Property Types", desc: "Condos, terraces, semidees, shophouses and more — every budget, every lifestyle." },
+    { icon: "📊", title: "Clear Market Info", desc: "Honest pricing, up-to-date specs and real developer data in one place." },
+    { icon: "🤝", title: "Personalised Guidance", desc: "Our agents listen first — then match you with the right project for your needs." },
+    { icon: "✅", title: "Verified Projects Only", desc: "Every listing is checked and updated so you can enquire with confidence." },
   ];
   return (
     <section className="wcu-sec" ref={ref}>
@@ -4967,18 +4967,18 @@ function WhyChooseUs() {
           <img
             className="wcu-img"
             src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=900&q=80"
-            alt="Luxury Interior"
+            alt="Modern Home Interior"
           />
           <div className="wcu-img-frame"/>
           <div className="wcu-img-badge">
             <div className="wcu-img-badge-num">15+</div>
-            <div className="wcu-img-badge-lbl">Years of Excellence</div>
+            <div className="wcu-img-badge-lbl">Years in Penang</div>
           </div>
         </div>
         <div className={`lux-reveal lux-reveal-right${isInView ? " lux-revealed" : ""}`} style={{transitionDelay:".18s"}}>
           <div className="wcu-eyebrow">Why Choose NB Property</div>
-          <h2 className="wcu-title">The Standard of<br/><em>Luxury Living</em></h2>
-          <p className="wcu-desc">We connect discerning buyers with Penang's most prestigious properties. Our deep market knowledge and client-first approach ensures you find not just a property, but the perfect home.</p>
+          <h2 className="wcu-title">Built Around<br/><em>Your Lifestyle</em></h2>
+          <p className="wcu-desc">Whether you're a first-time buyer, growing family or seasoned investor, we have projects across every price range in Penang. We don't push one type — we find what works for you.</p>
           <div className="wcu-features">
             {features.map((f, i) => (
               <div
@@ -5006,10 +5006,10 @@ function ShowcaseBanner({ onExplore }) {
       <div className="showcase-bg"/>
       <div className="showcase-ov"/>
       <div className={`showcase-content lux-reveal lux-reveal-left${isInView ? " lux-revealed" : ""}`}>
-        <div className="showcase-eyebrow">Exceptional Properties</div>
-        <h2 className="showcase-title">Live Where<br/><em>Luxury Meets</em><br/>Lifestyle</h2>
-        <p className="showcase-sub">From panoramic sea views to world-class amenities — discover properties that redefine the art of modern living in Penang.</p>
-        <button className="lux-btn-pri" onClick={onExplore}>View All Properties</button>
+        <div className="showcase-eyebrow">Every Budget. Every Lifestyle.</div>
+        <h2 className="showcase-title">Your Home<br/><em>Is Out There</em></h2>
+        <p className="showcase-sub">Starter condos, family terraces, investment units or upgraded semidees — whatever stage of life you're in, we'll help you find the right fit in Penang.</p>
+        <button className="lux-btn-pri" onClick={onExplore}>View All Projects</button>
       </div>
     </section>
   );
@@ -5021,12 +5021,13 @@ function LuxuryFooter({ onTab, onRI }) {
       <div className="lux-ft-inner">
         <div>
           <div className="lux-ft-logo">NB<span>Property</span></div>
-          <div className="lux-ft-tagline">Penang's premier destination for luxury new property launches. Discover your perfect investment with us.</div>
+          <div className="lux-ft-tagline">Penang's most complete new launch platform — for every budget, every lifestyle, every stage of life.</div>
         </div>
         <div>
           <div className="lux-ft-col-title">Navigation</div>
           <div className="lux-ft-links">
-            <button className="lux-ft-link" onClick={() => onTab("listings")}>Listings</button>
+            <button className="lux-ft-link" onClick={() => onTab("listings")}>Home</button>
+            <button className="lux-ft-link" onClick={() => onTab("properties")}>Properties</button>
             <button className="lux-ft-link" onClick={() => onTab("compare")}>Compare Projects</button>
             <button className="lux-ft-link" onClick={() => onTab("tools")}>Loan Calculator</button>
           </div>
@@ -5133,7 +5134,7 @@ export default function App(){
   const [mobileNavOpen,setMobileNavOpen]=useState(false);
 
   // Track page view whenever the listings tab is shown
-  useEffect(()=>{ if(tab==="listings") trackEvent("page_view"); },[tab]);
+  useEffect(()=>{ if(tab==="listings"||tab==="properties") trackEvent("page_view"); },[tab]);
 
   const LOCS  = useMemo(()=>["All Areas",...new Set(projects.map(p=>p.location))],[projects]);
   const TYPES = useMemo(()=>["All Types",...new Set(projects.map(p=>p.type))],[projects]);
@@ -5162,7 +5163,7 @@ export default function App(){
 
   // ── Scroll-position restore when returning to listings ─────────────────────
   useEffect(()=>{
-    if(tab!=="listings")return;
+    if(tab!=="properties")return;
     const savedY=sessionStorage.getItem("listingScrollY");
     const savedPage=sessionStorage.getItem("listingPage");
     if(!savedY&&!savedPage)return;
@@ -5252,7 +5253,8 @@ export default function App(){
           <button className="mob-drawer-x" onClick={()=>setMobileNavOpen(false)}>✕</button>
         </div>
         <div className="mob-drawer-nav">
-          <button className={`mob-nav-item${tab==="listings"?" on":""}`} onClick={()=>{setTab("listings");setAdminSubOpen(false);setMobileNavOpen(false);}}>🏠 Listings</button>
+          <button className={`mob-nav-item${tab==="listings"?" on":""}`} onClick={()=>{setTab("listings");setAdminSubOpen(false);setMobileNavOpen(false);}}>🏠 Home</button>
+          <button className={`mob-nav-item${tab==="properties"?" on":""}`} onClick={()=>{setTab("properties");setAdminSubOpen(false);setMobileNavOpen(false);}}>🏘️ Properties</button>
           <button className={`mob-nav-item${tab==="compare"?" on":""}`} onClick={()=>{setTab("compare");setAdminSubOpen(false);setMobileNavOpen(false);}}>⚖️ Compare{cmpIds.length>0&&<span className="mob-badge" style={{marginLeft:".5rem"}}>{cmpIds.length}</span>}</button>
           <button className={`mob-nav-item${tab==="tools"?" on":""}`} onClick={()=>{setTab("tools");setAdminSubOpen(false);setMobileNavOpen(false);}}>🧮 Tools</button>
           <button className={`mob-nav-item${tab==="admin"?" on":""}`} onClick={()=>{if(tab==="admin"){setAdminSubOpen(v=>!v);}else{setTab("admin");setAdminSubOpen(true);}}}>🔒 Admin<span className={`mob-admin-chevron${adminSubOpen&&tab==="admin"?" open":""}`}>▼</span></button>
@@ -5273,7 +5275,8 @@ export default function App(){
         <div className="nav-logo" onClick={()=>setTab("listings")}>NB<span>Property</span></div>
         {/* Desktop tabs (centered) */}
         <div className="nav-tabs">
-          <button className={`ntab${tab==="listings"?" on":""}`} onClick={()=>setTab("listings")}><span>Listings</span></button>
+          <button className={`ntab${tab==="listings"?" on":""}`} onClick={()=>setTab("listings")}><span>Home</span></button>
+          <button className={`ntab${tab==="properties"?" on":""}`} onClick={()=>setTab("properties")}><span>Properties</span></button>
           <button className={`ntab${tab==="compare"?" on":""}`} onClick={()=>setTab("compare")}><span>Compare</span>{cmpIds.length>0&&<span className="badge">{cmpIds.length}</span>}</button>
           <button className={`ntab${tab==="tools"?" on":""}`} onClick={()=>setTab("tools")}><span>Tools</span></button>
         </div>
@@ -5299,15 +5302,20 @@ export default function App(){
       {tab==="listings"&&<>
         <LuxuryHero
           search={search}
-          onSearch={setSearch}
-          onExplore={()=>{ const el=document.getElementById("listings-main"); if(el)el.scrollIntoView({behavior:"smooth"}); }}
+          onSearch={(v)=>{ setSearch(v); if(v) setTab("properties"); }}
+          onExplore={()=>setTab("properties")}
           onContact={()=>openRI()}
         />
         <WhyChooseUs/>
+        <ShowcaseBanner onExplore={()=>setTab("properties")}/>
+        <LuxuryFooter onTab={setTab} onRI={openRI}/>
+      </>}
+
+      {tab==="properties"&&<>
         <div className="sec-label">
-          <div className="sec-label-eye">Curated Properties</div>
-          <h2 className="sec-label-title">Featured <em>Listings</em></h2>
-          <p className="sec-label-sub">Explore our collection of premium new development projects across Penang</p>
+          <div className="sec-label-eye">All Project Types</div>
+          <h2 className="sec-label-title">Browse <em>Listings</em></h2>
+          <p className="sec-label-sub">From affordable starter homes to spacious family properties — find your perfect match across Penang</p>
         </div>
         <main className="main" id="listings-main">
           <div className="filter-panel">
@@ -5390,7 +5398,6 @@ export default function App(){
             </div>
           )}
         </main>
-        <ShowcaseBanner onExplore={()=>{ const el=document.getElementById("listings-main"); if(el)el.scrollIntoView({behavior:"smooth"}); }}/>
         <LuxuryFooter onTab={setTab} onRI={openRI}/>
         <div className={`tray${cmpIds.length>0?" show":""}`}>
           <span className="tray-lbl">Compare ({cmpIds.length}/5)</span>
@@ -5406,7 +5413,7 @@ export default function App(){
             <div><h2 className="cmp-title">Project <em>Comparison</em></h2><p className="cmp-sub">{cmpProjects.length===0?"Select up to 5 projects.":`Comparing ${cmpProjects.length} project${cmpProjects.length>1?"s":""}.`}</p></div>
             {cmpProjects.length>=2&&<button className="pdf-btn" onClick={async()=>{setPdfBusy(true);try{await exportPDF(cmpProjects);}catch{alert("PDF failed.");}finally{setPdfBusy(false);}}} disabled={pdfBusy}><IPDF/>{pdfBusy?"…":"Export PDF"}</button>}
           </div>
-          {cmpProjects.length===0?(<div className="cmp-nil"><div className="cmp-nil-ico">⚖️</div><div className="cmp-nil-h">No projects selected</div><p className="cmp-nil-s">Click + on any listing card.</p><button className="go-btn" onClick={()=>setTab("listings")}>Browse Listings</button></div>):(
+          {cmpProjects.length===0?(<div className="cmp-nil"><div className="cmp-nil-ico">⚖️</div><div className="cmp-nil-h">No projects selected</div><p className="cmp-nil-s">Click + on any listing card.</p><button className="go-btn" onClick={()=>setTab("properties")}>Browse Properties</button></div>):(
             <>
               <div className="ctbl-wrap">
                 <table className="ctbl">
@@ -5447,14 +5454,14 @@ export default function App(){
                   })()}</tbody>
                 </table>
               </div>
-              {cmpProjects.length<5&&<div className="add-more"><p>Add {5-cmpProjects.length} more project{5-cmpProjects.length!==1?"s":""}.</p><button className="go-btn" onClick={()=>setTab("listings")}>+ Add More</button></div>}
+              {cmpProjects.length<5&&<div className="add-more"><p>Add {5-cmpProjects.length} more project{5-cmpProjects.length!==1?"s":""}.</p><button className="go-btn" onClick={()=>setTab("properties")}>+ Add More</button></div>}
               {cmpProjects.length>=2&&<div style={{display:"flex",justifyContent:"flex-end",marginTop:"1.5rem"}}><button className="pdf-btn" onClick={async()=>{setPdfBusy(true);try{await exportPDF(cmpProjects);}catch{alert("PDF failed.");}finally{setPdfBusy(false);}}} disabled={pdfBusy}><IPDF/>{pdfBusy?"…":"Export PDF"}</button></div>}
             </>
           )}
         </div>
       )}
 
-      {tab==="detail"&&selected&&<DetailPage p={selected} onClose={()=>{setSelected(null);setTab("listings");}} onRegisterInterest={()=>openRI(selected)} onVisitShowroom={()=>openVS(selected)}/>}
+      {tab==="detail"&&selected&&<DetailPage p={selected} onClose={()=>{setSelected(null);setTab("properties");}} onRegisterInterest={()=>openRI(selected)} onVisitShowroom={()=>openVS(selected)}/>}
 
       {/* Register Interest modal */}
       {riProject&&(
