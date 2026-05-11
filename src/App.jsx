@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import FALLBACK_IMG from "./assets/nblogo.jpg";
 import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, migrateAnalytics, deleteAllAnalytics, getSettings as fsGetSettings, saveSettings as fsSaveSettings } from "./firebase/firestore";
 import COUNTRY_CODES from "./data/countryCodes";
@@ -2047,6 +2046,20 @@ body{background:#080812;color:#E8E4F0;}
   .lux-ft-inner{grid-template-columns:1fr;gap:2rem;}
   .lux-ft{padding:3rem 1.25rem 2rem;}
 }
+
+/* ── CSS Animation helpers (replaces framer-motion) ── */
+@keyframes luxFadeUp{0%{opacity:0;transform:translateY(28px);}100%{opacity:1;transform:translateY(0);}}
+@keyframes luxFadeIn{0%{opacity:0;}100%{opacity:1;}}
+.lux-anim{opacity:0;animation:luxFadeUp .85s cubic-bezier(.25,.1,.25,1) forwards;}
+.lux-reveal{opacity:0;transition:opacity .75s ease,transform .75s ease;}
+.lux-reveal.lux-revealed{opacity:1;transform:none!important;}
+.lux-reveal-up{transform:translateY(30px);}
+.lux-reveal-left{transform:translateX(-48px);}
+.lux-reveal-right{transform:translateX(48px);}
+.lux-btn-pri{transition:transform .2s,box-shadow .2s;}
+.lux-btn-pri:hover{transform:translateY(-2px);box-shadow:0 0 36px rgba(191,155,78,.48),0 8px 24px rgba(0,0,0,.4);}
+.lux-btn-sec:hover{transform:translateY(-2px);}
+
 `;
 
 
@@ -4870,6 +4883,22 @@ function LoanCalculator({settings}){
 }
 
 /* ═══ MAIN APP ═══ */
+/* ── Lightweight scroll-reveal hook (no external deps) ── */
+function useScrollInView(ref, { once = true, margin = "0px" } = {}) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); if (once) obs.disconnect(); } },
+      { rootMargin: margin }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return visible;
+}
+
 /* ═══════════════════════════════════════
    LUXURY SECTIONS
 ═══════════════════════════════════════ */
@@ -4886,50 +4915,21 @@ function LuxuryHero({ search, onSearch, onExplore, onContact }) {
       <div className="lux-hero-overlay"/>
       <div className="lux-hero-side-glow"/>
       <div className="lux-hero-grid"/>
-      <motion.div
-        className="lux-hero-content"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.1, ease: [0.25, 0.1, 0.25, 1] }}
-      >
-        <motion.div className="lux-eyebrow" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.8 }}>
+      <div className="lux-hero-content">
+        <div className="lux-eyebrow lux-anim" style={{animationDelay:".1s"}}>
           Penang's Premier Property Platform
-        </motion.div>
-        <motion.h1
-          className="lux-h1"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
-        >
+        </div>
+        <h1 className="lux-h1 lux-anim" style={{animationDelay:".28s"}}>
           Discover Your<br/><em>Dream Property</em>
-        </motion.h1>
-        <motion.p
-          className="lux-tagline"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-        >
+        </h1>
+        <p className="lux-tagline lux-anim" style={{animationDelay:".44s"}}>
           Explore curated new development projects across Penang Island and Seberang Perai. Premium living, redefined.
-        </motion.p>
-        <motion.div
-          className="lux-ctas"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.65, duration: 0.7 }}
-        >
-          <motion.button className="lux-btn-pri" onClick={onExplore} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-            Explore Listings
-          </motion.button>
-          <motion.button className="lux-btn-sec" onClick={onContact} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-            Contact Agent
-          </motion.button>
-        </motion.div>
-        <motion.div
-          className="lux-hero-search"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.7 }}
-        >
+        </p>
+        <div className="lux-ctas lux-anim" style={{animationDelay:".58s"}}>
+          <button className="lux-btn-pri" onClick={onExplore}>Explore Listings</button>
+          <button className="lux-btn-sec" onClick={onContact}>Contact Agent</button>
+        </div>
+        <div className="lux-hero-search lux-anim" style={{animationDelay:".72s"}}>
           <input
             className="lux-hero-search-inp"
             placeholder="Search by project name, area, or developer…"
@@ -4937,20 +4937,14 @@ function LuxuryHero({ search, onSearch, onExplore, onContact }) {
             onChange={e => onSearch(e.target.value)}
           />
           <span className="lux-hero-search-ico"><ISearch/></span>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
       <div className="lux-stats-bar">
         {stats.map((s, i) => (
-          <motion.div
-            key={s.label}
-            className="lux-stat"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0 + i * 0.12, duration: 0.6 }}
-          >
+          <div key={s.label} className="lux-stat lux-anim" style={{animationDelay:`${.9 + i * 0.1}s`}}>
             <div className="lux-stat-num">{s.num}</div>
             <div className="lux-stat-lbl">{s.label}</div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>
@@ -4959,7 +4953,7 @@ function LuxuryHero({ search, onSearch, onExplore, onContact }) {
 
 function WhyChooseUs() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const isInView = useScrollInView(ref, { once: true, margin: "-80px" });
   const features = [
     { icon: "🏆", title: "Premium Listings Only", desc: "Carefully curated new launches from Penang's top developers." },
     { icon: "📊", title: "Expert Market Insights", desc: "Real-time data and analysis for smart investment decisions." },
@@ -4969,12 +4963,7 @@ function WhyChooseUs() {
   return (
     <section className="wcu-sec" ref={ref}>
       <div className="wcu-inner">
-        <motion.div
-          className="wcu-img-wrap"
-          initial={{ opacity: 0, x: -50 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-        >
+        <div className={`wcu-img-wrap lux-reveal lux-reveal-left${isInView ? " lux-revealed" : ""}`}>
           <img
             className="wcu-img"
             src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=900&q=80"
@@ -4985,31 +4974,25 @@ function WhyChooseUs() {
             <div className="wcu-img-badge-num">15+</div>
             <div className="wcu-img-badge-lbl">Years of Excellence</div>
           </div>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
-        >
+        </div>
+        <div className={`lux-reveal lux-reveal-right${isInView ? " lux-revealed" : ""}`} style={{transitionDelay:".18s"}}>
           <div className="wcu-eyebrow">Why Choose NB Property</div>
           <h2 className="wcu-title">The Standard of<br/><em>Luxury Living</em></h2>
           <p className="wcu-desc">We connect discerning buyers with Penang's most prestigious properties. Our deep market knowledge and client-first approach ensures you find not just a property, but the perfect home.</p>
           <div className="wcu-features">
             {features.map((f, i) => (
-              <motion.div
+              <div
                 key={f.title}
-                className="wcu-feat"
-                initial={{ opacity: 0, y: 24 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.4 + i * 0.1, duration: 0.55 }}
+                className={`wcu-feat lux-reveal lux-reveal-up${isInView ? " lux-revealed" : ""}`}
+                style={{transitionDelay:`${.38 + i * 0.1}s`}}
               >
                 <div className="wcu-feat-icon">{f.icon}</div>
                 <div className="wcu-feat-title">{f.title}</div>
                 <div className="wcu-feat-desc">{f.desc}</div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -5017,29 +5000,17 @@ function WhyChooseUs() {
 
 function ShowcaseBanner({ onExplore }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const isInView = useScrollInView(ref, { once: true, margin: "-50px" });
   return (
     <section className="showcase-sec" ref={ref}>
       <div className="showcase-bg"/>
       <div className="showcase-ov"/>
-      <motion.div
-        className="showcase-content"
-        initial={{ opacity: 0, x: -50 }}
-        animate={isInView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.9, ease: "easeOut" }}
-      >
+      <div className={`showcase-content lux-reveal lux-reveal-left${isInView ? " lux-revealed" : ""}`}>
         <div className="showcase-eyebrow">Exceptional Properties</div>
         <h2 className="showcase-title">Live Where<br/><em>Luxury Meets</em><br/>Lifestyle</h2>
         <p className="showcase-sub">From panoramic sea views to world-class amenities — discover properties that redefine the art of modern living in Penang.</p>
-        <motion.button
-          className="lux-btn-pri"
-          onClick={onExplore}
-          whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(191,155,78,0.5)" }}
-          whileTap={{ scale: 0.97 }}
-        >
-          View All Properties
-        </motion.button>
-      </motion.div>
+        <button className="lux-btn-pri" onClick={onExplore}>View All Properties</button>
+      </div>
     </section>
   );
 }
@@ -5386,13 +5357,10 @@ export default function App(){
           <div className="grid">
             {filtered.length===0 ? <div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">No projects found</div><p className="empty-s">Try adjusting filters.</p></div>
             : visibleProjects.map((p, idx) => (
-              <motion.div
+              <div
                 key={p.id}
-                className={`card${cmpIds.includes(p.id)?" sel":""}`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.55, delay: (idx % 9) * 0.06, ease: "easeOut" }}
+                className={`card lux-reveal lux-reveal-up lux-revealed${cmpIds.includes(p.id)?" sel":""}`}
+                style={{transitionDelay:`${(idx % 9) * 0.055}s`}}
                 onClick={()=>{
                   sessionStorage.setItem("listingScrollY",String(window.scrollY));
                   sessionStorage.setItem("listingPage",String(listPage));
@@ -5411,7 +5379,7 @@ export default function App(){
                     <div className="cmeta"><span><IBed/>{bLbl(p.bedrooms)} bed</span><span><IArea/>{p.sizeSqft?.[0]?.toLocaleString()}+ sf</span></div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
           {isDesktop && totalPages>1 && (
