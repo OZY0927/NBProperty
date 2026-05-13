@@ -882,69 +882,128 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .add-more p{color:var(--muted);font-size:.84rem;margin-bottom:.7rem;}
 
 /* ═══ LOAN CALCULATOR (Tools tab) ═══ */
-.lc-pg{padding:2.5rem 2rem 7rem;width:100%;box-sizing:border-box;}
-.lc-top{margin-bottom:2rem;}
-.lc-title{font-family:var(--serif);font-size:2.2rem;font-weight:300;margin-bottom:.35rem;}
-.lc-title em{font-style:italic;color:var(--gold);}
-.lc-sub{color:var(--muted);font-size:.84rem;margin-top:.2rem;}
-.lc-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;}
+.lc-pg{position:relative;min-height:100vh;background:#02030A;padding:0 0 7rem;overflow:hidden;}
+.lc-bg-glow1{position:absolute;top:-200px;left:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(191,155,78,.07) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.lc-bg-glow2{position:absolute;top:100px;right:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(0,200,255,.04) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.lc-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(191,155,78,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(191,155,78,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+.lc-hero-hd{position:relative;z-index:1;padding:4rem 3rem 2rem;}
+.lc-eyebrow{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(191,155,78,.65);font-weight:600;margin-bottom:.75rem;}
+.lc-title{font-family:var(--serif);font-size:3.2rem;font-weight:300;color:#fff;line-height:1.1;margin-bottom:.55rem;}
+.lc-title em{font-style:italic;background:linear-gradient(135deg,#D4B880,#BF9B4E,#D4B880);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.lc-sub{color:rgba(255,255,255,.35);font-size:.84rem;letter-spacing:.04em;margin-bottom:1.4rem;}
+.lc-live-badges{display:flex;gap:.65rem;flex-wrap:wrap;}
+.lc-live-badge{display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(191,155,78,.14);border-radius:12px;padding:.5rem 1rem;backdrop-filter:blur(12px);transition:border-color .25s,background .25s;}
+.lc-live-badge:hover{background:rgba(191,155,78,.06);border-color:rgba(191,155,78,.28);}
+.lc-live-badge-lbl{font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.15rem;}
+.lc-live-badge-val{font-family:var(--serif);font-size:1rem;font-weight:600;color:#D4B880;}
+.lc-savings-bar{display:inline-flex;align-items:center;gap:.65rem;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.22);border-radius:8px;padding:.5rem 1rem;margin-top:.75rem;font-size:.78rem;}
+.lc-savings-bar strong{color:#4ade80;font-weight:700;}
+.lc-savings-pct{color:rgba(255,255,255,.35);font-size:.7rem;}
+.lc-badge-bm{background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px;vertical-align:middle;}
+.lc-dashboard{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;padding:0 3rem 2rem;align-items:start;}
 .lc-col{display:flex;flex-direction:column;gap:1rem;}
-.lc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:1.2rem;}
-.lc-saved-card{background:rgba(191,155,78,.05);border-color:rgba(191,155,78,.2);}
-.lc-card-hd{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:.9rem;}
-.lc-fields{display:flex;flex-direction:column;gap:.9rem;}
-.lc-field{display:flex;flex-direction:column;gap:.3rem;}
+.lc-glass-card{background:rgba(255,255,255,.025);border:1px solid rgba(191,155,78,.1);border-radius:20px;padding:1.6rem;backdrop-filter:blur(20px);transition:border-color .3s,transform .3s,box-shadow .3s;position:relative;overflow:hidden;}
+.lc-glass-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(191,155,78,.25),transparent);}
+.lc-glass-card:hover{border-color:rgba(191,155,78,.22);transform:translateY(-2px);box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(191,155,78,.04);}
+.lc-card-hd{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(191,155,78,.65);font-weight:700;margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;}
+.lc-card-hd-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;background:rgba(191,155,78,.1);border-radius:6px;font-size:.7rem;}
+.lc-fields{display:flex;flex-direction:column;gap:1.1rem;}
+.lc-field{display:flex;flex-direction:column;gap:.35rem;}
 .lc-row2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
-.lc-lbl{font-size:.78rem;font-weight:600;color:var(--ink);}
-.lc-hint{font-size:.72rem;margin-top:.15rem;}
-.lc-hint-grn{color:#16a34a;font-weight:600;}
-.lc-inp{background:var(--warm);border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .85rem;font-family:var(--sans);font-size:.88rem;color:var(--ink);outline:none;transition:border-color .2s;width:100%;box-sizing:border-box;}
-.lc-inp:focus{border-color:var(--gold);}
-.lc-slider{width:100%;accent-color:var(--gold);height:4px;cursor:pointer;}
-.lc-slider-ends{display:flex;justify-content:space-between;font-size:.69rem;color:var(--muted);margin-top:.15rem;}
-.lc-adj-banner{display:flex;justify-content:space-between;align-items:center;background:rgba(191,155,78,.08);border:1px solid rgba(191,155,78,.2);border-radius:var(--r-sm);padding:.6rem .9rem;font-size:.8rem;}
-.lc-adj-banner strong{color:var(--gold);font-weight:700;}
-.lc-rebate-note{font-size:.72rem;color:var(--muted);background:var(--warm);border:1px solid var(--border);border-radius:var(--r-sm);padding:.5rem .75rem;line-height:1.5;}
-.lc-foreign-note{margin-top:.75rem;padding:.65rem .9rem;background:rgba(191,155,78,.08);border:1px solid rgba(191,155,78,.2);border-radius:var(--r-sm);font-size:.76rem;color:var(--gold);}
-.lc-toggle-group{display:flex;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--border);}
-.lc-toggle{padding:.42rem .85rem;font-family:var(--sans);font-size:.74rem;font-weight:500;background:var(--warm);color:var(--muted);border:none;cursor:pointer;transition:background .15s,color .15s;flex:1;white-space:nowrap;}
-.lc-toggle.on{background:var(--gold);color:var(--ink);font-weight:700;}
-.lc-badge-bm{background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.38rem .85rem;border-radius:999px;white-space:nowrap;align-self:flex-start;}
-.lc-savings-bar{display:inline-flex;align-items:center;gap:.65rem;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);border-radius:var(--r-sm);padding:.5rem 1rem;margin-top:.8rem;font-size:.8rem;}
-.lc-savings-bar strong{color:#16a34a;font-weight:700;}
-.lc-savings-pct{color:var(--muted);font-size:.75rem;}
-.lc-hero-card{background:linear-gradient(135deg,var(--ink) 0%,#1a1a2e 100%);border-radius:var(--r-lg);padding:1.8rem;text-align:center;position:relative;overflow:hidden;}
-.lc-hero-card::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;border:2px solid rgba(191,155,78,.15);border-radius:50%;}
-.lc-hero-lbl{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(212,184,128,.7);margin-bottom:.6rem;}
-.lc-hero-val{font-family:var(--serif);font-size:2.6rem;font-weight:300;color:#BF9B4E;line-height:1;margin-bottom:.4rem;}
-.lc-hero-sub{font-size:.74rem;color:rgba(255,255,255,.4);}
-.lc-pie-wrap{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.2rem;}
-.lc-pie-dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:.35rem;vertical-align:middle;}
-.lc-pie-legend{text-align:left;font-size:.72rem;color:rgba(255,255,255,.55);line-height:2;}
-.lc-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;}
-.lc-sum-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:.85rem 1rem;}
-.lc-sum-lbl{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem;}
-.lc-sum-val{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--ink);}
-.lc-netcash-card{background:linear-gradient(135deg,#14532d 0%,#166534 100%);border:1px solid rgba(74,222,128,.2);border-radius:var(--r-md);padding:1.2rem 1.4rem;}
-.lc-netcash-lbl{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(134,239,172,.7);margin-bottom:.4rem;}
-.lc-netcash-val{font-family:var(--serif);font-size:2rem;font-weight:300;color:#4ade80;line-height:1.1;}
-.lc-breakdown-btn{width:100%;padding:1rem 1.2rem;background:var(--warm);border:none;font-family:var(--sans);font-size:.8rem;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;letter-spacing:.04em;transition:background .15s;}
-.lc-breakdown-btn:hover{background:var(--border);}
-.lc-btn-pri{background:var(--ink);color:#D4B880;border:1px solid rgba(212,184,128,.3);padding:.62rem 1.4rem;font-family:var(--sans);font-size:.76rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:var(--r-sm);transition:border-color .2s;}
-.lc-btn-pri:hover{border-color:var(--gold);}
-.lc-btn-sec{background:transparent;color:var(--gold);border:1px solid rgba(191,155,78,.4);padding:.52rem 1.1rem;font-family:var(--sans);font-size:.74rem;font-weight:600;cursor:pointer;border-radius:var(--r-sm);transition:border-color .2s;}
-.lc-btn-sec:hover{border-color:var(--gold);}
-.lc-btn-wa{display:inline-flex;align-items:center;gap:.5rem;background:#25D366;color:#fff;padding:.62rem 1.4rem;font-family:var(--sans);font-size:.76rem;font-weight:600;letter-spacing:.04em;cursor:pointer;border-radius:var(--r-sm);text-decoration:none;transition:opacity .2s;}
-.lc-btn-wa:hover{opacity:.88;}
+.lc-price-label{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);font-weight:600;margin-bottom:.45rem;display:block;}
+.lc-price-wrap{position:relative;display:flex;align-items:center;}
+.lc-price-prefix{position:absolute;left:1.1rem;font-size:.95rem;color:rgba(191,155,78,.55);font-weight:600;pointer-events:none;}
+.lc-price-inp{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(191,155,78,.16);border-radius:14px;padding:.95rem 1rem .95rem 3rem;font-family:var(--serif);font-size:1.55rem;font-weight:300;color:#fff;outline:none;transition:border-color .25s,box-shadow .25s;box-sizing:border-box;}
+.lc-price-inp:focus{border-color:rgba(191,155,78,.48);box-shadow:0 0 0 3px rgba(191,155,78,.07),0 0 30px rgba(191,155,78,.07);}
+.lc-lbl{font-size:.68rem;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.06em;}
+.lc-hint{font-size:.68rem;margin-top:.15rem;}
+.lc-hint-grn{color:#4ade80;font-weight:600;}
+.lc-inp{background:rgba(255,255,255,.05);border:1px solid rgba(191,155,78,.14);border-radius:10px;padding:.62rem .9rem;font-family:var(--sans);font-size:.86rem;color:#fff;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;box-sizing:border-box;}
+.lc-inp:focus{border-color:rgba(191,155,78,.42);box-shadow:0 0 0 2px rgba(191,155,78,.07);}
+.lc-slider-wrap{display:flex;flex-direction:column;gap:.55rem;}
+.lc-slider-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.35rem;}
+.lc-slider-label{font-size:.64rem;color:rgba(255,255,255,.38);letter-spacing:.08em;text-transform:uppercase;}
+.lc-slider-value{font-family:var(--serif);font-size:1rem;color:#D4B880;font-weight:600;}
+.lc-slider{-webkit-appearance:none;appearance:none;width:100%;height:5px;cursor:pointer;border-radius:999px;outline:none;background:linear-gradient(to right,#BF9B4E var(--pct,50%),rgba(255,255,255,.08) var(--pct,50%));}
+.lc-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#D4B880,#BF9B4E);border:2px solid rgba(255,255,255,.2);box-shadow:0 0 12px rgba(191,155,78,.5);cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.lc-slider::-webkit-slider-thumb:hover{transform:scale(1.28);box-shadow:0 0 20px rgba(191,155,78,.75);}
+.lc-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#D4B880,#BF9B4E);border:2px solid rgba(255,255,255,.2);box-shadow:0 0 12px rgba(191,155,78,.5);cursor:pointer;}
+.lc-slider-ends{display:flex;justify-content:space-between;font-size:.62rem;color:rgba(255,255,255,.22);margin-top:.1rem;}
+.lc-adj-banner{display:flex;justify-content:space-between;align-items:center;background:rgba(191,155,78,.06);border:1px solid rgba(191,155,78,.18);border-radius:10px;padding:.6rem 1rem;font-size:.76rem;color:rgba(255,255,255,.5);}
+.lc-adj-banner strong{color:#D4B880;font-weight:700;}
+.lc-rebate-note{font-size:.68rem;color:rgba(255,255,255,.32);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:.5rem .8rem;line-height:1.6;}
+.lc-foreign-note{margin-top:.75rem;padding:.6rem .85rem;background:rgba(191,155,78,.05);border:1px solid rgba(191,155,78,.18);border-radius:10px;font-size:.72rem;color:rgba(212,184,128,.75);}
+.lc-toggle-group{display:flex;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;}
+.lc-toggle{flex:1;padding:.48rem .85rem;font-family:var(--sans);font-size:.7rem;font-weight:500;background:transparent;color:rgba(255,255,255,.38);border:none;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap;}
+.lc-toggle.on{background:linear-gradient(135deg,rgba(191,155,78,.22),rgba(191,155,78,.12));color:#D4B880;font-weight:700;}
+.lc-toggle:hover:not(.on){background:rgba(255,255,255,.05);color:rgba(255,255,255,.62);}
+.lc-zdp-lbl{display:flex;align-items:center;gap:.4rem;font-size:.66rem;color:rgba(255,255,255,.38);cursor:pointer;white-space:nowrap;}
+.lc-zdp-lbl input{accent-color:#BF9B4E;cursor:pointer;}
+.lc-actions{display:flex;gap:.75rem;flex-wrap:wrap;}
+.lc-btn-pri{background:linear-gradient(135deg,rgba(191,155,78,.14),rgba(191,155,78,.07));color:#D4B880;border:1px solid rgba(191,155,78,.28);padding:.62rem 1.3rem;font-family:var(--sans);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:10px;transition:background .2s,border-color .2s,box-shadow .2s;}
+.lc-btn-pri:hover{background:linear-gradient(135deg,rgba(191,155,78,.24),rgba(191,155,78,.14));border-color:rgba(191,155,78,.48);box-shadow:0 4px 20px rgba(191,155,78,.14);}
+.lc-btn-wa{display:inline-flex;align-items:center;gap:.5rem;background:#25D366;color:#fff;padding:.62rem 1.3rem;font-family:var(--sans);font-size:.72rem;font-weight:700;letter-spacing:.04em;cursor:pointer;border-radius:10px;text-decoration:none;border:none;transition:opacity .2s,box-shadow .2s;}
+.lc-btn-wa:hover{opacity:.88;box-shadow:0 4px 16px rgba(37,211,102,.28);}
+.lc-centerpiece{background:linear-gradient(145deg,#0D0D20 0%,#0A0A18 60%,#06060F 100%);border:1px solid rgba(191,155,78,.16);border-radius:24px;padding:2.4rem;text-align:center;position:relative;overflow:hidden;}
+.lc-centerpiece::before{content:"";position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(191,155,78,.09) 0%,transparent 65%);pointer-events:none;}
+.lc-centerpiece::after{content:"";position:absolute;bottom:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(0,200,255,.045) 0%,transparent 65%);pointer-events:none;}
+.lc-cp-eyebrow{font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(191,155,78,.45);margin-bottom:.55rem;}
+.lc-cp-amount{font-family:var(--serif);font-size:3.4rem;font-weight:300;background:linear-gradient(135deg,#ffffff 0%,#D4B880 40%,#BF9B4E 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.45rem;}
+.lc-cp-sub{font-size:.72rem;color:rgba(255,255,255,.28);letter-spacing:.06em;margin-bottom:1.5rem;}
+.lc-ring-wrap{display:flex;align-items:center;justify-content:center;gap:1.5rem;}
+.lc-ring-container{position:relative;display:flex;align-items:center;justify-content:center;width:120px;height:120px;}
+.lc-ring-svg{filter:drop-shadow(0 0 12px rgba(191,155,78,.18));}
+.lc-ring-label-center{font-family:var(--serif);font-size:1.3rem;color:#BF9B4E;font-weight:600;line-height:1;}
+.lc-ring-label-sub{font-size:.52rem;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.1em;margin-top:.15rem;display:block;}
+.lc-ring-legend{display:flex;flex-direction:column;gap:.5rem;text-align:left;}
+.lc-ring-leg-row{display:flex;align-items:center;gap:.5rem;font-size:.7rem;color:rgba(255,255,255,.45);}
+.lc-ring-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.lc-ring-leg-pct{color:rgba(255,255,255,.72);font-weight:600;margin-left:auto;padding-left:.5rem;}
+.lc-sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1rem;}
+.lc-sum-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:1rem 1.1rem;transition:border-color .2s,background .2s;}
+.lc-sum-card:hover{border-color:rgba(191,155,78,.18);background:rgba(191,155,78,.025);}
+.lc-sum-lbl{font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:.4rem;}
+.lc-sum-val{font-family:var(--serif);font-size:1.08rem;font-weight:600;color:rgba(255,255,255,.82);}
+.lc-sum-val-gold{color:#D4B880;}
+.lc-sum-val-green{color:#4ade80;}
+.lc-sum-val-muted{color:rgba(255,255,255,.4);font-size:.92rem;}
+.lc-netcash-card{background:linear-gradient(135deg,rgba(20,83,45,.45) 0%,rgba(22,101,52,.35) 100%);border:1px solid rgba(74,222,128,.18);border-radius:18px;padding:1.3rem 1.5rem;margin-top:.75rem;position:relative;overflow:hidden;}
+.lc-netcash-card::before{content:"";position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(74,222,128,.07) 0%,transparent 65%);pointer-events:none;}
+.lc-netcash-lbl{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(134,239,172,.55);margin-bottom:.4rem;}
+.lc-netcash-lbl-note{font-weight:400;font-size:.52rem;opacity:.7;}
+.lc-netcash-val{font-family:var(--serif);font-size:2.2rem;font-weight:300;color:#4ade80;line-height:1.1;}
+.lc-netcash-rebate-lbl{font-size:.52rem;color:rgba(255,255,255,.28);letter-spacing:.1em;text-transform:uppercase;}
+.lc-netcash-rebate-val{font-size:1.1rem;font-weight:700;color:#4ade80;}
+.lc-breakdown-card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:18px;overflow:hidden;margin-top:.75rem;}
+.lc-breakdown-btn{width:100%;padding:1rem 1.4rem;background:transparent;border:none;font-family:var(--sans);font-size:.72rem;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;text-align:left;letter-spacing:.07em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;transition:color .2s,background .2s;}
+.lc-breakdown-btn:hover{background:rgba(255,255,255,.03);color:rgba(255,255,255,.78);}
+.lc-breakdown-btn-ico{font-size:.7rem;transition:transform .25s;}
+.lc-breakdown-btn.open .lc-breakdown-btn-ico{transform:rotate(180deg);}
+.lc-breakdown-body{padding:0 1.4rem 1.2rem;}
+.lc-bd-section{font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(191,155,78,.55);font-weight:700;padding:.8rem 0 .3rem;}
+.lc-bd-row{display:flex;justify-content:space-between;align-items:center;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.lc-bd-lbl{font-size:.73rem;color:rgba(255,255,255,.42);}
+.lc-bd-val{font-size:.75rem;font-weight:600;color:rgba(255,255,255,.65);}
+.lc-bd-val-bold{color:#fff;font-size:.82rem;}
+.lc-bd-val-gold{color:#D4B880;}
+.lc-bd-val-green{color:#4ade80;}
+.lc-bd-divider{border-top:1px solid rgba(191,155,78,.22);margin:.65rem 0;}
+.lc-bd-total{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0 .25rem;}
+.lc-bd-total-lbl{font-size:.82rem;font-weight:700;color:#fff;}
+.lc-bd-total-val{font-size:.92rem;font-weight:700;color:#4ade80;}
+.lc-bd-note{font-size:.62rem;color:rgba(255,255,255,.22);margin-top:.65rem;line-height:1.6;padding-top:.55rem;border-top:1px solid rgba(255,255,255,.05);}
 .lc-mob-bar{display:none;}
+@media(max-width:1024px){
+  .lc-dashboard{grid-template-columns:1fr;padding:0 1.5rem 2rem;}
+}
 @media(max-width:768px){
-  .lc-layout{grid-template-columns:1fr;}
+  .lc-hero-hd{padding:2.5rem 1.2rem 1.5rem;}
+  .lc-title{font-size:2rem;}
+  .lc-cp-amount{font-size:2.4rem;}
+  .lc-netcash-val{font-size:1.8rem;}
   .lc-row2{grid-template-columns:1fr 1fr;}
-  .lc-pg{padding:1.4rem 1rem 5.5rem;}
-  .lc-hero-val{font-size:2rem;}
-  .lc-netcash-val{font-size:1.6rem;}
-  .lc-mob-bar{display:flex;align-items:center;justify-content:space-between;position:fixed;bottom:0;left:0;right:0;z-index:90;background:var(--ink);border-top:1px solid rgba(191,155,78,.2);padding:.9rem 1.2rem;padding-bottom:calc(.9rem + env(safe-area-inset-bottom));}
-  .lc-mob-wa{background:var(--gold);color:var(--ink);font-family:var(--sans);font-size:.8rem;font-weight:700;padding:.58rem 1.3rem;border-radius:var(--r-sm);text-decoration:none;}
+  .lc-mob-bar{display:flex;align-items:center;justify-content:space-between;position:fixed;bottom:0;left:0;right:0;z-index:90;background:rgba(7,7,18,.92);border-top:1px solid rgba(191,155,78,.18);padding:.9rem 1.2rem;padding-bottom:calc(.9rem + env(safe-area-inset-bottom));backdrop-filter:blur(16px);}
+  .lc-mob-wa{background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#0A0808;font-family:var(--sans);font-size:.78rem;font-weight:700;padding:.55rem 1.2rem;border-radius:10px;text-decoration:none;}
 }
 
 /* ═══ DETAIL PAGE (replaces overlay modal) ═══ */
@@ -5178,6 +5237,15 @@ function LoanCalculator({settings}){
   const isBelowMarket=savingsPct>10;
   const piePct=loan.totalPay>0?Math.round((loanAmt/loan.totalPay)*100):0;
 
+  // Slider gradient fill percentages
+  const ratePct=((rate-1)/(12-1))*100;
+  const yearsPct=((years-5)/(35-5))*100;
+  const dpSliderPct=((dpPct-5)/(30-5))*100;
+
+  // SVG ring — radius 52, C = 2π×52 ≈ 326.73
+  const R=52, C=2*Math.PI*R;
+  const principalDash=piePct/100*C;
+
   const waPhone=(settings?.whatsappPhone||"60129846080").replace(/\D/g,"");
   const waName=settings?.whatsappName||"Joel";
   const waMsg=`Hi ${waName}, I used the NB Property Loan Calculator.\n\nProperty: RM ${price.toLocaleString()}\nAdjusted SPA: ${fmtRM(adjustedPrice)}\nMonthly Installment: ${fmtRM(loan.monthly)}\nNet Cash Out: ${fmtRM(netCash)}\n\nCan you advise?`;
@@ -5197,53 +5265,73 @@ function LoanCalculator({settings}){
     setDpPct(saved.dpPct||10);setRate(saved.rate||4);setYears(saved.years||35);
     setIsForeign(!!saved.isForeign);setIsCommercial(!!saved.isCommercial);setZeroDp(!!saved.zeroDp);
   };
-
   const numInp=(set,min=0,max=99999999)=>e=>{const v=parseFloat(String(e.target.value).replace(/,/g,""));if(!isNaN(v)&&v>=min&&v<=max)set(v);};
-  const BRow=({label,value,bold,accent,green,dim,divider})=>(
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:".5rem 0",borderBottom:divider?"2px solid var(--gold)":"1px solid rgba(13,13,24,.07)"}}>
-      <span style={{fontSize:".8rem",color:dim?"var(--muted)":"var(--ink)",fontWeight:bold?"600":"400"}}>{label}</span>
-      <span style={{fontSize:".82rem",fontWeight:bold?"700":"500",color:green?"#16a34a":accent?"var(--gold)":"var(--ink)"}}>{value}</span>
-    </div>
-  );
 
   return(
     <div className="lc-pg">
-      {/* Header */}
-      <div className="lc-top">
-        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:"1rem"}}>
-          <div>
-            <h2 className="lc-title">Loan <em>Calculator</em></h2>
-            <p className="lc-sub">Malaysia Property — Accurate Loan &amp; Cost Estimator with Discount &amp; Rebate Logic</p>
+      {/* Ambient background */}
+      <div className="lc-bg-glow1"/>
+      <div className="lc-bg-glow2"/>
+      <div className="lc-bg-grid"/>
+
+      {/* Hero Header */}
+      <div className="lc-hero-hd">
+        <div className="lc-eyebrow">Finance Intelligence · Malaysia Property</div>
+        <h1 className="lc-title">
+          Luxury Loan <em>Calculator</em>
+          {isBelowMarket&&<span className="lc-badge-bm" style={{marginLeft:"1rem",verticalAlign:"middle"}}>🏷 Below Market Deal</span>}
+        </h1>
+        <p className="lc-sub">Accurate loan &amp; cost estimator with discount, rebate &amp; MOT logic</p>
+        <div className="lc-live-badges">
+          <div className="lc-live-badge">
+            <span className="lc-live-badge-lbl">Monthly</span>
+            <span className="lc-live-badge-val">{fmtRM(loan.monthly)}</span>
           </div>
-          {isBelowMarket&&<div className="lc-badge-bm">🏷️ Below Market Deal</div>}
+          <div className="lc-live-badge">
+            <span className="lc-live-badge-lbl">Net Cash Out</span>
+            <span className="lc-live-badge-val">{fmtRM(netCash)}</span>
+          </div>
+          <div className="lc-live-badge">
+            <span className="lc-live-badge-lbl">Loan Amount</span>
+            <span className="lc-live-badge-val">{fmtRM(loanAmt)}</span>
+          </div>
+          <div className="lc-live-badge">
+            <span className="lc-live-badge-lbl">Total Interest</span>
+            <span className="lc-live-badge-val">{fmtRM(loan.totalInterest)}</span>
+          </div>
         </div>
         {totalSavings>0&&<div className="lc-savings-bar">
-          <span>💰 You Save</span>
+          <span style={{color:"rgba(255,255,255,.45)"}}>💰 You Save</span>
           <strong>{fmtRM(totalSavings)}</strong>
           <span className="lc-savings-pct">({fmtPct(savingsPct)} off market)</span>
         </div>}
       </div>
 
-      <div className="lc-layout">
+      {/* Main Dashboard */}
+      <div className="lc-dashboard">
+
         {/* ─── LEFT: Inputs ─── */}
         <div className="lc-col">
 
-          {/* Price & Adjustments */}
-          <div className="lc-card">
-            <div className="lc-card-hd">Property Price &amp; Adjustments</div>
+          {/* Property Price & Adjustments */}
+          <div className="lc-glass-card">
+            <div className="lc-card-hd"><span className="lc-card-hd-icon">🏢</span>Property Price &amp; Adjustments</div>
             <div className="lc-fields">
-              <div className="lc-field">
-                <label className="lc-lbl">Listing / Market Price (RM)</label>
-                <input className="lc-inp" type="number" min="0" value={price} onChange={numInp(setPrice)} onFocus={e=>e.target.select()}/>
+              <div>
+                <span className="lc-price-label">Listing / Market Price</span>
+                <div className="lc-price-wrap">
+                  <span className="lc-price-prefix">RM</span>
+                  <input className="lc-price-inp" type="number" min="0" value={price} onChange={numInp(setPrice)} onFocus={e=>e.target.select()}/>
+                </div>
               </div>
               <div className="lc-row2">
                 <div className="lc-field">
-                  <label className="lc-lbl">Discount (%)</label>
+                  <label className="lc-lbl">Discount %</label>
                   <input className="lc-inp" type="number" min="0" max="50" step="0.5" value={discountPct} onChange={numInp(setDiscountPct,0,50)} onFocus={e=>e.target.select()}/>
                   {discountAmt>0&&<div className="lc-hint lc-hint-grn">−{fmtRM(discountAmt)}</div>}
                 </div>
                 <div className="lc-field">
-                  <label className="lc-lbl">Rebate / Cashback (%)</label>
+                  <label className="lc-lbl">Rebate / Cashback %</label>
                   <input className="lc-inp" type="number" min="0" max="20" step="0.5" value={rebatePct} onChange={numInp(setRebatePct,0,20)} onFocus={e=>e.target.select()}/>
                   {rebateAmt>0&&<div className="lc-hint lc-hint-grn">−{fmtRM(rebateAmt)}</div>}
                 </div>
@@ -5257,39 +5345,46 @@ function LoanCalculator({settings}){
           </div>
 
           {/* Loan Terms */}
-          <div className="lc-card">
-            <div className="lc-card-hd">Loan Terms</div>
+          <div className="lc-glass-card">
+            <div className="lc-card-hd"><span className="lc-card-hd-icon">📊</span>Loan Terms</div>
             <div className="lc-fields">
-              <div className="lc-field">
-                <label className="lc-lbl">Interest Rate — <strong>{rate}%</strong> p.a.</label>
-                <input className="lc-slider" type="range" min="1" max="12" step="0.05" value={rate} onChange={e=>setRate(parseFloat(e.target.value))}/>
+              <div className="lc-slider-wrap">
+                <div className="lc-slider-header">
+                  <span className="lc-slider-label">Interest Rate</span>
+                  <span className="lc-slider-value">{rate}% p.a.</span>
+                </div>
+                <input className="lc-slider" type="range" min="1" max="12" step="0.05" value={rate} style={{"--pct":`${ratePct}%`}} onChange={e=>setRate(parseFloat(e.target.value))}/>
                 <div className="lc-slider-ends"><span>1%</span><span>12%</span></div>
               </div>
-              <div className="lc-field">
-                <label className="lc-lbl">Loan Tenure — <strong>{years} years</strong></label>
-                <input className="lc-slider" type="range" min="5" max="35" step="1" value={years} onChange={e=>setYears(parseInt(e.target.value))}/>
+              <div className="lc-slider-wrap">
+                <div className="lc-slider-header">
+                  <span className="lc-slider-label">Loan Tenure</span>
+                  <span className="lc-slider-value">{years} years</span>
+                </div>
+                <input className="lc-slider" type="range" min="5" max="35" step="1" value={years} style={{"--pct":`${yearsPct}%`}} onChange={e=>setYears(parseInt(e.target.value))}/>
                 <div className="lc-slider-ends"><span>5 yrs</span><span>35 yrs</span></div>
               </div>
-              <div className="lc-field">
-                <label className="lc-lbl" style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                  Down Payment
-                  <label style={{display:"flex",alignItems:"center",gap:".4rem",fontSize:".72rem",color:"var(--muted)",cursor:"pointer",fontWeight:400}}>
-                    <input type="checkbox" checked={zeroDp} onChange={e=>setZeroDp(e.target.checked)} style={{accentColor:"var(--gold)"}}/>
+              <div className="lc-slider-wrap">
+                <div className="lc-slider-header">
+                  <span className="lc-slider-label">Down Payment</span>
+                  <span className="lc-slider-value">{zeroDp?"0%":`${dpPct}% = ${fmtRM(dpAmt)}`}</span>
+                  <label className="lc-zdp-lbl">
+                    <input type="checkbox" checked={zeroDp} onChange={e=>setZeroDp(e.target.checked)}/>
                     Zero Down
                   </label>
-                </label>
+                </div>
                 {!zeroDp&&<>
-                  <input className="lc-slider" type="range" min="5" max="30" step="5" value={dpPct} onChange={e=>setDpPct(parseInt(e.target.value))}/>
-                  <div className="lc-slider-ends"><span>5%</span><span style={{color:"var(--gold)",fontWeight:600}}>{dpPct}% = {fmtRM(dpAmt)}</span><span>30%</span></div>
+                  <input className="lc-slider" type="range" min="5" max="30" step="5" value={dpPct} style={{"--pct":`${dpSliderPct}%`}} onChange={e=>setDpPct(parseInt(e.target.value))}/>
+                  <div className="lc-slider-ends"><span>5%</span><span>30%</span></div>
                 </>}
-                {zeroDp&&<div className="lc-hint" style={{color:"var(--gold)"}}>Down payment waived (0%)</div>}
+                {zeroDp&&<div className="lc-hint" style={{color:"#D4B880"}}>Down payment waived (0%)</div>}
               </div>
             </div>
           </div>
 
           {/* Buyer & Property Type */}
-          <div className="lc-card">
-            <div className="lc-card-hd">Buyer &amp; Property Type</div>
+          <div className="lc-glass-card">
+            <div className="lc-card-hd"><span className="lc-card-hd-icon">👤</span>Buyer &amp; Property Type</div>
             <div style={{display:"flex",gap:".75rem",flexWrap:"wrap"}}>
               <div className="lc-toggle-group">
                 <button className={`lc-toggle${!isForeign?" on":""}`} onClick={()=>setIsForeign(false)}>🇲🇾 Local</button>
@@ -5303,33 +5398,65 @@ function LoanCalculator({settings}){
             {isForeign&&<div className="lc-foreign-note">⚠️ Foreign buyer: 8% MOT (flat) + 3% Levy + State Fee ({isCommercial?"RM 20,000":"RM 10,000"}) applies</div>}
           </div>
 
+          {/* Action Buttons */}
+          <div className="lc-actions">
+            <button className="lc-btn-pri" onClick={saveCalc}>💾 Save Calculation</button>
+            {saved&&<button className="lc-btn-pri" onClick={loadSaved} style={{opacity:.72}}>↩ Load Saved</button>}
+            <a href={waUrl} target="_blank" rel="noopener noreferrer" className="lc-btn-wa">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.564 4.14 1.546 5.871L.057 23.429a.5.5 0 0 0 .614.614l5.558-1.489C7.86 23.436 9.864 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.967 0-3.809-.535-5.385-1.467l-.386-.23-3.3.884.884-3.3-.23-.386A9.944 9.944 0 0 1 2 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+              Contact Agent
+            </a>
+          </div>
+
         </div>
 
         {/* ─── RIGHT: Results ─── */}
         <div className="lc-col">
 
-          {/* Monthly Installment hero */}
-          <div className="lc-hero-card">
-            <div className="lc-hero-lbl">Monthly Installment</div>
-            <div className="lc-hero-val">{fmtRM(loan.monthly)}</div>
-            <div className="lc-hero-sub">{years} years · {rate}% p.a. · Loan {fmtRM(loanAmt)}</div>
-            <div className="lc-pie-wrap">
-              <svg width="76" height="76" viewBox="0 0 76 76">
-                <circle cx="38" cy="38" r="28" fill="none" stroke="rgba(191,155,78,.18)" strokeWidth="11"/>
-                <circle cx="38" cy="38" r="28" fill="none" stroke="#BF9B4E" strokeWidth="11"
-                  strokeDasharray={`${piePct*1.759} ${(100-piePct)*1.759}`}
-                  strokeDashoffset="44" strokeLinecap="round"/>
-              </svg>
-              <div className="lc-pie-legend">
-                <div><span className="lc-pie-dot" style={{background:"#BF9B4E"}}/>Principal {piePct}%</div>
-                <div><span className="lc-pie-dot" style={{background:"rgba(191,155,78,.25)"}}/>Interest {100-piePct}%</div>
-                <div style={{marginTop:".3rem",fontSize:".68rem",color:"rgba(255,255,255,.35)"}}>Total: {fmtRM(loan.totalPay)}</div>
+          {/* Monthly Installment Centerpiece */}
+          <div className="lc-centerpiece">
+            <div className="lc-cp-eyebrow">Monthly Installment</div>
+            <div className="lc-cp-amount">{fmtRM(loan.monthly)}</div>
+            <div className="lc-cp-sub">{years} years · {rate}% p.a. · Loan {fmtRM(loanAmt)}</div>
+            <div className="lc-ring-wrap">
+              <div className="lc-ring-container">
+                <svg className="lc-ring-svg" width="120" height="120" viewBox="0 0 120 120">
+                  <defs>
+                    <linearGradient id="lcGoldGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#D4B880"/>
+                      <stop offset="100%" stopColor="#BF9B4E"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="60" cy="60" r={R} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="10"/>
+                  <circle cx="60" cy="60" r={R} fill="none" stroke="rgba(0,200,255,.14)" strokeWidth="10"/>
+                  <circle cx="60" cy="60" r={R} fill="none" stroke="url(#lcGoldGrad)" strokeWidth="10"
+                    strokeDasharray={`${principalDash} ${C-principalDash}`}
+                    strokeLinecap="round"
+                    transform="rotate(-90 60 60)"/>
+                </svg>
+                <div style={{position:"absolute",display:"flex",flexDirection:"column",alignItems:"center"}}>
+                  <span className="lc-ring-label-center">{piePct}%</span>
+                  <span className="lc-ring-label-sub">Principal</span>
+                </div>
+              </div>
+              <div className="lc-ring-legend">
+                <div className="lc-ring-leg-row">
+                  <div className="lc-ring-dot" style={{background:"linear-gradient(135deg,#D4B880,#BF9B4E)"}}/>
+                  <span>Principal</span>
+                  <span className="lc-ring-leg-pct">{piePct}%</span>
+                </div>
+                <div className="lc-ring-leg-row">
+                  <div className="lc-ring-dot" style={{background:"rgba(0,200,255,.38)"}}/>
+                  <span>Interest</span>
+                  <span className="lc-ring-leg-pct">{100-piePct}%</span>
+                </div>
+                <div style={{fontSize:".62rem",color:"rgba(255,255,255,.22)",marginTop:".35rem"}}>Total: {fmtRM(loan.totalPay)}</div>
               </div>
             </div>
           </div>
 
-          {/* Key Summary */}
-          <div className="lc-summary-grid">
+          {/* Summary Grid */}
+          <div className="lc-sum-grid">
             <div className="lc-sum-card">
               <div className="lc-sum-lbl">Adjusted SPA Price</div>
               <div className="lc-sum-val">{fmtRM(adjustedPrice)}</div>
@@ -5340,64 +5467,63 @@ function LoanCalculator({settings}){
             </div>
             <div className="lc-sum-card">
               <div className="lc-sum-lbl">Total Initial Cash</div>
-              <div className="lc-sum-val" style={{color:"var(--gold)"}}>{fmtRM(cash.total)}</div>
+              <div className="lc-sum-val lc-sum-val-gold">{fmtRM(cash.total)}</div>
             </div>
             {rebateAmt>0?<div className="lc-sum-card">
               <div className="lc-sum-lbl">Rebate Received</div>
-              <div className="lc-sum-val" style={{color:"#16a34a"}}>−{fmtRM(rebateAmt)}</div>
+              <div className="lc-sum-val lc-sum-val-green">−{fmtRM(rebateAmt)}</div>
             </div>:<div className="lc-sum-card">
               <div className="lc-sum-lbl">Total Interest Paid</div>
-              <div className="lc-sum-val" style={{color:"var(--muted)",fontSize:"1rem"}}>{fmtRM(loan.totalInterest)}</div>
+              <div className="lc-sum-val lc-sum-val-muted">{fmtRM(loan.totalInterest)}</div>
             </div>}
           </div>
 
-          {/* Net Cash Out — star card */}
+          {/* Net Cash Out */}
           <div className="lc-netcash-card">
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:".5rem"}}>
               <div>
-                <div className="lc-netcash-lbl">✅ Net Cash Out <span style={{fontWeight:400,fontSize:".7rem",opacity:.65}}>(actual money you pay)</span></div>
+                <div className="lc-netcash-lbl">✅ Net Cash Out <span className="lc-netcash-lbl-note">(actual money you pay)</span></div>
                 <div className="lc-netcash-val">{fmtRM(netCash)}</div>
               </div>
               {rebateAmt>0&&<div style={{textAlign:"right"}}>
-                <div style={{fontSize:".68rem",color:"rgba(255,255,255,.45)",letterSpacing:".06em"}}>REBATE SAVES YOU</div>
-                <div style={{fontSize:"1.1rem",fontWeight:700,color:"#4ade80"}}>−{fmtRM(rebateAmt)}</div>
+                <div className="lc-netcash-rebate-lbl">Rebate Saves You</div>
+                <div className="lc-netcash-rebate-val">−{fmtRM(rebateAmt)}</div>
               </div>}
             </div>
           </div>
 
-          {/* Breakdown */}
-          <div className="lc-card" style={{padding:0,overflow:"hidden"}}>
-            <button className="lc-breakdown-btn" onClick={()=>setShowBreakdown(v=>!v)}>
-              📋 Full Cost Breakdown {showBreakdown?"▲":"▼"}
+          {/* Full Cost Breakdown */}
+          <div className="lc-breakdown-card">
+            <button className={`lc-breakdown-btn${showBreakdown?" open":""}`} onClick={()=>setShowBreakdown(v=>!v)}>
+              <span>📋 Full Cost Breakdown</span>
+              <span className="lc-breakdown-btn-ico">▼</span>
             </button>
-            {showBreakdown&&<div style={{padding:"0 1.2rem 1rem"}}>
-              <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,padding:".6rem 0 .3rem"}}>Price</div>
-              <BRow label="Original Listing Price" value={fmtRM(price)} dim/>
-              {discountAmt>0&&<BRow label={`Discount (${discountPct}%)`} value={`−${fmtRM(discountAmt)}`} green/>}
-              <BRow label="Adjusted SPA Price" value={fmtRM(adjustedPrice)} bold/>
-              {rebateAmt>0&&<BRow label={`Rebate / Cashback (${rebatePct}%)`} value={`−${fmtRM(rebateAmt)}`} green/>}
-              <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,padding:".75rem 0 .3rem"}}>Down Payment &amp; Loan</div>
-              <BRow label={`Down Payment (${zeroDp?"0":dpPct}%)`} value={fmtRM(dpAmt)} bold/>
-              <BRow label="Loan Amount" value={fmtRM(loanAmt)}/>
-              <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,padding:".75rem 0 .3rem"}}>Legal &amp; Stamp Fees</div>
-              <BRow label="Legal Fee — SPA (based on SPA price)" value={fmtRM(cash.legalSPA)}/>
-              <BRow label="Legal Fee — Loan Agreement" value={fmtRM(cash.legalLoan)}/>
-              <BRow label="SPA Stamp Duty (RM40 fixed)" value={fmtRM(cash.spaStamp)}/>
-              <BRow label="Loan Stamp Duty (0.5% of loan)" value={fmtRM(cash.loanStamp)}/>
-              <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,padding:".75rem 0 .3rem"}}>Transfer &amp; Taxes</div>
-              <BRow label={`MOT / Transfer Stamp Duty${isForeign?" (8% flat)":""}`} value={fmtRM(cash.mot)} accent/>
-              {isForeign&&<BRow label="Foreign Buyer Levy (3% of SPA)" value={fmtRM(cash.levy)} accent/>}
-              {isForeign&&<BRow label={`State Fee (${isCommercial?"Commercial":"Residential"})`} value={fmtRM(cash.stateFee)} accent/>}
-              <div style={{height:"1rem"}}/>
-              <BRow label="Total Initial Cash" value={fmtRM(cash.total)} bold accent divider/>
-              {rebateAmt>0&&<BRow label={`Rebate Deducted (${rebatePct}%)`} value={`−${fmtRM(rebateAmt)}`} green/>}
-              <div style={{display:"flex",justifyContent:"space-between",padding:".7rem 0 .2rem"}}>
-                <span style={{fontWeight:700,fontSize:".88rem"}}>✅ Net Cash Out</span>
-                <span style={{fontWeight:700,fontSize:".95rem",color:"#16a34a"}}>{fmtRM(netCash)}</span>
+            {showBreakdown&&<div className="lc-breakdown-body">
+              <div className="lc-bd-section">Price</div>
+              <div className="lc-bd-row"><span className="lc-bd-lbl">Original Listing Price</span><span className="lc-bd-val">{fmtRM(price)}</span></div>
+              {discountAmt>0&&<div className="lc-bd-row"><span className="lc-bd-lbl">Discount ({discountPct}%)</span><span className="lc-bd-val lc-bd-val-green">−{fmtRM(discountAmt)}</span></div>}
+              <div className="lc-bd-row"><span className="lc-bd-lbl">Adjusted SPA Price</span><span className="lc-bd-val lc-bd-val-bold">{fmtRM(adjustedPrice)}</span></div>
+              {rebateAmt>0&&<div className="lc-bd-row"><span className="lc-bd-lbl">Rebate / Cashback ({rebatePct}%)</span><span className="lc-bd-val lc-bd-val-green">−{fmtRM(rebateAmt)}</span></div>}
+              <div className="lc-bd-section">Down Payment &amp; Loan</div>
+              <div className="lc-bd-row"><span className="lc-bd-lbl">Down Payment ({zeroDp?"0":dpPct}%)</span><span className="lc-bd-val lc-bd-val-bold">{fmtRM(dpAmt)}</span></div>
+              <div className="lc-bd-row"><span className="lc-bd-lbl">Loan Amount</span><span className="lc-bd-val">{fmtRM(loanAmt)}</span></div>
+              <div className="lc-bd-section">Legal &amp; Stamp Fees</div>
+              <div className="lc-bd-row"><span className="lc-bd-lbl">Legal Fee — SPA (based on SPA price)</span><span className="lc-bd-val">{fmtRM(cash.legalSPA)}</span></div>
+              <div className="lc-bd-row"><span className="lc-bd-lbl">Legal Fee — Loan Agreement</span><span className="lc-bd-val">{fmtRM(cash.legalLoan)}</span></div>
+              <div className="lc-bd-row"><span className="lc-bd-lbl">SPA Stamp Duty (RM40 fixed)</span><span className="lc-bd-val">{fmtRM(cash.spaStamp)}</span></div>
+              <div className="lc-bd-row"><span className="lc-bd-lbl">Loan Stamp Duty (0.5% of loan)</span><span className="lc-bd-val">{fmtRM(cash.loanStamp)}</span></div>
+              <div className="lc-bd-section">Transfer &amp; Taxes</div>
+              <div className="lc-bd-row"><span className="lc-bd-lbl">MOT / Transfer Stamp Duty{isForeign?" (8% flat)":""}</span><span className="lc-bd-val lc-bd-val-gold">{fmtRM(cash.mot)}</span></div>
+              {isForeign&&<div className="lc-bd-row"><span className="lc-bd-lbl">Foreign Buyer Levy (3% of SPA)</span><span className="lc-bd-val lc-bd-val-gold">{fmtRM(cash.levy)}</span></div>}
+              {isForeign&&<div className="lc-bd-row"><span className="lc-bd-lbl">State Fee ({isCommercial?"Commercial":"Residential"})</span><span className="lc-bd-val lc-bd-val-gold">{fmtRM(cash.stateFee)}</span></div>}
+              <div className="lc-bd-divider"/>
+              <div className="lc-bd-row"><span className="lc-bd-lbl" style={{fontWeight:700,color:"rgba(255,255,255,.65)"}}>Total Initial Cash</span><span className="lc-bd-val lc-bd-val-gold" style={{fontSize:".88rem"}}>{fmtRM(cash.total)}</span></div>
+              {rebateAmt>0&&<div className="lc-bd-row"><span className="lc-bd-lbl">Rebate Deducted ({rebatePct}%)</span><span className="lc-bd-val lc-bd-val-green">−{fmtRM(rebateAmt)}</span></div>}
+              <div className="lc-bd-total">
+                <span className="lc-bd-total-lbl">✅ Net Cash Out</span>
+                <span className="lc-bd-total-val">{fmtRM(netCash)}</span>
               </div>
-              <div style={{fontSize:".68rem",color:"var(--muted)",marginTop:".5rem",lineHeight:1.6,paddingTop:".6rem",borderTop:"1px solid var(--border)"}}>
-                * Estimates only. Legal fees subject to solicitor discretion. MOT per Stamp Act 1949 (Amendment 2019). Foreign buyer fees vary by state.
-              </div>
+              <div className="lc-bd-note">* Estimates only. Legal fees subject to solicitor discretion. MOT per Stamp Act 1949 (Amendment 2019). Foreign buyer fees vary by state.</div>
             </div>}
           </div>
 
@@ -5407,9 +5533,9 @@ function LoanCalculator({settings}){
       {/* Mobile sticky bar */}
       <div className="lc-mob-bar">
         <div>
-          <div style={{fontSize:".6rem",color:"rgba(255,255,255,.5)",letterSpacing:".08em",textTransform:"uppercase"}}>Monthly</div>
-          <div style={{fontSize:"1.15rem",fontWeight:700,color:"#BF9B4E",lineHeight:1.1}}>{fmtRM(loan.monthly)}</div>
-          <div style={{fontSize:".62rem",color:"rgba(255,255,255,.4)"}}>Net Cash {fmtRM(netCash)}</div>
+          <div style={{fontSize:".6rem",color:"rgba(255,255,255,.4)",letterSpacing:".08em",textTransform:"uppercase"}}>Monthly</div>
+          <div style={{fontSize:"1.15rem",fontWeight:700,color:"#D4B880",lineHeight:1.1,fontFamily:"var(--serif)"}}>{fmtRM(loan.monthly)}</div>
+          <div style={{fontSize:".62rem",color:"rgba(255,255,255,.35)"}}>Net Cash {fmtRM(netCash)}</div>
         </div>
         <a href={waUrl} target="_blank" rel="noopener noreferrer" className="lc-mob-wa">Contact Agent</a>
       </div>
