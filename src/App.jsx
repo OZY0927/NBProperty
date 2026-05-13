@@ -4021,17 +4021,6 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
             </section>
           )}
 
-          {/* Description */}
-          {sec("overview","description") && p.description && (
-            <section className="cine-section" style={{position:'relative'}}>
-              <div className="cine-sec-num">02</div>
-              <div {...rv()} className="cr cine-sec-label">
-                <div className="cine-sec-eyebrow">About This Project</div>
-                <h2 className="cine-sec-title">Project <em>Overview</em></h2>
-              </div>
-              <div {...rv('d1')} className="cr d1 cine-pull-quote">{p.description}</div>
-            </section>
-          )}
 
           {/* ═══ PROJECT INFORMATION — SAMPLE-STYLE REDESIGN ═══ */}
           {(sec("overview","basicInfo")||sec("overview","development")||sec("overview","unitInfo")||sec("overview","parking")||sec("overview","facilities")||sec("overview","financial")||sec("overview","sales")) && (
@@ -4178,24 +4167,6 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
             </section>
           )}
 
-          {/* Full Facilities */}
-          {sec("overview","facList") && (p.facilities||[]).length>0 && (
-            <section className="cine-section" style={{position:'relative'}}>
-              <div className="cine-sec-num">04</div>
-              <div {...rv()} className="cr cine-sec-label">
-                <div className="cine-sec-eyebrow">Amenities</div>
-                <h2 className="cine-sec-title">Full <em>Facilities</em></h2>
-              </div>
-              <div className="cine-fac-grid">
-                {(p.facilities||[]).map((f,i)=>(
-                  <div {...rv(`d${Math.min((i%6)+1,6)}`)} key={f} className={`cr d${Math.min((i%6)+1,6)} cine-fac-card`}>
-                    <div className="cine-fac-card-icon">{getFacIcon(f)}</div>
-                    <div className="cine-fac-card-name">{f}</div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
 
         {/* ═══ LOCATION ═══ */}
