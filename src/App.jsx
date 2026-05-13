@@ -388,21 +388,66 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .s-ico{position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none;}
 
 .main{width:100%;padding:3rem 2rem;}
-/* ── Filter Panel ── */
-.filter-panel{background:var(--card);border:1px solid var(--border);margin-bottom:2.5rem;}
-.filter-top{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;padding:.9rem 1.2rem;border-bottom:1px solid var(--border);}
-.filter-row2{display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;padding:.75rem 1.2rem;border-bottom:1px solid var(--border);background:var(--warm);animation:fadeIn .2s ease;}
-.filter-group{display:flex;flex-direction:column;gap:.3rem;}
-.filter-group .flbl{font-size:.6rem;}
-.fmore-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--sans);font-size:.72rem;padding:.4rem .8rem;cursor:pointer;transition:all .18s;white-space:nowrap;letter-spacing:.04em;}
-.fmore-btn:hover{border-color:var(--gold);color:var(--gold);}
+/* ── Filter Dialog (fd-*) ── */
+/* Trigger bar */
+.fd-bar{display:flex;align-items:center;gap:.75rem;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.7rem 1rem;margin-bottom:1.5rem;box-shadow:0 2px 16px rgba(0,0,0,.06);flex-wrap:wrap;}
+.fd-trigger{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:999px;border:1.5px solid var(--border);background:var(--parchment);color:var(--ink);font-family:var(--sans);font-size:.78rem;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.fd-trigger:hover{border-color:var(--gold);color:var(--gold);}
+.fd-trigger svg{width:15px;height:15px;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;flex-shrink:0;}
+.fd-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--gold);color:#fff;font-size:.6rem;font-weight:700;line-height:1;}
+.fd-pills{display:flex;align-items:center;gap:.4rem;flex:1;overflow-x:auto;scrollbar-width:none;min-width:0;}
+.fd-pills::-webkit-scrollbar{display:none;}
+.fd-pill{display:inline-flex;align-items:center;gap:.3rem;padding:.28rem .65rem;border-radius:999px;background:rgba(191,155,78,.1);border:1px solid rgba(191,155,78,.3);color:var(--ink);font-size:.7rem;font-weight:500;white-space:nowrap;animation:fdPillIn .18s ease;}
+.fd-pill-x{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.85rem;line-height:1;padding:0;margin-left:.1rem;transition:color .15s;}
+.fd-pill-x:hover{color:#c0392b;}
+.fd-rcnt{margin-left:auto;font-size:.78rem;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+.fd-rcnt strong{color:var(--ink);font-weight:700;}
+/* Overlay */
+.fd-ov{position:fixed;inset:0;z-index:400;background:rgba(10,8,20,.55);backdrop-filter:blur(4px);animation:fdOvIn .22s ease;}
+@keyframes fdOvIn{from{opacity:0}to{opacity:1}}
+@keyframes fdPillIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+/* Sheet */
+.fd-sheet{position:fixed;bottom:0;left:0;right:0;z-index:401;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -8px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;max-height:88svh;animation:fdSheetUp .3s cubic-bezier(.22,1,.36,1);}
+@keyframes fdSheetUp{from{transform:translateY(100%);opacity:.6}to{transform:translateY(0);opacity:1}}
+@media(min-width:769px){
+  .fd-sheet{bottom:auto;top:50%;left:50%;right:auto;transform:translate(-50%,-50%);width:min(680px,92vw);border-radius:18px;max-height:85svh;animation:fdModalIn .28s cubic-bezier(.22,1,.36,1);}
+  @keyframes fdModalIn{from{opacity:0;transform:translate(-50%,-46%)}to{opacity:1;transform:translate(-50%,-50%)}}
+}
+/* Sheet handle */
+.fd-handle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:.7rem auto .2rem;flex-shrink:0;}
+@media(min-width:769px){.fd-handle{display:none;}}
+/* Sheet header */
+.fd-hd{display:flex;align-items:center;gap:.6rem;padding:.85rem 1.3rem .7rem;border-bottom:1px solid var(--border);flex-shrink:0;}
+.fd-hd-title{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--ink);flex:1;}
+.fd-hd-cnt{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:600;background:rgba(191,155,78,.1);padding:.18rem .55rem;border-radius:999px;}
+.fd-close{width:30px;height:30px;border-radius:50%;background:var(--warm);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--muted);transition:background .18s,color .18s;}
+.fd-close:hover{background:var(--border);color:var(--ink);}
+/* Sheet body */
+.fd-body{overflow-y:auto;padding:1rem 1.3rem;display:flex;flex-direction:column;gap:1.4rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.fd-sec{}
+.fd-sec-label{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:.65rem;}
+.fd-chips{display:flex;flex-wrap:wrap;gap:.4rem;}
+.fd-chip{padding:.38rem .85rem;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--ink);font-family:var(--sans);font-size:.78rem;cursor:pointer;transition:all .18s;white-space:nowrap;font-weight:500;}
+.fd-chip:hover{border-color:var(--gold);color:var(--gold);}
+.fd-chip.on{background:linear-gradient(135deg,rgba(212,184,128,.18),rgba(191,155,78,.12));border-color:var(--gold);color:var(--gold);font-weight:700;box-shadow:0 0 0 3px rgba(191,155,78,.1);}
+/* Size inputs inside sheet */
+.fd-size-row{display:flex;align-items:center;gap:.5rem;}
+.fd-size-inp{flex:1;padding:.5rem .75rem;border:1.5px solid var(--border);border-radius:8px;background:var(--parchment);color:var(--ink);font-family:var(--sans);font-size:.82rem;outline:none;transition:border-color .18s;}
+.fd-size-inp:focus{border-color:var(--gold);}
+.fd-size-inp::placeholder{color:var(--muted);font-size:.76rem;}
+.fd-size-sep{color:var(--muted);font-size:.9rem;flex-shrink:0;}
+/* Sheet footer */
+.fd-ft{display:flex;gap:.75rem;padding:1rem 1.3rem 1.2rem;border-top:1px solid var(--border);flex-shrink:0;}
+.fd-ft-clear{flex:0 0 auto;padding:.65rem 1.2rem;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:var(--sans);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+.fd-ft-clear:hover{border-color:#c0392b;color:#c0392b;}
+.fd-ft-apply{flex:1;padding:.68rem 1.2rem;border-radius:999px;border:none;background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#080810;font-family:var(--sans);font-size:.82rem;font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 18px rgba(191,155,78,.35);}
+.fd-ft-apply:hover{box-shadow:0 6px 28px rgba(191,155,78,.55);transform:translateY(-1px);}
+/* Legacy keeps (used by price slider) */
 .fsize-range{display:flex;align-items:center;gap:.3rem;}
 .fsize-inp{width:80px;padding:.44rem .6rem;border:1px solid var(--border);background:var(--parchment);color:var(--ink);font-family:var(--sans);font-size:.8rem;outline:none;transition:border-color .18s;}
 .fsize-inp:focus{border-color:var(--gold);}
 .fsize-inp::placeholder{color:var(--muted);font-size:.75rem;}
 .fsize-sep{color:var(--muted);font-size:.8rem;}
-.fclear-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--sans);font-size:.68rem;padding:.42rem .75rem;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .18s;align-self:flex-end;margin-left:auto;white-space:nowrap;}
-.fclear-btn:hover{border-color:var(--a-red);color:var(--a-red);}
 .flbl{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;}
 .fsel{padding:.48rem 2rem .48rem .85rem;border:1px solid var(--border);background:var(--parchment);color:var(--ink);font-family:var(--sans);font-size:.81rem;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%238a8578' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .65rem center;transition:border-color .18s;}
 .fsel:focus{border-color:var(--gold);outline:none;}
@@ -501,12 +546,8 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   .main{padding:1.5rem 1rem;}
   .grid{grid-template-columns:repeat(2,1fr);gap:.9rem;}
 
-  /* Filter */
-  .filter-top{padding:.75rem;gap:.5rem;}
-  .fsel{font-size:.8rem;padding:.42rem 1.8rem .42rem .75rem;}
-  .filter-divider{display:none;}
-  .filter-row2{padding:.65rem .75rem;gap:.5rem;}
-  .fsize-inp{width:70px;font-size:.78rem;}
+  /* Filter bar */
+  .fd-bar{padding:.6rem .75rem;gap:.5rem;}
   .price-panel{padding:.85rem;}
 
   /* Card image */
@@ -565,17 +606,10 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   .main{padding:1rem .75rem;}
   .grid{grid-template-columns:1fr;gap:.85rem;}
 
-  /* Filter */
-  .filter-top{flex-direction:column;align-items:stretch;}
-  .fsel{width:100%;}
-  .rcnt{margin-left:0;text-align:center;padding:.2rem 0;}
-  .filter-row2{flex-direction:column;align-items:stretch;}
-  .filter-group{width:100%;}
-  .filter-group .fsel{width:100%;}
-  .fsize-range{width:100%;}
-  .fsize-inp{flex:1;width:auto;}
-  .fmore-btn{width:100%;text-align:center;}
-  .fclear-btn{margin-left:0;width:100%;text-align:center;}
+  /* Filter bar */
+  .fd-bar{flex-wrap:nowrap;gap:.4rem;}
+  .fd-trigger{font-size:.72rem;padding:.42rem .8rem;}
+  .fd-rcnt{font-size:.72rem;}
 
   /* Card */
   .cimg{height:185px;}
@@ -2084,6 +2118,15 @@ body.cine-active *{cursor:none !important;}
 .cine-fab-main.open .cine-fab-main-ico.phone{opacity:0;transform:scale(.5) rotate(90deg);}
 .cine-fab-main.open .cine-fab-main-ico.close{opacity:1;transform:scale(1) rotate(0deg);}
 @media(max-width:768px){.cine-fab{bottom:1.25rem;right:1.25rem;}.cine-fab-main{width:46px;height:46px;}.cine-fab-action{font-size:.7rem;padding:.55rem .9rem .55rem .75rem;}}
+/* ── Back-to-Top FAB (mobile listing only) ── */
+.btt-fab{display:none;}
+@media(max-width:992px){
+  .btt-fab{display:flex;align-items:center;justify-content:center;position:fixed;bottom:2rem;right:2rem;z-index:300;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#D4B880,#BF9B4E);border:none;cursor:pointer;box-shadow:0 0 24px rgba(191,155,78,.45),0 6px 18px rgba(0,0,0,.45);transition:opacity .28s ease,transform .28s ease;}
+  .btt-fab.hidden{opacity:0;transform:translateY(14px) scale(.88);pointer-events:none;}
+  .btt-fab.visible{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+  .btt-fab svg{width:18px;height:18px;stroke:#080810;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .btt-fab:hover{box-shadow:0 0 36px rgba(191,155,78,.65),0 8px 24px rgba(0,0,0,.55);}
+}
 .cine-sections{position:relative;z-index:5;}
 .cine-section{padding:5rem 6vw;position:relative;}
 .cine-section+.cine-section{border-top:1px solid rgba(191,155,78,.06);}
@@ -5582,6 +5625,8 @@ export default function App(){
   const [fSizeMin,setFSizeMin]=useState("");
   const [fSizeMax,setFSizeMax]=useState("");
   const [showMoreFilters,setShowMoreFilters]=useState(false);
+  const [filterOpen,setFilterOpen]=useState(false);
+  const clearAllFilters=useCallback(()=>{setSearch("");setType("All Types");setLoc("All Areas");setStat("All Status");setPriceMin(PRICE_SLIDER_MIN);setPriceMax(PRICE_SLIDER_MAX);setFBed("All Beds");setFBath("All Baths");setFTenure("All Tenure");setFCompletion("All Completion");setFSizeMin("");setFSizeMax("");},[]);
   const [selected,setSelected]=useState(null);
   const [cmpIds,setCmpIds]=useState([]);
   const [pdfBusy,setPdfBusy]=useState(false);
@@ -5643,6 +5688,16 @@ export default function App(){
   },[tab]); // eslint-disable-line react-hooks/exhaustive-deps
   const visibleProjects = isDesktop?filtered.slice((listPage-1)*itemsPerPage,listPage*itemsPerPage):filtered;
   const cmpProjects=useMemo(()=>projects.filter(p=>cmpIds.includes(p.id)&&p.visible!==false),[projects,cmpIds]);
+
+  // ── Back-to-top FAB for mobile listing ────────────────────────────────────
+  const [showBackTop, setShowBackTop] = useState(false);
+  useEffect(()=>{
+    if(tab!=="properties"){setShowBackTop(false);return;}
+    const onScroll=()=>setShowBackTop(window.scrollY>320);
+    window.addEventListener('scroll',onScroll,{passive:true});
+    return ()=>window.removeEventListener('scroll',onScroll);
+  },[tab]);
+
   const toggleCmp=useCallback((e,id)=>{e.stopPropagation();setCmpIds(prev=>prev.includes(id)?prev.filter(x=>x!==id):prev.length>=5?prev:[...prev,id]);},[]);
   const cheapest=cmpProjects.length?cmpProjects.reduce((a,b)=>a.priceFrom<b.priceFrom?a:b).id:null;
   const largest =cmpProjects.length?cmpProjects.reduce((a,b)=>a.sizeSqft[1]>b.sizeSqft[1]?a:b).id:null;
@@ -5781,50 +5836,101 @@ export default function App(){
           <p className="sec-label-sub">From affordable starter homes to spacious family properties — find your perfect match across Penang</p>
         </div>
         <main className="main" id="listings-main">
-          <div className="filter-panel">
-            {/* Row 1: primary filters */}
-            <div className="filter-top">
-              <span className="flbl">Filter by</span>
-              <div className="filter-divider"/>
-              <select className="fsel" value={type} onChange={e=>setType(e.target.value)}>{TYPES.map(t=><option key={t}>{t}</option>)}</select>
-              <select className="fsel" value={loc} onChange={e=>setLoc(e.target.value)}>{LOCS.map(l=><option key={l}>{l}</option>)}</select>
-              <select className="fsel" value={stat} onChange={e=>setStat(e.target.value)}>{STATS.map(s=><option key={s}>{s}</option>)}</select>
-              <button className="fmore-btn" onClick={()=>setShowMoreFilters(v=>!v)}>{showMoreFilters?"▲ Less Filters":"▼ More Filters"}</button>
-              <div className="rcnt">Showing <strong>{filtered.length}</strong> project{filtered.length!==1?"s":""}</div>
-            </div>
-            {/* Row 2: expanded filters */}
-            {showMoreFilters&&(
-              <div className="filter-row2">
-                <div className="filter-group">
-                  <span className="flbl">Bedrooms</span>
-                  <select className="fsel" value={fBed} onChange={e=>setFBed(e.target.value)}>{BEDS.map(b=><option key={b}>{b}</option>)}</select>
+          {/* ── Filter bar ── */}
+          {(()=>{
+            const activePills=[];
+            if(type!=="All Types") activePills.push({label:`Type: ${type}`,clear:()=>setType("All Types")});
+            if(loc!=="All Areas") activePills.push({label:`Area: ${loc}`,clear:()=>setLoc("All Areas")});
+            if(stat!=="All Status") activePills.push({label:`Status: ${stat}`,clear:()=>setStat("All Status")});
+            if(fBed!=="All Beds") activePills.push({label:`${fBed} Bed`,clear:()=>setFBed("All Beds")});
+            if(fBath!=="All Baths") activePills.push({label:`${fBath} Bath`,clear:()=>setFBath("All Baths")});
+            if(fTenure!=="All Tenure") activePills.push({label:fTenure,clear:()=>setFTenure("All Tenure")});
+            if(fCompletion!=="All Completion") activePills.push({label:fCompletion,clear:()=>setFCompletion("All Completion")});
+            if(priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX) activePills.push({label:"Custom Price",clear:()=>{setPriceMin(PRICE_SLIDER_MIN);setPriceMax(PRICE_SLIDER_MAX);}});
+            if(fSizeMin||fSizeMax) activePills.push({label:"Size Range",clear:()=>{setFSizeMin("");setFSizeMax("");}});
+            return(
+              <div className="fd-bar">
+                <button className="fd-trigger" onClick={()=>setFilterOpen(true)}>
+                  <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+                  Filters
+                  {activePills.length>0&&<span className="fd-badge">{activePills.length}</span>}
+                </button>
+                <div className="fd-pills">
+                  {activePills.map(pill=>(
+                    <span key={pill.label} className="fd-pill">
+                      {pill.label}
+                      <button className="fd-pill-x" onClick={pill.clear}>×</button>
+                    </span>
+                  ))}
                 </div>
-                <div className="filter-group">
-                  <span className="flbl">Bathrooms</span>
-                  <select className="fsel" value={fBath} onChange={e=>setFBath(e.target.value)}>{BATHS.map(b=><option key={b}>{b}</option>)}</select>
+                <div className="fd-rcnt"><strong>{filtered.length}</strong> project{filtered.length!==1?"s":""}</div>
+              </div>
+            );
+          })()}
+
+          {/* ── Filter dialog ── */}
+          {filterOpen&&(
+            <>
+              <div className="fd-ov" onClick={()=>setFilterOpen(false)}/>
+              <div className="fd-sheet">
+                <div className="fd-handle"/>
+                <div className="fd-hd">
+                  <span className="fd-hd-title">Filter Projects</span>
+                  {[type!=="All Types",loc!=="All Areas",stat!=="All Status",fBed!=="All Beds",fBath!=="All Baths",fTenure!=="All Tenure",fCompletion!=="All Completion",priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX,!!fSizeMin||!!fSizeMax].filter(Boolean).length>0&&(
+                    <span className="fd-hd-cnt">{[type!=="All Types",loc!=="All Areas",stat!=="All Status",fBed!=="All Beds",fBath!=="All Baths",fTenure!=="All Tenure",fCompletion!=="All Completion",priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX,!!fSizeMin||!!fSizeMax].filter(Boolean).length} active</span>
+                  )}
+                  <button className="fd-close" onClick={()=>setFilterOpen(false)}>✕</button>
                 </div>
-                <div className="filter-group">
-                  <span className="flbl">Tenure</span>
-                  <select className="fsel" value={fTenure} onChange={e=>setFTenure(e.target.value)}>{TENURE_OPTS.map(t=><option key={t}>{t}</option>)}</select>
-                </div>
-                <div className="filter-group">
-                  <span className="flbl">Completion</span>
-                  <select className="fsel" value={fCompletion} onChange={e=>setFCompletion(e.target.value)}>{COMPLETION_OPTS.map(c=><option key={c}>{c}</option>)}</select>
-                </div>
-                <div className="filter-group">
-                  <span className="flbl">Built-up (sqft)</span>
-                  <div className="fsize-range">
-                    <input className="fsize-inp" type="number" placeholder="Min" value={fSizeMin} onChange={e=>setFSizeMin(e.target.value)} min="0"/>
-                    <span className="fsize-sep">–</span>
-                    <input className="fsize-inp" type="number" placeholder="Max" value={fSizeMax} onChange={e=>setFSizeMax(e.target.value)} min="0"/>
+                <div className="fd-body">
+                  <div className="fd-sec">
+                    <div className="fd-sec-label">Property Type</div>
+                    <div className="fd-chips">{TYPES.map(t=><button key={t} className={`fd-chip${type===t?" on":""}`} onClick={()=>setType(t)}>{t}</button>)}</div>
+                  </div>
+                  <div className="fd-sec">
+                    <div className="fd-sec-label">Location / Area</div>
+                    <div className="fd-chips">{LOCS.map(l=><button key={l} className={`fd-chip${loc===l?" on":""}`} onClick={()=>setLoc(l)}>{l}</button>)}</div>
+                  </div>
+                  <div className="fd-sec">
+                    <div className="fd-sec-label">Status</div>
+                    <div className="fd-chips">{STATS.map(s=><button key={s} className={`fd-chip${stat===s?" on":""}`} onClick={()=>setStat(s)}>{s}</button>)}</div>
+                  </div>
+                  <div className="fd-sec">
+                    <div className="fd-sec-label">Bedrooms</div>
+                    <div className="fd-chips">{BEDS.map(b=><button key={b} className={`fd-chip${fBed===b?" on":""}`} onClick={()=>setFBed(b)}>{b}</button>)}</div>
+                  </div>
+                  <div className="fd-sec">
+                    <div className="fd-sec-label">Bathrooms</div>
+                    <div className="fd-chips">{BATHS.map(b=><button key={b} className={`fd-chip${fBath===b?" on":""}`} onClick={()=>setFBath(b)}>{b}</button>)}</div>
+                  </div>
+                  <div className="fd-sec">
+                    <div className="fd-sec-label">Tenure</div>
+                    <div className="fd-chips">{TENURE_OPTS.map(t=><button key={t} className={`fd-chip${fTenure===t?" on":""}`} onClick={()=>setFTenure(t)}>{t}</button>)}</div>
+                  </div>
+                  <div className="fd-sec">
+                    <div className="fd-sec-label">Completion</div>
+                    <div className="fd-chips">{COMPLETION_OPTS.map(c=><button key={c} className={`fd-chip${fCompletion===c?" on":""}`} onClick={()=>setFCompletion(c)}>{c}</button>)}</div>
+                  </div>
+                  <div className="fd-sec">
+                    <div className="fd-sec-label">Price Range</div>
+                    <PriceRangeSlider minVal={priceMin} maxVal={priceMax} onChange={(mn,mx)=>{setPriceMin(mn);setPriceMax(mx);}}/>
+                  </div>
+                  <div className="fd-sec">
+                    <div className="fd-sec-label">Built-up Size (sqft)</div>
+                    <div className="fd-size-row">
+                      <input className="fd-size-inp" type="number" placeholder="Min sqft" value={fSizeMin} onChange={e=>setFSizeMin(e.target.value)} min="0"/>
+                      <span className="fd-size-sep">–</span>
+                      <input className="fd-size-inp" type="number" placeholder="Max sqft" value={fSizeMax} onChange={e=>setFSizeMax(e.target.value)} min="0"/>
+                    </div>
                   </div>
                 </div>
-                <button className="fclear-btn" onClick={()=>{setSearch("");setType("All Types");setLoc("All Areas");setStat("All Status");setPriceMin(PRICE_SLIDER_MIN);setPriceMax(PRICE_SLIDER_MAX);setFBed("All Beds");setFBath("All Baths");setFTenure("All Tenure");setFCompletion("All Completion");setFSizeMin("");setFSizeMax("");}}>Clear Filters</button>
+                <div className="fd-ft">
+                  <button className="fd-ft-clear" onClick={clearAllFilters}>Clear All</button>
+                  <button className="fd-ft-apply" onClick={()=>setFilterOpen(false)}>Show {filtered.length} Project{filtered.length!==1?"s":""}</button>
+                </div>
               </div>
-            )}
-            {/* Price slider — full width */}
-            <PriceRangeSlider minVal={priceMin} maxVal={priceMax} onChange={(mn,mx)=>{setPriceMin(mn);setPriceMax(mx);}}/>
-          </div>
+            </>
+          )}
+
           <div className="grid">
             {filtered.length===0 ? <div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">No projects found</div><p className="empty-s">Try adjusting filters.</p></div>
             : visibleProjects.map((p, idx) => (
@@ -5862,6 +5968,10 @@ export default function App(){
           )}
         </main>
         <LuxuryFooter onTab={setTab} onRI={openRI}/>
+        {/* Back-to-top FAB — mobile only */}
+        <button className={`btt-fab${showBackTop?' visible':' hidden'}`} onClick={()=>window.scrollTo({top:0,behavior:'smooth'})} aria-label="Back to top">
+          <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
         <div className={`tray${cmpIds.length>0?" show":""}`}>
           <span className="tray-lbl">Compare ({cmpIds.length}/5)</span>
           <div className="tray-slots">{[...Array(5)].map((_,i)=>{const p=cmpProjects[i];return p?(<div key={p.id} className="tslot fill"><img src={p.image} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="tslot-nm">{p.name}</div><button className="tslot-x" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div>):<div key={i} className="tslot">empty</div>;})}</div>
