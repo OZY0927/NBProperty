@@ -336,6 +336,7 @@ body:not(.dark) .list-pager button.on{background:var(--gold);}
 /* ── LIGHT MODE: reset all hardcoded dark backgrounds ── */
 body:not(.dark){
   color:#2D0E14;
+  background:linear-gradient(160deg,#FFF5F6 0%,#FDE8EC 55%,#FCE0E6 100%) !important;
   /* Re-map all admin/CRM/settings CSS variables to rose-gold light values */
   --a-bg:#FFFFFF;
   --a-surface:#FFF5F6;
