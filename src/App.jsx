@@ -2063,6 +2063,158 @@ body{background:#080812;color:#E8E4F0;}
 .lux-btn-pri:hover{transform:translateY(-2px);box-shadow:0 0 36px rgba(191,155,78,.48),0 8px 24px rgba(0,0,0,.4);}
 .lux-btn-sec:hover{transform:translateY(-2px);}
 
+/* ═══════════════════════════════════════════════════════════
+   CINEMA DETAIL PAGE — Full Luxury Dark Redesign
+═══════════════════════════════════════════════════════════ */
+.cine-cursor{position:fixed;pointer-events:none;z-index:99999;mix-blend-mode:difference;width:12px;height:12px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .3s;}
+.cine-cursor-ring{position:fixed;pointer-events:none;z-index:99998;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(0,210,255,.6);transform:translate(-50%,-50%);transition:left .08s ease-out,top .08s ease-out,width .25s,height .25s,border-color .25s,opacity .3s;}
+.cine-cursor-ring.hovering{width:64px;height:64px;border-color:rgba(139,92,246,.8);box-shadow:0 0 24px rgba(139,92,246,.35);}
+body.cine-active *{cursor:none !important;}
+.cine-det{position:relative;min-height:100vh;background:#030303;color:#f0f0f0;font-family:'DM Sans',system-ui,sans-serif;overflow-x:hidden;}
+.cine-blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.cine-blob{position:absolute;border-radius:50%;filter:blur(120px);animation:blobFloat 14s ease-in-out infinite;opacity:.18;}
+.cine-blob.b1{width:600px;height:600px;left:-10%;top:-15%;background:radial-gradient(circle,#00d2ff,transparent 70%);animation-duration:18s;}
+.cine-blob.b2{width:500px;height:500px;right:-12%;top:20%;background:radial-gradient(circle,#8b5cf6,transparent 70%);animation-duration:14s;animation-delay:-5s;}
+.cine-blob.b3{width:400px;height:400px;left:30%;bottom:-10%;background:radial-gradient(circle,#06b6d4,transparent 70%);animation-duration:20s;animation-delay:-9s;}
+.cine-blob.b4{width:350px;height:350px;right:25%;top:55%;background:radial-gradient(circle,#7c3aed,transparent 70%);animation-duration:16s;animation-delay:-3s;opacity:.12;}
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(30px,-20px) scale(1.05);}66%{transform:translate(-20px,25px) scale(.97);}}
+.cine-nav{position:fixed;top:1.2rem;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:.4rem;background:rgba(3,3,3,.7);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:.45rem .6rem;backdrop-filter:blur(24px);box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);animation:cineNavFade .6s ease forwards;}
+@keyframes cineNavFade{from{opacity:0;transform:translateX(-50%) translateY(-12px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+.cine-back{display:flex;align-items:center;gap:.45rem;padding:.42rem .9rem;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s ease;}
+.cine-back:hover{background:rgba(0,210,255,.12);border-color:rgba(0,210,255,.4);color:#00d2ff;}
+.cine-nav-divider{width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 .2rem;}
+.cine-nav-tab{padding:.42rem .9rem;border-radius:999px;background:transparent;border:1px solid transparent;color:rgba(255,255,255,.5);font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s ease;white-space:nowrap;}
+.cine-nav-tab:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.05);}
+.cine-nav-tab.on{background:linear-gradient(135deg,rgba(0,210,255,.15),rgba(139,92,246,.15));border-color:rgba(0,210,255,.35);color:#00d2ff;box-shadow:0 0 16px rgba(0,210,255,.15);}
+.cine-hero{position:relative;height:100vh;min-height:600px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;}
+.cine-hero-bg{position:absolute;inset:0;z-index:0;}
+.cine-hero-bg img{width:100%;height:100%;object-fit:cover;animation:cineZoom 22s ease-out forwards;}
+@keyframes cineZoom{from{transform:scale(1.14);}to{transform:scale(1);}}
+.cine-hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,3,3,.35) 0%,rgba(3,3,3,.1) 35%,rgba(3,3,3,.6) 65%,rgba(3,3,3,.97) 100%);}
+.cine-hero-side-glow{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(0,210,255,.07),transparent 55%),radial-gradient(ellipse 40% 60% at 20% 60%,rgba(139,92,246,.06),transparent 45%);}
+.cine-gal-nav{position:absolute;top:50%;right:1.5rem;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:.5rem;}
+.cine-gal-thumb{width:60px;height:44px;border-radius:7px;overflow:hidden;border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .22s ease;opacity:.5;}
+.cine-gal-thumb:hover{opacity:.85;border-color:rgba(0,210,255,.5);}
+.cine-gal-thumb.on{opacity:1;border-color:#00d2ff;box-shadow:0 0 14px rgba(0,210,255,.45);}
+.cine-gal-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.cine-hero-nav-btn{position:absolute;top:50%;z-index:10;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all .2s ease;transform:translateY(-50%);}
+.cine-hero-nav-btn.prev{left:1.2rem;}
+.cine-hero-nav-btn.next{left:4.2rem;}
+.cine-hero-nav-btn:hover{background:rgba(0,210,255,.15);border-color:rgba(0,210,255,.4);}
+.cine-hero-content{position:relative;z-index:5;padding:3rem 6vw 4rem;animation:cineHeroRise .9s cubic-bezier(.22,1,.36,1) .2s both;}
+@keyframes cineHeroRise{from{opacity:0;transform:translateY(36px);}to{opacity:1;transform:translateY(0);}}
+.cine-tag-pill{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .9rem;border-radius:999px;font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:.85rem;backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.35);}
+.cine-eyebrow{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(0,210,255,.75);font-weight:600;margin-bottom:.7rem;display:flex;align-items:center;gap:.55rem;}
+.cine-eyebrow::before{content:'';width:28px;height:1px;background:rgba(0,210,255,.55);}
+.cine-hero-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2.8rem,6vw,5.5rem);font-weight:300;line-height:1.05;background:linear-gradient(135deg,#fff 0%,rgba(200,200,255,.9) 50%,rgba(0,210,255,.85) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.85rem;letter-spacing:-.02em;}
+.cine-hero-subtitle{font-size:.92rem;color:rgba(255,255,255,.58);max-width:520px;line-height:1.65;margin-bottom:1.6rem;}
+.cine-meta-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.8rem;}
+.cine-meta-chip{display:inline-flex;align-items:center;gap:.38rem;padding:.3rem .75rem;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.78);font-size:.72rem;font-weight:500;backdrop-filter:blur(6px);transition:all .2s ease;}
+.cine-meta-chip.accent{background:linear-gradient(135deg,rgba(0,210,255,.12),rgba(139,92,246,.12));border-color:rgba(0,210,255,.3);color:#7dd3fc;font-weight:700;}
+.cine-stats{display:flex;flex-wrap:wrap;gap:.65rem;margin-bottom:2rem;}
+.cine-stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:.85rem 1.2rem;backdrop-filter:blur(12px);transition:all .25s ease;min-width:100px;}
+.cine-stat:hover{background:rgba(0,210,255,.06);border-color:rgba(0,210,255,.25);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,210,255,.1);}
+.cine-stat-lbl{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:.3rem;}
+.cine-stat-val{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.35rem;font-weight:600;color:#fff;line-height:1.1;}
+.cine-stat-val span{font-size:.72rem;font-family:'DM Sans',sans-serif;color:rgba(0,210,255,.8);font-weight:600;}
+.cine-hero-ctas{display:flex;flex-wrap:wrap;gap:.85rem;align-items:center;}
+.cine-cta-pri{display:inline-flex;align-items:center;gap:.6rem;padding:.8rem 2rem;border-radius:999px;background:linear-gradient(135deg,#00d2ff,#0080ff);color:#030303;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;box-shadow:0 0 32px rgba(0,210,255,.35),0 8px 20px rgba(0,0,0,.3);transition:all .25s ease;}
+.cine-cta-pri:hover{transform:translateY(-3px);box-shadow:0 0 52px rgba(0,210,255,.55),0 14px 30px rgba(0,0,0,.4);}
+.cine-cta-sec{display:inline-flex;align-items:center;gap:.6rem;padding:.8rem 1.8rem;border-radius:999px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.82);font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(8px);transition:all .25s ease;}
+.cine-cta-sec:hover{background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.5);color:#c4b5fd;transform:translateY(-3px);}
+.cine-sections{position:relative;z-index:5;}
+.cine-section{padding:5rem 6vw;position:relative;}
+.cine-section+.cine-section{border-top:1px solid rgba(255,255,255,.04);}
+.cine-sec-label{margin-bottom:3rem;}
+.cine-sec-eyebrow{font-size:.65rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,210,255,.65);font-weight:600;display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem;}
+.cine-sec-eyebrow::before{content:'';width:24px;height:1px;background:rgba(0,210,255,.45);}
+.cine-sec-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:#fff;letter-spacing:-.01em;line-height:1.15;}
+.cine-sec-title em{font-style:italic;background:linear-gradient(135deg,#00d2ff,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cine-bento{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.cine-bento-card{position:relative;overflow:hidden;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:2rem;cursor:default;transition:all .3s ease;}
+.cine-bento-card:hover{background:rgba(255,255,255,.05);border-color:rgba(0,210,255,.22);transform:translateY(-4px);box-shadow:0 20px 48px rgba(0,0,0,.4),0 0 32px rgba(0,210,255,.06);}
+.cine-bento-card.lg{grid-column:span 2;}
+.cine-bento-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.4rem;background:linear-gradient(135deg,rgba(0,210,255,.12),rgba(139,92,246,.12));border:1px solid rgba(0,210,255,.18);box-shadow:0 0 20px rgba(0,210,255,.1);transition:all .3s ease;}
+.cine-bento-card:hover .cine-bento-icon{background:linear-gradient(135deg,rgba(0,210,255,.22),rgba(139,92,246,.22));box-shadow:0 0 32px rgba(0,210,255,.25);transform:scale(1.05);}
+.cine-bento-title{font-size:.95rem;font-weight:600;color:#f0f0f0;margin-bottom:.5rem;letter-spacing:-.01em;}
+.cine-bento-desc{font-size:.8rem;color:rgba(255,255,255,.42);line-height:1.6;}
+.cine-bento-accent{position:absolute;bottom:0;left:0;right:0;height:2px;border-radius:0 0 16px 16px;background:linear-gradient(90deg,transparent,rgba(0,210,255,.4),transparent);opacity:0;transition:opacity .3s ease;}
+.cine-bento-card:hover .cine-bento-accent{opacity:1;}
+.cine-info-group{margin-bottom:2.5rem;}
+.cine-info-group-title{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(139,92,246,.75);font-weight:700;display:flex;align-items:center;gap:.6rem;margin-bottom:1.2rem;padding-bottom:.65rem;border-bottom:1px solid rgba(255,255,255,.05);}
+.cine-info-group-title::before{content:'';width:18px;height:2px;background:linear-gradient(90deg,#8b5cf6,#00d2ff);border-radius:2px;}
+.cine-spec-table{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065);border-radius:12px;overflow:hidden;}
+.cine-spec-row{display:flex;align-items:baseline;padding:.65rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s ease;}
+.cine-spec-row:last-child{border-bottom:none;}
+.cine-spec-row:hover{background:rgba(255,255,255,.025);}
+.cine-spec-key{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:600;min-width:160px;flex-shrink:0;}
+.cine-spec-val{font-size:.85rem;color:rgba(255,255,255,.8);font-weight:500;flex:1;line-height:1.5;}
+.cine-desc-block{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065);border-left:3px solid rgba(0,210,255,.45);border-radius:0 12px 12px 0;padding:1.6rem 1.8rem;font-size:.9rem;line-height:1.8;color:rgba(255,255,255,.62);position:relative;margin-bottom:2rem;}
+.cine-desc-block::before{content:'\u201C';position:absolute;top:-.4rem;left:1rem;font-family:'Cormorant Garamond',Georgia,serif;font-size:4rem;color:rgba(0,210,255,.15);line-height:1;}
+.cine-fac-chips{display:flex;flex-wrap:wrap;gap:.5rem;}
+.cine-fac-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .85rem;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-size:.74rem;color:rgba(255,255,255,.58);transition:all .2s ease;}
+.cine-fac-chip::before{content:'';width:4px;height:4px;border-radius:50%;background:rgba(0,210,255,.6);}
+.cine-fac-chip:hover{background:rgba(0,210,255,.08);border-color:rgba(0,210,255,.25);color:#7dd3fc;}
+.cine-loc{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
+.cine-map-wrap{position:relative;height:420px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 64px rgba(0,0,0,.5);margin-bottom:1.5rem;}
+.cine-map-wrap iframe{width:100%;height:100%;border:none;display:block;filter:saturate(.8) brightness(.85);}
+.cine-map-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.03);color:rgba(255,255,255,.4);gap:.6rem;font-size:.85rem;}
+.cine-map-overlay-tag{position:absolute;bottom:1rem;left:1rem;background:rgba(3,3,3,.82);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.6rem 1rem;backdrop-filter:blur(12px);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:600;display:flex;align-items:center;gap:.5rem;}
+.cine-loc-dist-cards{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.cine-loc-dist-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:.85rem 1rem;transition:all .2s ease;}
+.cine-loc-dist-card:hover{background:rgba(0,210,255,.05);border-color:rgba(0,210,255,.2);transform:translateY(-2px);}
+.cine-loc-dist-card .lbl{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:.28rem;}
+.cine-loc-dist-card .val{font-size:.88rem;font-weight:600;color:#f0f0f0;}
+.cine-amenities-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.cine-amenity-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.065);border-radius:14px;overflow:hidden;transition:all .28s ease;}
+.cine-amenity-card:hover{background:rgba(255,255,255,.055);border-color:rgba(139,92,246,.3);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.3),0 0 24px rgba(139,92,246,.08);}
+.cine-amenity-hd{display:flex;align-items:center;gap:.55rem;padding:.75rem 1rem;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.05);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72);font-weight:700;}
+.cine-amenity-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;background:linear-gradient(135deg,rgba(0,210,255,.1),rgba(139,92,246,.1));border:1px solid rgba(0,210,255,.15);}
+.cine-amenity-item{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;font-size:.76rem;color:rgba(255,255,255,.52);border-bottom:1px solid rgba(255,255,255,.03);transition:all .15s ease;}
+.cine-amenity-item:last-child{border-bottom:none;}
+.cine-amenity-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.025);padding-left:1.3rem;}
+.cine-amenity-dot{width:4px;height:4px;border-radius:50%;background:rgba(0,210,255,.5);flex-shrink:0;}
+.cine-unit-list{display:flex;flex-direction:column;gap:2.5rem;}
+.cine-unit-card{display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065);border-radius:20px;overflow:hidden;transition:all .35s ease;}
+.cine-unit-card:nth-child(even){direction:rtl;}
+.cine-unit-card:nth-child(even)>*{direction:ltr;}
+.cine-unit-card:hover{border-color:rgba(0,210,255,.22);box-shadow:0 24px 60px rgba(0,0,0,.45),0 0 40px rgba(0,210,255,.06);}
+.cine-unit-img{position:relative;overflow:hidden;min-height:300px;}
+.cine-unit-img img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease;display:block;}
+.cine-unit-card:hover .cine-unit-img img{transform:scale(1.06);}
+.cine-unit-img-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(3,3,3,.18),rgba(3,3,3,.42));pointer-events:none;}
+.cine-unit-img-label{position:absolute;top:1rem;left:1rem;background:rgba(3,3,3,.78);border:1px solid rgba(0,210,255,.3);border-radius:8px;padding:.3rem .75rem;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#00d2ff;backdrop-filter:blur(8px);}
+.cine-unit-noimg{width:100%;height:100%;min-height:300px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);font-size:3rem;}
+.cine-unit-body{padding:2.4rem 2.4rem;display:flex;flex-direction:column;justify-content:space-between;gap:1rem;}
+.cine-unit-label{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,210,255,.68);font-weight:700;margin-bottom:.3rem;}
+.cine-unit-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.85rem;font-weight:300;color:#fff;line-height:1.1;margin-bottom:.5rem;letter-spacing:-.01em;}
+.cine-unit-price{display:inline-flex;align-items:baseline;gap:.4rem;padding:.5rem 1rem;border-radius:999px;background:linear-gradient(135deg,rgba(0,210,255,.1),rgba(139,92,246,.1));border:1px solid rgba(0,210,255,.22);margin-bottom:.3rem;align-self:flex-start;}
+.cine-unit-price-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);}
+.cine-unit-price-val{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:600;color:#7dd3fc;}
+.cine-unit-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0;}
+.cine-unit-pill{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .85rem;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-size:.74rem;color:rgba(255,255,255,.68);font-weight:500;transition:all .2s ease;}
+.cine-unit-pill:hover{background:rgba(0,210,255,.08);border-color:rgba(0,210,255,.25);}
+.cine-unit-desc{font-size:.85rem;color:rgba(255,255,255,.48);line-height:1.7;flex:1;}
+.cine-unit-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.6rem;border-radius:999px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.78);font-size:.76rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .25s ease;align-self:flex-start;}
+.cine-unit-cta:hover{background:rgba(0,210,255,.1);border-color:rgba(0,210,255,.4);color:#00d2ff;transform:translateX(3px);}
+.cine-unit-empty{text-align:center;padding:4rem 2rem;color:rgba(255,255,255,.35);font-size:.9rem;}
+.cine-upgrades{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065);border-radius:14px;padding:1.6rem 1.8rem;margin-top:2rem;}
+.cine-upgrades-title{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(139,92,246,.7);font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+.cine-upgrades-title::before{content:'';width:16px;height:2px;background:linear-gradient(90deg,#8b5cf6,#00d2ff);}
+.cine-upgrades-body{font-size:.85rem;color:rgba(255,255,255,.52);line-height:1.7;}
+.cine-footer{position:relative;overflow:hidden;padding:7rem 6vw 5rem;text-align:center;background:linear-gradient(180deg,transparent,rgba(0,5,15,.95) 40%,rgba(0,5,15,1) 100%);}
+.cine-footer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,210,255,.06),transparent 55%),radial-gradient(ellipse 50% 40% at 50% 100%,rgba(139,92,246,.08),transparent 50%);pointer-events:none;}
+.cine-footer-eye{font-size:.65rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,210,255,.6);margin-bottom:1rem;position:relative;}
+.cine-footer-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:300;color:#fff;letter-spacing:-.02em;line-height:1.05;margin-bottom:1rem;position:relative;}
+.cine-footer-title em{font-style:italic;background:linear-gradient(135deg,#00d2ff,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cine-footer-sub{font-size:.95rem;color:rgba(255,255,255,.42);max-width:520px;margin:0 auto 3rem;line-height:1.65;position:relative;}
+.cine-footer-btns{display:flex;justify-content:center;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;}
+.cine-footer-bottom{margin-top:4rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;font-size:.72rem;color:rgba(255,255,255,.22);}
+.cine-footer-logo{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.1rem;color:rgba(255,255,255,.45);}
+@media(max-width:1100px){.cine-loc{grid-template-columns:1fr;}.cine-unit-card{grid-template-columns:1fr;direction:ltr !important;}.cine-unit-card:nth-child(even){direction:ltr;}.cine-bento{grid-template-columns:1fr 1fr;}.cine-bento-card.lg{grid-column:span 2;}}
+@media(max-width:768px){.cine-hero-title{font-size:2.4rem;}.cine-hero-content{padding:2rem 1.2rem 3rem;}.cine-section{padding:3.5rem 1.2rem;}.cine-nav{top:.65rem;padding:.35rem .5rem;max-width:calc(100vw - 1.5rem);}.cine-nav-tab{font-size:.6rem;padding:.35rem .65rem;}.cine-back span{display:none;}.cine-bento{grid-template-columns:1fr;}.cine-bento-card.lg{grid-column:span 1;}.cine-amenities-grid{grid-template-columns:1fr;}.cine-unit-card{grid-template-columns:1fr;}.cine-loc-dist-cards{grid-template-columns:1fr;}.cine-gal-nav{display:none;}.cine-cursor,.cine-cursor-ring{display:none;}}
+@media(max-width:480px){.cine-hero-title{font-size:2rem;}.cine-hero-ctas{flex-direction:column;align-items:flex-start;}.cine-stats{gap:.45rem;}.cine-stat{min-width:80px;padding:.65rem .9rem;}}
+
 `;
 
 
@@ -2622,6 +2774,62 @@ Sent via NB Property website.`
 }
 
 /* ═══════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════ */
+function CustomCursor() {
+  const curRef = useRef(null);
+  const ringRef = useRef(null);
+  const posRef = useRef({ x: -200, y: -200 });
+  const ringPosRef = useRef({ x: -200, y: -200 });
+  const rafRef = useRef(null);
+  const hoverRef = useRef(false);
+
+  useEffect(() => {
+    document.body.classList.add('cine-active');
+    const onMove = (e) => {
+      posRef.current = { x: e.clientX, y: e.clientY };
+      if (curRef.current) {
+        curRef.current.style.left = e.clientX + 'px';
+        curRef.current.style.top = e.clientY + 'px';
+      }
+    };
+    const onOver = (e) => {
+      const t = e.target;
+      const isHoverable = t.matches('button,a,[role="button"],.cine-bento-card,.cine-amenity-card,.cine-unit-card,.cine-stat,.cine-loc-dist-card,.cine-gal-thumb');
+      if (isHoverable !== hoverRef.current) {
+        hoverRef.current = isHoverable;
+        if (ringRef.current) ringRef.current.classList.toggle('hovering', isHoverable);
+      }
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseover', onOver);
+    const tick = () => {
+      ringPosRef.current.x += (posRef.current.x - ringPosRef.current.x) * 0.12;
+      ringPosRef.current.y += (posRef.current.y - ringPosRef.current.y) * 0.12;
+      if (ringRef.current) {
+        ringRef.current.style.left = ringPosRef.current.x + 'px';
+        ringRef.current.style.top = ringPosRef.current.y + 'px';
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      document.body.classList.remove('cine-active');
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseover', onOver);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  return (
+    <>
+      <div ref={curRef} className="cine-cursor" style={{left:'-200px',top:'-200px'}}/>
+      <div ref={ringRef} className="cine-cursor-ring" style={{left:'-200px',top:'-200px'}}/>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════
    DETAIL MODAL
 ═══════════════════════════════════════ */
 function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
@@ -2629,13 +2837,12 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
   useEffect(()=>{ window.scrollTo(0,0); },[]);
   const vt = p.visibleTabs || {};
   const ALL_DET_TABS = [
-    { k:"overview", l:"📊 Project Info",  show: vt.overview  !== false },
-    { k:"location", l:"📍 Location",      show: vt.location  !== false },
-    { k:"layouts",  l:"📐 Unit Layouts",  show: vt.layouts   !== false },
+    { k:"overview", l:"Overview",   show: vt.overview  !== false },
+    { k:"location", l:"Location",   show: vt.location  !== false },
+    { k:"layouts",  l:"Layouts",    show: vt.layouts   !== false },
   ];
   const visDetTabs = ALL_DET_TABS.filter(t=>t.show);
   const [detTab, setDetTab] = useState(()=>visDetTabs[0]?.k || "overview");
-  // If active tab got hidden, switch to first visible
   const activeTab = visDetTabs.find(t=>t.k===detTab) ? detTab : (visDetTabs[0]?.k || "overview");
   const allImgs = [p.image,...(p.gallery||[])];
   const amenities = Array.isArray(p.nearbyAmenities) ? p.nearbyAmenities : [];
@@ -2643,209 +2850,299 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
   const mapSrc = p.coordinates?.lat
     ? `https://maps.google.com/maps?q=${p.coordinates.lat},${p.coordinates.lng}&z=15&output=embed`
     : null;
-  // Section visibility helper — defaults to true when not set
   const vs = p.visibleSections || {};
   const sec = (tabKey, secKey) => vs[`${tabKey}.${secKey}`] !== false;
 
-  const SpecSection=({icon,title,rows})=>{
-    const filled=rows.filter(([,v])=>v!=null&&String(v).trim()!==''&&String(v).trim()!=='—'&&!String(v).includes('undefined')&&!String(v).includes('NaN'));
-    if(!filled.length)return null;
-    return(<div className="spec-section"><div className="spec-sec-hd"><span>{icon}</span>{title}</div>{filled.map(([k,v],i)=><div key={i} className="spec-row"><div className="spec-key">{k}</div><div className="spec-val">{v}</div></div>)}</div>);
+  const CineSpecGroup = ({title, icon, rows}) => {
+    const filled = rows.filter(([,v])=>v!=null&&String(v).trim()!==''&&String(v).trim()!=='—'&&!String(v).includes('undefined')&&!String(v).includes('NaN'));
+    if(!filled.length) return null;
+    return (
+      <div className="cine-info-group">
+        <div className="cine-info-group-title">{icon} {title}</div>
+        <div className="cine-spec-table">
+          {filled.map(([k,v],i)=>(
+            <div key={i} className="cine-spec-row">
+              <div className="cine-spec-key">{k}</div>
+              <div className="cine-spec-val">{v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
+  const CAT_ICONS = {Education:'🎓',Healthcare:'🏥','Shopping & Dining':'🛍',Transport:'🚌','Beach & Leisure':'🏖','Heritage & Tourism':'🏛','Business & Industry':'🏭','Dining & Nightlife':'🍜'};
+  const BENTO_ICONS = ['✦','◈','⬡','◉','▲','⬢','◇','★','⬟','◆'];
+
   return (
-    <div className="det-pg">
-      <div className="det det-pg-inner">
-        <div className="det-split">
-          {/* ── LEFT: image + gallery ── */}
-          <div className="det-left">
-            <div className="det-hero">
-              <img src={allImgs[activeImg]} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
-              <div className="det-hero-ov"/>
-              {/* Back button — icon overlay on image top-left */}
-              <button className="det-back-btn" onClick={onClose} aria-label="Back to listings">&#8592;</button>
-              <div className="det-hc">
-                <div className="det-tag-pill" style={{background:p.tagColor}}>{p.tag}</div>
-                <h2 className="det-title">{p.name}</h2>
-                <div className="det-dv"><IPin/>{p.developer}&nbsp;·&nbsp;<IPin/>{p.location}</div>
-                <div className="det-hero-meta">
-                  {p.type && <span className="det-meta-chip">{p.type}</span>}
-                  {p.tenure && <span className="det-meta-chip">{p.tenure}</span>}
-                  {p.completion && <span className="det-meta-chip">📅 {p.completion}</span>}
-                  {p.priceFrom && <span className="det-meta-chip primary">From {fmt(p.priceFrom)}</span>}
-                </div>
-              </div>
-              {allImgs.length>1&&<>
-                <button className="det-hero-nav prev" onClick={()=>setActiveImg(i=>(i-1+allImgs.length)%allImgs.length)} aria-label="Previous image">‹</button>
-                <button className="det-hero-nav next" onClick={()=>setActiveImg(i=>(i+1)%allImgs.length)} aria-label="Next image">›</button>
-                <div className="det-hero-dots">{allImgs.map((_,i)=><button key={i} className={`det-hero-dot${activeImg===i?" on":""}`} onClick={()=>setActiveImg(i)}/>)}</div>
-              </>}
-            </div>
-            {allImgs.length>1&&(
-              <div className="gal-strip">
-                {allImgs.map((img,i)=>(
-                  <div key={i} className={`gal-t${activeImg===i?" on":""}`} onClick={()=>setActiveImg(i)}>
-                    <img src={img} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          {/* ── RIGHT: tabs + content + sticky price bar ── */}
-          <div className="det-right">
-            {visDetTabs.length > 1 && (
-              <div className="det-tabs">
-                {visDetTabs.map(({k,l})=>(
-                  <button key={k} className={`det-tab${activeTab===k?" on":""}`} onClick={()=>setDetTab(k)}>{l}</button>
-                ))}
-              </div>
-            )}
+    <div className="cine-det">
+      <CustomCursor/>
 
-            <div className="det-content">
-        {/* ── OVERVIEW ── */}
-        {activeTab==="overview"&&(
-          <div>
-            <div className="ov-body">
-              {/* Description + Highlights row — each independently gated */}
-              {(sec("overview","description")||sec("overview","highlights"))&&
-               (p.description||(p.highlights||[]).length>0)&&(
-                <div className="ov-desc-row" style={{gridTemplateColumns:sec("overview","description")&&p.description&&sec("overview","highlights")&&(p.highlights||[]).length>0?"1.2fr 1fr":"1fr"}}>
-                  {sec("overview","description")&&p.description&&(
-                    <div className="spec-section">
-                      <div className="spec-sec-hd"><span>📝</span>Description</div>
-                      <p className="det-desc-p">{p.description}</p>
-                    </div>
-                  )}
-                  {sec("overview","highlights")&&(p.highlights||[]).length>0&&(
-                    <div className="spec-section">
-                      <div className="spec-sec-hd"><span>✨</span>Key Highlights</div>
-                      <div className="hi-list">
-                        {(p.highlights||[]).map(h=><div key={h} className="hi-item"><div className="hi-dot"/>{h}</div>)}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className="spec-grid">
-                {sec("overview","basicInfo")&&<SpecSection icon="🏢" title="Basic Project Info" rows={[["Project Name",p.name],["Location",p.location],["Developer",p.developer],["Property Type",p.type],["Land Size",p.landSize],["Construction Stage",p.constructionStage],["Completion Date",p.completion],["Tenure",p.tenure]]}/>}
-                {sec("overview","development")&&<SpecSection icon="🏗" title="Development Details" rows={[["Total Blocks",p.totalBlocks],["Floors / Levels",(p.totalFloorsPerTower||[]).join(" | ")],["Residential Start",p.residentialStartLevel],["Total Floors",p.floors?`${p.floors} floors`:null]]}/>}
-                {sec("overview","unitInfo")&&<SpecSection icon="🏠" title="Unit Information" rows={[["Total Units",p.totalUnits?`${p.totalUnits} units`:null],["Public / Bumi",p.unitsBreakdown],["Units per Tower",p.unitsPerTower],["Bedrooms",p.bedrooms?.length?bLbl(p.bedrooms)+" bed":null],["Bathrooms",p.bathrooms?.length?bLbl(p.bathrooms)+" bath":null],["Size Range",p.sizeSqft?.[0]&&p.sizeSqft?.[1]?`${p.sizeSqft[0].toLocaleString()}–${p.sizeSqft[1].toLocaleString()} sf`:null]]}/>}
-                {sec("overview","parking")&&<SpecSection icon="🚗" title="Parking" rows={[["Car Park Levels",p.carParkLevels],["Number of Bays",p.numberOfCarParks],["Notes",p.parkingNotes]]}/>}
-                {sec("overview","facilities")&&<SpecSection icon="🛗" title="Facilities & Access" rows={[["Lifts per Tower",p.numberOfLifts],["Facilities",(p.facilities||[]).join(", ")]]}/>}
-                {sec("overview","financial")&&<SpecSection icon="💰" title="Financial Info" rows={[["Price Range",p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:null],["Starting Price",p.priceFrom?fmt(p.priceFrom):null],["Maintenance Fee",p.maintenanceFee],["Sinking Fund",p.sinkingFund]]}/>}
-                {sec("overview","sales")&&<SpecSection icon="🏢" title="Sales & Marketing" rows={[["Showroom",p.showroom],["Scale Model",p.scaleModel]]}/>}
-              </div>
-              {sec("overview","facList")&&(p.facilities||[]).length>0&&(
-                <div className="spec-section full" style={{marginTop:"1rem"}}>
-                  <div className="spec-sec-hd"><span>🏊</span>Full Facilities List</div>
-                  <div className="fac-chips">{(p.facilities||[]).map(f=><span key={f} className="fac-chip">{f}</span>)}</div>
-                </div>
-              )}
-            </div>
-            </div>
-        )}
+      {/* ── Ambient blobs ── */}
+      <div className="cine-blobs" aria-hidden="true">
+        <div className="cine-blob b1"/><div className="cine-blob b2"/>
+        <div className="cine-blob b3"/><div className="cine-blob b4"/>
+      </div>
 
-        {/* ── LOCATION ── */}
-        {activeTab==="location"&&(
-          <div className="loc-body">
-            <div style={{display:"flex",alignItems:"center",gap:".6rem",fontSize:".82rem",color:"var(--muted)",marginBottom:"1.2rem"}}><IMapPin/><strong style={{color:"var(--ink)"}}>{p.name}</strong> — {p.location}</div>
-            {sec("location","map")&&(
-              <div className="map-embed">
-                {mapSrc
-                  ? <iframe src={mapSrc} title="Location Map" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen/>
-                  : <div className="map-placeholder"><IMapPin/><span>Map not available</span><small style={{opacity:.6}}>{p.location}</small></div>
-                }
+      {/* ── Floating pill nav ── */}
+      <nav className="cine-nav">
+        <button className="cine-back" onClick={onClose}>
+          ← <span>Back</span>
+        </button>
+        {visDetTabs.length > 1 && <>
+          <div className="cine-nav-divider"/>
+          {visDetTabs.map(({k,l})=>(
+            <button key={k} className={`cine-nav-tab${activeTab===k?' on':''}`} onClick={()=>setDetTab(k)}>{l}</button>
+          ))}
+        </>}
+      </nav>
+
+      {/* ── CINEMATIC HERO ── */}
+      <section className="cine-hero">
+        <div className="cine-hero-bg">
+          <img key={activeImg} src={allImgs[activeImg]} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
+        </div>
+        <div className="cine-hero-overlay"/>
+        <div className="cine-hero-side-glow"/>
+
+        {allImgs.length > 1 && (
+          <div className="cine-gal-nav">
+            {allImgs.slice(0,6).map((img,i)=>(
+              <div key={i} className={`cine-gal-thumb${activeImg===i?' on':''}`} onClick={()=>setActiveImg(i)}>
+                <img src={img} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
               </div>
-            )}
-            {sec("location","amenities")&&amenities.length>0&&(
-              <>
-                <div style={{fontSize:".65rem",letterSpacing:".14em",textTransform:"uppercase",color:"var(--gold)",fontWeight:700,marginBottom:"1rem"}}>Nearby Amenities</div>
-                <div className="amenities-grid">
-                  {amenities.map((cat,i)=>(
-                    <div key={i} className="amenity-cat">
-                      <div className="amenity-hd">
-                        <span>{cat.category==="Education"?"🎓":cat.category==="Healthcare"?"🏥":cat.category==="Shopping & Dining"?"🛍":cat.category==="Transport"?"🚌":cat.category==="Beach & Leisure"?"🏖":cat.category==="Heritage & Tourism"?"🏛":cat.category==="Business & Industry"?"🏭":cat.category==="Dining & Nightlife"?"🍜":"📍"}</span>
-                        {cat.category}
-                      </div>
-                      {(cat.items||[]).map((item,j)=>(
-                        <div key={j} className="amenity-item"><div className="amenity-dot"/>{item}</div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+            ))}
           </div>
         )}
+        {allImgs.length > 1 && <>
+          <button className="cine-hero-nav-btn prev" onClick={()=>setActiveImg(i=>(i-1+allImgs.length)%allImgs.length)}>‹</button>
+          <button className="cine-hero-nav-btn next" onClick={()=>setActiveImg(i=>(i+1)%allImgs.length)}>›</button>
+        </>}
 
-        {/* ── UNIT LAYOUTS ── */}
-        {activeTab==="layouts"&&(
-          <div className="layouts-body">
-            {sec("layouts","unitTypes")&&(
-              unitTypes.length===0 ? (
-                <div className="ut-empty"><span>📐</span>No unit layouts available for this project.</div>
-              ) : (
-                <>
-                  <div className="layouts-intro">📐 Unit Types — {unitTypes.length} layout{unitTypes.length>1?"s":""} available</div>
-                  {unitTypes.map((ut, i) => (
-                    <div key={i} className="ut-card">
-                      <div className="ut-img-panel">
-                        {ut.image
-                          ? <img src={ut.image} alt={ut.name||ut.label}/>
-                          : <div style={{width:"100%",height:"100%",background:"var(--warm)",display:"flex",alignItems:"center",justifyContent:"center",color:"var(--muted)",fontSize:"1.5rem"}}>📐</div>
-                        }
-                        <div className="ut-img-label">{ut.label||`Type ${String.fromCharCode(65+i)}`}</div>
-                      </div>
-                      <div className="ut-info-panel">
-                        <div>
-                          <div className="ut-header">
-                            <div className="ut-name-group">
-                              <div className="ut-label-badge">{ut.label||`Unit Type ${String.fromCharCode(65+i)}`}</div>
-                              <div className="ut-name">{ut.name||"Unit Layout"}</div>
-                            </div>
-                            {ut.priceFrom&&<div className="ut-price-badge">{ut.priceFrom}</div>}
-                          </div>
-                          <div className="ut-stats" style={{marginTop:".9rem"}}>
-                            {ut.beds&&<div className="ut-stat"><IBed/>{ut.beds} Bed{ut.beds>1?"":"room"}</div>}
-                            {ut.baths&&<div className="ut-stat"><IBath/>{ut.baths} Bath</div>}
-                            {ut.size&&<div className="ut-stat"><IArea/>{ut.size}</div>}
-                          </div>
-                        </div>
-                        {ut.desc&&<div className="ut-desc">{ut.desc}</div>}
-                      </div>
-                    </div>
-                  ))}
-                </>
-              )
-            )}
-            {sec("layouts","upgrades")&&p.upgrades&&(
-              <div className="layouts-upgrades">
-                <div className="lu-hd"><span>🔧</span>Upgrade Specifications</div>
-                <div className="lu-body">{p.upgrades}</div>
-              </div>
-            )}
-            {!sec("layouts","unitTypes")&&!sec("layouts","upgrades")&&(
-              <div className="ut-empty"><span>🔒</span>Content hidden by admin settings.</div>
-            )}
+        <div className="cine-hero-content">
+          <div className="cine-eyebrow">{p.developer}{p.location?` · ${p.location}`:''}</div>
+          {p.tag && <div className="cine-tag-pill" style={{background:p.tagColor||'#BF9B4E'}}>{p.tag}</div>}
+          <h1 className="cine-hero-title">{p.name}</h1>
+          {p.description && <p className="cine-hero-subtitle">{p.description.slice(0,200)}{p.description.length>200?'…':''}</p>}
+
+          <div className="cine-meta-row">
+            {p.type && <span className="cine-meta-chip">{p.type}</span>}
+            {p.tenure && <span className="cine-meta-chip">{p.tenure}</span>}
+            {p.completion && <span className="cine-meta-chip">📅 {p.completion}</span>}
+            {p.status && <span className="cine-meta-chip">{p.status}</span>}
+            {p.priceFrom>0 && <span className="cine-meta-chip accent">From {fmt(p.priceFrom)}</span>}
           </div>
-        )}
-            </div>
-            {sec("overview","priceBar")&&(
-              <div className="price-bar det-sticky-bar">
-                <div className="pb-left">
-                  <div className="pb-lbl">Price starting from</div>
-                  <div className="pb-price">{fmt(p.priceFrom)}<span> – {fmt(p.priceTo)}</span></div>
-                </div>
-                <div className="pb-btns">
-                  <button className="pb-btn1" onClick={onRegisterInterest}>Register Interest</button>
-                  {p.showroom && p.showroom.trim().toLowerCase()!=="no" && p.showroom.trim()!=="" && (
-                    <button className="pb-btn2" onClick={onVisitShowroom}>Visit Showroom</button>
-                  )}
-                </div>
-              </div>
+
+          <div className="cine-stats">
+            {p.priceFrom>0 && <div className="cine-stat"><div className="cine-stat-lbl">Starting From</div><div className="cine-stat-val">{fmt(p.priceFrom)}</div></div>}
+            {p.totalUnits>0 && <div className="cine-stat"><div className="cine-stat-lbl">Total Units</div><div className="cine-stat-val">{p.totalUnits}</div></div>}
+            {p.sizeSqft?.[0]>0 && <div className="cine-stat"><div className="cine-stat-lbl">Built-up From</div><div className="cine-stat-val">{p.sizeSqft[0].toLocaleString()} <span>sf</span></div></div>}
+            {(p.bedrooms||[]).length>0 && <div className="cine-stat"><div className="cine-stat-lbl">Bedrooms</div><div className="cine-stat-val">{bLbl(p.bedrooms)} <span>bed</span></div></div>}
+            {p.floors>0 && <div className="cine-stat"><div className="cine-stat-lbl">Floors</div><div className="cine-stat-val">{p.floors}</div></div>}
+          </div>
+
+          <div className="cine-hero-ctas">
+            <button className="cine-cta-pri" onClick={onRegisterInterest}>Register Interest</button>
+            {p.showroom && p.showroom.trim().toLowerCase()!=="no" && p.showroom.trim()!=="" && (
+              <button className="cine-cta-sec" onClick={onVisitShowroom}>Visit Showroom</button>
             )}
           </div>
         </div>
+      </section>
+
+      {/* ── CONTENT SECTIONS ── */}
+      <div className="cine-sections">
+
+        {/* ═══ OVERVIEW ═══ */}
+        {activeTab==="overview" && (<>
+
+          {/* Key Highlights — Bento grid */}
+          {sec("overview","highlights") && (p.highlights||[]).length>0 && (
+            <section className="cine-section">
+              <div className="cine-sec-label">
+                <div className="cine-sec-eyebrow">Signature Features</div>
+                <h2 className="cine-sec-title">Key <em>Highlights</em></h2>
+              </div>
+              <div className="cine-bento">
+                {(p.highlights||[]).map((h,i)=>(
+                  <div key={i} className={`cine-bento-card${i===0||i===3?' lg':''}`}>
+                    <div className="cine-bento-icon">{BENTO_ICONS[i%BENTO_ICONS.length]}</div>
+                    <div className="cine-bento-title">{h}</div>
+                    <div className="cine-bento-accent"/>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Description */}
+          {sec("overview","description") && p.description && (
+            <section className="cine-section">
+              <div className="cine-sec-label">
+                <div className="cine-sec-eyebrow">About This Project</div>
+                <h2 className="cine-sec-title">Project <em>Overview</em></h2>
+              </div>
+              <div className="cine-desc-block">{p.description}</div>
+            </section>
+          )}
+
+          {/* Project Info */}
+          {(sec("overview","basicInfo")||sec("overview","development")||sec("overview","unitInfo")||sec("overview","parking")||sec("overview","facilities")||sec("overview","financial")||sec("overview","sales")) && (
+            <section className="cine-section">
+              <div className="cine-sec-label">
+                <div className="cine-sec-eyebrow">Development Details</div>
+                <h2 className="cine-sec-title">Project <em>Information</em></h2>
+              </div>
+              {sec("overview","basicInfo") && <CineSpecGroup icon="🏢" title="Basic Info" rows={[["Project Name",p.name],["Location",p.location],["Developer",p.developer],["Property Type",p.type],["Land Size",p.landSize],["Construction Stage",p.constructionStage],["Completion Date",p.completion],["Tenure",p.tenure]]}/>}
+              {sec("overview","development") && <CineSpecGroup icon="🏗" title="Development Details" rows={[["Total Blocks",p.totalBlocks],["Floors / Levels",(p.totalFloorsPerTower||[]).join(" | ")],["Residential Start",p.residentialStartLevel],["Total Floors",p.floors?`${p.floors} floors`:null]]}/>}
+              {sec("overview","unitInfo") && <CineSpecGroup icon="🏠" title="Unit Information" rows={[["Total Units",p.totalUnits?`${p.totalUnits} units`:null],["Public / Bumi",p.unitsBreakdown],["Units per Tower",p.unitsPerTower],["Bedrooms",p.bedrooms?.length?bLbl(p.bedrooms)+" bed":null],["Bathrooms",p.bathrooms?.length?bLbl(p.bathrooms)+" bath":null],["Size Range",p.sizeSqft?.[0]&&p.sizeSqft?.[1]?`${p.sizeSqft[0].toLocaleString()}–${p.sizeSqft[1].toLocaleString()} sf`:null]]}/>}
+              {sec("overview","parking") && <CineSpecGroup icon="🚗" title="Parking" rows={[["Car Park Levels",p.carParkLevels],["Number of Bays",p.numberOfCarParks],["Notes",p.parkingNotes]]}/>}
+              {sec("overview","facilities") && <CineSpecGroup icon="🛗" title="Facilities & Access" rows={[["Lifts per Tower",p.numberOfLifts],["Facilities",(p.facilities||[]).join(", ")]]}/>}
+              {sec("overview","financial") && <CineSpecGroup icon="💰" title="Financial Info" rows={[["Price Range",p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:null],["Starting Price",p.priceFrom?fmt(p.priceFrom):null],["Maintenance Fee",p.maintenanceFee],["Sinking Fund",p.sinkingFund]]}/>}
+              {sec("overview","sales") && <CineSpecGroup icon="🏢" title="Sales & Marketing" rows={[["Showroom",p.showroom],["Scale Model",p.scaleModel]]}/>}
+            </section>
+          )}
+
+          {/* Full Facilities */}
+          {sec("overview","facList") && (p.facilities||[]).length>0 && (
+            <section className="cine-section">
+              <div className="cine-sec-label">
+                <div className="cine-sec-eyebrow">Amenities</div>
+                <h2 className="cine-sec-title">Full <em>Facilities</em></h2>
+              </div>
+              <div className="cine-fac-chips">
+                {(p.facilities||[]).map(f=><span key={f} className="cine-fac-chip">{f}</span>)}
+              </div>
+            </section>
+          )}
+        </>)}
+
+        {/* ═══ LOCATION ═══ */}
+        {activeTab==="location" && (
+          <section className="cine-section">
+            <div className="cine-sec-label">
+              <div className="cine-sec-eyebrow">{p.location}</div>
+              <h2 className="cine-sec-title">Prime <em>Location</em></h2>
+            </div>
+            <div className="cine-loc">
+              <div className="cine-loc-left">
+                {sec("location","map") && (
+                  <div className="cine-map-wrap">
+                    {mapSrc
+                      ? <iframe src={mapSrc} title="Location Map" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen/>
+                      : <div className="cine-map-placeholder">📍<span>{p.location}</span></div>
+                    }
+                    <div className="cine-map-overlay-tag">📍 {p.name} · {p.location}</div>
+                  </div>
+                )}
+                <div className="cine-loc-dist-cards">
+                  <div className="cine-loc-dist-card"><div className="lbl">Location</div><div className="val">{p.location||'—'}</div></div>
+                  {p.completion && <div className="cine-loc-dist-card"><div className="lbl">Completion</div><div className="val">{p.completion}</div></div>}
+                  {p.tenure && <div className="cine-loc-dist-card"><div className="lbl">Tenure</div><div className="val">{p.tenure}</div></div>}
+                  {p.developer && <div className="cine-loc-dist-card"><div className="lbl">Developer</div><div className="val">{p.developer}</div></div>}
+                </div>
+              </div>
+              <div className="cine-loc-right">
+                {sec("location","amenities") && amenities.length>0 && (<>
+                  <div className="cine-sec-label" style={{marginBottom:'1.5rem'}}>
+                    <div className="cine-sec-eyebrow">Surroundings</div>
+                    <h3 className="cine-sec-title" style={{fontSize:'1.8rem'}}>Nearby <em>Amenities</em></h3>
+                  </div>
+                  <div className="cine-amenities-grid">
+                    {amenities.map((cat,i)=>(
+                      <div key={i} className="cine-amenity-card">
+                        <div className="cine-amenity-hd">
+                          <div className="cine-amenity-icon">{CAT_ICONS[cat.category]||'📍'}</div>
+                          {cat.category}
+                        </div>
+                        {(cat.items||[]).map((item,j)=>(
+                          <div key={j} className="cine-amenity-item"><div className="cine-amenity-dot"/>{item}</div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </>)}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ═══ UNIT LAYOUTS ═══ */}
+        {activeTab==="layouts" && (
+          <section className="cine-section">
+            <div className="cine-sec-label">
+              <div className="cine-sec-eyebrow">Floor Plans</div>
+              <h2 className="cine-sec-title">Unit <em>Layouts</em></h2>
+            </div>
+            {sec("layouts","unitTypes") && (
+              unitTypes.length===0
+                ? <div className="cine-unit-empty">📐 No unit layouts available for this project.</div>
+                : <div className="cine-unit-list">
+                    {unitTypes.map((ut,i)=>(
+                      <div key={i} className="cine-unit-card">
+                        <div className="cine-unit-img">
+                          {ut.image
+                            ? <img src={ut.image} alt={ut.name||ut.label} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
+                            : <div className="cine-unit-noimg">📐</div>
+                          }
+                          <div className="cine-unit-img-overlay"/>
+                          <div className="cine-unit-img-label">{ut.label||`Type ${String.fromCharCode(65+i)}`}</div>
+                        </div>
+                        <div className="cine-unit-body">
+                          <div>
+                            <div className="cine-unit-label">Unit Type {i+1}</div>
+                            <div className="cine-unit-name">{ut.name||`${ut.label||'Layout'}`}</div>
+                            {ut.priceFrom && (
+                              <div className="cine-unit-price">
+                                <span className="cine-unit-price-lbl">From</span>
+                                <span className="cine-unit-price-val">{ut.priceFrom}</span>
+                              </div>
+                            )}
+                            <div className="cine-unit-pills">
+                              {ut.beds>0 && <span className="cine-unit-pill">🛏 {ut.beds} Bed{ut.beds>1?'s':''}</span>}
+                              {ut.baths>0 && <span className="cine-unit-pill">🚿 {ut.baths} Bath</span>}
+                              {ut.size && <span className="cine-unit-pill">📐 {ut.size}</span>}
+                            </div>
+                          </div>
+                          {ut.desc && <div className="cine-unit-desc">{ut.desc}</div>}
+                          <button className="cine-unit-cta" onClick={onRegisterInterest}>Enquire Now →</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+            )}
+            {sec("layouts","upgrades") && p.upgrades && (
+              <div className="cine-upgrades">
+                <div className="cine-upgrades-title">🔧 Upgrade Specifications</div>
+                <div className="cine-upgrades-body">{p.upgrades}</div>
+              </div>
+            )}
+            {!sec("layouts","unitTypes") && !sec("layouts","upgrades") && (
+              <div className="cine-unit-empty">🔒 Content hidden by admin settings.</div>
+            )}
+          </section>
+        )}
+
+        {/* ═══ FOOTER CTA ═══ */}
+        <div className="cine-footer">
+          <div className="cine-footer-eye">Limited Units Available</div>
+          <div className="cine-footer-title">Ready to Make <em>Your Move?</em></div>
+          <p className="cine-footer-sub">
+            Register your interest today and our consultants will get back to you with exclusive pricing, availability, and showroom scheduling for {p.name}.
+          </p>
+          <div className="cine-footer-btns">
+            <button className="cine-cta-pri" onClick={onRegisterInterest}>Register Interest</button>
+            {p.showroom && p.showroom.trim().toLowerCase()!=="no" && p.showroom.trim()!=="" && (
+              <button className="cine-cta-sec" onClick={onVisitShowroom}>Visit Showroom</button>
+            )}
+          </div>
+          <div className="cine-footer-bottom">
+            <div className="cine-footer-logo">NB <span style={{opacity:.35}}>Property</span></div>
+            <div>{p.name} · {p.location}</div>
+            <div>© {new Date().getFullYear()} NB Property</div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
