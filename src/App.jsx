@@ -256,7 +256,38 @@ const css=`
   --a-cta:#BF9B4E;
 }
 html{scroll-behavior:smooth;font-size:18px;}
-body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE4 100%);color:var(--ink);}
+body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE4 100%);color:var(--ink);transition:background .4s ease,color .4s ease;}
+/* ── DARK MODE overrides ── */
+body.dark{background:linear-gradient(180deg,#0B0D1A 0%,#070910 100%);color:#FAF8F3;}
+body.dark{--ink:#FAF8F3;--parchment:#0D0D18;--warm:#141428;--border:#2C2A3E;--card:#141428;--muted:#9090A8;--cta-l:#1C1C30;}
+body.dark .proj-card{background:#141428;border-color:#2C2A3E;}
+body.dark .proj-card:hover{background:#1C1C30;border-color:rgba(191,155,78,.3);}
+body.dark .card{background:#141428;border-color:#2C2A3E;}
+body.dark .filter-panel{background:#141428;border-color:#2C2A3E;}
+body.dark .lux-hero{background:#04040E;}
+body.dark .wcu-sec{background:#0D0D18;}
+body.dark .wcu-img-wrap{filter:brightness(.9);}
+body.dark .showcase-sec{filter:brightness(.85);}
+body.dark .lux-ft{background:#06060F;border-color:#2C2A3E;}
+body.dark input,body.dark select,body.dark textarea{background:#1C1C30;border-color:#2C2A3E;color:#FAF8F3;}
+body.dark input::placeholder,body.dark textarea::placeholder{color:#6060780;}
+body.dark .lc-finp{background:rgba(255,255,255,.06);color:#FFE08A;}
+body.dark .det-content{background:#0D0D18;}
+body.dark .det{background:#0D0D18;}
+/* ── Theme toggle button ── */
+@keyframes thSpin{from{transform:rotate(0deg) scale(.7);}to{transform:rotate(360deg) scale(1);}}
+@keyframes thRayPop{0%{opacity:0;transform:scale(0) rotate(-30deg);}60%{opacity:1;transform:scale(1.2);}100%{transform:scale(1);}}
+@keyframes thMoonSlide{0%{opacity:0;transform:rotate(45deg) scale(.6);}100%{opacity:1;transform:rotate(0deg) scale(1);}}
+.nav-theme{background:rgba(191,155,78,.06);border:1px solid rgba(191,155,78,.22);width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#FAF8F3;cursor:pointer;transition:background .2s,border-color .2s,transform .2s;flex-shrink:0;backdrop-filter:blur(6px);position:relative;overflow:hidden;}
+.nav-theme:hover{background:rgba(191,155,78,.16);transform:translateY(-1px);border-color:rgba(191,155,78,.45);}
+.nav-theme:active{transform:scale(.92);}
+.nav-theme-ico{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .25s,transform .3s;}
+.nav-theme-ico.sun{opacity:1;transform:scale(1) rotate(0deg);}
+.nav-theme-ico.sun.hide{opacity:0;transform:scale(.4) rotate(90deg);}
+.nav-theme-ico.moon{opacity:1;transform:scale(1) rotate(0deg);}
+.nav-theme-ico.moon.hide{opacity:0;transform:scale(.4) rotate(-90deg);}
+.nav-theme.anim .nav-theme-ico.sun:not(.hide){animation:thSpin .45s cubic-bezier(.34,1.56,.64,1) both;}
+.nav-theme.anim .nav-theme-ico.moon:not(.hide){animation:thMoonSlide .4s cubic-bezier(.34,1.56,.64,1) both;}
 
 .filter-panel,.card,.proj-card,.spec-section,.amenity-cat,.layouts-upgrades,.ri-box,.set-card,.a-login-box,.a-stat,.a-tbl-wrap,.a-modal,.vis-master-card,.vis-tab-card,.vis-preview,.vis-group-hd,.vis-group-body,.map-embed,.a-map-preview,.map-picker-container,.map-picker-modal,.crm-tbl-wrap,.crm-col,.crm-card,.crm-modal,.crm-drawer-sec,.crm-stat,.crm-chart-card,.tray,.tslot,.add-more,.price-panel{border-radius:var(--r-md);}
 .card,.proj-card,.ri-box,.a-tbl-wrap,.a-modal,.map-embed,.a-map-preview,.map-picker-modal,.crm-tbl-wrap,.crm-col,.crm-modal,.crm-drawer-sec,.tray,.tslot,.add-more,.filter-panel,.spec-section,.amenity-cat,.layouts-upgrades{overflow:hidden;}
@@ -5979,6 +6010,17 @@ export default function App(){
   const goTab=(t)=>{setTab(t);window.scrollTo({top:0,behavior:'instant'});};
   const [adminTab,setAdminTab]=useState("projects");
   const [adminSubOpen,setAdminSubOpen]=useState(false);
+  const [darkMode,setDarkMode]=useState(()=>localStorage.getItem("nb_theme")==="dark");
+  const [themeAnim,setThemeAnim]=useState(false);
+  useEffect(()=>{
+    document.body.classList.toggle("dark",darkMode);
+    localStorage.setItem("nb_theme",darkMode?"dark":"light");
+  },[darkMode]);
+  const toggleTheme=()=>{
+    setThemeAnim(true);
+    setDarkMode(v=>!v);
+    setTimeout(()=>setThemeAnim(false),500);
+  };
   const [search,setSearch]=useState("");
   const [type,setType]=useState("All Types");
   const [loc,setLoc]=useState("All Areas");
@@ -6169,6 +6211,22 @@ export default function App(){
 
         {/* Right-side controls: admin icon + mobile hamburger */}
         <div className="nav-right">
+          <button className={`nav-theme${themeAnim?" anim":""}`} onClick={toggleTheme} aria-label="Toggle theme">
+            <span className={`nav-theme-ico sun${darkMode?" hide":""}`}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFE08A" strokeWidth="2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="4"/>
+                <line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
+                <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/>
+                <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/>
+              </svg>
+            </span>
+            <span className={`nav-theme-ico moon${!darkMode?" hide":""}`}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4B880" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </span>
+          </button>
           <button className={`nav-admin${tab==="admin"?" on":""}`} onClick={()=>goTab("admin")} aria-label="Admin">
             <IPerson/>
           </button>
