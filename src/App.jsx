@@ -334,8 +334,88 @@ body:not(.dark) .lux-stat-num{color:var(--gold);}
 body:not(.dark) .list-pager button:hover{background:rgba(193,126,135,.1);}
 body:not(.dark) .list-pager button.on{background:var(--gold);}
 /* ── LIGHT MODE: reset all hardcoded dark backgrounds ── */
-body:not(.dark){color:#2D0E14;}
+body:not(.dark){
+  color:#2D0E14;
+  /* Re-map all admin/CRM/settings CSS variables to rose-gold light values */
+  --a-bg:#FFFFFF;
+  --a-surface:#FFF5F6;
+  --a-surface2:#FCE8EB;
+  --a-border:#F0D0D4;
+  --a-muted:#A07880;
+  --a-text:#2D0E14;
+  --a-gold:#C17E87;
+  --a-cta:#7A2238;
+}
 body:not(.dark) html,body:not(.dark) .main{background:transparent;}
+/* ── LIGHT MODE: admin hardcoded-color overrides (not using --a-vars) ── */
+body:not(.dark) .a-shell{background:#FFF5F6;}
+body:not(.dark) .a-sidebar{background:#fff;border-right-color:#F0D0D4;}
+body:not(.dark) .a-main{background:#FFF5F6;}
+body:not(.dark) .a-pg-title{color:#2D0E14;}
+body:not(.dark) .a-pg-title em{color:#C17E87;}
+body:not(.dark) .a-stat-val{color:#2D0E14;}
+body:not(.dark) .a-tbl-name{color:#2D0E14;}
+body:not(.dark) .a-tbl thead tr{background:#FCE8EB;}
+body:not(.dark) .a-tbl tbody tr:hover{background:rgba(193,126,135,.04);}
+body:not(.dark) .a-card-name{color:#2D0E14;}
+body:not(.dark) .a-card-grid .a-proj-card{background:#fff;}
+body:not(.dark) .a-modal-hd{background:linear-gradient(135deg,#FCE8EB,#F7D4D9);}
+body:not(.dark) .a-modal-title{color:#2D0E14;}
+body:not(.dark) .a-modal-title em{color:#C17E87;}
+body:not(.dark) .a-modal-body{background:#fff;}
+body:not(.dark) .a-ico-btn:hover.edit{background:rgba(193,126,135,.06);}
+body:not(.dark) .a-ico-btn:hover.del{background:rgba(196,84,62,.06);}
+body:not(.dark) .a-sb-item:hover{background:#FCE8EB;color:#5C1828;}
+body:not(.dark) .a-sb-item.on{background:#FCE8EB;color:#7A2238;border-left-color:#C17E87;}
+/* admin login */
+body:not(.dark) .a-login{background:#FFF5F6;}
+/* Toggle switch */
+body:not(.dark) .tog-track{background:#F0D0D4;border-color:#F0D0D4;}
+/* Visibility panel */
+body:not(.dark) .vis-master-card{background:#fff;border-color:#F0D0D4;}
+body:not(.dark) .vis-master-title{color:#2D0E14;}
+body:not(.dark) .vis-tab-card{background:#fff;border-color:#F0D0D4;}
+body:not(.dark) .vis-tab-name{color:#2D0E14;}
+body:not(.dark) .vis-preview{background:rgba(193,126,135,.06);border-color:rgba(193,126,135,.15);}
+/* Settings */
+body:not(.dark) .set-card{background:#fff;border-color:#F0D0D4;}
+body:not(.dark) .set-preview{background:rgba(193,126,135,.06);border-color:rgba(193,126,135,.15);}
+/* CRM hardcoded colors */
+body:not(.dark) .crm-modal-hd{background:linear-gradient(135deg,#FCE8EB,#F7D4D9);}
+body:not(.dark) .crm-modal-title{color:#2D0E14;}
+body:not(.dark) .crm-modal-title em{color:#C17E87;}
+body:not(.dark) .crm-modal-body{background:#fff;}
+body:not(.dark) .crm-modal-ft{background:#FFF5F6;}
+body:not(.dark) .crm-drawer{background:#fff;border-left-color:#F0D0D4;}
+body:not(.dark) .crm-drawer-hd{background:linear-gradient(180deg,#FFF5F6,#fff);}
+body:not(.dark) .crm-drawer-name{color:#2D0E14;}
+body:not(.dark) .crm-drawer-body{background:#FFF5F6;}
+body:not(.dark) .crm-stat-val{color:#2D0E14;}
+body:not(.dark) .crm-chart-card{background:#fff;}
+body:not(.dark) .crm-bar-track{background:rgba(193,126,135,.1);}
+body:not(.dark) .crm-tbl thead tr{background:#FCE8EB;}
+body:not(.dark) .crm-tbl tbody tr:hover{background:rgba(193,126,135,.04);}
+body:not(.dark) .crm-col-body.drag-over{background:rgba(193,126,135,.05);outline-color:rgba(193,126,135,.25);}
+body:not(.dark) .crm-card:hover{border-color:rgba(193,126,135,.4);transform:translateY(-1px);}
+body:not(.dark) .crm-score-bar{background:rgba(193,126,135,.12);}
+body:not(.dark) .crm-wa-link{color:#7A2238;background:rgba(122,34,56,.06);border-color:rgba(122,34,56,.15);}
+body:not(.dark) .crm-drawer-sec-hd{background:#FCE8EB;}
+/* Map picker */
+body:not(.dark) .map-picker-container{background:#FFF5F6;border-color:#F0D0D4;}
+body:not(.dark) .map-picker-modal-ft{background:#FFF5F6;}
+/* Compare tray */
+body:not(.dark) .tray{background:#fff;border-top-color:#F0D0D4;box-shadow:0 -4px 16px rgba(193,126,135,.12);}
+body:not(.dark) .tray-lbl{color:#7A2238;}
+body:not(.dark) .tslot{border-color:rgba(193,126,135,.3);color:#C17E87;}
+body:not(.dark) .tslot.fill{border-color:#F0D0D4;background:#FFF5F6;}
+body:not(.dark) .tray-clr{border-color:#F0D0D4;color:#A07880;}
+/* Compare table — section header stays dark burgundy (intentional accent) */
+body:not(.dark) .sec-hd{background:linear-gradient(135deg,#5C1828,#7A2238);border-color:#7A2238;}
+body:not(.dark) .pdf-btn{background:#5C1828;border-color:rgba(255,200,210,.2);}
+body:not(.dark) .pdf-btn:hover{border-color:rgba(255,200,210,.55);}
+/* Register interest modal stays light (already uses var(--ink)/parchment correctly) */
+body:not(.dark) .ri-opt-btn{background:#FFF5F6;}
+body:not(.dark) .ri-opt-btn.on{background:#fff;color:#2D0E14;border-bottom-color:#C17E87;}
 /* Cards & listing */
 body:not(.dark) .card{background:#fff;border-color:#F0D0D4;box-shadow:0 4px 18px rgba(193,126,135,.1);backdrop-filter:none;}
 body:not(.dark) .card:hover{box-shadow:0 12px 40px rgba(193,126,135,.2);border-color:var(--gold);}
@@ -556,6 +636,73 @@ body:not(.dark) .lux-ft-copy{color:rgba(255,220,225,.35);}
 body:not(.dark) .lux-ft-copy span{color:rgba(255,200,210,.55);}
 /* Pager info */
 body:not(.dark) .list-pager .page-info{color:#A07880;}
+/* ── LIGHT MODE: Detail page overrides ── */
+/* Base page & content area */
+body:not(.dark) .det{background:var(--parchment);}
+body:not(.dark) .det-content{background:var(--parchment);}
+/* Gallery strip */
+body:not(.dark) .gal-strip{background:linear-gradient(180deg,#F2D6DB,#ECC8CF);}
+body:not(.dark) .gal-t{opacity:.7;}
+body:not(.dark) .gal-t:hover,body:not(.dark) .gal-t.on{opacity:1;}
+/* Tab bar */
+body:not(.dark) .det-tabs{background:linear-gradient(180deg,#fff,#FFF0F2);border-bottom:1px solid #F0D0D4;box-shadow:0 2px 8px rgba(193,126,135,.1);}
+body:not(.dark) .det-tab{color:rgba(45,14,20,.45);}
+body:not(.dark) .det-tab:hover{color:#7A2238;background:rgba(193,126,135,.06);}
+body:not(.dark) .det-tab.on{color:#5C1828;}
+body:not(.dark) .det-tab.on::after{background:linear-gradient(90deg,#C17E87,#7A2238);box-shadow:none;}
+/* Spec section headers (dark strip inside cards) */
+body:not(.dark) .spec-sec-hd,body:not(.dark) .lu-hd{background:linear-gradient(180deg,#FCE8EB,#F7D4D9);color:#5C1828;border-bottom:1px solid #F0D0D4;}
+body:not(.dark) .spec-sec-hd span,body:not(.dark) .lu-hd span{background:rgba(92,24,40,.1);}
+/* Spec rows */
+body:not(.dark) .spec-row:hover{background:rgba(193,126,135,.04);}
+body:not(.dark) .spec-key{color:#A07880;}
+body:not(.dark) .spec-val{color:#2D0E14;}
+/* Highlights */
+body:not(.dark) .hi-item{color:#2D0E14;border-bottom-color:rgba(193,126,135,.12);}
+body:not(.dark) .hi-item:hover{background:rgba(193,126,135,.06);}
+body:not(.dark) .hi-dot{background:linear-gradient(135deg,#C17E87,#D4A4AC);box-shadow:0 0 0 3px rgba(193,126,135,.12);}
+/* Description */
+body:not(.dark) .det-desc-p{background:linear-gradient(180deg,#fff,#FFF5F6);color:#2D0E14;}
+body:not(.dark) .det-desc-p::before{color:#C17E87;}
+/* Facility chips */
+body:not(.dark) .fac-chips{background:linear-gradient(180deg,#fff,#FFF5F6);}
+body:not(.dark) .fac-chip{background:#fff;border-color:#F0D0D4;color:#2D0E14;}
+body:not(.dark) .fac-chip::before{background:#C17E87;}
+body:not(.dark) .fac-chip:hover{background:#5C1828;color:#fff;border-color:#5C1828;}
+/* Amenity cards */
+body:not(.dark) .amenity-cat{background:#fff;border-color:#F0D0D4;}
+body:not(.dark) .amenity-hd{background:linear-gradient(180deg,#FCE8EB,#F7D4D9);color:#5C1828;border-bottom-color:#F0D0D4;}
+body:not(.dark) .amenity-item{color:#2D0E14;border-bottom-color:rgba(193,126,135,.1);}
+body:not(.dark) .amenity-item:hover{background:rgba(193,126,135,.05);}
+body:not(.dark) .amenity-dot{background:linear-gradient(135deg,#C17E87,#D4A4AC);}
+/* Section cards */
+body:not(.dark) .spec-section{background:#fff;border-color:#F0D0D4;}
+body:not(.dark) .spec-section:hover{border-color:rgba(193,126,135,.35);}
+/* Unit layout cards */
+body:not(.dark) .ut-card{background:#fff;border-color:#F0D0D4;}
+body:not(.dark) .ut-img-label{background:linear-gradient(135deg,#5C1828,#7A2238);}
+body:not(.dark) .ut-label-badge{background:rgba(255,255,255,.15);color:#fff;}
+body:not(.dark) .ut-name{color:#2D0E14;}
+body:not(.dark) .ut-price-badge{background:linear-gradient(135deg,#5C1828,#7A2238);}
+body:not(.dark) .ut-stat{background:#FFF5F6;border-color:#F0D0D4;}
+body:not(.dark) .ut-stat:hover{border-color:#C17E87;background:#FCE8EB;}
+body:not(.dark) .ut-desc{color:#7A2238;}
+body:not(.dark) .layouts-intro{background:rgba(193,126,135,.08);color:#5C1828;}
+/* Scrollbar */
+body:not(.dark) .det-content::-webkit-scrollbar-thumb{background:rgba(193,126,135,.25);}
+body:not(.dark) .det-sticky-bar::before{background:linear-gradient(to top,rgba(255,245,246,.98),transparent);}
+/* Price / CTA bar stays dark burgundy (intentional — matches nav/footer) */
+body:not(.dark) .price-bar{background:linear-gradient(135deg,#5C1828 0%,#7A2238 60%,#9B3048 100%);border-top:1px solid rgba(255,200,210,.12);}
+body:not(.dark) .price-bar::after{opacity:.2;}
+body:not(.dark) .pb-left .pb-lbl{color:rgba(255,220,225,.6);}
+body:not(.dark) .pb-price{color:#FFD4D8;}
+body:not(.dark) .pb-price span{color:rgba(255,200,210,.7);}
+body:not(.dark) .pb-btn1{background:linear-gradient(135deg,#D4A4AC,#C17E87);box-shadow:0 6px 18px -4px rgba(193,126,135,.45);}
+body:not(.dark) .pb-btn2{border-color:rgba(255,200,210,.35);color:rgba(255,230,234,.85);}
+body:not(.dark) .pb-btn2:hover{border-color:#FFD4D8;color:#fff;background:rgba(255,200,210,.1);}
+/* Map */
+body:not(.dark) .map-embed{border-color:#F0D0D4;}
+body:not(.dark) .map-placeholder{background:#FCE8EB;color:#A07880;}
 
 .filter-panel,.card,.proj-card,.spec-section,.amenity-cat,.layouts-upgrades,.ri-box,.set-card,.a-login-box,.a-stat,.a-tbl-wrap,.a-modal,.vis-master-card,.vis-tab-card,.vis-preview,.vis-group-hd,.vis-group-body,.map-embed,.a-map-preview,.map-picker-container,.map-picker-modal,.crm-tbl-wrap,.crm-col,.crm-card,.crm-modal,.crm-drawer-sec,.crm-stat,.crm-chart-card,.tray,.tslot,.add-more,.price-panel{border-radius:var(--r-md);}
 .card,.proj-card,.ri-box,.a-tbl-wrap,.a-modal,.map-embed,.a-map-preview,.map-picker-modal,.crm-tbl-wrap,.crm-col,.crm-modal,.crm-drawer-sec,.tray,.tslot,.add-more,.filter-panel,.spec-section,.amenity-cat,.layouts-upgrades{overflow:hidden;}
