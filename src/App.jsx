@@ -777,13 +777,16 @@ body:not(.dark) .cine-bento-title{color:#2D0E14;}
 body:not(.dark) .cine-bento-desc{color:rgba(45,14,20,.5);}
 body:not(.dark) .cine-bento-accent{background:linear-gradient(90deg,transparent,rgba(193,126,135,.45),transparent);}
 /* Spec table */
-body:not(.dark) .cine-info-group-title{color:rgba(122,34,56,.8);border-bottom-color:rgba(193,126,135,.15);}
-body:not(.dark) .cine-info-group-title::before{background:linear-gradient(90deg,#C17E87,#D4A4AC);}
-body:not(.dark) .cine-spec-table{background:rgba(255,245,246,.5);border-color:rgba(193,126,135,.12);}
-body:not(.dark) .cine-spec-row{border-bottom-color:rgba(193,126,135,.08);}
-body:not(.dark) .cine-spec-row:hover{background:rgba(193,126,135,.04);}
-body:not(.dark) .cine-spec-key{color:rgba(122,34,56,.65);}
-body:not(.dark) .cine-spec-val{color:rgba(45,14,20,.82);}
+/* info cards — light mode */
+body:not(.dark) .cine-info-card{background:rgba(255,245,246,.65);border-color:rgba(193,126,135,.15);}
+body:not(.dark) .cine-info-card:hover{background:rgba(255,235,238,.9);border-color:rgba(193,126,135,.38);box-shadow:0 16px 40px rgba(92,24,40,.1),0 0 24px rgba(193,126,135,.06);}
+body:not(.dark) .cine-info-card-hd{background:rgba(193,126,135,.09);border-bottom-color:rgba(193,126,135,.14);}
+body:not(.dark) .cine-info-card-icon{background:linear-gradient(135deg,rgba(193,126,135,.18),rgba(212,164,172,.1));border-color:rgba(193,126,135,.28);}
+body:not(.dark) .cine-info-card-title{color:rgba(122,34,56,.82);}
+body:not(.dark) .cine-info-item{border-bottom-color:rgba(193,126,135,.09);}
+body:not(.dark) .cine-info-item:nth-child(odd){border-right-color:rgba(193,126,135,.09);}
+body:not(.dark) .cine-info-item-lbl{color:rgba(122,34,56,.58);}
+body:not(.dark) .cine-info-item-val{color:#2D0E14;}
 /* Description block */
 body:not(.dark) .cine-desc-block{background:rgba(255,245,246,.5);border-color:rgba(193,126,135,.12);border-left-color:rgba(193,126,135,.55);color:rgba(45,14,20,.7);}
 body:not(.dark) .cine-desc-block::before{color:rgba(193,126,135,.18);}
@@ -2844,15 +2847,20 @@ body.cine-active *{cursor:none !important;}
 .cine-bento-desc{font-size:.88rem;color:rgba(255,255,255,.42);line-height:1.6;}
 .cine-bento-accent{position:absolute;bottom:0;left:0;right:0;height:2px;border-radius:0 0 16px 16px;background:linear-gradient(90deg,transparent,rgba(191,155,78,.5),transparent);opacity:0;transition:opacity .3s ease;}
 .cine-bento-card:hover .cine-bento-accent{opacity:1;}
-.cine-info-group{margin-bottom:2.5rem;}
-.cine-info-group-title{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(191,155,78,.8);font-weight:700;display:flex;align-items:center;gap:.6rem;margin-bottom:1.2rem;padding-bottom:.65rem;border-bottom:1px solid rgba(191,155,78,.1);}
-.cine-info-group-title::before{content:'';width:18px;height:2px;background:linear-gradient(90deg,#BF9B4E,#D4B880);border-radius:2px;}
-.cine-spec-table{background:rgba(191,155,78,.025);border:1px solid rgba(191,155,78,.1);border-radius:12px;overflow:hidden;}
-.cine-spec-row{display:flex;align-items:baseline;padding:.8rem 1.4rem;border-bottom:1px solid rgba(191,155,78,.07);transition:background .15s ease;}
-.cine-spec-row:last-child{border-bottom:none;}
-.cine-spec-row:hover{background:rgba(191,155,78,.04);}
-.cine-spec-key{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(191,155,78,.6);font-weight:600;min-width:170px;flex-shrink:0;}
-.cine-spec-val{font-size:.95rem;color:rgba(255,255,255,.82);font-weight:500;flex:1;line-height:1.55;}
+/* ── Project Info Card Grid ── */
+.cine-info-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:1.2rem;margin-top:2rem;}
+.cine-info-card{background:rgba(255,255,255,.04);border:1px solid rgba(191,155,78,.14);border-radius:18px;overflow:hidden;transition:all .25s ease;display:flex;flex-direction:column;}
+.cine-info-card:hover{background:rgba(191,155,78,.04);border-color:rgba(191,155,78,.32);box-shadow:0 16px 40px rgba(0,0,0,.22),0 0 28px rgba(191,155,78,.07);transform:translateY(-3px);}
+.cine-info-card-hd{display:flex;align-items:center;gap:.75rem;padding:1rem 1.3rem;background:rgba(191,155,78,.07);border-bottom:1px solid rgba(191,155,78,.1);}
+.cine-info-card-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,rgba(191,155,78,.2),rgba(212,184,128,.1));border:1px solid rgba(191,155,78,.25);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.cine-info-card-title{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:rgba(191,155,78,.88);}
+.cine-info-card-body{display:grid;grid-template-columns:1fr 1fr;flex:1;}
+.cine-info-item{display:flex;flex-direction:column;gap:.22rem;padding:.78rem 1.1rem;border-bottom:1px solid rgba(191,155,78,.06);}
+.cine-info-item:nth-child(odd){border-right:1px solid rgba(191,155,78,.06);}
+.cine-info-item:nth-last-child(-n+2):not(:nth-child(odd):last-child){border-bottom:none;}
+.cine-info-item:last-child{border-bottom:none;}
+.cine-info-item-lbl{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(191,155,78,.58);font-weight:600;}
+.cine-info-item-val{font-size:.88rem;color:rgba(240,236,228,.85);font-weight:500;line-height:1.42;}
 .cine-desc-block{background:rgba(191,155,78,.03);border:1px solid rgba(191,155,78,.1);border-left:3px solid rgba(191,155,78,.5);border-radius:0 12px 12px 0;padding:1.8rem 2rem;font-size:1rem;line-height:1.85;color:rgba(255,255,255,.65);position:relative;margin-bottom:2rem;}
 .cine-desc-block::before{content:'\u201C';position:absolute;top:-.4rem;left:1rem;font-family:'Cormorant Garamond',Georgia,serif;font-size:4rem;color:rgba(191,155,78,.18);line-height:1;}
 .cine-fac-chips{display:flex;flex-wrap:wrap;gap:.5rem;}
@@ -2930,6 +2938,7 @@ body.cine-active *{cursor:none !important;}
   .cine-bento{grid-template-columns:1fr;}
   .cine-bento-card.lg{grid-column:span 1;}
   .cine-info-grid{grid-template-columns:1fr;}
+  .cine-info-cards{grid-template-columns:1fr 1fr;}
   .cine-amenities-grid{grid-template-columns:1fr;}
   .cine-unit-card{grid-template-columns:1fr;}
   .cine-unit-body{padding:1.5rem;}
@@ -2947,6 +2956,11 @@ body.cine-active *{cursor:none !important;}
   .cine-footer-btns{flex-direction:column;align-items:center;}
   .cine-cta-pri,.cine-cta-sec{width:100%;justify-content:center;}
   .cine-loc-dist-cards{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .cine-info-cards{grid-template-columns:1fr;}
+  .cine-info-card-body{grid-template-columns:1fr;}
+  .cine-info-item:nth-child(odd){border-right:none;}
 }
 @media(max-width:480px){
   .cine-hero{height:88vw;min-height:300px;}
@@ -3804,13 +3818,16 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
     const filled = rows.filter(([,v])=>v!=null&&String(v).trim()!==''&&String(v).trim()!=='—'&&!String(v).includes('undefined')&&!String(v).includes('NaN'));
     if(!filled.length) return null;
     return (
-      <div className="cine-info-group">
-        <div className="cine-info-group-title">{icon} {title}</div>
-        <div className="cine-spec-table">
+      <div className="cine-info-card">
+        <div className="cine-info-card-hd">
+          <div className="cine-info-card-icon">{icon}</div>
+          <div className="cine-info-card-title">{title}</div>
+        </div>
+        <div className="cine-info-card-body">
           {filled.map(([k,v],i)=>(
-            <div key={i} className="cine-spec-row">
-              <div className="cine-spec-key">{k}</div>
-              <div className="cine-spec-val">{v}</div>
+            <div key={i} className="cine-info-item">
+              <div className="cine-info-item-lbl">{k}</div>
+              <div className="cine-info-item-val">{v}</div>
             </div>
           ))}
         </div>
@@ -3931,13 +3948,15 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                 <div className="cine-sec-eyebrow">Development Details</div>
                 <h2 className="cine-sec-title">Project <em>Information</em></h2>
               </div>
-              {sec("overview","basicInfo") && <CineSpecGroup icon="🏢" title="Basic Info" rows={[["Project Name",p.name],["Location",p.location],["Developer",p.developer],["Property Type",p.type],["Land Size",p.landSize],["Construction Stage",p.constructionStage],["Completion Date",p.completion],["Tenure",p.tenure]]}/>}
-              {sec("overview","development") && <CineSpecGroup icon="🏗" title="Development Details" rows={[["Total Blocks",p.totalBlocks],["Floors / Levels",(p.totalFloorsPerTower||[]).join(" | ")],["Residential Start",p.residentialStartLevel],["Total Floors",p.floors?`${p.floors} floors`:null]]}/>}
-              {sec("overview","unitInfo") && <CineSpecGroup icon="🏠" title="Unit Information" rows={[["Total Units",p.totalUnits?`${p.totalUnits} units`:null],["Public / Bumi",p.unitsBreakdown],["Units per Tower",p.unitsPerTower],["Bedrooms",p.bedrooms?.length?bLbl(p.bedrooms)+" bed":null],["Bathrooms",p.bathrooms?.length?bLbl(p.bathrooms)+" bath":null],["Size Range",p.sizeSqft?.[0]&&p.sizeSqft?.[1]?`${p.sizeSqft[0].toLocaleString()}–${p.sizeSqft[1].toLocaleString()} sf`:null]]}/>}
-              {sec("overview","parking") && <CineSpecGroup icon="🚗" title="Parking" rows={[["Car Park Levels",p.carParkLevels],["Number of Bays",p.numberOfCarParks],["Notes",p.parkingNotes]]}/>}
-              {sec("overview","facilities") && <CineSpecGroup icon="🛗" title="Facilities & Access" rows={[["Lifts per Tower",p.numberOfLifts],["Facilities",(p.facilities||[]).join(", ")]]}/>}
-              {sec("overview","financial") && <CineSpecGroup icon="💰" title="Financial Info" rows={[["Price Range",p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:null],["Starting Price",p.priceFrom?fmt(p.priceFrom):null],["Maintenance Fee",p.maintenanceFee],["Sinking Fund",p.sinkingFund]]}/>}
-              {sec("overview","sales") && <CineSpecGroup icon="🏢" title="Sales & Marketing" rows={[["Showroom",p.showroom],["Scale Model",p.scaleModel]]}/>}
+              <div className="cine-info-cards">
+                {sec("overview","basicInfo") && <CineSpecGroup icon="🏢" title="Basic Info" rows={[["Project Name",p.name],["Location",p.location],["Developer",p.developer],["Property Type",p.type],["Land Size",p.landSize],["Construction Stage",p.constructionStage],["Completion Date",p.completion],["Tenure",p.tenure]]}/>}
+                {sec("overview","development") && <CineSpecGroup icon="🏗" title="Development Details" rows={[["Total Blocks",p.totalBlocks],["Floors / Levels",(p.totalFloorsPerTower||[]).join(" | ")],["Residential Start",p.residentialStartLevel],["Total Floors",p.floors?`${p.floors} floors`:null]]}/>}
+                {sec("overview","unitInfo") && <CineSpecGroup icon="🏠" title="Unit Information" rows={[["Total Units",p.totalUnits?`${p.totalUnits} units`:null],["Public / Bumi",p.unitsBreakdown],["Units per Tower",p.unitsPerTower],["Bedrooms",p.bedrooms?.length?bLbl(p.bedrooms)+" bed":null],["Bathrooms",p.bathrooms?.length?bLbl(p.bathrooms)+" bath":null],["Size Range",p.sizeSqft?.[0]&&p.sizeSqft?.[1]?`${p.sizeSqft[0].toLocaleString()}–${p.sizeSqft[1].toLocaleString()} sf`:null]]}/>}
+                {sec("overview","parking") && <CineSpecGroup icon="🚗" title="Parking" rows={[["Car Park Levels",p.carParkLevels],["Number of Bays",p.numberOfCarParks],["Notes",p.parkingNotes]]}/>}
+                {sec("overview","facilities") && <CineSpecGroup icon="🛗" title="Facilities & Access" rows={[["Lifts per Tower",p.numberOfLifts],["Facilities",(p.facilities||[]).join(", ")]]}/>}
+                {sec("overview","financial") && <CineSpecGroup icon="💰" title="Financial Info" rows={[["Price Range",p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:null],["Starting Price",p.priceFrom?fmt(p.priceFrom):null],["Maintenance Fee",p.maintenanceFee],["Sinking Fund",p.sinkingFund]]}/>}
+                {sec("overview","sales") && <CineSpecGroup icon="🏢" title="Sales & Marketing" rows={[["Showroom",p.showroom],["Scale Model",p.scaleModel]]}/>}
+              </div>
             </section>
           )}
 
