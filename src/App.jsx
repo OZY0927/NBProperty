@@ -2097,10 +2097,11 @@ body.cine-active *{cursor:none !important;}
 .cine-gal-thumb:hover{opacity:.85;border-color:rgba(191,155,78,.6);}
 .cine-gal-thumb.on{opacity:1;border-color:#BF9B4E;box-shadow:0 0 14px rgba(191,155,78,.4);}
 .cine-gal-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
-.cine-hero-nav-btn{position:absolute;top:50%;z-index:10;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all .2s ease;transform:translateY(-50%);}
-.cine-hero-nav-btn.prev{left:1.2rem;}
-.cine-hero-nav-btn.next{left:4.2rem;}
+.cine-hero-nav-btn{position:absolute;top:50%;z-index:10;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:1.3rem;cursor:pointer;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all .2s ease;transform:translateY(-50%);}
+.cine-hero-nav-btn.prev{left:1rem;}
+.cine-hero-nav-btn.next{right:1rem;left:auto;}
 .cine-hero-nav-btn:hover{background:rgba(191,155,78,.18);border-color:rgba(191,155,78,.5);}
+@media(max-width:768px){.cine-hero-nav-btn{display:flex;}}
 /* Hero name-only overlay */
 .cine-hero-content{position:relative;z-index:5;padding:2.5rem 6vw 4rem;animation:cineHeroRise .9s cubic-bezier(.22,1,.36,1) .2s both;}
 @keyframes cineHeroRise{from{opacity:0;transform:translateY(36px);}to{opacity:1;transform:translateY(0);}}
