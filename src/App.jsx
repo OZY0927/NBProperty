@@ -777,16 +777,13 @@ body:not(.dark) .cine-bento-title{color:#2D0E14;}
 body:not(.dark) .cine-bento-desc{color:rgba(45,14,20,.5);}
 body:not(.dark) .cine-bento-accent{background:linear-gradient(90deg,transparent,rgba(193,126,135,.45),transparent);}
 /* Spec table */
-/* info cards — light mode */
-body:not(.dark) .cine-info-card{background:rgba(255,245,246,.65);border-color:rgba(193,126,135,.15);}
-body:not(.dark) .cine-info-card:hover{background:rgba(255,235,238,.9);border-color:rgba(193,126,135,.38);box-shadow:0 16px 40px rgba(92,24,40,.1),0 0 24px rgba(193,126,135,.06);}
-body:not(.dark) .cine-info-card-hd{background:rgba(193,126,135,.09);border-bottom-color:rgba(193,126,135,.14);}
-body:not(.dark) .cine-info-card-icon{background:linear-gradient(135deg,rgba(193,126,135,.18),rgba(212,164,172,.1));border-color:rgba(193,126,135,.28);}
-body:not(.dark) .cine-info-card-title{color:rgba(122,34,56,.82);}
-body:not(.dark) .cine-info-item{border-bottom-color:rgba(193,126,135,.09);}
-body:not(.dark) .cine-info-item:nth-child(odd){border-right-color:rgba(193,126,135,.09);}
-body:not(.dark) .cine-info-item-lbl{color:rgba(122,34,56,.58);}
-body:not(.dark) .cine-info-item-val{color:#2D0E14;}
+body:not(.dark) .cine-info-group-title{color:rgba(122,34,56,.8);border-bottom-color:rgba(193,126,135,.15);}
+body:not(.dark) .cine-info-group-title::before{background:linear-gradient(90deg,#C17E87,#D4A4AC);}
+body:not(.dark) .cine-spec-table{background:rgba(255,245,246,.5);border-color:rgba(193,126,135,.12);}
+body:not(.dark) .cine-spec-row{border-bottom-color:rgba(193,126,135,.08);}
+body:not(.dark) .cine-spec-row:hover{background:rgba(193,126,135,.04);}
+body:not(.dark) .cine-spec-key{color:rgba(122,34,56,.65);}
+body:not(.dark) .cine-spec-val{color:rgba(45,14,20,.82);}
 /* Description block */
 body:not(.dark) .cine-desc-block{background:rgba(255,245,246,.5);border-color:rgba(193,126,135,.12);border-left-color:rgba(193,126,135,.55);color:rgba(45,14,20,.7);}
 body:not(.dark) .cine-desc-block::before{color:rgba(193,126,135,.18);}
@@ -851,6 +848,42 @@ body:not(.dark) .cine-footer{background:linear-gradient(180deg,transparent,rgba(
 body:not(.dark) .cine-footer::before{background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(193,126,135,.1),transparent 55%);}
 body:not(.dark) .cine-footer-bottom{border-top-color:rgba(255,200,210,.12);color:rgba(255,220,225,.22);}
 body:not(.dark) .cine-footer-logo{color:rgba(255,200,210,.55);}
+/* ── LIGHT MODE: lux-pi-* project info redesign ── */
+body:not(.dark) .lux-pi-hero-card{background:rgba(255,255,255,.75);border-color:rgba(193,126,135,.15);box-shadow:0 8px 40px rgba(92,24,40,.06);}
+body:not(.dark) .lux-pi-hero-left{border-right-color:rgba(193,126,135,.12);}
+body:not(.dark) .lux-pi-hero-right{background:rgba(255,240,242,.45);}
+body:not(.dark) .lux-pi-dev-eyebrow{color:rgba(122,34,56,.45);}
+body:not(.dark) .lux-pi-developer{color:#7A2238;}
+body:not(.dark) .lux-pi-badge{background:rgba(193,126,135,.1);border-color:rgba(193,126,135,.25);color:rgba(122,34,56,.7);}
+body:not(.dark) .lux-pi-badge.accent{background:rgba(193,126,135,.18);border-color:rgba(193,126,135,.42);color:#7A2238;}
+body:not(.dark) .lux-pi-location{color:rgba(45,14,20,.48);}
+body:not(.dark) .lux-pi-meta-item{background:rgba(255,240,242,.55);border-color:rgba(193,126,135,.14);}
+body:not(.dark) .lux-pi-meta-item:hover{background:rgba(255,225,230,.85);border-color:rgba(193,126,135,.3);}
+body:not(.dark) .lux-pi-meta-lbl{color:rgba(122,34,56,.45);}
+body:not(.dark) .lux-pi-meta-val{color:#7A2238;}
+body:not(.dark) .lux-pi-group-hd{border-bottom-color:rgba(193,126,135,.14);}
+body:not(.dark) .lux-pi-group-ico{background:rgba(193,126,135,.1);border-color:rgba(193,126,135,.22);}
+body:not(.dark) .lux-pi-group-title{color:rgba(45,14,20,.42);}
+body:not(.dark) .lux-pi-stat{background:rgba(255,255,255,.65);border-color:rgba(193,126,135,.12);}
+body:not(.dark) .lux-pi-stat::after{background:linear-gradient(90deg,transparent,rgba(193,126,135,.45),transparent);}
+body:not(.dark) .lux-pi-stat:hover{background:rgba(255,230,234,.85);border-color:rgba(193,126,135,.3);box-shadow:0 8px 24px rgba(92,24,40,.1);}
+body:not(.dark) .lux-pi-stat-lbl{color:rgba(122,34,56,.42);}
+body:not(.dark) .lux-pi-stat-val{color:#2D0E14;}
+body:not(.dark) .lux-pi-stat-val em{color:rgba(122,34,56,.5);}
+body:not(.dark) .lux-pi-fac-cloud{background:rgba(255,255,255,.55);border-color:rgba(193,126,135,.12);}
+body:not(.dark) .lux-pi-fac-pill{background:rgba(255,235,238,.65);border-color:rgba(193,126,135,.22);color:rgba(45,14,20,.62);}
+body:not(.dark) .lux-pi-fac-pill:hover{background:rgba(255,215,222,.9);border-color:rgba(193,126,135,.42);color:#7A2238;}
+body:not(.dark) .lux-pi-fin-card{background:linear-gradient(135deg,rgba(193,126,135,.07),rgba(193,126,135,.02));border-color:rgba(193,126,135,.18);}
+body:not(.dark) .lux-pi-fin-card::after{background:radial-gradient(circle,rgba(193,126,135,.1),transparent 70%);}
+body:not(.dark) .lux-pi-fin-card:hover{background:linear-gradient(135deg,rgba(193,126,135,.13),rgba(193,126,135,.05));border-color:rgba(193,126,135,.35);box-shadow:0 12px 32px rgba(92,24,40,.1);}
+body:not(.dark) .lux-pi-fin-lbl{color:rgba(122,34,56,.45);}
+body:not(.dark) .lux-pi-fin-val{color:#7A2238;}
+body:not(.dark) .lux-pi-fin-sub{color:rgba(45,14,20,.35);}
+body:not(.dark) .lux-pi-showroom-card{background:rgba(255,255,255,.65);border-color:rgba(193,126,135,.14);}
+body:not(.dark) .lux-pi-showroom-card:hover{background:rgba(255,230,234,.85);border-color:rgba(193,126,135,.3);}
+body:not(.dark) .lux-pi-showroom-icon{background:rgba(255,235,238,.5);border-right-color:rgba(193,126,135,.12);}
+body:not(.dark) .lux-pi-showroom-lbl{color:rgba(122,34,56,.42);}
+body:not(.dark) .lux-pi-showroom-val{color:#7A2238;}
 
 .filter-panel,.card,.proj-card,.spec-section,.amenity-cat,.layouts-upgrades,.ri-box,.set-card,.a-login-box,.a-stat,.a-tbl-wrap,.a-modal,.vis-master-card,.vis-tab-card,.vis-preview,.vis-group-hd,.vis-group-body,.map-embed,.a-map-preview,.map-picker-container,.map-picker-modal,.crm-tbl-wrap,.crm-col,.crm-card,.crm-modal,.crm-drawer-sec,.crm-stat,.crm-chart-card,.tray,.tslot,.add-more,.price-panel{border-radius:var(--r-md);}
 .card,.proj-card,.ri-box,.a-tbl-wrap,.a-modal,.map-embed,.a-map-preview,.map-picker-modal,.crm-tbl-wrap,.crm-col,.crm-modal,.crm-drawer-sec,.tray,.tslot,.add-more,.filter-panel,.spec-section,.amenity-cat,.layouts-upgrades{overflow:hidden;}
@@ -2847,20 +2880,15 @@ body.cine-active *{cursor:none !important;}
 .cine-bento-desc{font-size:.88rem;color:rgba(255,255,255,.42);line-height:1.6;}
 .cine-bento-accent{position:absolute;bottom:0;left:0;right:0;height:2px;border-radius:0 0 16px 16px;background:linear-gradient(90deg,transparent,rgba(191,155,78,.5),transparent);opacity:0;transition:opacity .3s ease;}
 .cine-bento-card:hover .cine-bento-accent{opacity:1;}
-/* ── Project Info Card Grid ── */
-.cine-info-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:1.2rem;margin-top:2rem;}
-.cine-info-card{background:rgba(255,255,255,.04);border:1px solid rgba(191,155,78,.14);border-radius:18px;overflow:hidden;transition:all .25s ease;display:flex;flex-direction:column;}
-.cine-info-card:hover{background:rgba(191,155,78,.04);border-color:rgba(191,155,78,.32);box-shadow:0 16px 40px rgba(0,0,0,.22),0 0 28px rgba(191,155,78,.07);transform:translateY(-3px);}
-.cine-info-card-hd{display:flex;align-items:center;gap:.75rem;padding:1rem 1.3rem;background:rgba(191,155,78,.07);border-bottom:1px solid rgba(191,155,78,.1);}
-.cine-info-card-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,rgba(191,155,78,.2),rgba(212,184,128,.1));border:1px solid rgba(191,155,78,.25);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.cine-info-card-title{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:rgba(191,155,78,.88);}
-.cine-info-card-body{display:grid;grid-template-columns:1fr 1fr;flex:1;}
-.cine-info-item{display:flex;flex-direction:column;gap:.22rem;padding:.78rem 1.1rem;border-bottom:1px solid rgba(191,155,78,.06);}
-.cine-info-item:nth-child(odd){border-right:1px solid rgba(191,155,78,.06);}
-.cine-info-item:nth-last-child(-n+2):not(:nth-child(odd):last-child){border-bottom:none;}
-.cine-info-item:last-child{border-bottom:none;}
-.cine-info-item-lbl{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(191,155,78,.58);font-weight:600;}
-.cine-info-item-val{font-size:.88rem;color:rgba(240,236,228,.85);font-weight:500;line-height:1.42;}
+.cine-info-group{margin-bottom:2.5rem;}
+.cine-info-group-title{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(191,155,78,.8);font-weight:700;display:flex;align-items:center;gap:.6rem;margin-bottom:1.2rem;padding-bottom:.65rem;border-bottom:1px solid rgba(191,155,78,.1);}
+.cine-info-group-title::before{content:'';width:18px;height:2px;background:linear-gradient(90deg,#BF9B4E,#D4B880);border-radius:2px;}
+.cine-spec-table{background:rgba(191,155,78,.025);border:1px solid rgba(191,155,78,.1);border-radius:12px;overflow:hidden;}
+.cine-spec-row{display:flex;align-items:baseline;padding:.8rem 1.4rem;border-bottom:1px solid rgba(191,155,78,.07);transition:background .15s ease;}
+.cine-spec-row:last-child{border-bottom:none;}
+.cine-spec-row:hover{background:rgba(191,155,78,.04);}
+.cine-spec-key{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(191,155,78,.6);font-weight:600;min-width:170px;flex-shrink:0;}
+.cine-spec-val{font-size:.95rem;color:rgba(255,255,255,.82);font-weight:500;flex:1;line-height:1.55;}
 .cine-desc-block{background:rgba(191,155,78,.03);border:1px solid rgba(191,155,78,.1);border-left:3px solid rgba(191,155,78,.5);border-radius:0 12px 12px 0;padding:1.8rem 2rem;font-size:1rem;line-height:1.85;color:rgba(255,255,255,.65);position:relative;margin-bottom:2rem;}
 .cine-desc-block::before{content:'\u201C';position:absolute;top:-.4rem;left:1rem;font-family:'Cormorant Garamond',Georgia,serif;font-size:4rem;color:rgba(191,155,78,.18);line-height:1;}
 .cine-fac-chips{display:flex;flex-wrap:wrap;gap:.5rem;}
@@ -2923,6 +2951,79 @@ body.cine-active *{cursor:none !important;}
 .cine-footer-btns{display:flex;justify-content:center;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;}
 .cine-footer-bottom{margin-top:4rem;padding-top:2rem;border-top:1px solid rgba(191,155,78,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;font-size:.78rem;color:rgba(255,255,255,.22);}
 .cine-footer-logo{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.2rem;color:rgba(191,155,78,.55);}
+
+/* ═══════════════════════════════════════════
+   LUXURY PROJECT INFO REDESIGN  (lux-pi-*)
+═══════════════════════════════════════════ */
+.lux-pi-hero-card{display:grid;grid-template-columns:1fr 1fr;gap:0;background:rgba(255,255,255,.03);border:1px solid rgba(191,155,78,.14);border-radius:28px;overflow:hidden;margin-bottom:2.5rem;}
+.lux-pi-hero-left{padding:2.5rem 2.8rem;border-right:1px solid rgba(191,155,78,.1);}
+.lux-pi-hero-right{padding:2.5rem 2.8rem;background:rgba(191,155,78,.03);}
+.lux-pi-dev-eyebrow{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(212,184,128,.52);margin-bottom:.5rem;}
+.lux-pi-developer{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:600;color:#D4B880;line-height:1.2;margin-bottom:1rem;}
+.lux-pi-badge-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.1rem;}
+.lux-pi-badge{padding:.3rem .9rem;border-radius:999px;font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:rgba(191,155,78,.1);border:1px solid rgba(191,155,78,.25);color:rgba(212,184,128,.78);}
+.lux-pi-badge.accent{background:rgba(191,155,78,.18);border-color:rgba(191,155,78,.45);color:#D4B880;}
+.lux-pi-location{display:flex;align-items:center;gap:.5rem;font-size:.88rem;color:rgba(255,255,255,.42);}
+.lux-pi-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
+.lux-pi-meta-item{padding:1.1rem;background:rgba(191,155,78,.04);border:1px solid rgba(191,155,78,.1);border-radius:14px;transition:all .2s;}
+.lux-pi-meta-item:hover{background:rgba(191,155,78,.09);border-color:rgba(191,155,78,.22);}
+.lux-pi-meta-lbl{font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(212,184,128,.45);margin-bottom:.35rem;}
+.lux-pi-meta-val{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.02rem;font-weight:600;color:#D4B880;line-height:1.35;}
+/* Group headers */
+.lux-pi-group-hd{display:flex;align-items:center;gap:.75rem;margin:2rem 0 1rem;padding-bottom:.65rem;border-bottom:1px solid rgba(191,155,78,.1);}
+.lux-pi-group-ico{width:2rem;height:2rem;border-radius:8px;background:rgba(191,155,78,.1);border:1px solid rgba(191,155,78,.2);display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;}
+.lux-pi-group-title{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:600;}
+/* Stats grid */
+.lux-pi-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.85rem;margin-bottom:1.5rem;}
+.lux-pi-stat{padding:1.4rem;background:rgba(255,255,255,.03);border:1px solid rgba(191,155,78,.1);border-radius:18px;transition:all .25s ease;position:relative;overflow:hidden;}
+.lux-pi-stat::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(191,155,78,.5),transparent);opacity:0;transition:opacity .25s;}
+.lux-pi-stat:hover{background:rgba(191,155,78,.07);border-color:rgba(191,155,78,.28);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.25);}
+.lux-pi-stat:hover::after{opacity:1;}
+.lux-pi-stat-wide{grid-column:span 2;}
+.lux-pi-stat-ico{font-size:1.25rem;margin-bottom:.6rem;display:block;line-height:1;}
+.lux-pi-stat-lbl{font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(212,184,128,.42);margin-bottom:.35rem;}
+.lux-pi-stat-val{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.25rem;font-weight:600;color:rgba(240,237,230,.9);line-height:1.3;}
+.lux-pi-stat-val em{font-size:.7rem;font-style:normal;color:rgba(212,184,128,.5);margin-left:.3rem;}
+/* Facilities pill cloud */
+.lux-pi-fac-cloud{display:flex;flex-wrap:wrap;gap:.65rem;padding:1.5rem 1.7rem;background:rgba(255,255,255,.02);border:1px solid rgba(191,155,78,.1);border-radius:22px;margin-bottom:1.5rem;}
+.lux-pi-fac-pill{display:inline-flex;align-items:center;gap:.45rem;padding:.42rem 1.05rem;border-radius:999px;background:rgba(191,155,78,.07);border:1px solid rgba(191,155,78,.18);font-size:.8rem;font-weight:500;color:rgba(240,237,230,.68);letter-spacing:.02em;transition:all .2s ease;cursor:default;}
+.lux-pi-fac-pill:hover{background:rgba(191,155,78,.15);border-color:rgba(191,155,78,.38);color:#D4B880;transform:translateY(-1px);}
+.lux-pi-fac-pill-ico{font-size:.88rem;}
+/* Financial grid */
+.lux-pi-fin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.lux-pi-fin-card{padding:1.8rem 2rem;background:linear-gradient(135deg,rgba(191,155,78,.07),rgba(191,155,78,.02));border:1px solid rgba(191,155,78,.18);border-radius:22px;position:relative;overflow:hidden;transition:all .25s ease;}
+.lux-pi-fin-card-hero{grid-column:span 2;}
+.lux-pi-fin-card::after{content:'';position:absolute;bottom:-10px;right:-10px;width:100px;height:100px;background:radial-gradient(circle,rgba(191,155,78,.12),transparent 70%);pointer-events:none;}
+.lux-pi-fin-card:hover{background:linear-gradient(135deg,rgba(191,155,78,.12),rgba(191,155,78,.05));border-color:rgba(191,155,78,.35);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.25),0 0 40px rgba(191,155,78,.06);}
+.lux-pi-fin-lbl{font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(212,184,128,.45);margin-bottom:.55rem;}
+.lux-pi-fin-val{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.5rem;font-weight:600;color:#D4B880;line-height:1.2;}
+.lux-pi-fin-val.lg{font-size:1.9rem;}
+.lux-pi-fin-sub{font-size:.74rem;color:rgba(255,255,255,.28);margin-top:.4rem;}
+/* Showroom */
+.lux-pi-showroom-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.lux-pi-showroom-card{display:flex;align-items:stretch;background:rgba(255,255,255,.03);border:1px solid rgba(191,155,78,.12);border-radius:20px;overflow:hidden;transition:all .25s ease;}
+.lux-pi-showroom-card:hover{background:rgba(191,155,78,.05);border-color:rgba(191,155,78,.28);transform:translateY(-3px);}
+.lux-pi-showroom-icon{display:flex;align-items:center;justify-content:center;width:70px;min-width:70px;background:rgba(191,155,78,.06);border-right:1px solid rgba(191,155,78,.1);font-size:1.75rem;}
+.lux-pi-showroom-body{padding:1.25rem 1.5rem;flex:1;}
+.lux-pi-showroom-lbl{font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(212,184,128,.42);margin-bottom:.4rem;}
+.lux-pi-showroom-val{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:600;color:#D4B880;line-height:1.45;}
+/* Mobile responsive */
+@media(max-width:900px){
+  .lux-pi-hero-card{grid-template-columns:1fr;}
+  .lux-pi-hero-left{border-right:none;border-bottom:1px solid rgba(191,155,78,.1);padding:2rem 1.7rem;}
+  .lux-pi-hero-right{padding:1.7rem;}
+  .lux-pi-fin-card-hero{grid-column:span 1;}
+}
+@media(max-width:600px){
+  .lux-pi-developer{font-size:1.6rem;}
+  .lux-pi-meta-grid{grid-template-columns:1fr 1fr;}
+  .lux-pi-stats-grid{grid-template-columns:1fr 1fr;}
+  .lux-pi-stat-wide{grid-column:span 1;}
+  .lux-pi-fin-grid{grid-template-columns:1fr;}
+  .lux-pi-fin-card-hero{grid-column:span 1;}
+  .lux-pi-fin-val.lg{font-size:1.5rem;}
+}
+
 @media(max-width:1100px){.cine-loc{grid-template-columns:1fr;}.cine-unit-card{grid-template-columns:1fr;direction:ltr !important;}.cine-unit-card:nth-child(even){direction:ltr;}.cine-bento{grid-template-columns:1fr 1fr;}.cine-bento-card.lg{grid-column:span 2;}.cine-hero-bar{gap:1.5rem;}}
 @media(max-width:768px){
   .cine-hero{height:75vw;min-height:380px;}
@@ -2938,7 +3039,6 @@ body.cine-active *{cursor:none !important;}
   .cine-bento{grid-template-columns:1fr;}
   .cine-bento-card.lg{grid-column:span 1;}
   .cine-info-grid{grid-template-columns:1fr;}
-  .cine-info-cards{grid-template-columns:1fr 1fr;}
   .cine-amenities-grid{grid-template-columns:1fr;}
   .cine-unit-card{grid-template-columns:1fr;}
   .cine-unit-body{padding:1.5rem;}
@@ -2956,11 +3056,6 @@ body.cine-active *{cursor:none !important;}
   .cine-footer-btns{flex-direction:column;align-items:center;}
   .cine-cta-pri,.cine-cta-sec{width:100%;justify-content:center;}
   .cine-loc-dist-cards{grid-template-columns:1fr;}
-}
-@media(max-width:480px){
-  .cine-info-cards{grid-template-columns:1fr;}
-  .cine-info-card-body{grid-template-columns:1fr;}
-  .cine-info-item:nth-child(odd){border-right:none;}
 }
 @media(max-width:480px){
   .cine-hero{height:88vw;min-height:300px;}
@@ -3818,16 +3913,13 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
     const filled = rows.filter(([,v])=>v!=null&&String(v).trim()!==''&&String(v).trim()!=='—'&&!String(v).includes('undefined')&&!String(v).includes('NaN'));
     if(!filled.length) return null;
     return (
-      <div className="cine-info-card">
-        <div className="cine-info-card-hd">
-          <div className="cine-info-card-icon">{icon}</div>
-          <div className="cine-info-card-title">{title}</div>
-        </div>
-        <div className="cine-info-card-body">
+      <div className="cine-info-group">
+        <div className="cine-info-group-title">{icon} {title}</div>
+        <div className="cine-spec-table">
           {filled.map(([k,v],i)=>(
-            <div key={i} className="cine-info-item">
-              <div className="cine-info-item-lbl">{k}</div>
-              <div className="cine-info-item-val">{v}</div>
+            <div key={i} className="cine-spec-row">
+              <div className="cine-spec-key">{k}</div>
+              <div className="cine-spec-val">{v}</div>
             </div>
           ))}
         </div>
@@ -3941,22 +4033,140 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
             </section>
           )}
 
-          {/* Project Info */}
+          {/* ═══ PROJECT INFORMATION — PREMIUM REDESIGN ═══ */}
           {(sec("overview","basicInfo")||sec("overview","development")||sec("overview","unitInfo")||sec("overview","parking")||sec("overview","facilities")||sec("overview","financial")||sec("overview","sales")) && (
             <section className="cine-section">
-              <div className="cine-sec-label">
+              <div {...rv()} className="cr cine-sec-label">
                 <div className="cine-sec-eyebrow">Development Details</div>
                 <h2 className="cine-sec-title">Project <em>Information</em></h2>
               </div>
-              <div className="cine-info-cards">
-                {sec("overview","basicInfo") && <CineSpecGroup icon="🏢" title="Basic Info" rows={[["Project Name",p.name],["Location",p.location],["Developer",p.developer],["Property Type",p.type],["Land Size",p.landSize],["Construction Stage",p.constructionStage],["Completion Date",p.completion],["Tenure",p.tenure]]}/>}
-                {sec("overview","development") && <CineSpecGroup icon="🏗" title="Development Details" rows={[["Total Blocks",p.totalBlocks],["Floors / Levels",(p.totalFloorsPerTower||[]).join(" | ")],["Residential Start",p.residentialStartLevel],["Total Floors",p.floors?`${p.floors} floors`:null]]}/>}
-                {sec("overview","unitInfo") && <CineSpecGroup icon="🏠" title="Unit Information" rows={[["Total Units",p.totalUnits?`${p.totalUnits} units`:null],["Public / Bumi",p.unitsBreakdown],["Units per Tower",p.unitsPerTower],["Bedrooms",p.bedrooms?.length?bLbl(p.bedrooms)+" bed":null],["Bathrooms",p.bathrooms?.length?bLbl(p.bathrooms)+" bath":null],["Size Range",p.sizeSqft?.[0]&&p.sizeSqft?.[1]?`${p.sizeSqft[0].toLocaleString()}–${p.sizeSqft[1].toLocaleString()} sf`:null]]}/>}
-                {sec("overview","parking") && <CineSpecGroup icon="🚗" title="Parking" rows={[["Car Park Levels",p.carParkLevels],["Number of Bays",p.numberOfCarParks],["Notes",p.parkingNotes]]}/>}
-                {sec("overview","facilities") && <CineSpecGroup icon="🛗" title="Facilities & Access" rows={[["Lifts per Tower",p.numberOfLifts],["Facilities",(p.facilities||[]).join(", ")]]}/>}
-                {sec("overview","financial") && <CineSpecGroup icon="💰" title="Financial Info" rows={[["Price Range",p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:null],["Starting Price",p.priceFrom?fmt(p.priceFrom):null],["Maintenance Fee",p.maintenanceFee],["Sinking Fund",p.sinkingFund]]}/>}
-                {sec("overview","sales") && <CineSpecGroup icon="🏢" title="Sales & Marketing" rows={[["Showroom",p.showroom],["Scale Model",p.scaleModel]]}/>}
-              </div>
+
+              {/* ── Hero Developer Card ── */}
+              {sec("overview","basicInfo") && (p.developer||p.type||p.tenure||p.landSize||p.completion||p.constructionStage) && (
+                <div {...rv()} className="cr lux-pi-hero-card">
+                  <div className="lux-pi-hero-left">
+                    <div className="lux-pi-dev-eyebrow">Developer</div>
+                    <div className="lux-pi-developer">{p.developer||p.name}</div>
+                    <div className="lux-pi-badge-row">
+                      {p.type && <span className="lux-pi-badge">{p.type}</span>}
+                      {p.tenure && <span className="lux-pi-badge accent">{p.tenure}</span>}
+                    </div>
+                    {p.location && <div className="lux-pi-location"><span>📍</span><span>{p.location}</span></div>}
+                  </div>
+                  <div className="lux-pi-hero-right">
+                    <div className="lux-pi-meta-grid">
+                      {p.landSize && <div className="lux-pi-meta-item"><div className="lux-pi-meta-lbl">Land Size</div><div className="lux-pi-meta-val">{p.landSize}</div></div>}
+                      {p.completion && <div className="lux-pi-meta-item"><div className="lux-pi-meta-lbl">Est. Completion</div><div className="lux-pi-meta-val">{p.completion}</div></div>}
+                      {p.constructionStage && <div className="lux-pi-meta-item"><div className="lux-pi-meta-lbl">Construction Stage</div><div className="lux-pi-meta-val">{p.constructionStage}</div></div>}
+                      {p.tenure && !p.landSize && !p.completion && <div className="lux-pi-meta-item"><div className="lux-pi-meta-lbl">Tenure</div><div className="lux-pi-meta-val">{p.tenure}</div></div>}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ── Development Details ── */}
+              {sec("overview","development") && (p.totalBlocks||p.floors||(p.totalFloorsPerTower||[]).length>0||p.residentialStartLevel) && (<>
+                <div className="lux-pi-group-hd"><div className="lux-pi-group-ico">🏗</div><div className="lux-pi-group-title">Development Details</div></div>
+                <div className="lux-pi-stats-grid">
+                  {p.totalBlocks && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">🏢</span><div className="lux-pi-stat-lbl">Total Blocks</div><div className="lux-pi-stat-val">{p.totalBlocks}</div></div>}
+                  {p.floors && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">📐</span><div className="lux-pi-stat-lbl">Total Floors</div><div className="lux-pi-stat-val">{p.floors}<em>floors</em></div></div>}
+                  {p.residentialStartLevel && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">🔢</span><div className="lux-pi-stat-lbl">Residential Start</div><div className="lux-pi-stat-val">{p.residentialStartLevel}</div></div>}
+                  {(p.totalFloorsPerTower||[]).length>0 && <div {...rv()} className="cr lux-pi-stat lux-pi-stat-wide"><span className="lux-pi-stat-ico">🏙</span><div className="lux-pi-stat-lbl">Floors per Tower</div><div className="lux-pi-stat-val" style={{fontSize:'1rem'}}>{p.totalFloorsPerTower.join(' · ')}</div></div>}
+                </div>
+              </>)}
+
+              {/* ── Unit Information ── */}
+              {sec("overview","unitInfo") && (p.totalUnits||(p.bedrooms||[]).length>0||(p.bathrooms||[]).length>0||(p.sizeSqft||[])[0]||p.unitsBreakdown||p.unitsPerTower) && (<>
+                <div className="lux-pi-group-hd"><div className="lux-pi-group-ico">🏠</div><div className="lux-pi-group-title">Unit Information</div></div>
+                <div className="lux-pi-stats-grid">
+                  {p.totalUnits>0 && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">🏘</span><div className="lux-pi-stat-lbl">Total Units</div><div className="lux-pi-stat-val">{p.totalUnits.toLocaleString()}<em>units</em></div></div>}
+                  {(p.bedrooms||[]).length>0 && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">🛏</span><div className="lux-pi-stat-lbl">Bedrooms</div><div className="lux-pi-stat-val">{bLbl(p.bedrooms)}<em>bed</em></div></div>}
+                  {(p.bathrooms||[]).length>0 && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">🚿</span><div className="lux-pi-stat-lbl">Bathrooms</div><div className="lux-pi-stat-val">{bLbl(p.bathrooms)}<em>bath</em></div></div>}
+                  {p.sizeSqft?.[0]>0 && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">📐</span><div className="lux-pi-stat-lbl">Built-up Range</div><div className="lux-pi-stat-val" style={{fontSize:'1rem'}}>{p.sizeSqft[0].toLocaleString()}{p.sizeSqft?.[1]?`–${p.sizeSqft[1].toLocaleString()}`:''}<em>sf</em></div></div>}
+                  {p.unitsPerTower && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">🏢</span><div className="lux-pi-stat-lbl">Units per Tower</div><div className="lux-pi-stat-val">{p.unitsPerTower}</div></div>}
+                  {p.unitsBreakdown && <div {...rv()} className="cr lux-pi-stat lux-pi-stat-wide"><span className="lux-pi-stat-ico">📊</span><div className="lux-pi-stat-lbl">Public / Bumi Split</div><div className="lux-pi-stat-val" style={{fontSize:'.95rem'}}>{p.unitsBreakdown}</div></div>}
+                </div>
+              </>)}
+
+              {/* ── Parking ── */}
+              {sec("overview","parking") && (p.carParkLevels||p.numberOfCarParks||p.parkingNotes) && (<>
+                <div className="lux-pi-group-hd"><div className="lux-pi-group-ico">🚗</div><div className="lux-pi-group-title">Parking</div></div>
+                <div className="lux-pi-stats-grid">
+                  {p.carParkLevels && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">🅿️</span><div className="lux-pi-stat-lbl">Car Park Levels</div><div className="lux-pi-stat-val">{p.carParkLevels}</div></div>}
+                  {p.numberOfCarParks && <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">🚘</span><div className="lux-pi-stat-lbl">Number of Bays</div><div className="lux-pi-stat-val">{p.numberOfCarParks}</div></div>}
+                  {p.parkingNotes && <div {...rv()} className="cr lux-pi-stat lux-pi-stat-wide"><span className="lux-pi-stat-ico">📝</span><div className="lux-pi-stat-lbl">Notes</div><div className="lux-pi-stat-val" style={{fontSize:'.9rem'}}>{p.parkingNotes}</div></div>}
+                </div>
+              </>)}
+
+              {/* ── Facilities & Access ── */}
+              {sec("overview","facilities") && (p.numberOfLifts||(p.facilities||[]).length>0) && (<>
+                <div className="lux-pi-group-hd"><div className="lux-pi-group-ico">🛗</div><div className="lux-pi-group-title">Facilities & Access</div></div>
+                {p.numberOfLifts && (
+                  <div className="lux-pi-stats-grid" style={{marginBottom:'1rem'}}>
+                    <div {...rv()} className="cr lux-pi-stat"><span className="lux-pi-stat-ico">🛗</span><div className="lux-pi-stat-lbl">Lifts per Tower</div><div className="lux-pi-stat-val">{p.numberOfLifts}</div></div>
+                  </div>
+                )}
+                {(p.facilities||[]).length>0 && (
+                  <div {...rv()} className="cr lux-pi-fac-cloud">
+                    {(p.facilities||[]).map((f,i)=>(
+                      <span key={i} className="lux-pi-fac-pill">
+                        <span className="lux-pi-fac-pill-ico">{getFacIcon(f)}</span>{f}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </>)}
+
+              {/* ── Financial Information ── */}
+              {sec("overview","financial") && (p.priceFrom||p.priceTo||p.maintenanceFee||p.sinkingFund) && (<>
+                <div className="lux-pi-group-hd"><div className="lux-pi-group-ico">💰</div><div className="lux-pi-group-title">Financial Information</div></div>
+                <div className="lux-pi-fin-grid">
+                  {(p.priceFrom||p.priceTo) && (
+                    <div {...rv()} className="cr lux-pi-fin-card lux-pi-fin-card-hero">
+                      <div className="lux-pi-fin-lbl">Price Range</div>
+                      <div className="lux-pi-fin-val lg">{p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:fmt(p.priceFrom||p.priceTo)}</div>
+                      <div className="lux-pi-fin-sub">Malaysian Ringgit (MYR)</div>
+                    </div>
+                  )}
+                  {p.maintenanceFee && (
+                    <div {...rv()} className="cr lux-pi-fin-card">
+                      <div className="lux-pi-fin-lbl">Maintenance Fee</div>
+                      <div className="lux-pi-fin-val">{p.maintenanceFee}</div>
+                    </div>
+                  )}
+                  {p.sinkingFund && (
+                    <div {...rv()} className="cr lux-pi-fin-card">
+                      <div className="lux-pi-fin-lbl">Sinking Fund</div>
+                      <div className="lux-pi-fin-val">{p.sinkingFund}</div>
+                    </div>
+                  )}
+                </div>
+              </>)}
+
+              {/* ── Sales Gallery / Showroom ── */}
+              {sec("overview","sales") && (p.showroom||p.scaleModel) && (<>
+                <div className="lux-pi-group-hd"><div className="lux-pi-group-ico">🏛</div><div className="lux-pi-group-title">Sales Gallery</div></div>
+                <div className="lux-pi-showroom-grid">
+                  {p.showroom && (
+                    <div {...rv()} className="cr lux-pi-showroom-card">
+                      <div className="lux-pi-showroom-icon">🏛</div>
+                      <div className="lux-pi-showroom-body">
+                        <div className="lux-pi-showroom-lbl">Sales Gallery / Showroom</div>
+                        <div className="lux-pi-showroom-val">{p.showroom}</div>
+                      </div>
+                    </div>
+                  )}
+                  {p.scaleModel && (
+                    <div {...rv()} className="cr lux-pi-showroom-card">
+                      <div className="lux-pi-showroom-icon">🗺</div>
+                      <div className="lux-pi-showroom-body">
+                        <div className="lux-pi-showroom-lbl">Scale Model</div>
+                        <div className="lux-pi-showroom-val">{p.scaleModel}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>)}
             </section>
           )}
 
