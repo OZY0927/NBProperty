@@ -388,61 +388,83 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
 .s-ico{position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none;}
 
 .main{width:100%;padding:3rem 2rem;}
-/* ── Filter Dialog (fd-*) ── */
-/* Trigger bar */
-.fd-bar{display:flex;align-items:center;gap:.75rem;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.7rem 1rem;margin-bottom:1.5rem;box-shadow:0 2px 16px rgba(0,0,0,.06);flex-wrap:wrap;}
-.fd-trigger{display:flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:999px;border:1.5px solid var(--border);background:var(--parchment);color:var(--ink);font-family:var(--sans);font-size:.78rem;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
-.fd-trigger:hover{border-color:var(--gold);color:var(--gold);}
-.fd-trigger svg{width:15px;height:15px;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;flex-shrink:0;}
-.fd-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--gold);color:#fff;font-size:.6rem;font-weight:700;line-height:1;}
-.fd-pills{display:flex;align-items:center;gap:.4rem;flex:1;overflow-x:auto;scrollbar-width:none;min-width:0;}
+/* ═══════════════════════════════════
+   FILTER — Luxury Glassmorphism (fd-*)
+═══════════════════════════════════ */
+/* ── Trigger bar ── */
+.fd-bar{display:flex;align-items:center;gap:.65rem;background:linear-gradient(135deg,#12101e,#0e0c1a);border:1px solid rgba(191,155,78,.18);border-radius:16px;padding:.75rem 1.1rem;margin-bottom:1.75rem;box-shadow:0 4px 24px rgba(0,0,0,.18),inset 0 1px 0 rgba(191,155,78,.06);flex-wrap:wrap;}
+.fd-trigger{display:flex;align-items:center;gap:.5rem;padding:.52rem 1.1rem;border-radius:999px;border:1.5px solid rgba(191,155,78,.32);background:rgba(191,155,78,.08);color:#D4B880;font-family:var(--sans);font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .22s;white-space:nowrap;flex-shrink:0;}
+.fd-trigger:hover{background:rgba(191,155,78,.16);border-color:rgba(191,155,78,.6);box-shadow:0 0 18px rgba(191,155,78,.2);}
+.fd-trigger svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none;flex-shrink:0;}
+.fd-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#0A0A16;font-size:.6rem;font-weight:800;line-height:1;}
+.fd-pills{display:flex;align-items:center;gap:.35rem;flex:1;overflow-x:auto;scrollbar-width:none;min-width:0;}
 .fd-pills::-webkit-scrollbar{display:none;}
-.fd-pill{display:inline-flex;align-items:center;gap:.3rem;padding:.28rem .65rem;border-radius:999px;background:rgba(191,155,78,.1);border:1px solid rgba(191,155,78,.3);color:var(--ink);font-size:.7rem;font-weight:500;white-space:nowrap;animation:fdPillIn .18s ease;}
-.fd-pill-x{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.85rem;line-height:1;padding:0;margin-left:.1rem;transition:color .15s;}
-.fd-pill-x:hover{color:#c0392b;}
-.fd-rcnt{margin-left:auto;font-size:.78rem;color:var(--muted);white-space:nowrap;flex-shrink:0;}
-.fd-rcnt strong{color:var(--ink);font-weight:700;}
-/* Overlay */
-.fd-ov{position:fixed;inset:0;z-index:400;background:rgba(10,8,20,.55);backdrop-filter:blur(4px);animation:fdOvIn .22s ease;}
+.fd-pill{display:inline-flex;align-items:center;gap:.28rem;padding:.25rem .6rem;border-radius:999px;background:rgba(191,155,78,.1);border:1px solid rgba(191,155,78,.28);color:#D4B880;font-size:.68rem;font-weight:500;white-space:nowrap;animation:fdPillIn .18s ease;}
+.fd-pill-x{background:none;border:none;cursor:pointer;color:rgba(191,155,78,.5);font-size:.85rem;line-height:1;padding:0;margin-left:.05rem;transition:color .15s;}
+.fd-pill-x:hover{color:#e05a5a;}
+.fd-rcnt{margin-left:auto;font-size:.74rem;color:rgba(200,196,216,.45);white-space:nowrap;flex-shrink:0;letter-spacing:.03em;}
+.fd-rcnt strong{color:#F0EDE6;font-weight:700;}
+@keyframes fdPillIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+/* ── Overlay ── */
+.fd-ov{position:fixed;inset:0;z-index:400;background:rgba(4,4,14,.72);backdrop-filter:blur(8px);animation:fdOvIn .25s ease;}
 @keyframes fdOvIn{from{opacity:0}to{opacity:1}}
-@keyframes fdPillIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
-/* Sheet */
-.fd-sheet{position:fixed;bottom:0;left:0;right:0;z-index:401;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -8px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;max-height:88svh;animation:fdSheetUp .3s cubic-bezier(.22,1,.36,1);}
-@keyframes fdSheetUp{from{transform:translateY(100%);opacity:.6}to{transform:translateY(0);opacity:1}}
+/* ── Sheet (mobile: slide up, desktop: centered modal) ── */
+.fd-sheet{position:fixed;bottom:0;left:0;right:0;z-index:401;background:linear-gradient(180deg,#141228 0%,#0e0c1a 100%);border:1px solid rgba(191,155,78,.14);border-bottom:none;border-radius:24px 24px 0 0;box-shadow:0 -12px 64px rgba(0,0,0,.55),inset 0 1px 0 rgba(191,155,78,.08);display:flex;flex-direction:column;max-height:90svh;animation:fdSheetUp .32s cubic-bezier(.18,1.02,.32,1);}
+@keyframes fdSheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @media(min-width:769px){
-  .fd-sheet{bottom:auto;top:50%;left:50%;right:auto;transform:translate(-50%,-50%);width:min(680px,92vw);border-radius:18px;max-height:85svh;animation:fdModalIn .28s cubic-bezier(.22,1,.36,1);}
-  @keyframes fdModalIn{from{opacity:0;transform:translate(-50%,-46%)}to{opacity:1;transform:translate(-50%,-50%)}}
+  .fd-sheet{position:fixed;bottom:auto;top:50%;left:50%;right:auto;transform:translate(-50%,-50%);width:min(780px,94vw);border-radius:20px;max-height:88svh;border:1px solid rgba(191,155,78,.16);animation:fdModalIn .28s cubic-bezier(.22,1,.36,1);}
+  @keyframes fdModalIn{from{opacity:0;transform:translate(-50%,-48%)}to{opacity:1;transform:translate(-50%,-50%)}}
+  .fd-sheet-inner{display:flex;flex:1;min-height:0;}
+  .fd-sidebar{width:220px;flex-shrink:0;border-right:1px solid rgba(191,155,78,.1);padding:1.4rem 1.2rem;display:flex;flex-direction:column;gap:1.2rem;background:rgba(255,255,255,.015);}
+  .fd-sidebar-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1rem;font-weight:600;color:#F0EDE6;letter-spacing:.02em;}
+  .fd-sidebar-cnt{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(191,155,78,.7);font-weight:600;}
+  .fd-sidebar-filters{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:.4rem;scrollbar-width:none;}
+  .fd-sidebar-filters::-webkit-scrollbar{display:none;}
+  .fd-sidebar-item{display:flex;align-items:center;justify-content:space-between;padding:.4rem .6rem;border-radius:8px;background:rgba(191,155,78,.07);border:1px solid rgba(191,155,78,.14);}
+  .fd-sidebar-lbl{font-size:.7rem;color:#D4B880;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .fd-sidebar-rm{background:none;border:none;color:rgba(191,155,78,.45);cursor:pointer;font-size:.85rem;padding:0;line-height:1;flex-shrink:0;transition:color .15s;}
+  .fd-sidebar-rm:hover{color:#e05a5a;}
+  .fd-sidebar-empty{font-size:.72rem;color:rgba(200,196,216,.28);font-style:italic;text-align:center;padding:.8rem 0;}
+  .fd-sidebar-clear{padding:.5rem .8rem;border-radius:999px;border:1px solid rgba(191,155,78,.2);background:transparent;color:rgba(200,196,216,.4);font-family:var(--sans);font-size:.68rem;cursor:pointer;transition:all .2s;letter-spacing:.04em;margin-top:auto;}
+  .fd-sidebar-clear:hover{border-color:#e05a5a;color:#e05a5a;}
 }
-/* Sheet handle */
-.fd-handle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:.7rem auto .2rem;flex-shrink:0;}
+/* ── Handle ── */
+.fd-handle{width:40px;height:4px;border-radius:2px;background:rgba(191,155,78,.2);margin:.8rem auto .15rem;flex-shrink:0;}
 @media(min-width:769px){.fd-handle{display:none;}}
-/* Sheet header */
-.fd-hd{display:flex;align-items:center;gap:.6rem;padding:.85rem 1.3rem .7rem;border-bottom:1px solid var(--border);flex-shrink:0;}
-.fd-hd-title{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--ink);flex:1;}
-.fd-hd-cnt{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:600;background:rgba(191,155,78,.1);padding:.18rem .55rem;border-radius:999px;}
-.fd-close{width:30px;height:30px;border-radius:50%;background:var(--warm);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--muted);transition:background .18s,color .18s;}
-.fd-close:hover{background:var(--border);color:var(--ink);}
-/* Sheet body */
-.fd-body{overflow-y:auto;padding:1rem 1.3rem;display:flex;flex-direction:column;gap:1.4rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
-.fd-sec{}
-.fd-sec-label{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:.65rem;}
+/* ── Header ── */
+.fd-hd{display:flex;align-items:center;gap:.65rem;padding:.9rem 1.4rem .75rem;border-bottom:1px solid rgba(191,155,78,.1);flex-shrink:0;}
+.fd-hd-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.2rem;font-weight:600;color:#F0EDE6;flex:1;letter-spacing:.02em;}
+.fd-hd-cnt{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:#BF9B4E;font-weight:700;background:rgba(191,155,78,.1);border:1px solid rgba(191,155,78,.2);padding:.2rem .6rem;border-radius:999px;}
+.fd-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(191,155,78,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:rgba(200,196,216,.55);transition:all .2s;}
+.fd-close:hover{background:rgba(191,155,78,.12);border-color:rgba(191,155,78,.4);color:#F0EDE6;}
+/* ── Body ── */
+.fd-body{overflow-y:auto;padding:1.2rem 1.4rem;flex:1;display:flex;flex-direction:column;gap:1.5rem;scrollbar-width:thin;scrollbar-color:rgba(191,155,78,.15) transparent;}
+.fd-body::-webkit-scrollbar{width:4px;}
+.fd-body::-webkit-scrollbar-thumb{background:rgba(191,155,78,.2);border-radius:2px;}
+.fd-sec-label{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(191,155,78,.65);font-weight:700;margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem;}
+.fd-sec-label::before{content:'';flex-shrink:0;width:16px;height:1px;background:rgba(191,155,78,.35);}
 .fd-chips{display:flex;flex-wrap:wrap;gap:.4rem;}
-.fd-chip{padding:.38rem .85rem;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--ink);font-family:var(--sans);font-size:.78rem;cursor:pointer;transition:all .18s;white-space:nowrap;font-weight:500;}
-.fd-chip:hover{border-color:var(--gold);color:var(--gold);}
-.fd-chip.on{background:linear-gradient(135deg,rgba(212,184,128,.18),rgba(191,155,78,.12));border-color:var(--gold);color:var(--gold);font-weight:700;box-shadow:0 0 0 3px rgba(191,155,78,.1);}
-/* Size inputs inside sheet */
-.fd-size-row{display:flex;align-items:center;gap:.5rem;}
-.fd-size-inp{flex:1;padding:.5rem .75rem;border:1.5px solid var(--border);border-radius:8px;background:var(--parchment);color:var(--ink);font-family:var(--sans);font-size:.82rem;outline:none;transition:border-color .18s;}
-.fd-size-inp:focus{border-color:var(--gold);}
-.fd-size-inp::placeholder{color:var(--muted);font-size:.76rem;}
-.fd-size-sep{color:var(--muted);font-size:.9rem;flex-shrink:0;}
-/* Sheet footer */
-.fd-ft{display:flex;gap:.75rem;padding:1rem 1.3rem 1.2rem;border-top:1px solid var(--border);flex-shrink:0;}
-.fd-ft-clear{flex:0 0 auto;padding:.65rem 1.2rem;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:var(--sans);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
-.fd-ft-clear:hover{border-color:#c0392b;color:#c0392b;}
-.fd-ft-apply{flex:1;padding:.68rem 1.2rem;border-radius:999px;border:none;background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#080810;font-family:var(--sans);font-size:.82rem;font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 18px rgba(191,155,78,.35);}
-.fd-ft-apply:hover{box-shadow:0 6px 28px rgba(191,155,78,.55);transform:translateY(-1px);}
-/* Legacy keeps (used by price slider) */
+.fd-chip{padding:.35rem .82rem;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(200,196,216,.7);font-family:var(--sans);font-size:.75rem;cursor:pointer;transition:all .2s;white-space:nowrap;font-weight:500;backdrop-filter:blur(4px);}
+.fd-chip:hover{border-color:rgba(191,155,78,.45);color:#D4B880;background:rgba(191,155,78,.08);}
+.fd-chip.on{background:linear-gradient(135deg,rgba(212,184,128,.2),rgba(191,155,78,.14));border-color:rgba(191,155,78,.55);color:#D4B880;font-weight:700;box-shadow:0 0 0 2px rgba(191,155,78,.12),0 2px 12px rgba(191,155,78,.15);}
+/* ── Size inputs ── */
+.fd-size-row{display:flex;align-items:center;gap:.6rem;}
+.fd-size-inp{flex:1;padding:.52rem .85rem;border:1px solid rgba(191,155,78,.2);border-radius:10px;background:rgba(255,255,255,.04);color:#F0EDE6;font-family:var(--sans);font-size:.82rem;outline:none;transition:border-color .2s,box-shadow .2s;}
+.fd-size-inp:focus{border-color:rgba(191,155,78,.55);box-shadow:0 0 0 3px rgba(191,155,78,.1);}
+.fd-size-inp::placeholder{color:rgba(200,196,216,.3);font-size:.75rem;}
+.fd-size-sep{color:rgba(200,196,216,.35);font-size:1rem;flex-shrink:0;}
+/* ── Sticky footer ── */
+.fd-ft{display:flex;gap:.7rem;padding:1rem 1.4rem 1.3rem;border-top:1px solid rgba(191,155,78,.1);flex-shrink:0;background:linear-gradient(0deg,rgba(10,8,20,.6) 0%,transparent 100%);}
+.fd-ft-clear{flex:0 0 auto;padding:.62rem 1.2rem;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(200,196,216,.5);font-family:var(--sans);font-size:.76rem;font-weight:600;cursor:pointer;transition:all .22s;letter-spacing:.05em;}
+.fd-ft-clear:hover{border-color:rgba(224,90,90,.5);color:#e05a5a;background:rgba(224,90,90,.06);}
+.fd-ft-apply{flex:1;padding:.68rem 1.2rem;border-radius:999px;border:none;background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#080810;font-family:var(--sans);font-size:.8rem;font-weight:800;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;transition:all .22s;box-shadow:0 4px 20px rgba(191,155,78,.4);}
+.fd-ft-apply:hover{box-shadow:0 6px 32px rgba(191,155,78,.6);transform:translateY(-1px);}
+/* ── Desktop 2-col grid inside body ── */
+@media(min-width:769px){
+  .fd-body{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem 2rem;align-content:start;}
+  .fd-sec-price{grid-column:1/-1;}
+}
+/* ── Legacy (price slider uses these) ── */
 .fsize-range{display:flex;align-items:center;gap:.3rem;}
 .fsize-inp{width:80px;padding:.44rem .6rem;border:1px solid var(--border);background:var(--parchment);color:var(--ink);font-family:var(--sans);font-size:.8rem;outline:none;transition:border-color .18s;}
 .fsize-inp:focus{border-color:var(--gold);}
@@ -547,7 +569,7 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   .grid{grid-template-columns:repeat(2,1fr);gap:.9rem;}
 
   /* Filter bar */
-  .fd-bar{padding:.6rem .75rem;gap:.5rem;}
+  .fd-bar{padding:.65rem .85rem;gap:.45rem;}
   .price-panel{padding:.85rem;}
 
   /* Card image */
@@ -607,9 +629,11 @@ body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE
   .grid{grid-template-columns:1fr;gap:.85rem;}
 
   /* Filter bar */
-  .fd-bar{flex-wrap:nowrap;gap:.4rem;}
-  .fd-trigger{font-size:.72rem;padding:.42rem .8rem;}
-  .fd-rcnt{font-size:.72rem;}
+  .fd-bar{flex-wrap:nowrap;gap:.35rem;padding:.55rem .75rem;border-radius:12px;}
+  .fd-trigger{font-size:.68rem;padding:.38rem .75rem;letter-spacing:.06em;}
+  .fd-rcnt{font-size:.68rem;}
+  .fd-body{grid-template-columns:1fr!important;}
+  .fd-sec-price{grid-column:1!important;}
 
   /* Card */
   .cimg{height:185px;}
@@ -5876,56 +5900,86 @@ export default function App(){
                 <div className="fd-handle"/>
                 <div className="fd-hd">
                   <span className="fd-hd-title">Filter Projects</span>
-                  {[type!=="All Types",loc!=="All Areas",stat!=="All Status",fBed!=="All Beds",fBath!=="All Baths",fTenure!=="All Tenure",fCompletion!=="All Completion",priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX,!!fSizeMin||!!fSizeMax].filter(Boolean).length>0&&(
-                    <span className="fd-hd-cnt">{[type!=="All Types",loc!=="All Areas",stat!=="All Status",fBed!=="All Beds",fBath!=="All Baths",fTenure!=="All Tenure",fCompletion!=="All Completion",priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX,!!fSizeMin||!!fSizeMax].filter(Boolean).length} active</span>
-                  )}
+                  {(()=>{const n=[type!=="All Types",loc!=="All Areas",stat!=="All Status",fBed!=="All Beds",fBath!=="All Baths",fTenure!=="All Tenure",fCompletion!=="All Completion",priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX,!!fSizeMin||!!fSizeMax].filter(Boolean).length;return n>0&&<span className="fd-hd-cnt">{n} active</span>;})()}
                   <button className="fd-close" onClick={()=>setFilterOpen(false)}>✕</button>
                 </div>
-                <div className="fd-body">
-                  <div className="fd-sec">
-                    <div className="fd-sec-label">Property Type</div>
-                    <div className="fd-chips">{TYPES.map(t=><button key={t} className={`fd-chip${type===t?" on":""}`} onClick={()=>setType(t)}>{t}</button>)}</div>
+                {/* Desktop: sidebar + body side by side */}
+                <div className="fd-sheet-inner">
+                  <div className="fd-sidebar">
+                    <div>
+                      <div className="fd-sidebar-title">Active Filters</div>
+                      <div className="fd-sidebar-cnt">{filtered.length} result{filtered.length!==1?"s":""}</div>
+                    </div>
+                    <div className="fd-sidebar-filters">
+                      {(()=>{
+                        const items=[];
+                        if(type!=="All Types") items.push({l:`Type: ${type}`,rm:()=>setType("All Types")});
+                        if(loc!=="All Areas") items.push({l:`Area: ${loc}`,rm:()=>setLoc("All Areas")});
+                        if(stat!=="All Status") items.push({l:`Status: ${stat}`,rm:()=>setStat("All Status")});
+                        if(fBed!=="All Beds") items.push({l:`${fBed} Bed`,rm:()=>setFBed("All Beds")});
+                        if(fBath!=="All Baths") items.push({l:`${fBath} Bath`,rm:()=>setFBath("All Baths")});
+                        if(fTenure!=="All Tenure") items.push({l:fTenure,rm:()=>setFTenure("All Tenure")});
+                        if(fCompletion!=="All Completion") items.push({l:fCompletion,rm:()=>setFCompletion("All Completion")});
+                        if(priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX) items.push({l:"Custom Price",rm:()=>{setPriceMin(PRICE_SLIDER_MIN);setPriceMax(PRICE_SLIDER_MAX);}});
+                        if(fSizeMin||fSizeMax) items.push({l:"Size Range",rm:()=>{setFSizeMin("");setFSizeMax("");}});
+                        return items.length===0
+                          ? <div className="fd-sidebar-empty">No filters applied</div>
+                          : items.map(it=>(
+                            <div key={it.l} className="fd-sidebar-item">
+                              <span className="fd-sidebar-lbl">{it.l}</span>
+                              <button className="fd-sidebar-rm" onClick={it.rm}>×</button>
+                            </div>
+                          ));
+                      })()}
+                    </div>
+                    <button className="fd-sidebar-clear" onClick={clearAllFilters}>Clear All</button>
                   </div>
-                  <div className="fd-sec">
-                    <div className="fd-sec-label">Location / Area</div>
-                    <div className="fd-chips">{LOCS.map(l=><button key={l} className={`fd-chip${loc===l?" on":""}`} onClick={()=>setLoc(l)}>{l}</button>)}</div>
-                  </div>
-                  <div className="fd-sec">
-                    <div className="fd-sec-label">Status</div>
-                    <div className="fd-chips">{STATS.map(s=><button key={s} className={`fd-chip${stat===s?" on":""}`} onClick={()=>setStat(s)}>{s}</button>)}</div>
-                  </div>
-                  <div className="fd-sec">
-                    <div className="fd-sec-label">Bedrooms</div>
-                    <div className="fd-chips">{BEDS.map(b=><button key={b} className={`fd-chip${fBed===b?" on":""}`} onClick={()=>setFBed(b)}>{b}</button>)}</div>
-                  </div>
-                  <div className="fd-sec">
-                    <div className="fd-sec-label">Bathrooms</div>
-                    <div className="fd-chips">{BATHS.map(b=><button key={b} className={`fd-chip${fBath===b?" on":""}`} onClick={()=>setFBath(b)}>{b}</button>)}</div>
-                  </div>
-                  <div className="fd-sec">
-                    <div className="fd-sec-label">Tenure</div>
-                    <div className="fd-chips">{TENURE_OPTS.map(t=><button key={t} className={`fd-chip${fTenure===t?" on":""}`} onClick={()=>setFTenure(t)}>{t}</button>)}</div>
-                  </div>
-                  <div className="fd-sec">
-                    <div className="fd-sec-label">Completion</div>
-                    <div className="fd-chips">{COMPLETION_OPTS.map(c=><button key={c} className={`fd-chip${fCompletion===c?" on":""}`} onClick={()=>setFCompletion(c)}>{c}</button>)}</div>
-                  </div>
-                  <div className="fd-sec">
-                    <div className="fd-sec-label">Price Range</div>
-                    <PriceRangeSlider minVal={priceMin} maxVal={priceMax} onChange={(mn,mx)=>{setPriceMin(mn);setPriceMax(mx);}}/>
-                  </div>
-                  <div className="fd-sec">
-                    <div className="fd-sec-label">Built-up Size (sqft)</div>
-                    <div className="fd-size-row">
-                      <input className="fd-size-inp" type="number" placeholder="Min sqft" value={fSizeMin} onChange={e=>setFSizeMin(e.target.value)} min="0"/>
-                      <span className="fd-size-sep">–</span>
-                      <input className="fd-size-inp" type="number" placeholder="Max sqft" value={fSizeMax} onChange={e=>setFSizeMax(e.target.value)} min="0"/>
+                  <div className="fd-body">
+                    <div className="fd-sec">
+                      <div className="fd-sec-label">Property Type</div>
+                      <div className="fd-chips">{TYPES.map(t=><button key={t} className={`fd-chip${type===t?" on":""}`} onClick={()=>setType(t)}>{t}</button>)}</div>
+                    </div>
+                    <div className="fd-sec">
+                      <div className="fd-sec-label">Location / Area</div>
+                      <div className="fd-chips">{LOCS.map(l=><button key={l} className={`fd-chip${loc===l?" on":""}`} onClick={()=>setLoc(l)}>{l}</button>)}</div>
+                    </div>
+                    <div className="fd-sec">
+                      <div className="fd-sec-label">Status</div>
+                      <div className="fd-chips">{STATS.map(s=><button key={s} className={`fd-chip${stat===s?" on":""}`} onClick={()=>setStat(s)}>{s}</button>)}</div>
+                    </div>
+                    <div className="fd-sec">
+                      <div className="fd-sec-label">Bedrooms</div>
+                      <div className="fd-chips">{BEDS.map(b=><button key={b} className={`fd-chip${fBed===b?" on":""}`} onClick={()=>setFBed(b)}>{b}</button>)}</div>
+                    </div>
+                    <div className="fd-sec">
+                      <div className="fd-sec-label">Bathrooms</div>
+                      <div className="fd-chips">{BATHS.map(b=><button key={b} className={`fd-chip${fBath===b?" on":""}`} onClick={()=>setFBath(b)}>{b}</button>)}</div>
+                    </div>
+                    <div className="fd-sec">
+                      <div className="fd-sec-label">Tenure</div>
+                      <div className="fd-chips">{TENURE_OPTS.map(t=><button key={t} className={`fd-chip${fTenure===t?" on":""}`} onClick={()=>setFTenure(t)}>{t}</button>)}</div>
+                    </div>
+                    <div className="fd-sec">
+                      <div className="fd-sec-label">Completion</div>
+                      <div className="fd-chips">{COMPLETION_OPTS.map(c=><button key={c} className={`fd-chip${fCompletion===c?" on":""}`} onClick={()=>setFCompletion(c)}>{c}</button>)}</div>
+                    </div>
+                    <div className="fd-sec fd-sec-price">
+                      <div className="fd-sec-label">Price Range</div>
+                      <PriceRangeSlider minVal={priceMin} maxVal={priceMax} onChange={(mn,mx)=>{setPriceMin(mn);setPriceMax(mx);}}/>
+                    </div>
+                    <div className="fd-sec fd-sec-price">
+                      <div className="fd-sec-label">Built-up Size (sqft)</div>
+                      <div className="fd-size-row">
+                        <input className="fd-size-inp" type="number" placeholder="Min sqft" value={fSizeMin} onChange={e=>setFSizeMin(e.target.value)} min="0"/>
+                        <span className="fd-size-sep">–</span>
+                        <input className="fd-size-inp" type="number" placeholder="Max sqft" value={fSizeMax} onChange={e=>setFSizeMax(e.target.value)} min="0"/>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div className="fd-ft">
                   <button className="fd-ft-clear" onClick={clearAllFilters}>Clear All</button>
-                  <button className="fd-ft-apply" onClick={()=>setFilterOpen(false)}>Show {filtered.length} Project{filtered.length!==1?"s":""}</button>
+                  <button className="fd-ft-apply" onClick={()=>setFilterOpen(false)}>Show {filtered.length} Result{filtered.length!==1?"s":""} →</button>
                 </div>
               </div>
             </>
