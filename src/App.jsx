@@ -2078,8 +2078,11 @@ body.cine-active *{cursor:none !important;}
 .cine-fab-action-ico{font-size:1rem;line-height:1;flex-shrink:0;}
 .cine-fab-main{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#D4B880,#BF9B4E);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 32px rgba(191,155,78,.45),0 8px 24px rgba(0,0,0,.5);transition:transform .25s ease,box-shadow .25s ease;position:relative;flex-shrink:0;}
 .cine-fab-main:hover{transform:scale(1.08);box-shadow:0 0 48px rgba(191,155,78,.65),0 12px 32px rgba(0,0,0,.55);}
-.cine-fab-main-ico{color:#080810;font-size:1.3rem;font-weight:700;line-height:1;transition:transform .3s ease;user-select:none;}
-.cine-fab-main.open .cine-fab-main-ico{transform:rotate(45deg);}
+.cine-fab-main-ico{color:#080810;font-size:1.3rem;font-weight:700;line-height:1;transition:opacity .25s ease,transform .25s ease;user-select:none;position:absolute;}
+.cine-fab-main-ico.phone{opacity:1;transform:scale(1) rotate(0deg);}
+.cine-fab-main-ico.close{opacity:0;transform:scale(.5) rotate(-90deg);}
+.cine-fab-main.open .cine-fab-main-ico.phone{opacity:0;transform:scale(.5) rotate(90deg);}
+.cine-fab-main.open .cine-fab-main-ico.close{opacity:1;transform:scale(1) rotate(0deg);}
 @media(max-width:768px){.cine-fab{bottom:1.25rem;right:1.25rem;}.cine-fab-main{width:46px;height:46px;}.cine-fab-action{font-size:.7rem;padding:.55rem .9rem .55rem .75rem;}}
 .cine-sections{position:relative;z-index:5;}
 .cine-section{padding:5rem 6vw;position:relative;}
@@ -3297,7 +3300,8 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
           )}
         </div>
         <button className={`cine-fab-main${fabOpen?' open':''}`} onClick={()=>setFabOpen(v=>!v)} aria-label="Quick Actions">
-          <span className="cine-fab-main-ico">+</span>
+          <span className="cine-fab-main-ico phone">📞</span>
+          <span className="cine-fab-main-ico close">✕</span>
         </button>
       </div>
 
