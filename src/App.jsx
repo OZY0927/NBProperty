@@ -255,7 +255,7 @@ const css=`
   --a-gold:#BF9B4E;--a-red:#C4543E;--a-green:#4E9A72;--a-blue:#5E8FD0;
   --a-cta:#BF9B4E;
 }
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;font-size:18px;}
 body{font-family:var(--sans);background:linear-gradient(180deg,#FAF8F3 0%,#F2EDE4 100%);color:var(--ink);}
 
 .filter-panel,.card,.proj-card,.spec-section,.amenity-cat,.layouts-upgrades,.ri-box,.set-card,.a-login-box,.a-stat,.a-tbl-wrap,.a-modal,.vis-master-card,.vis-tab-card,.vis-preview,.vis-group-hd,.vis-group-body,.map-embed,.a-map-preview,.map-picker-container,.map-picker-modal,.crm-tbl-wrap,.crm-col,.crm-card,.crm-modal,.crm-drawer-sec,.crm-stat,.crm-chart-card,.tray,.tslot,.add-more,.price-panel{border-radius:var(--r-md);}
@@ -5381,6 +5381,7 @@ export default function App(){
   const saveSettings=useCallback(async updated=>{setSettings(updated);try{await fsSaveSettings(updated);}catch{}},[]);
 
   const [tab,setTab]=useState("listings");
+  const goTab=(t)=>{setTab(t);window.scrollTo({top:0,behavior:'instant'});};
   const [adminTab,setAdminTab]=useState("projects");
   const [adminSubOpen,setAdminSubOpen]=useState(false);
   const [search,setSearch]=useState("");
@@ -5526,15 +5527,15 @@ export default function App(){
       {/* ── Mobile side-nav drawer — hidden on detail page ── */}
       {tab!=="detail"&&<div className={`mob-drawer${mobileNavOpen?" open":""}`}>
         <div className="mob-drawer-hd">
-          <div className="mob-drawer-logo" onClick={()=>{setTab("listings");setMobileNavOpen(false);}}>NB<span>Property</span></div>
+          <div className="mob-drawer-logo" onClick={()=>{goTab("listings");setMobileNavOpen(false);}}>NB<span>Property</span></div>
           <button className="mob-drawer-x" onClick={()=>setMobileNavOpen(false)}>✕</button>
         </div>
         <div className="mob-drawer-nav">
-          <button className={`mob-nav-item${tab==="listings"?" on":""}`} onClick={()=>{setTab("listings");setAdminSubOpen(false);setMobileNavOpen(false);}}>🏠 Home</button>
-          <button className={`mob-nav-item${tab==="properties"?" on":""}`} onClick={()=>{setTab("properties");setAdminSubOpen(false);setMobileNavOpen(false);}}>🏘️ Properties</button>
-          <button className={`mob-nav-item${tab==="compare"?" on":""}`} onClick={()=>{setTab("compare");setAdminSubOpen(false);setMobileNavOpen(false);}}>⚖️ Compare{cmpIds.length>0&&<span className="mob-badge" style={{marginLeft:".5rem"}}>{cmpIds.length}</span>}</button>
-          <button className={`mob-nav-item${tab==="tools"?" on":""}`} onClick={()=>{setTab("tools");setAdminSubOpen(false);setMobileNavOpen(false);}}>🧮 Tools</button>
-          <button className={`mob-nav-item${tab==="admin"?" on":""}`} onClick={()=>{if(tab==="admin"){setAdminSubOpen(v=>!v);}else{setTab("admin");setAdminSubOpen(true);}}}>🔒 Admin<span className={`mob-admin-chevron${adminSubOpen&&tab==="admin"?" open":""}`}>▼</span></button>
+          <button className={`mob-nav-item${tab==="listings"?" on":""}`} onClick={()=>{goTab("listings");setAdminSubOpen(false);setMobileNavOpen(false);}}>🏠 Home</button>
+          <button className={`mob-nav-item${tab==="properties"?" on":""}`} onClick={()=>{goTab("properties");setAdminSubOpen(false);setMobileNavOpen(false);}}>🏘️ Properties</button>
+          <button className={`mob-nav-item${tab==="compare"?" on":""}`} onClick={()=>{goTab("compare");setAdminSubOpen(false);setMobileNavOpen(false);}}>⚖️ Compare{cmpIds.length>0&&<span className="mob-badge" style={{marginLeft:".5rem"}}>{cmpIds.length}</span>}</button>
+          <button className={`mob-nav-item${tab==="tools"?" on":""}`} onClick={()=>{goTab("tools");setAdminSubOpen(false);setMobileNavOpen(false);}}>🧮 Tools</button>
+          <button className={`mob-nav-item${tab==="admin"?" on":""}`} onClick={()=>{if(tab==="admin"){setAdminSubOpen(v=>!v);}else{goTab("admin");setAdminSubOpen(true);}}}>🔒 Admin<span className={`mob-admin-chevron${adminSubOpen&&tab==="admin"?" open":""}`}>▼</span></button>
           {tab==="admin"&&adminAuthed&&(
             <div className={`mob-admin-sub${adminSubOpen?" open":""}`}>
               <button className={`mob-admin-sub-item${adminTab==="analytics"?" on":""}`} onClick={()=>{setAdminTab("analytics");setMobileNavOpen(false);}}>📊 Analytics</button>
@@ -5549,18 +5550,18 @@ export default function App(){
 
       {/* ── Top navigation — hidden on detail page ── */}
       <nav className="nav" style={tab==="detail"?{display:"none"}:undefined}>
-        <div className="nav-logo" onClick={()=>setTab("listings")}>NB<span>Property</span></div>
+        <div className="nav-logo" onClick={()=>goTab("listings")}>NB<span>Property</span></div>
         {/* Desktop tabs (centered) */}
         <div className="nav-tabs">
-          <button className={`ntab${tab==="listings"?" on":""}`} onClick={()=>setTab("listings")}><span>Home</span></button>
-          <button className={`ntab${tab==="properties"?" on":""}`} onClick={()=>setTab("properties")}><span>Properties</span></button>
-          <button className={`ntab${tab==="compare"?" on":""}`} onClick={()=>setTab("compare")}><span>Compare</span>{cmpIds.length>0&&<span className="badge">{cmpIds.length}</span>}</button>
-          <button className={`ntab${tab==="tools"?" on":""}`} onClick={()=>setTab("tools")}><span>Tools</span></button>
+          <button className={`ntab${tab==="listings"?" on":""}`} onClick={()=>goTab("listings")}><span>Home</span></button>
+          <button className={`ntab${tab==="properties"?" on":""}`} onClick={()=>goTab("properties")}><span>Properties</span></button>
+          <button className={`ntab${tab==="compare"?" on":""}`} onClick={()=>goTab("compare")}><span>Compare</span>{cmpIds.length>0&&<span className="badge">{cmpIds.length}</span>}</button>
+          <button className={`ntab${tab==="tools"?" on":""}`} onClick={()=>goTab("tools")}><span>Tools</span></button>
         </div>
 
         {/* Right-side controls: admin icon + mobile hamburger */}
         <div className="nav-right">
-          <button className={`nav-admin${tab==="admin"?" on":""}`} onClick={()=>setTab("admin")} aria-label="Admin">
+          <button className={`nav-admin${tab==="admin"?" on":""}`} onClick={()=>goTab("admin")} aria-label="Admin">
             <IPerson/>
           </button>
           <button className={`nav-hamburger${mobileNavOpen?" open":""}`} onClick={()=>setMobileNavOpen(v=>!v)} aria-label="Menu">
