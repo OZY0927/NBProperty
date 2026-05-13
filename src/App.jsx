@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import FALLBACK_IMG from "./assets/nblogo.jpg";
-import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, migrateAnalytics, deleteAllAnalytics, getSettings as fsGetSettings, saveSettings as fsSaveSettings } from "./firebase/firestore";
+import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, getAllAnalytics, migrateAnalytics, deleteAllAnalytics, getSettings as fsGetSettings, saveSettings as fsSaveSettings } from "./firebase/firestore";
 import COUNTRY_CODES from "./data/countryCodes";
 // Firebase SDK — reuses the app already initialised by ./firebase/firestore
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
@@ -96,6 +96,7 @@ const DEFAULT_PROJECTS = [];
 const ADMIN_PASSWORD   = "admin123";
 const STORAGE_KEY      = "nb_v3";
 const SETTINGS_KEY     = "nb_settings_v1";
+const ANALYTICS_KEY    = "nb_analytics_v1";
 
 function trackEvent(type, data = {}) {
   try {
@@ -745,8 +746,9 @@ body:not(.dark) .cine-stat-lbl{color:rgba(122,34,56,.6);}
 body:not(.dark) .cine-stat-val{color:#2D0E14;}
 body:not(.dark) .cine-stat-val span{color:rgba(122,34,56,.75);}
 /* CTA buttons — keep primary, update secondary */
-body:not(.dark) .cine-cta-sec{background:rgba(193,126,135,.06);border-color:rgba(193,126,135,.32);color:rgba(45,14,20,.75);}
-body:not(.dark) .cine-cta-sec:hover{background:rgba(193,126,135,.15);border-color:rgba(193,126,135,.6);color:#5C1828;}
+body:not(.dark) .cine-cta-pri{color:#fff;}
+body:not(.dark) .cine-cta-sec{background:rgba(193,126,135,.06);border-color:rgba(193,126,135,.32);color:#fff;}
+body:not(.dark) .cine-cta-sec:hover{background:rgba(193,126,135,.15);border-color:rgba(193,126,135,.6);color:#fff;}
 /* Eyebrow / section labels */
 body:not(.dark) .cine-eyebrow{color:rgba(193,126,135,.85);}
 body:not(.dark) .cine-eyebrow::before{background:rgba(193,126,135,.6);}
@@ -5034,15 +5036,36 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
 function AnalyticsDashboard() {
   const [range, setRange] = useState("7d");
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    try { const raw = localStorage.getItem(ANALYTICS_KEY); setEvents(raw ? JSON.parse(raw) : []); }
-    catch { setEvents([]); }
+    (async () => {
+      setLoading(true);
+      try {
+        const fsData = await getAllAnalytics();
+        if (Array.isArray(fsData) && fsData.length > 0) {
+          setEvents(fsData);
+        } else {
+          // Fallback: read from localStorage
+          const raw = localStorage.getItem(ANALYTICS_KEY);
+          setEvents(raw ? JSON.parse(raw) : []);
+        }
+      } catch {
+        try { const raw = localStorage.getItem(ANALYTICS_KEY); setEvents(raw ? JSON.parse(raw) : []); }
+        catch { setEvents([]); }
+      }
+      setLoading(false);
+    })();
   }, []);
+  // Normalize: Firestore timestamps may be objects {seconds, nanoseconds}
+  const normalized = events.map(e => ({
+    ...e,
+    t: typeof e.t === "number" ? e.t : (e.t?.seconds ? e.t.seconds * 1000 : (e.t?.toMillis ? e.t.toMillis() : Date.now()))
+  }));
   const now = Date.now();
   const cutoff = range==="today" ? new Date(new Date().setHours(0,0,0,0)).getTime()
                : range==="7d"   ? now - 7*86400000
                : range==="30d"  ? now - 30*86400000 : 0;
-  const filtered = events.filter(e => e.t >= cutoff);
+  const filtered = normalized.filter(e => e.t >= cutoff);
   const views     = filtered.filter(e => e.type==="page_view").length;
   const clicks    = filtered.filter(e => e.type==="project_click").length;
   const inquiries = filtered.filter(e => ["inquiry_email","inquiry_wa","showroom_book"].includes(e.type)).length;
@@ -5062,7 +5085,7 @@ function AnalyticsDashboard() {
     const d = new Date(); d.setDate(d.getDate()-(chartDays-1-i)); d.setHours(0,0,0,0); return d.getTime();
   });
   const dailyData = days.map(s => {
-    const evs = events.filter(e=>e.t>=s&&e.t<s+86400000);
+    const evs = normalized.filter(e=>e.t>=s&&e.t<s+86400000);
     return {
       label: new Date(s).toLocaleDateString("en-GB",{day:"numeric",month:"short"}),
       v: evs.filter(e=>e.type==="page_view").length,
@@ -5079,6 +5102,7 @@ function AnalyticsDashboard() {
     try { localStorage.removeItem(ANALYTICS_KEY); } catch(_){}
     setEvents([]);
   };
+  if (loading) return <div style={{padding:"3rem",textAlign:"center",color:"var(--a-muted)"}}>Loading analytics…</div>;
   return (
     <div>
       <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",marginBottom:"1.5rem",flexWrap:"wrap",gap:"1rem"}}>
