@@ -5552,14 +5552,7 @@ function LoanCalculator({settings}){
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="lc-actions" style={{marginTop:"1.2rem"}}>
-        <a href={waUrl} target="_blank" rel="noopener noreferrer" className="lc-wa-btn">
-          💬 Contact Agent via WhatsApp
-        </a>
-        <button className="lc-save-btn" onClick={saveCalc}>💾 Save Calculation</button>
-        {saved&&<button className="lc-load-btn" onClick={loadSaved}>📂 Load Saved ({fmtRM(saved.monthly)}/mo)</button>}
-      </div>
+
 
       {/* Mobile sticky bar */}
       <div className="lc-mob-bar">
