@@ -1896,11 +1896,27 @@ body{background:#080812;color:#E8E4F0;}
 .lux-stat-num{font-family:'Cormorant Garamond',Georgia,serif;font-size:2rem;font-weight:600;color:#BF9B4E;line-height:1;margin-bottom:.28rem;}
 .lux-stat-lbl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(200,196,216,.45);font-weight:500;}
 @media(max-width:768px){
-  .lux-h1{font-size:2.6rem;}
-  .lux-stats-bar{padding:1rem;flex-wrap:wrap;}
-  .lux-stat{flex:0 1 50%;padding:.6rem 0;}
+  /* On mobile, make hero auto-height so content is never clipped */
+  .lux-hero{min-height:100svh;overflow:visible;flex-direction:column;justify-content:flex-start;}
+  .lux-hero-bg{position:fixed;overflow:hidden;}
+  .lux-hero-overlay{position:fixed;}
+  .lux-hero-side-glow{position:fixed;}
+  .lux-hero-grid{position:fixed;}
+  /* Stack: content on top, stats bar below (no absolute positioning) */
+  .lux-hero-content{padding:7rem 1.2rem 2rem;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .lux-h1{font-size:clamp(1.9rem,7vw,2.6rem);margin-bottom:1rem;}
+  .lux-tagline{font-size:.84rem;margin-bottom:1.8rem;}
+  .lux-eyebrow{font-size:.62rem;margin-bottom:1.2rem;}
+  .lux-eyebrow::before,.lux-eyebrow::after{width:24px;}
+  .lux-ctas{gap:.65rem;margin-bottom:1.8rem;}
+  .lux-btn-pri,.lux-btn-sec{padding:.78rem 1.6rem;font-size:.72rem;width:100%;text-align:center;box-sizing:border-box;}
+  .lux-hero-search{max-width:100%;}
+  .lux-hero-search-inp{font-size:.88rem;padding:.9rem 3rem .9rem 1.2rem;}
+  /* Stats bar: relative (in flow), not absolute */
+  .lux-stats-bar{position:relative;bottom:auto;left:auto;right:auto;padding:1rem;flex-wrap:wrap;}
+  .lux-stat{flex:0 1 50%;padding:.65rem 0;}
   .lux-stat:nth-child(2){border-right:none;}
-  .lux-hero-content{padding:2rem 1rem 9rem;}
+  .lux-stat-num{font-size:1.6rem;}
 }
 
 /* ── Why Choose Us ── */
@@ -2050,6 +2066,21 @@ body.cine-active *{cursor:none !important;}
 .cine-cta-pri:hover{transform:translateY(-3px);box-shadow:0 0 48px rgba(191,155,78,.55),0 14px 30px rgba(0,0,0,.4);}
 .cine-cta-sec{display:inline-flex;align-items:center;gap:.6rem;padding:.85rem 1.8rem;border-radius:999px;background:rgba(191,155,78,.06);border:1.5px solid rgba(191,155,78,.3);color:rgba(255,255,255,.82);font-size:.85rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(8px);transition:all .25s ease;}
 .cine-cta-sec:hover{background:rgba(191,155,78,.14);border-color:rgba(191,155,78,.6);color:#D4B880;transform:translateY(-3px);}
+/* ── Detail Page FAB ── */
+.cine-fab{position:fixed;bottom:2rem;right:2rem;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:.6rem;}
+.cine-fab-actions{display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;pointer-events:none;}
+.cine-fab-actions.open{pointer-events:auto;}
+.cine-fab-action{display:flex;align-items:center;gap:.65rem;padding:.6rem 1.1rem .6rem .85rem;border-radius:999px;border:1.5px solid rgba(191,155,78,.38);background:rgba(4,4,14,.92);color:#D4B880;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(18px);box-shadow:0 8px 28px rgba(0,0,0,.45);white-space:nowrap;opacity:0;transform:translateY(12px) scale(.95);transition:opacity .22s ease,transform .22s ease,background .2s,box-shadow .2s;}
+.cine-fab-actions.open .cine-fab-action{opacity:1;transform:translateY(0) scale(1);}
+.cine-fab-actions.open .cine-fab-action:nth-child(1){transition-delay:.05s;}
+.cine-fab-actions.open .cine-fab-action:nth-child(2){transition-delay:.0s;}
+.cine-fab-action:hover{background:rgba(191,155,78,.15);border-color:#BF9B4E;box-shadow:0 0 28px rgba(191,155,78,.3),0 8px 28px rgba(0,0,0,.5);}
+.cine-fab-action-ico{font-size:1rem;line-height:1;flex-shrink:0;}
+.cine-fab-main{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#D4B880,#BF9B4E);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 32px rgba(191,155,78,.45),0 8px 24px rgba(0,0,0,.5);transition:transform .25s ease,box-shadow .25s ease;position:relative;flex-shrink:0;}
+.cine-fab-main:hover{transform:scale(1.08);box-shadow:0 0 48px rgba(191,155,78,.65),0 12px 32px rgba(0,0,0,.55);}
+.cine-fab-main-ico{color:#080810;font-size:1.3rem;font-weight:700;line-height:1;transition:transform .3s ease;user-select:none;}
+.cine-fab-main.open .cine-fab-main-ico{transform:rotate(45deg);}
+@media(max-width:768px){.cine-fab{bottom:1.25rem;right:1.25rem;}.cine-fab-main{width:46px;height:46px;}.cine-fab-action{font-size:.7rem;padding:.55rem .9rem .55rem .75rem;}}
 .cine-sections{position:relative;z-index:5;}
 .cine-section{padding:5rem 6vw;position:relative;}
 .cine-section+.cine-section{border-top:1px solid rgba(191,155,78,.06);}
@@ -2911,6 +2942,7 @@ function CustomCursor() {
 ═══════════════════════════════════════ */
 function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
   const [activeImg, setActiveImg] = useState(0);
+  const [fabOpen, setFabOpen] = useState(false);
   useEffect(()=>{ window.scrollTo(0,0); },[]);
 
   /* ── Scroll-reveal helper ── */
@@ -3251,6 +3283,24 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
         </div>
 
       </div>
+
+      {/* ═══ FLOATING ACTION BUTTON ═══ */}
+      <div className="cine-fab">
+        <div className={`cine-fab-actions${fabOpen?' open':''}`}>
+          <button className="cine-fab-action" onClick={()=>{setFabOpen(false);onRegisterInterest();}}>
+            <span className="cine-fab-action-ico">✉️</span>Register Interest
+          </button>
+          {p.showroom&&p.showroom.trim().toLowerCase()!=="no"&&p.showroom.trim()!==""&&(
+            <button className="cine-fab-action" onClick={()=>{setFabOpen(false);onVisitShowroom();}}>
+              <span className="cine-fab-action-ico">📍</span>Visit Showroom
+            </button>
+          )}
+        </div>
+        <button className={`cine-fab-main${fabOpen?' open':''}`} onClick={()=>setFabOpen(v=>!v)} aria-label="Quick Actions">
+          <span className="cine-fab-main-ico">+</span>
+        </button>
+      </div>
+
     </div>
   );
 }
