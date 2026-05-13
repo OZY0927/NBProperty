@@ -2940,13 +2940,24 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
   const visDetTabs = ALL_DET_TABS.filter(t=>t.show);
   const [activeTab, setActiveTab] = useState(visDetTabs[0]?.k || "overview");
   const secRefs = useRef({});
-  const scrollTo = (k) => { const el=secRefs.current[k]; if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); };
+  const scrollTo = (k) => {
+    const el = secRefs.current[k];
+    if(el) { const top = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({top, behavior:'smooth'}); }
+  };
   useEffect(()=>{
-    const obs = new IntersectionObserver(entries=>{
-      entries.forEach(e=>{ if(e.isIntersecting) setActiveTab(e.target.dataset.sec); });
-    },{threshold:0.2,rootMargin:'-110px 0px -50% 0px'});
-    Object.values(secRefs.current).forEach(el=>{ if(el) obs.observe(el); });
-    return ()=>obs.disconnect();
+    const handleScroll = () => {
+      const entries = Object.entries(secRefs.current);
+      let best = null, bestDist = Infinity;
+      entries.forEach(([k, el])=>{
+        if(!el) return;
+        const rect = el.getBoundingClientRect();
+        const dist = Math.abs(rect.top - 90);
+        if(dist < bestDist){ bestDist = dist; best = k; }
+      });
+      if(best) setActiveTab(best);
+    };
+    window.addEventListener('scroll', handleScroll, {passive:true});
+    return ()=>window.removeEventListener('scroll', handleScroll);
   },[]);
   const allImgs = [p.image,...(p.gallery||[])];
   const amenities = Array.isArray(p.nearbyAmenities) ? p.nearbyAmenities : [];
@@ -3176,7 +3187,11 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                 ? <div className="cine-unit-empty">📐 No unit layouts available for this project.</div>
                 : <div className="cine-unit-list">
                     {unitTypes.map((ut,i)=>(
-                      <div key={i} className="cine-unit-card">
+                      <div
+                        key={i}
+                        ref={el=>{ if(el&&!revealRef.current.includes(el)) revealRef.current.push(el); }}
+                        className="cr cine-unit-card"
+                      >
                         <div className="cine-unit-img">
                           {ut.image
                             ? <img src={ut.image} alt={ut.name||ut.label} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
