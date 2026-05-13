@@ -1896,13 +1896,13 @@ body{background:#080812;color:#E8E4F0;}
 .lux-stat-num{font-family:'Cormorant Garamond',Georgia,serif;font-size:2rem;font-weight:600;color:#BF9B4E;line-height:1;margin-bottom:.28rem;}
 .lux-stat-lbl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(200,196,216,.45);font-weight:500;}
 @media(max-width:768px){
-  /* On mobile, make hero auto-height so content is never clipped */
+  /* Hero grows to fit all content — no overflow clip so nothing is hidden */
   .lux-hero{min-height:100svh;overflow:visible;flex-direction:column;justify-content:flex-start;}
-  .lux-hero-bg{position:fixed;overflow:hidden;}
-  .lux-hero-overlay{position:fixed;}
-  .lux-hero-side-glow{position:fixed;}
-  .lux-hero-grid{position:fixed;}
-  /* Stack: content on top, stats bar below (no absolute positioning) */
+  /* Clip only the background elements inside their own overflow wrapper */
+  .lux-hero-bg,.lux-hero-overlay,.lux-hero-side-glow,.lux-hero-grid{position:absolute;}
+  /* Contain the scaled bg so it doesn't bleed outside hero */
+  .lux-hero::before{content:'';position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+  /* Content: padding-top clears the global nav */
   .lux-hero-content{padding:7rem 1.2rem 2rem;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;}
   .lux-h1{font-size:clamp(1.9rem,7vw,2.6rem);margin-bottom:1rem;}
   .lux-tagline{font-size:.84rem;margin-bottom:1.8rem;}
@@ -1912,7 +1912,7 @@ body{background:#080812;color:#E8E4F0;}
   .lux-btn-pri,.lux-btn-sec{padding:.78rem 1.6rem;font-size:.72rem;width:100%;text-align:center;box-sizing:border-box;}
   .lux-hero-search{max-width:100%;}
   .lux-hero-search-inp{font-size:.88rem;padding:.9rem 3rem .9rem 1.2rem;}
-  /* Stats bar: relative (in flow), not absolute */
+  /* Stats bar: in normal flow below content, not absolute */
   .lux-stats-bar{position:relative;bottom:auto;left:auto;right:auto;padding:1rem;flex-wrap:wrap;}
   .lux-stat{flex:0 1 50%;padding:.65rem 0;}
   .lux-stat:nth-child(2){border-right:none;}
