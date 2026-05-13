@@ -1936,12 +1936,12 @@ body{background:#080812;color:#E8E4F0;}
 .lux-h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:300;color:#F0EDE6;line-height:1.06;margin-bottom:1.5rem;letter-spacing:-.01em;}
 .lux-h1 em{font-style:italic;color:#BF9B4E;}
 .lux-tagline{font-size:clamp(.88rem,1.5vw,1.05rem);color:rgba(240,237,230,.55);max-width:500px;margin:0 auto 2.5rem;line-height:1.75;font-weight:300;}
-.lux-ctas{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.8rem;}
-.lux-btn-pri{background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#0A0A16;padding:.88rem 2.2rem;border:none;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.lux-ctas{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.8rem;overflow:visible;}
+.lux-btn-pri{background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#0A0A16;padding:.88rem 2.2rem;border:none;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0;}
 .lux-btn-pri::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.12);opacity:0;transition:opacity .2s;}
 .lux-btn-pri:hover::after{opacity:1;}
 .lux-btn-pri:hover{box-shadow:0 0 40px rgba(191,155,78,.5),0 8px 32px rgba(0,0,0,.4);transform:translateY(-2px);}
-.lux-btn-sec{background:transparent;color:#F0EDE6;padding:.86rem 2.2rem;border:1px solid rgba(240,237,230,.28);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.lux-btn-sec{background:transparent;color:#F0EDE6;padding:.86rem 2.2rem;border:1px solid rgba(240,237,230,.28);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;white-space:nowrap;flex-shrink:0;}
 .lux-btn-sec:hover{border-color:rgba(191,155,78,.6);color:#BF9B4E;box-shadow:0 0 20px rgba(191,155,78,.15);transform:translateY(-2px);}
 .lux-hero-search{width:100%;max-width:600px;margin:0 auto;position:relative;}
 .lux-hero-search-inp{width:100%;padding:1.1rem 3.5rem 1.1rem 1.8rem;background:rgba(8,8,20,.88);border:1px solid rgba(191,155,78,.32);color:#E8E4F0;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;backdrop-filter:blur(20px);transition:all .3s;box-sizing:border-box;}
@@ -3062,7 +3062,8 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
     ? `https://maps.google.com/maps?q=${p.coordinates.lat},${p.coordinates.lng}&z=15&output=embed`
     : null;
   const vs = p.visibleSections || {};
-  const sec = (tabKey, secKey) => vs[`${tabKey}.${secKey}`] !== false;
+  // sec() checks BOTH tab-level AND section-level visibility — if a tab is disabled, all its sections return false
+  const sec = (tabKey, secKey) => vt[tabKey] !== false && vs[`${tabKey}.${secKey}`] !== false;
 
   const CineSpecGroup = ({title, icon, rows}) => {
     const filled = rows.filter(([,v])=>v!=null&&String(v).trim()!==''&&String(v).trim()!=='—'&&!String(v).includes('undefined')&&!String(v).includes('NaN'));
@@ -3227,6 +3228,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
 
         {/* ═══ LOCATION ═══ */}
         <div ref={el=>secRefs.current.location=el} data-sec="location">
+          {vt.location !== false && (<>
           <div className="cine-divider"><div className="cine-divider-gem"/></div>
           <section className="cine-section" style={{position:'relative'}}>
             <div className="cine-sec-num">05</div>
@@ -3269,10 +3271,12 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
               </div>
             </div>
           </section>
+          </>)}
         </div>
 
         {/* ═══ UNIT LAYOUTS ═══ */}
         <div ref={el=>secRefs.current.layouts=el} data-sec="layouts">
+          {vt.layouts !== false && (
           <section className="cine-section">
             <div className="cine-sec-label">
               <div className="cine-sec-eyebrow">Floor Plans</div>
@@ -3325,13 +3329,15 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                 <div className="cine-upgrades-body">{p.upgrades}</div>
               </div>
             )}
-            {!sec("layouts","unitTypes") && !sec("layouts","upgrades") && (
+            {!sec("layouts","unitTypes") && !sec("layouts","upgrades") && vt.layouts !== false && (
               <div className="cine-unit-empty">🔒 Content hidden by admin settings.</div>
             )}
           </section>
+          )}
         </div>
 
         {/* ═══ FOOTER CTA ═══ */}
+        {vs["overview.priceBar"] !== false && (<>
         <div className="cine-divider"><div className="cine-divider-gem"/></div>
         <div className="cine-footer">
           <div className="cine-footer-eye">Limited Units Available</div>
@@ -3351,6 +3357,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
             <div>© {new Date().getFullYear()} NB Property</div>
           </div>
         </div>
+        </>)}
 
       </div>
 
