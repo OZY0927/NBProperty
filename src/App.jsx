@@ -415,6 +415,11 @@ body:not(.dark) .tray-clr{border-color:#F0D0D4;color:#A07880;}
 body:not(.dark) .sec-hd{background:linear-gradient(135deg,#5C1828,#7A2238);border-color:#7A2238;}
 body:not(.dark) .pdf-btn{background:#5C1828;border-color:rgba(255,200,210,.2);}
 body:not(.dark) .pdf-btn:hover{border-color:rgba(255,200,210,.55);}
+body:not(.dark) .pdf-btn.busy{border-color:#C17E87;box-shadow:0 0 0 1px rgba(193,126,135,.35),0 0 24px rgba(193,126,135,.2);}
+body:not(.dark) .cmp-pdf-fx-core{background:radial-gradient(circle,#fff 0%,#C17E87 48%,rgba(193,126,135,.08) 100%);box-shadow:0 0 24px rgba(193,126,135,.65),0 0 80px rgba(193,126,135,.25);}
+body:not(.dark) .cmp-pdf-fx-ring{border-color:rgba(193,126,135,.76);}
+body:not(.dark) .cmp-pdf-fx-beam{background:linear-gradient(90deg,rgba(193,126,135,.9),rgba(193,126,135,0));}
+body:not(.dark) .cmp-pdf-fx-dot{background:#E8B7BE;box-shadow:0 0 10px rgba(193,126,135,.72);}
 /* Register interest modal stays light (already uses var(--ink)/parchment correctly) */
 body:not(.dark) .ri-opt-btn{background:#FFF5F6;}
 body:not(.dark) .ri-opt-btn.on{background:#fff;color:#2D0E14;border-bottom-color:#C17E87;}
@@ -1482,9 +1487,44 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
 .cmp-title{font-family:var(--serif);font-size:2.2rem;font-weight:300;}
 .cmp-title em{font-style:italic;color:var(--gold);}
 .cmp-sub{color:var(--muted);font-size:.84rem;margin-top:.3rem;}
-.pdf-btn{display:flex;align-items:center;gap:.5rem;background:var(--ink);color:#fff;border:1px solid rgba(255,255,255,.2);padding:.6rem 1.4rem;font-family:var(--sans);font-size:.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:border-color .2s;}
-.pdf-btn:hover{border-color:var(--gold);}
+.cmp-pdf-fx{position:fixed;inset:0;pointer-events:none;z-index:230;opacity:0;transition:opacity .2s ease;}
+.cmp-pdf-fx.on{opacity:1;}
+.cmp-pdf-fx-core{position:absolute;top:18%;right:8%;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,#fff 0%,#D4B880 48%,rgba(212,184,128,.08) 100%);box-shadow:0 0 24px rgba(212,184,128,.85),0 0 80px rgba(212,184,128,.38);animation:cmpFxCore .95s cubic-bezier(.22,1,.36,1) forwards;}
+.cmp-pdf-fx-ring{position:absolute;top:18%;right:8%;width:14px;height:14px;border-radius:50%;border:2px solid rgba(212,184,128,.8);transform:translate(0,0) scale(.2);opacity:.9;animation:cmpFxRing .95s cubic-bezier(.22,1,.36,1) forwards;}
+.cmp-pdf-fx-ring.r2{animation-delay:.08s;}
+.cmp-pdf-fx-ring.r3{animation-delay:.14s;}
+.cmp-pdf-fx-beam{position:absolute;top:18%;right:8%;width:140px;height:2px;background:linear-gradient(90deg,rgba(212,184,128,.95),rgba(212,184,128,0));transform-origin:right center;opacity:0;animation:cmpFxBeam .9s ease-out forwards;}
+.cmp-pdf-fx-beam.b2{transform:rotate(40deg);animation-delay:.06s;}
+.cmp-pdf-fx-beam.b3{transform:rotate(-38deg);animation-delay:.1s;}
+.cmp-pdf-fx-beam.b4{transform:rotate(88deg);animation-delay:.14s;}
+.cmp-pdf-fx-beam.b5{transform:rotate(-82deg);animation-delay:.18s;}
+.cmp-pdf-fx-dot{position:absolute;top:18%;right:8%;width:6px;height:6px;border-radius:50%;background:#FFE08A;box-shadow:0 0 10px rgba(255,224,138,.75);animation:cmpFxDot .9s ease-out forwards;}
+.cmp-pdf-fx-dot.d1{--tx:74px;--ty:-36px;animation-delay:.02s;}
+.cmp-pdf-fx-dot.d2{--tx:106px;--ty:8px;animation-delay:.05s;}
+.cmp-pdf-fx-dot.d3{--tx:62px;--ty:54px;animation-delay:.08s;}
+.cmp-pdf-fx-dot.d4{--tx:-38px;--ty:40px;animation-delay:.11s;}
+.cmp-pdf-fx-dot.d5{--tx:-52px;--ty:-16px;animation-delay:.14s;}
+.cmp-pdf-fx-dot.d6{--tx:18px;--ty:-68px;animation-delay:.17s;}
+
+.pdf-btn-wrap{position:relative;display:inline-flex;}
+.pdf-btn{position:relative;overflow:hidden;display:flex;align-items:center;gap:.5rem;background:var(--ink);color:#fff;border:1px solid rgba(255,255,255,.2);padding:.6rem 1.4rem;font-family:var(--sans);font-size:.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,transform .22s ease,box-shadow .22s ease;}
+.pdf-btn:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.25),0 0 24px rgba(212,184,128,.18);}
+.pdf-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.34) 50%,transparent 75%);transform:translateX(-130%);transition:transform .5s ease;pointer-events:none;}
+.pdf-btn:hover::before{transform:translateX(130%);}
+.pdf-btn.busy{border-color:var(--gold);box-shadow:0 0 0 1px rgba(212,184,128,.36),0 0 26px rgba(212,184,128,.28);}
+.pdf-btn.busy .pdf-btn-ico{animation:pdfSpin 1s linear infinite;}
+.pdf-btn.busy .pdf-btn-txt{animation:pdfPulse .9s ease-in-out infinite;}
+.pdf-btn .pdf-btn-spark{position:absolute;right:.55rem;top:50%;width:6px;height:6px;border-radius:50%;background:#FFE08A;box-shadow:0 0 10px rgba(255,224,138,.78);transform:translateY(-50%) scale(0);opacity:0;}
+.pdf-btn.busy .pdf-btn-spark{animation:pdfSpark 1.1s ease-in-out infinite;}
 .pdf-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+@keyframes cmpFxCore{0%{transform:scale(.25);opacity:0;}25%{transform:scale(1.3);opacity:1;}100%{transform:scale(.6);opacity:0;}}
+@keyframes cmpFxRing{0%{transform:scale(.2);opacity:.95;}100%{transform:scale(14);opacity:0;}}
+@keyframes cmpFxBeam{0%{opacity:0;transform:scaleX(.1);}20%{opacity:.95;transform:scaleX(1);}100%{opacity:0;transform:scaleX(1.15);}}
+@keyframes cmpFxDot{0%{transform:translate(0,0) scale(.2);opacity:1;}80%{opacity:.92;}100%{transform:translate(var(--tx),var(--ty)) scale(.95);opacity:0;}}
+@keyframes pdfSpin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+@keyframes pdfPulse{0%,100%{opacity:.75;}50%{opacity:1;}}
+@keyframes pdfSpark{0%{transform:translateY(-50%) scale(0);opacity:0;}35%{transform:translateY(-50%) scale(1.1);opacity:1;}100%{transform:translateY(-50%) scale(0);opacity:0;}}
 .cmp-nil{text-align:center;padding:5rem 2rem;}
 .cmp-nil-ico{font-size:3.5rem;margin-bottom:1.2rem;opacity:.22;}
 .cmp-nil-h{font-family:var(--serif);font-size:2rem;margin-bottom:.5rem;}
@@ -6922,6 +6962,8 @@ export default function App(){
   const [selected,setSelected]=useState(null);
   const [cmpIds,setCmpIds]=useState([]);
   const [pdfBusy,setPdfBusy]=useState(false);
+  const [pdfFxBurst,setPdfFxBurst]=useState(0);
+  const [pdfFxActive,setPdfFxActive]=useState(false);
   const [adminAuthed,setAdminAuthed]=useState(false);
   useEffect(()=>{ const unsub=onAuthStateChanged(auth,user=>setAdminAuthed(!!user)); return unsub; },[]);
   const [riProject,setRiProject]=useState(null);  // project for Register Interest modal
@@ -6934,6 +6976,22 @@ export default function App(){
 
   // Track page view whenever the listings tab is shown
   useEffect(()=>{ if(tab==="listings"||tab==="properties") trackEvent("page_view"); },[tab]);
+
+  const handleExportPdf = async () => {
+    if (pdfBusy || cmpProjects.length < 2) return;
+    setPdfFxBurst(v=>v+1);
+    setPdfFxActive(false);
+    requestAnimationFrame(()=>setPdfFxActive(true));
+    setTimeout(()=>setPdfFxActive(false),1000);
+    setPdfBusy(true);
+    try {
+      await exportPDF(cmpProjects);
+    } catch {
+      alert("PDF failed.");
+    } finally {
+      setPdfBusy(false);
+    }
+  };
 
   const LOCS  = useMemo(()=>["All Areas",...new Set(projects.map(p=>p.location))],[projects]);
   const TYPES = useMemo(()=>["All Types",...new Set(projects.map(p=>p.type))],[projects]);
@@ -7321,9 +7379,36 @@ export default function App(){
 
       {tab==="compare"&&(
         <div className="cmp-pg">
+          {pdfFxActive && (
+            <div key={pdfFxBurst} className="cmp-pdf-fx on" aria-hidden="true">
+              <span className="cmp-pdf-fx-core"/>
+              <span className="cmp-pdf-fx-ring r1"/>
+              <span className="cmp-pdf-fx-ring r2"/>
+              <span className="cmp-pdf-fx-ring r3"/>
+              <span className="cmp-pdf-fx-beam b1"/>
+              <span className="cmp-pdf-fx-beam b2"/>
+              <span className="cmp-pdf-fx-beam b3"/>
+              <span className="cmp-pdf-fx-beam b4"/>
+              <span className="cmp-pdf-fx-beam b5"/>
+              <span className="cmp-pdf-fx-dot d1"/>
+              <span className="cmp-pdf-fx-dot d2"/>
+              <span className="cmp-pdf-fx-dot d3"/>
+              <span className="cmp-pdf-fx-dot d4"/>
+              <span className="cmp-pdf-fx-dot d5"/>
+              <span className="cmp-pdf-fx-dot d6"/>
+            </div>
+          )}
           <div className="cmp-hd">
             <div><h2 className="cmp-title">Project <em>Comparison</em></h2><p className="cmp-sub">{cmpProjects.length===0?"Select up to 5 projects.":`Comparing ${cmpProjects.length} project${cmpProjects.length>1?"s":""}.`}</p></div>
-            {cmpProjects.length>=2&&<button className="pdf-btn" onClick={async()=>{setPdfBusy(true);try{await exportPDF(cmpProjects);}catch{alert("PDF failed.");}finally{setPdfBusy(false);}}} disabled={pdfBusy}><IPDF/>{pdfBusy?"…":"Export PDF"}</button>}
+            {cmpProjects.length>=2&&(
+              <div className="pdf-btn-wrap">
+                <button className={`pdf-btn${pdfBusy?" busy":""}`} onClick={handleExportPdf} disabled={pdfBusy}>
+                  <span className="pdf-btn-ico"><IPDF/></span>
+                  <span className="pdf-btn-txt">{pdfBusy?"Generating…":"Export PDF"}</span>
+                  <span className="pdf-btn-spark"/>
+                </button>
+              </div>
+            )}
           </div>
           {cmpProjects.length===0?(<div className="cmp-nil"><div className="cmp-nil-ico">⚖️</div><div className="cmp-nil-h">No projects selected</div><p className="cmp-nil-s">Click + on any listing card.</p><button className="go-btn" onClick={()=>setTab("properties")}>Browse Properties</button></div>):(
             <>
@@ -7367,7 +7452,17 @@ export default function App(){
                 </table>
               </div>
               {cmpProjects.length<5&&<div className="add-more"><p>Add {5-cmpProjects.length} more project{5-cmpProjects.length!==1?"s":""}.</p><button className="go-btn" onClick={()=>setTab("properties")}>+ Add More</button></div>}
-              {cmpProjects.length>=2&&<div style={{display:"flex",justifyContent:"flex-end",marginTop:"1.5rem"}}><button className="pdf-btn" onClick={async()=>{setPdfBusy(true);try{await exportPDF(cmpProjects);}catch{alert("PDF failed.");}finally{setPdfBusy(false);}}} disabled={pdfBusy}><IPDF/>{pdfBusy?"…":"Export PDF"}</button></div>}
+              {cmpProjects.length>=2&&(
+                <div style={{display:"flex",justifyContent:"flex-end",marginTop:"1.5rem"}}>
+                  <div className="pdf-btn-wrap">
+                    <button className={`pdf-btn${pdfBusy?" busy":""}`} onClick={handleExportPdf} disabled={pdfBusy}>
+                      <span className="pdf-btn-ico"><IPDF/></span>
+                      <span className="pdf-btn-txt">{pdfBusy?"Generating…":"Export PDF"}</span>
+                      <span className="pdf-btn-spark"/>
+                    </button>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
