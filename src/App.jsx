@@ -2477,6 +2477,66 @@ body.cine-active *{cursor:none !important;}
 .cine-amenity-card{opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1),background .28s,border-color .28s,box-shadow .28s;}
 .cine-amenity-card.vis{opacity:1;transform:translateY(0);}
 
+/* ═══ ONBOARDING GUIDE ═══ */
+@keyframes obEnter{from{opacity:0;transform:scale(.96) translateY(18px);}to{opacity:1;transform:scale(1) translateY(0);}}
+@keyframes obSlideIn{from{opacity:0;transform:translateX(32px);}to{opacity:1;transform:translateX(0);}}
+@keyframes obSlideOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-32px);}}
+@keyframes obDotPulse{0%,100%{transform:scale(1);opacity:.5;}50%{transform:scale(1.5);opacity:1;}}
+@keyframes obFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes obOrbit{0%{transform:rotate(0deg) translateX(38px) rotate(0deg);}100%{transform:rotate(360deg) translateX(38px) rotate(-360deg);}}
+@keyframes obShimmer{0%{background-position:-300px 0;}100%{background-position:300px 0;}}
+@keyframes obProgressBar{from{width:0;}to{width:100%;}}
+@keyframes obIconPop{0%{transform:scale(.4) rotate(-15deg);opacity:0;}60%{transform:scale(1.15) rotate(4deg);}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+@keyframes obGlowPulse{0%,100%{box-shadow:0 0 24px rgba(191,155,78,.15),inset 0 0 24px rgba(191,155,78,.04);}50%{box-shadow:0 0 48px rgba(191,155,78,.3),inset 0 0 32px rgba(191,155,78,.08);}}
+@keyframes obBlobMove{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(20px,-15px) scale(1.05);}66%{transform:translate(-10px,12px) scale(.95);}}
+.ob-ov{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(2,3,10,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.ob-blob1{position:absolute;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(191,155,78,.1) 0%,transparent 70%);top:-100px;left:-80px;animation:obBlobMove 12s ease-in-out infinite;pointer-events:none;}
+.ob-blob2{position:absolute;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.07) 0%,transparent 70%);bottom:-60px;right:-60px;animation:obBlobMove 15s ease-in-out infinite reverse;pointer-events:none;}
+.ob-blob3{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(191,155,78,.06) 0%,transparent 70%);top:40%;left:60%;animation:obBlobMove 10s ease-in-out infinite;pointer-events:none;}
+.ob-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(191,155,78,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(191,155,78,.04) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;}
+.ob-card{position:relative;width:100%;max-width:560px;background:linear-gradient(160deg,rgba(14,12,26,.98) 0%,rgba(8,8,20,.99) 100%);border:1px solid rgba(191,155,78,.2);border-radius:24px;overflow:hidden;animation:obEnter .55s cubic-bezier(.22,1,.36,1) both;box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(191,155,78,.06) inset;}
+.ob-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(191,155,78,.5),rgba(0,212,255,.3),transparent);}
+.ob-progress-bar{height:2px;background:rgba(255,255,255,.05);position:relative;overflow:hidden;}
+.ob-progress-fill{height:100%;background:linear-gradient(90deg,#BF9B4E,#FFE08A,#00D4FF);border-radius:2px;transition:width .5s cubic-bezier(.65,0,.35,1);}
+.ob-body{padding:2.2rem 2.2rem 1.6rem;position:relative;z-index:1;}
+.ob-slide{animation:obSlideIn .42s cubic-bezier(.22,1,.36,1) both;}
+.ob-icon-wrap{position:relative;width:80px;height:80px;margin:0 auto 1.6rem;display:flex;align-items:center;justify-content:center;}
+.ob-icon-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(191,155,78,.2);animation:obGlowPulse 3s ease-in-out infinite;}
+.ob-icon-ring2{position:absolute;inset:8px;border-radius:50%;border:1px dashed rgba(191,155,78,.12);}
+.ob-icon-orbit{position:absolute;inset:0;animation:obOrbit 5s linear infinite;}
+.ob-icon-orb{position:absolute;top:0;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#FFE08A,#BF9B4E);box-shadow:0 0 8px rgba(191,155,78,.8);}
+.ob-icon-bg{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(191,155,78,.15),rgba(191,155,78,.06));border:1px solid rgba(191,155,78,.25);display:flex;align-items:center;justify-content:center;font-size:1.6rem;animation:obIconPop .5s .1s cubic-bezier(.34,1.56,.64,1) both;}
+.ob-eyebrow{font-size:.55rem;letter-spacing:.25em;text-transform:uppercase;color:rgba(0,212,255,.65);font-weight:600;text-align:center;margin-bottom:.55rem;}
+.ob-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.7rem;font-weight:300;line-height:1.2;text-align:center;margin-bottom:.7rem;background:linear-gradient(135deg,#FFE08A,#D4B880 50%,rgba(255,255,255,.85));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ob-desc{font-size:.82rem;color:rgba(255,255,255,.45);text-align:center;line-height:1.75;max-width:400px;margin:0 auto;}
+.ob-features{display:flex;flex-direction:column;gap:.55rem;margin-top:1.3rem;}
+.ob-feat{display:flex;align-items:flex-start;gap:.8rem;padding:.7rem .9rem;background:rgba(255,255,255,.025);border:1px solid rgba(191,155,78,.1);border-radius:12px;transition:border-color .25s,background .25s;}
+.ob-feat:hover{background:rgba(191,155,78,.06);border-color:rgba(191,155,78,.22);}
+.ob-feat-ico{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,rgba(191,155,78,.18),rgba(191,155,78,.07));border:1px solid rgba(191,155,78,.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:.05rem;}
+.ob-feat-title{font-size:.76rem;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:.18rem;}
+.ob-feat-desc{font-size:.7rem;color:rgba(255,255,255,.35);line-height:1.5;}
+.ob-tip-box{margin-top:1.2rem;padding:.8rem 1rem;background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(0,180,220,.03));border:1px solid rgba(0,212,255,.15);border-radius:12px;font-size:.74rem;color:rgba(0,212,255,.7);line-height:1.6;text-align:center;}
+.ob-footer{display:flex;align-items:center;justify-content:space-between;padding:1rem 2.2rem 1.5rem;border-top:1px solid rgba(255,255,255,.05);gap:.75rem;}
+.ob-dots{display:flex;gap:.45rem;align-items:center;}
+.ob-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18);transition:all .3s cubic-bezier(.34,1.56,.64,1);cursor:pointer;}
+.ob-dot.on{width:20px;border-radius:3px;background:linear-gradient(90deg,#BF9B4E,#FFE08A);box-shadow:0 0 10px rgba(191,155,78,.5);}
+.ob-skip{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);background:transparent;border:none;cursor:pointer;padding:.3rem .5rem;transition:color .2s;font-family:var(--sans);}
+.ob-skip:hover{color:rgba(255,255,255,.5);}
+.ob-btn-wrap{display:flex;gap:.6rem;}
+.ob-btn-next{display:flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,#BF9B4E,#D4B880);color:#02030A;border:none;border-radius:999px;padding:.6rem 1.4rem;font-family:var(--sans);font-size:.74rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:opacity .2s,box-shadow .2s,transform .2s;box-shadow:0 4px 18px rgba(191,155,78,.35);}
+.ob-btn-next:hover{opacity:.9;box-shadow:0 6px 26px rgba(191,155,78,.5);transform:translateY(-1px);}
+.ob-btn-next:active{transform:scale(.97);}
+.ob-btn-back{display:flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);border-radius:999px;padding:.58rem 1rem;font-family:var(--sans);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.ob-btn-back:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);}
+.ob-welcome-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:320px;height:200px;background:radial-gradient(ellipse,rgba(191,155,78,.12) 0%,transparent 70%);pointer-events:none;}
+@media(max-width:600px){
+  .ob-card{border-radius:18px;}
+  .ob-body{padding:1.6rem 1.4rem 1.2rem;}
+  .ob-footer{padding:.9rem 1.4rem 1.2rem;}
+  .ob-title{font-size:1.4rem;}
+  .ob-icon-wrap{width:64px;height:64px;}
+  .ob-icon-bg{width:44px;height:44px;font-size:1.3rem;}
+}
 `;
 
 
@@ -5735,10 +5795,136 @@ function LuxuryFooter({ onTab, onRI }) {
   );
 }
 
+/* ═══ ONBOARDING GUIDE COMPONENT ═══ */
+const OB_SLIDES = [
+  {
+    eyebrow: "Welcome to NB Property",
+    title: "Your Luxury Property Journey Starts Here",
+    icon: "🏠",
+    desc: "Discover premium new launches across Penang Island and Seberang Perai — curated for every lifestyle and budget.",
+    features: [
+      { ico: "🏘️", title: "250+ Projects Listed", desc: "Every new launch in Penang, verified and kept up to date." },
+      { ico: "⚖️", title: "Compare Side by Side", desc: "Stack up to 5 projects and compare specs, price, and facilities." },
+      { ico: "🧮", title: "Luxury Loan Calculator", desc: "Instant financing intelligence — monthly installments, legal fees, and net cash out." },
+    ],
+  },
+  {
+    eyebrow: "Browsing Properties",
+    title: "Filter, Search & Explore",
+    icon: "🔍",
+    desc: "Use the powerful filter system to narrow down by type, price, bedrooms, tenure, and more.",
+    features: [
+      { ico: "🏷️", title: "Smart Filters", desc: "Filter by property type, area, status, bedrooms, size, and completion year." },
+      { ico: "💰", title: "Price Range Slider", desc: "Instantly narrow results to your exact budget — from starter condos to premium residences." },
+      { ico: "📋", title: "Detailed Project Pages", desc: "Each project has a full cinematic detail page with gallery, facilities, location map, and floor plans." },
+    ],
+  },
+  {
+    eyebrow: "Finance & Planning",
+    title: "Calculate Your Monthly Commitment",
+    icon: "📈",
+    desc: "Our Loan Calculator handles discount, rebate, legal fees, stamp duty, and MOT — giving you the true cost picture.",
+    features: [
+      { ico: "📉", title: "Discount & Rebate Logic", desc: "Enter developer discounts and cashback to see your actual SPA price and savings." },
+      { ico: "🌐", title: "Local & Foreign Buyer", desc: "Switch between local and foreign buyer mode — MOT, levy, and state fees auto-calculate." },
+      { ico: "💾", title: "Save & Share Results", desc: "Save your calculation and share it directly to your agent via WhatsApp." },
+    ],
+    tip: "💡 Head to the Tools tab to access the full Loan Calculator dashboard.",
+  },
+  {
+    eyebrow: "Register Your Interest",
+    title: "Talk to an Agent Anytime",
+    icon: "💬",
+    desc: "Found something you love? Register interest directly from any project page — or reach out via WhatsApp for personalised advice.",
+    features: [
+      { ico: "✉️", title: "Register Interest", desc: "Submit your enquiry directly from any project detail page in seconds." },
+      { ico: "📍", title: "Visit Showroom", desc: "Book a showroom visit directly from the project page — available where listed." },
+      { ico: "🤝", title: "Personalised Guidance", desc: "Our agents listen first and match you with the right project for your needs." },
+    ],
+    tip: "💡 Tap the phone FAB button on any project page to register interest or visit a showroom.",
+  },
+];
+
+function OnboardingGuide({ onDone }) {
+  const [step, setStep] = useState(0);
+  const [animKey, setAnimKey] = useState(0);
+  const total = OB_SLIDES.length;
+  const slide = OB_SLIDES[step];
+  const pct = ((step + 1) / total) * 100;
+
+  const goTo = (n) => { setStep(n); setAnimKey(k => k + 1); };
+  const next = () => { if (step < total - 1) goTo(step + 1); else onDone(); };
+  const back = () => { if (step > 0) goTo(step - 1); };
+
+  return (
+    <div className="ob-ov">
+      <div className="ob-grid"/>
+      <div className="ob-blob1"/>
+      <div className="ob-blob2"/>
+      <div className="ob-blob3"/>
+      <div className="ob-card">
+        <div className="ob-welcome-glow"/>
+        {/* Progress bar */}
+        <div className="ob-progress-bar">
+          <div className="ob-progress-fill" style={{ width: `${pct}%` }}/>
+        </div>
+        {/* Body */}
+        <div className="ob-body">
+          <div key={`slide-${animKey}`} className="ob-slide">
+            {/* Icon */}
+            <div className="ob-icon-wrap">
+              <div className="ob-icon-ring"/>
+              <div className="ob-icon-ring2"/>
+              <div className="ob-icon-orbit"><div className="ob-icon-orb"/></div>
+              <div className="ob-icon-bg">{slide.icon}</div>
+            </div>
+            {/* Text */}
+            <div className="ob-eyebrow">{slide.eyebrow}</div>
+            <h2 className="ob-title">{slide.title}</h2>
+            <p className="ob-desc">{slide.desc}</p>
+            {/* Feature rows */}
+            <div className="ob-features">
+              {slide.features.map((f, i) => (
+                <div className="ob-feat" key={i} style={{ animationDelay: `${i * 0.08}s` }}>
+                  <div className="ob-feat-ico">{f.ico}</div>
+                  <div>
+                    <div className="ob-feat-title">{f.title}</div>
+                    <div className="ob-feat-desc">{f.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {slide.tip && <div className="ob-tip-box">{slide.tip}</div>}
+          </div>
+        </div>
+        {/* Footer */}
+        <div className="ob-footer">
+          <button className="ob-skip" onClick={onDone}>Skip</button>
+          <div className="ob-dots">
+            {OB_SLIDES.map((_, i) => (
+              <div key={i} className={`ob-dot${i === step ? " on" : ""}`} onClick={() => goTo(i)}/>
+            ))}
+          </div>
+          <div className="ob-btn-wrap">
+            {step > 0 && (
+              <button className="ob-btn-back" onClick={back}>← Back</button>
+            )}
+            <button className="ob-btn-next" onClick={next}>
+              {step < total - 1 ? <>Next <span>→</span></> : <>Get Started ✦</>}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App(){
   const [projects,setProjects]=useState([]);
   const [settings,setSettings]=useState(DEFAULT_SETTINGS);
   const [ready,setReady]=useState(false);
+  const [showGuide,setShowGuide]=useState(()=>!localStorage.getItem("nb_guide_done"));
+  const dismissGuide=()=>{localStorage.setItem("nb_guide_done","1");setShowGuide(false);};
   useEffect(()=>{(async()=>{
     try{
       const docs = await getAllProjects();
@@ -5941,6 +6127,7 @@ export default function App(){
     <>
       <style>{css}</style>
       <CustomCursor/>
+      {showGuide&&<OnboardingGuide onDone={dismissGuide}/>}
 
       {/* ── Mobile side-nav overlay — hidden on detail page ── */}
       {tab!=="detail"&&<div className={`mob-drawer-ov${mobileNavOpen?" open":""}`} onClick={()=>setMobileNavOpen(false)}/>}
