@@ -2932,33 +2932,6 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
         </div>
       </section>
 
-      {/* Sub-hero info bar — outside / below the image */}
-      <div className="cine-hero-bar">
-        <div className="cine-hero-bar-left">
-          <div className="cine-meta-row">
-            {p.type && <span className="cine-meta-chip">{p.type}</span>}
-            {p.tenure && <span className="cine-meta-chip">{p.tenure}</span>}
-            {p.completion && <span className="cine-meta-chip">📅 {p.completion}</span>}
-            {p.status && <span className="cine-meta-chip">{p.status}</span>}
-            {p.priceFrom>0 && <span className="cine-meta-chip accent">From {fmt(p.priceFrom)}</span>}
-          </div>
-          {p.description && <p className="cine-hero-bar-subtitle">{p.description.slice(0,180)}{p.description.length>180?'…':''}</p>}
-          <div className="cine-hero-ctas">
-            <button className="cine-cta-pri" onClick={onRegisterInterest}>Register Interest</button>
-            {p.showroom && p.showroom.trim().toLowerCase()!=="no" && p.showroom.trim()!=="" && (
-              <button className="cine-cta-sec" onClick={onVisitShowroom}>Visit Showroom</button>
-            )}
-          </div>
-        </div>
-        <div className="cine-stats">
-          {p.priceFrom>0 && <div className="cine-stat"><div className="cine-stat-lbl">Starting From</div><div className="cine-stat-val">{fmt(p.priceFrom)}</div></div>}
-          {p.totalUnits>0 && <div className="cine-stat"><div className="cine-stat-lbl">Total Units</div><div className="cine-stat-val">{p.totalUnits}</div></div>}
-          {p.sizeSqft?.[0]>0 && <div className="cine-stat"><div className="cine-stat-lbl">Built-up From</div><div className="cine-stat-val">{p.sizeSqft[0].toLocaleString()} <span>sf</span></div></div>}
-          {(p.bedrooms||[]).length>0 && <div className="cine-stat"><div className="cine-stat-lbl">Bedrooms</div><div className="cine-stat-val">{bLbl(p.bedrooms)} <span>bed</span></div></div>}
-          {p.floors>0 && <div className="cine-stat"><div className="cine-stat-lbl">Floors</div><div className="cine-stat-val">{p.floors}</div></div>}
-        </div>
-      </div>
-
       {/* ── CONTENT SECTIONS ── */}
       <div className="cine-sections">
 
@@ -3044,12 +3017,6 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                     <div className="cine-map-overlay-tag">📍 {p.name} · {p.location}</div>
                   </div>
                 )}
-                <div className="cine-loc-dist-cards">
-                  <div className="cine-loc-dist-card"><div className="lbl">Location</div><div className="val">{p.location||'—'}</div></div>
-                  {p.completion && <div className="cine-loc-dist-card"><div className="lbl">Completion</div><div className="val">{p.completion}</div></div>}
-                  {p.tenure && <div className="cine-loc-dist-card"><div className="lbl">Tenure</div><div className="val">{p.tenure}</div></div>}
-                  {p.developer && <div className="cine-loc-dist-card"><div className="lbl">Developer</div><div className="val">{p.developer}</div></div>}
-                </div>
               </div>
               <div className="cine-loc-right">
                 {sec("location","amenities") && amenities.length>0 && (<>
