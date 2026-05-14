@@ -3037,7 +3037,7 @@ body.cine-active *{cursor:none !important;}
 .cine-hero-bg{position:absolute;inset:0;z-index:0;}
 .cine-hero-bg img{width:100%;height:100%;object-fit:cover;animation:cineZoom 22s ease-out forwards;}
 @keyframes cineZoom{from{transform:scale(1.14);}to{transform:scale(1);}}
-.cine-hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(8,8,16,.25) 0%,rgba(8,8,16,.05) 30%,rgba(8,8,16,.55) 65%,rgba(8,8,16,.97) 100%);}
+.cine-hero-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(8,8,16,.25) 0%,rgba(8,8,16,.05) 30%,rgba(8,8,16,.55) 65%,rgba(8,8,16,.97) 100%);} 
 .cine-hero-side-glow{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 50% 60% at 50% 100%,rgba(191,155,78,.07),transparent 60%);}
 .cine-gal-nav{position:absolute;top:50%;right:1.5rem;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:.5rem;}
 .cine-gal-thumb{width:60px;height:44px;border-radius:7px;overflow:hidden;border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .22s ease;opacity:.5;}
