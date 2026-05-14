@@ -2664,6 +2664,8 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
 .ft span{color:var(--gold);}
 
 /* ═══ ANALYTICS DASHBOARD ═══ */
+.an-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.an-hd-controls{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;}
 .an-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
 .an-stat{background:var(--a-surface);border:1px solid var(--a-border);padding:1.1rem 1.2rem;display:flex;align-items:center;gap:.9rem;}
 .an-stat-ico{font-size:1.4rem;flex-shrink:0;}
@@ -2688,12 +2690,49 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
 .an-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .an-row{display:flex;gap:1rem;flex-wrap:wrap;}
 .an-row>.an-chart-card{min-width:0;}
-.an-range-btn{background:transparent;border:1px solid var(--a-border);color:var(--a-muted);padding:.38rem .85rem;font-family:var(--sans);font-size:.72rem;cursor:pointer;transition:all .15s;}
+.an-inq-card{flex:0 0 260px;}
+.an-proj-card{flex:1;min-width:0;}
+.an-inq-bars{display:flex;flex-direction:column;gap:.9rem;margin-top:1rem;}
+.an-inq-row-hd{display:flex;justify-content:space-between;font-size:.78rem;color:var(--a-text);margin-bottom:.3rem;}
+.an-inq-cnt{color:var(--a-muted);}
+.an-inq-track{height:4px;background:var(--a-border);border-radius:2px;}
+.an-inq-fill{height:100%;border-radius:2px;transition:width .4s;}
+.an-proj-tbl{width:100%;border-collapse:collapse;margin-top:.75rem;font-size:.78rem;}
+.an-proj-tbl th{text-align:left;padding:.4rem .6rem;color:var(--a-muted);font-weight:600;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--a-border);}
+.an-proj-tbl th.num{text-align:center;}
+.an-proj-tbl td{padding:.5rem .6rem;color:var(--a-text);border-bottom:1px solid var(--a-border);}
+.an-proj-tbl td.num{text-align:center;}
+.an-proj-tbl td.gold{color:var(--a-gold);text-align:center;}
+.an-proj-tbl td.pale{color:#D4B880;text-align:center;}
+.an-proj-tbl td.muted{color:var(--a-muted);text-align:center;}
+.an-empty{background:rgba(255,255,255,.03);border:1px solid var(--a-border);padding:2rem;text-align:center;margin-top:1rem;}
+.an-empty-ico{font-size:2rem;margin-bottom:.5rem;}
+.an-empty-h{color:var(--a-text);font-size:.88rem;margin-bottom:.25rem;}
+.an-empty-s{color:var(--a-muted);font-size:.76rem;}
+.an-range-btn{background:transparent;border:1px solid var(--a-border);color:var(--a-muted);padding:.38rem .85rem;font-family:var(--sans);font-size:.72rem;cursor:pointer;transition:all .15s;border-radius:4px;}
 .an-range-btn:hover{border-color:var(--a-gold);color:var(--a-gold);}
-.an-range-btn.on{background:var(--a-gold);color:var(--a-bg);border-color:var(--a-gold);}
-.an-clear-btn{background:transparent;border:1px solid rgba(196,84,62,.3);color:#D4B880;padding:.38rem .85rem;font-family:var(--sans);font-size:.72rem;cursor:pointer;transition:all .15s;}
+.an-range-btn.on{background:var(--a-gold);color:var(--a-bg);border-color:var(--a-gold);font-weight:600;}
+.an-clear-btn{background:transparent;border:1px solid rgba(196,84,62,.3);color:#C4543E;padding:.38rem .85rem;font-family:var(--sans);font-size:.72rem;cursor:pointer;transition:all .15s;border-radius:4px;}
 .an-clear-btn:hover{background:rgba(196,84,62,.1);}
-@media(max-width:768px){.an-stats{grid-template-columns:1fr 1fr;}.an-row{flex-direction:column;}}
+@media(max-width:768px){
+  .an-stats{grid-template-columns:repeat(2,1fr);}
+  .an-hd-controls{width:100%;}
+  .an-row{flex-direction:column;}
+  .an-inq-card{flex:none;width:100%;}
+  .an-proj-card{width:100%;}
+}
+@media(max-width:480px){
+  .an-stats{grid-template-columns:repeat(2,1fr);gap:.6rem;}
+  .an-stat{padding:.8rem .9rem;gap:.6rem;}
+  .an-stat-ico{font-size:1.1rem;}
+  .an-stat-val{font-size:1.35rem;}
+  .an-hd-controls{gap:.3rem;}
+  .an-range-btn,.an-clear-btn{padding:.35rem .6rem;font-size:.68rem;}
+  .an-chart-card{padding:.9rem 1rem;}
+  .an-chart{height:90px;}
+  .an-bars{height:72px;}
+  .an-proj-tbl{font-size:.72rem;}
+}
 
 /* (layout overrides already handled in the 768px/480px blocks above) */
 
@@ -5535,12 +5574,12 @@ function AnalyticsDashboard() {
   if (loading) return <div style={{padding:"3rem",textAlign:"center",color:"var(--a-muted)"}}>Loading analytics…</div>;
   return (
     <div>
-      <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",marginBottom:"1.5rem",flexWrap:"wrap",gap:"1rem"}}>
+      <div className="an-hd">
         <div>
           <div className="a-pg-title">Analytics <em>Dashboard</em></div>
           <div className="a-pg-sub">Track views, clicks, and inquiries from visitors.</div>
         </div>
-        <div style={{display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}>
+        <div className="an-hd-controls">
           {["today","7d","30d","all"].map(r=>(
             <button key={r} className={`an-range-btn${range===r?" on":""}`} onClick={()=>setRange(r)}>
               {r==="today"?"Today":r==="7d"?"7 Days":r==="30d"?"30 Days":"All Time"}
@@ -5581,7 +5620,7 @@ function AnalyticsDashboard() {
       )}
       {/* Bottom row: inquiry breakdown + top projects */}
       <div className="an-row">
-        <div className="an-chart-card" style={{flex:"0 0 260px"}}>
+        <div className="an-chart-card an-inq-card">
           <div className="an-card-title">Inquiry Breakdown</div>
           {(() => {
             const em=filtered.filter(e=>e.type==="inquiry_email").length;
@@ -5589,32 +5628,35 @@ function AnalyticsDashboard() {
             const sr=filtered.filter(e=>e.type==="showroom_book").length;
             const tot=em+wa+sr||1;
             return (
-              <div style={{display:"flex",flexDirection:"column",gap:".9rem",marginTop:"1rem"}}>
+              <div className="an-inq-bars">
                 {[["✉️ Email Enquiry",em,"#D4B880"],["💬 WhatsApp",wa,"#5E8FD0"],["🏢 Showroom",sr,"#BF9B4E"]].map(([lbl,cnt,clr])=>(
                   <div key={lbl}>
-                    <div style={{display:"flex",justifyContent:"space-between",fontSize:".78rem",color:"var(--a-text)",marginBottom:".3rem"}}><span>{lbl}</span><span style={{color:"var(--a-muted)"}}>{cnt}</span></div>
-                    <div style={{height:4,background:"var(--a-border)",borderRadius:2}}><div style={{height:"100%",width:`${(cnt/tot)*100}%`,background:clr,borderRadius:2,transition:"width .4s"}}/></div>
+                    <div className="an-inq-row-hd"><span>{lbl}</span><span className="an-inq-cnt">{cnt}</span></div>
+                    <div className="an-inq-track"><div className="an-inq-fill" style={{width:`${(cnt/tot)*100}%`,background:clr}}/></div>
                   </div>
                 ))}
               </div>
             );
           })()}
         </div>
-        <div className="an-chart-card" style={{flex:1,minWidth:0}}>
+        <div className="an-chart-card an-proj-card">
           <div className="an-card-title">Top Projects by Engagement</div>
           {projRows.length===0
-            ? <div style={{color:"var(--a-muted)",fontSize:".8rem",padding:"1.5rem 0",textAlign:"center"}}>No project activity recorded yet.</div>
-            : <table style={{width:"100%",borderCollapse:"collapse",marginTop:".75rem",fontSize:".78rem"}}>
-                <thead><tr style={{borderBottom:"1px solid var(--a-border)"}}>
-                  {["Project","Clicks","Inquiries","Conv %"].map(h=><th key={h} style={{textAlign:h==="Project"?"left":"center",padding:".4rem .6rem",color:"var(--a-muted)",fontWeight:600,fontSize:".65rem",letterSpacing:".08em",textTransform:"uppercase"}}>{h}</th>)}
+            ? <div className="an-empty" style={{border:"none",padding:"1.5rem 0",marginTop:0}}><div style={{color:"var(--a-muted)",fontSize:".8rem",textAlign:"center"}}>No project activity recorded yet.</div></div>
+            : <table className="an-proj-tbl">
+                <thead><tr>
+                  <th>Project</th>
+                  <th className="num">Clicks</th>
+                  <th className="num">Inquiries</th>
+                  <th className="num">Conv %</th>
                 </tr></thead>
                 <tbody>
                   {projRows.slice(0,8).map(([name,d])=>(
-                    <tr key={name} style={{borderBottom:"1px solid var(--a-border)"}}>
-                      <td style={{padding:".5rem .6rem",color:"var(--a-text)"}}>{name}</td>
-                      <td style={{textAlign:"center",padding:".5rem .6rem",color:"var(--a-gold)"}}>{d.clicks}</td>
-                      <td style={{textAlign:"center",padding:".5rem .6rem",color:"#D4B880"}}>{d.inquiries}</td>
-                      <td style={{textAlign:"center",padding:".5rem .6rem",color:"var(--a-muted)"}}>{d.clicks>0?((d.inquiries/d.clicks)*100).toFixed(0):0}%</td>
+                    <tr key={name}>
+                      <td>{name}</td>
+                      <td className="gold">{d.clicks}</td>
+                      <td className="pale">{d.inquiries}</td>
+                      <td className="muted">{d.clicks>0?((d.inquiries/d.clicks)*100).toFixed(0):0}%</td>
                     </tr>
                   ))}
                 </tbody>
@@ -5623,10 +5665,10 @@ function AnalyticsDashboard() {
         </div>
       </div>
       {events.length===0&&(
-        <div style={{background:"rgba(13,13,24,.06)",border:"1px solid rgba(13,13,24,.12)",padding:"2rem",textAlign:"center",marginTop:"1rem"}}>
-          <div style={{fontSize:"2rem",marginBottom:".5rem"}}>📊</div>
-          <div style={{color:"var(--a-text)",fontSize:".88rem",marginBottom:".25rem"}}>No data recorded yet</div>
-          <div style={{color:"var(--a-muted)",fontSize:".76rem"}}>Analytics will populate as visitors browse and interact with listings.</div>
+        <div className="an-empty">
+          <div className="an-empty-ico">📊</div>
+          <div className="an-empty-h">No data recorded yet</div>
+          <div className="an-empty-s">Analytics will populate as visitors browse and interact with listings.</div>
         </div>
       )}
     </div>
