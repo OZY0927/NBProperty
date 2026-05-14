@@ -1646,6 +1646,67 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
 .add-more{text-align:center;padding:1.8rem;background:var(--warm);border:1px dashed var(--border);margin-top:1rem;}
 .add-more p{color:var(--muted);font-size:.84rem;margin-bottom:.7rem;}
 
+/* ═══ TAB BACKGROUND LAYERS ═══ */
+/* shared */
+@keyframes tbOrbit{from{transform:rotate(0deg) translateX(var(--r)) rotate(0deg);}to{transform:rotate(360deg) translateX(var(--r)) rotate(-360deg);}}
+@keyframes tbFloat{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(18px,-22px) scale(1.04);}66%{transform:translate(-12px,14px) scale(.97);}}
+@keyframes tbPulse{0%,100%{opacity:.35;transform:scale(1);}50%{opacity:.65;transform:scale(1.12);}}
+@keyframes tbFlicker{0%,100%{opacity:.28;}45%{opacity:.52;}55%{opacity:.22;}}
+@keyframes tbScan{0%{transform:translateY(-100%);}100%{transform:translateY(100vh);}}
+@keyframes tbGridFade{0%,100%{opacity:.04;}50%{opacity:.09;}}
+@keyframes tbBeam{0%{transform:rotate(-30deg) scaleY(0);opacity:0;}20%{opacity:1;}100%{transform:rotate(30deg) scaleY(1.5);opacity:0;}}
+@keyframes tbSpinSlow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes tbSpinRev{from{transform:rotate(0deg);}to{transform:rotate(-360deg);}}
+@keyframes tbDash{to{stroke-dashoffset:-200;}}
+@keyframes tbTwinkle{0%,100%{opacity:0;transform:scale(0);}50%{opacity:1;transform:scale(1);}}
+@keyframes tbRise{from{transform:translateY(60px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes tbWave{0%,100%{d:path("M0,20 Q50,0 100,20 Q150,40 200,20 Q250,0 300,20 L300,60 L0,60 Z");}50%{d:path("M0,20 Q50,40 100,20 Q150,0 200,20 Q250,40 300,20 L300,60 L0,60 Z");}}
+
+.tab-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.tab-bg-canvas{position:absolute;inset:0;}
+
+/* ── listings bg ── */
+.tbb-listings .tb-blob{position:absolute;border-radius:50%;filter:blur(90px);}
+.tbb-listings .tb-b1{width:640px;height:640px;top:-120px;left:-180px;background:radial-gradient(circle,rgba(193,126,135,.12) 0%,transparent 70%);animation:tbFloat 14s ease-in-out infinite;}
+.tbb-listings .tb-b2{width:480px;height:480px;top:40%;right:-100px;background:radial-gradient(circle,rgba(92,32,48,.18) 0%,transparent 70%);animation:tbFloat 11s ease-in-out infinite reverse;}
+.tbb-listings .tb-b3{width:350px;height:350px;bottom:10%;left:30%;background:radial-gradient(circle,rgba(193,126,135,.08) 0%,transparent 70%);animation:tbFloat 17s ease-in-out infinite 3s;}
+.tbb-listings .tb-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(193,126,135,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(193,126,135,.05) 1px,transparent 1px);background-size:72px 72px;animation:tbGridFade 8s ease-in-out infinite;}
+.tbb-listings .tb-ring{position:absolute;border-radius:50%;border:1px solid rgba(193,126,135,.1);}
+.tbb-listings .tb-ring1{width:500px;height:500px;top:50%;left:50%;margin:-250px 0 0 -250px;animation:tbSpinSlow 40s linear infinite;}
+.tbb-listings .tb-ring2{width:320px;height:320px;top:50%;left:50%;margin:-160px 0 0 -160px;animation:tbSpinRev 28s linear infinite;}
+.tbb-listings .tb-star{position:absolute;border-radius:50%;background:#C17E87;animation:tbTwinkle var(--d,3s) ease-in-out infinite var(--delay,0s);}
+
+/* ── properties bg ── */
+.tbb-properties .tb-blob{position:absolute;border-radius:50%;filter:blur(80px);}
+.tbb-properties .tb-b1{width:700px;height:700px;top:-200px;right:-200px;background:radial-gradient(circle,rgba(191,155,78,.1) 0%,transparent 70%);animation:tbFloat 18s ease-in-out infinite;}
+.tbb-properties .tb-b2{width:500px;height:500px;bottom:0;left:-150px;background:radial-gradient(circle,rgba(94,143,208,.08) 0%,transparent 70%);animation:tbFloat 13s ease-in-out infinite reverse;}
+.tbb-properties .tb-b3{width:300px;height:300px;top:35%;left:40%;background:radial-gradient(circle,rgba(191,155,78,.06) 0%,transparent 70%);animation:tbFloat 10s ease-in-out infinite 2s;}
+.tbb-properties .tb-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(191,155,78,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(191,155,78,.04) 1px,transparent 1px);background-size:88px 88px;animation:tbGridFade 12s ease-in-out infinite 2s;}
+.tbb-properties .tb-line{position:absolute;width:1px;background:linear-gradient(to bottom,transparent,rgba(191,155,78,.2),transparent);animation:tbFlicker var(--d,6s) ease-in-out infinite var(--delay,0s);}
+.tbb-properties .tb-scan{position:absolute;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent,rgba(191,155,78,.04),transparent);animation:tbScan 9s linear infinite;}
+.tbb-properties .tb-hexwrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.tbb-properties .tb-hexwrap svg{animation:tbSpinSlow 80s linear infinite;}
+
+/* ── compare bg ── */
+.tbb-compare .tb-blob{position:absolute;border-radius:50%;filter:blur(80px);}
+.tbb-compare .tb-b1{width:600px;height:600px;top:-100px;left:-200px;background:radial-gradient(circle,rgba(78,154,114,.09) 0%,transparent 70%);animation:tbFloat 16s ease-in-out infinite;}
+.tbb-compare .tb-b2{width:500px;height:500px;top:-100px;right:-150px;background:radial-gradient(circle,rgba(94,143,208,.09) 0%,transparent 70%);animation:tbFloat 12s ease-in-out infinite reverse;}
+.tbb-compare .tb-b3{width:350px;height:350px;bottom:5%;left:50%;background:radial-gradient(circle,rgba(196,84,62,.06) 0%,transparent 70%);animation:tbFloat 20s ease-in-out infinite 4s;}
+.tbb-compare .tb-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(94,143,208,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(78,154,114,.04) 1px,transparent 1px);background-size:64px 64px;animation:tbGridFade 10s ease-in-out infinite 1s;}
+.tbb-compare .tb-orbit-wrap{position:absolute;top:50%;left:50%;}
+.tbb-compare .tb-orbit-dot{position:absolute;border-radius:50%;top:0;left:0;margin:-5px 0 0 -5px;animation:tbOrbit var(--d,20s) linear infinite;}
+.tbb-compare .tb-scale{position:absolute;bottom:8%;right:5%;opacity:.06;animation:tbPulse 8s ease-in-out infinite;}
+.tbb-compare .tb-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,rgba(94,143,208,.3),transparent);animation:tbScan 6s linear infinite 2s;}
+
+/* ── tools bg (overrides lc-pg which already has a dark bg with blobs) ── */
+.tbb-tools .tb-blob{position:absolute;border-radius:50%;filter:blur(100px);}
+.tbb-tools .tb-b1{width:600px;height:600px;top:-100px;right:-100px;background:radial-gradient(circle,rgba(0,212,255,.07) 0%,transparent 70%);animation:tbFloat 15s ease-in-out infinite;}
+.tbb-tools .tb-b2{width:480px;height:480px;bottom:5%;left:-100px;background:radial-gradient(circle,rgba(191,155,78,.07) 0%,transparent 70%);animation:tbFloat 11s ease-in-out infinite reverse;}
+.tbb-tools .tb-circuit{position:absolute;top:0;left:0;width:100%;height:100%;opacity:.06;}
+.tbb-tools .tb-circuit line,.tbb-tools .tb-circuit circle,.tbb-tools .tb-circuit rect{stroke:rgba(0,212,255,1);}
+.tbb-tools .tb-scan{position:absolute;left:0;right:0;height:80px;background:linear-gradient(to bottom,transparent,rgba(0,212,255,.03),transparent);animation:tbScan 7s linear infinite 1s;}
+.tbb-tools .tb-ticker{position:absolute;font-family:monospace;font-size:.62rem;color:rgba(0,212,255,.18);animation:tbFlicker var(--d,4s) ease-in-out infinite var(--delay,0s);white-space:nowrap;}
+
 /* ═══ LOAN CALCULATOR — LUXURY FINTECH DASHBOARD ═══ */
 @keyframes lcPulse{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.08);}}
 @keyframes lcFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
@@ -6419,6 +6480,118 @@ function calculateNetCash(totalInitialCash,rebateAmt){
   return totalInitialCash-rebateAmt;
 }
 
+/* ═══ TAB BACKGROUND COMPONENT ═══ */
+const STARS_LISTINGS=[
+  {w:2,h:2,top:"12%",left:"8%","--d":"2.8s","--delay":"0s"},
+  {w:3,h:3,top:"28%",left:"22%","--d":"4.1s","--delay":".6s"},
+  {w:2,h:2,top:"55%",left:"5%","--d":"3.5s","--delay":"1.2s"},
+  {w:3,h:3,top:"70%",left:"78%","--d":"5s","--delay":".3s"},
+  {w:2,h:2,top:"18%",left:"88%","--d":"3.2s","--delay":"1.8s"},
+  {w:3,h:3,top:"42%",left:"60%","--d":"4.6s","--delay":".9s"},
+  {w:2,h:2,top:"85%",left:"35%","--d":"2.4s","--delay":"2.1s"},
+  {w:2,h:2,top:"6%",left:"52%","--d":"3.9s","--delay":".4s"},
+];
+const TICKERS=["BRR 4.00%","OPR 3.00%","LRT ▲","MRT ●","3BR RM580K","Penang ▲","KL ▲","JB ▲","SQ FT ▲","FREEHOLD","NEW LAUNCH","HOT"];
+
+function TabBg({tab}){
+  if(tab==="listings") return(
+    <div className="tab-bg tbb-listings" aria-hidden="true">
+      <div className="tb-grid"/>
+      <div className="tb-ring tb-ring1"/>
+      <div className="tb-ring tb-ring2"/>
+      <div className="tb-blob tb-b1"/><div className="tb-blob tb-b2"/><div className="tb-blob tb-b3"/>
+      {STARS_LISTINGS.map((s,i)=>(
+        <div key={i} className="tb-star" style={{width:s.w,height:s.h,top:s.top,left:s.left,"--d":s["--d"],"--delay":s["--delay"]}}/>
+      ))}
+      <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",opacity:.06}} viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+        <defs><linearGradient id="tbLG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#C17E87"/><stop offset="100%" stopColor="#5C1828"/></linearGradient></defs>
+        <polygon points="400,80 480,240 640,240 510,330 560,490 400,400 240,490 290,330 160,240 320,240" fill="none" stroke="url(#tbLG)" strokeWidth="1"/>
+        <circle cx="400" cy="300" r="140" fill="none" stroke="#C17E87" strokeWidth=".8" strokeDasharray="6 8"/>
+        <circle cx="400" cy="300" r="200" fill="none" stroke="#C17E87" strokeWidth=".5" strokeDasharray="3 12"/>
+      </svg>
+    </div>
+  );
+  if(tab==="properties") return(
+    <div className="tab-bg tbb-properties" aria-hidden="true">
+      <div className="tb-grid"/>
+      <div className="tb-blob tb-b1"/><div className="tb-blob tb-b2"/><div className="tb-blob tb-b3"/>
+      {[0,1,2,3,4].map(i=>(
+        <div key={i} className="tb-line" style={{left:`${12+i*20}%`,top:0,bottom:0,"--d":`${5+i}s`,"--delay":`${i*.8}s`}}/>
+      ))}
+      <div className="tb-scan"/>
+      <div className="tb-hexwrap">
+        <svg width="600" height="600" viewBox="0 0 600 600" style={{opacity:.05}}>
+          {[100,160,220,280].map((r,i)=>(
+            <polygon key={i} points={[0,1,2,3,4,5].map(k=>{const a=Math.PI/180*(60*k-30);return`${300+r*Math.cos(a)},${300+r*Math.sin(a)}`;}).join(" ")} fill="none" stroke="#BF9B4E" strokeWidth="1"/>
+          ))}
+          {[0,60,120,180,240,300].map((ang,i)=>(
+            <line key={i} x1="300" y1="300" x2={300+280*Math.cos(ang*Math.PI/180)} y2={300+280*Math.sin(ang*Math.PI/180)} stroke="#BF9B4E" strokeWidth=".6" strokeDasharray="4 10"/>
+          ))}
+        </svg>
+      </div>
+    </div>
+  );
+  if(tab==="compare") return(
+    <div className="tab-bg tbb-compare" aria-hidden="true">
+      <div className="tb-grid"/>
+      <div className="tb-blob tb-b1"/><div className="tb-blob tb-b2"/><div className="tb-blob tb-b3"/>
+      <div className="tb-scan"/>
+      <div className="tb-orbit-wrap" style={{width:0,height:0}}>
+        {[
+          {w:10,h:10,color:"#4ade80","--r":"180px","--d":"18s",bg:"rgba(78,222,128,.5)"},
+          {w:7,h:7,color:"#5E8FD0","--r":"260px","--d":"26s",bg:"rgba(94,143,208,.5)"},
+          {w:8,h:8,color:"#BF9B4E","--r":"130px","--d":"13s",bg:"rgba(191,155,78,.5)"},
+          {w:5,h:5,color:"#C4543E","--r":"320px","--d":"34s",bg:"rgba(196,84,62,.5)"},
+        ].map((o,i)=>(
+          <div key={i} className="tb-orbit-dot" style={{width:o.w,height:o.h,background:o.bg,"--r":o["--r"],"--d":o["--d"],animationDelay:`${i*-4}s`}}/>
+        ))}
+      </div>
+      <svg className="tb-scale" width="120" height="120" viewBox="0 0 120 120" style={{position:"absolute",bottom:"8%",right:"5%",opacity:.06,animation:"tbPulse 8s ease-in-out infinite"}}>
+        <line x1="60" y1="10" x2="60" y2="110" stroke="#5E8FD0" strokeWidth="2"/>
+        <line x1="10" y1="30" x2="110" y2="30" stroke="#5E8FD0" strokeWidth="2"/>
+        <ellipse cx="30" cy="55" rx="18" ry="5" fill="none" stroke="#4ade80" strokeWidth="1.5"/>
+        <ellipse cx="90" cy="55" rx="18" ry="5" fill="none" stroke="#C4543E" strokeWidth="1.5"/>
+        <line x1="10" y1="30" x2="30" y2="50" stroke="#4ade80" strokeWidth="1.5"/>
+        <line x1="110" y1="30" x2="90" y2="50" stroke="#C4543E" strokeWidth="1.5"/>
+      </svg>
+      <svg style={{position:"absolute",inset:0,width:"100%",height:"100%",opacity:.04,pointerEvents:"none"}} viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice">
+        {[1,2,3,4,5].map(i=>(
+          <line key={i} x1={i*150} y1="0" x2={i*150} y2="600" stroke="#5E8FD0" strokeWidth=".8" strokeDasharray="4 16"/>
+        ))}
+        {[1,2,3].map(i=>(
+          <line key={i} x1="0" y1={i*150} x2="900" y2={i*150} stroke="#4ade80" strokeWidth=".8" strokeDasharray="4 16"/>
+        ))}
+      </svg>
+    </div>
+  );
+  if(tab==="tools") return(
+    <div className="tab-bg tbb-tools" aria-hidden="true">
+      <div className="tb-blob tb-b1"/><div className="tb-blob tb-b2"/>
+      <div className="tb-scan"/>
+      <svg className="tb-circuit" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice">
+        <line x1="50" y1="100" x2="200" y2="100" strokeWidth="1"/><line x1="200" y1="100" x2="200" y2="250" strokeWidth="1"/>
+        <circle cx="200" cy="250" r="5" fill="none" strokeWidth="1"/><line x1="200" y1="250" x2="350" y2="250" strokeWidth="1"/>
+        <rect x="350" y="235" width="30" height="30" fill="none" strokeWidth="1"/><line x1="380" y1="250" x2="500" y2="250" strokeWidth="1"/>
+        <line x1="500" y1="250" x2="500" y2="400" strokeWidth="1"/><line x1="500" y1="400" x2="700" y2="400" strokeWidth="1"/>
+        <circle cx="700" cy="400" r="8" fill="none" strokeWidth="1"/><line x1="700" y1="400" x2="850" y2="400" strokeWidth="1"/>
+        <line x1="300" y1="100" x2="500" y2="100" strokeWidth="1"/><line x1="500" y1="100" x2="600" y2="100" strokeWidth="1"/>
+        <rect x="600" y="85" width="40" height="30" fill="none" strokeWidth="1"/><line x1="640" y1="100" x2="800" y2="100" strokeWidth="1"/>
+        <line x1="100" y1="500" x2="300" y2="500" strokeWidth="1"/><rect x="300" y="485" width="30" height="30" fill="none" strokeWidth="1"/>
+        <line x1="330" y1="500" x2="600" y2="500" strokeWidth="1"/><circle cx="600" cy="500" r="6" fill="none" strokeWidth="1"/>
+        <line x1="600" y1="500" x2="900" y2="500" strokeWidth="1"/>
+        <circle cx="50" cy="100" r="4" fill="rgba(0,212,255,.4)" strokeWidth="0"/>
+        <circle cx="850" cy="400" r="4" fill="rgba(0,212,255,.4)" strokeWidth="0"/>
+        <circle cx="900" cy="500" r="4" fill="rgba(0,212,255,.4)" strokeWidth="0"/>
+        <circle cx="800" cy="100" r="4" fill="rgba(0,212,255,.4)" strokeWidth="0"/>
+      </svg>
+      {TICKERS.slice(0,8).map((tk,i)=>(
+        <div key={i} className="tb-ticker" style={{top:`${8+i*11}%`,left:`${i%2===0?2:72}%`,"--d":`${3+i*.5}s`,"--delay":`${i*.4}s`}}>{tk}</div>
+      ))}
+    </div>
+  );
+  return null;
+}
+
 function AnimNum({value,format=(v=>v)}){
   const [display,setDisplay]=useState(value);
   const state=useRef({from:value,raf:null,first:true});
@@ -7478,9 +7651,10 @@ export default function App(){
         : <AdminLogin/>
       )}
 
-      {tab==="tools"&&<LoanCalculator settings={settings}/>}
+      {tab==="tools"&&<><TabBg tab="tools"/><LoanCalculator settings={settings}/></>}
 
       {tab==="listings"&&<>
+        <TabBg tab="listings"/>
         <LuxuryHero
           search={search}
           onSearch={(v)=>{ setSearch(v); if(v) setTab("properties"); }}
@@ -7493,6 +7667,7 @@ export default function App(){
       </>}
 
       {tab==="properties"&&<>
+        <TabBg tab="properties"/>
         <div className="sec-label">
           <div className="sec-label-eye">All Project Types</div>
           <h2 className="sec-label-title">Browse <em>Listings</em></h2>
@@ -7674,6 +7849,7 @@ export default function App(){
 
       {tab==="compare"&&(
         <div className="cmp-pg">
+          <TabBg tab="compare"/>
           {pdfFxActive && (
             <div key={pdfFxBurst} className="cmp-pdf-fx on" aria-hidden="true">
               <span className="cmp-pdf-fx-core"/>
