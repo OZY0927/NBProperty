@@ -277,18 +277,21 @@ body.dark .det-content{background:#0D0D18;}
 body.dark .det{background:#0D0D18;}
 /* ── Register Interest / Visit Showroom dialog — dark mode ── */
 body.dark .ri-ov{background:rgba(4,4,14,.82);}
-body.dark .ri-box{background:#0F0F22;box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 0 1px rgba(191,155,78,.12);}
-body.dark .ri-hd{background:#141228;}
+body.dark .ri-box{background:#0F0F22;box-shadow:0 32px 80px rgba(0,0,0,.65),0 0 0 1px rgba(191,155,78,.14);}
+body.dark .ri-hd{background:linear-gradient(135deg,#12101E 0%,#1E1830 55%,#0E0C18 100%);}
+body.dark .ri-hd::after{background:linear-gradient(90deg,transparent,rgba(191,155,78,.4),#BF9B4E,rgba(191,155,78,.4),transparent);}
 body.dark .ri-options{border-bottom-color:#2C2A3E;}
 body.dark .ri-opt-btn{background:#0F0F22;color:#9090A8;}
 body.dark .ri-opt-btn.on{background:#141428;color:#F0EDE6;border-bottom-color:#BF9B4E;}
-body.dark .ri-opt-btn:hover:not(.on){background:#1C1C30;}
+body.dark .ri-opt-btn:hover:not(.on){background:#1C1C30;color:#D0CCE0;}
 body.dark .ri-body{background:#0F0F22;}
 body.dark .ri-label{color:#9090A8;}
 body.dark .ri-inp{background:#1C1C30;border-color:#2C2A3E;color:#F0EDE6;}
 body.dark .ri-inp::placeholder{color:#6060A0;}
-body.dark .ri-inp:focus{background:#20203A;border-color:#BF9B4E;}
-body.dark .ri-err{background:#1C1820;border-color:rgba(196,84,62,.4);color:#E07060;}
+body.dark .ri-inp:focus{background:#20203A;border-color:#BF9B4E;box-shadow:0 0 0 3px rgba(191,155,78,.12);}
+body.dark .ri-submit{background:linear-gradient(135deg,#D4B880 0%,#BF9B4E 50%,#D4B880 100%);background-size:200% auto;color:#080810;box-shadow:0 4px 18px rgba(191,155,78,.28);}
+body.dark .ri-submit:hover:not(:disabled){box-shadow:0 8px 28px rgba(191,155,78,.42);}
+body.dark .ri-err{background:#1C1820;border-color:rgba(196,84,62,.4);color:#E07868;}
 body.dark .ri-divider{color:#4A4A68;}
 body.dark .ri-divider::before,body.dark .ri-divider::after{background:#2C2A3E;}
 body.dark .ri-wa-body{background:#0F0F22;}
@@ -297,6 +300,11 @@ body.dark .ri-wa-sub{color:#9090A8;}
 body.dark .ri-success{background:#0F0F22;}
 body.dark .ri-success-title{color:#F0EDE6;}
 body.dark .ri-success-sub{color:#9090A8;}
+body.dark .tslot-btn{background:#1C1C30;color:#D0CCE0;border-color:#2C2A3E;}
+body.dark .tslot-btn:hover{background:#242442;border-color:#BF9B4E;color:#F0EDE6;}
+body.dark .tslot-btn.on{background:linear-gradient(135deg,#D4B880,#BF9B4E);color:#080810;border-color:#BF9B4E;box-shadow:0 2px 12px rgba(191,155,78,.3);}
+body.dark .ri-booking-note{color:#9090A8;}
+body.dark .ri-booking-note strong{color:#D4B880;}
 /* ── Theme toggle button ── */
 @keyframes thSpin{from{transform:rotate(0deg) scale(.7);}to{transform:rotate(360deg) scale(1);}}
 @keyframes thRayPop{0%{opacity:0;transform:scale(0) rotate(-30deg);}60%{opacity:1;transform:scale(1.2);}100%{transform:scale(1);}}
@@ -2331,43 +2339,57 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
 .ut-empty span{font-size:2rem;display:block;margin-bottom:.5rem;opacity:.3;}
 
 /* ADMIN */
-/* ── Register Interest Modal ── */
-.ri-ov{position:fixed;inset:0;z-index:500;background:rgba(36,60,76,.75);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeIn .22s ease;}
-.ri-box{background:#fff;width:100%;max-width:480px;max-height:80vh;box-shadow:0 24px 64px rgba(15,42,69,.25);animation:slideUp .28s ease;overflow:hidden;display:flex;flex-direction:column;}
-.ri-hd{flex-shrink:0;background:var(--ink);padding:1.4rem 1.6rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
-.ri-hd-left{}
-.ri-hd-eyebrow{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);opacity:.8;margin-bottom:.3rem;}
-.ri-hd-title{font-family:var(--serif);font-size:1.3rem;font-weight:600;color:#fff;line-height:1.2;}
-.ri-hd-proj{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:.25rem;}
-.ri-x{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.6);width:30px;height:30px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:2px;transition:background .15s;}
-.ri-x:hover{background:rgba(255,255,255,.18);color:#fff;}
-.ri-options{flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border);}
-.ri-opt-btn{padding:.85rem;font-family:var(--sans);font-size:.78rem;font-weight:600;letter-spacing:.04em;cursor:pointer;border:none;border-bottom:2px solid transparent;transition:all .18s;background:#FAF8F3;color:var(--muted);}
-.ri-opt-btn.on{background:#fff;color:var(--ink);border-bottom-color:var(--gold);}
-.ri-opt-btn:hover:not(.on){background:#FAF8F3;}
-.ri-body{padding:1.5rem 1.6rem;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
-.ri-field{margin-bottom:1rem;}
-.ri-label{display:block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:.4rem;}
-.ri-inp{width:100%;padding:.65rem .9rem;border:1px solid var(--border);background:#FAF8F3;color:var(--ink);font-family:var(--sans);font-size:.88rem;outline:none;transition:border-color .18s,background .18s;}
-.ri-inp:focus{border-color:var(--gold);background:#fff;}
-.ri-inp::placeholder{color:#D4B880;}
-.ri-submit{width:100%;background:var(--cta);color:#fff;border:none;padding:.8rem;font-family:var(--sans);font-size:.84rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:opacity .2s,background .2s;margin-top:.4rem;}
-.ri-submit:hover{opacity:.9;}
-.ri-submit:disabled{opacity:.5;cursor:not-allowed;}
-.ri-wa-body{padding:1.5rem 1.6rem;text-align:center;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
-.ri-wa-icon{font-size:3rem;margin-bottom:.75rem;}
-.ri-wa-title{font-family:var(--serif);font-size:1.3rem;color:var(--ink);margin-bottom:.4rem;}
-.ri-wa-sub{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1.4rem;}
-.ri-wa-btn{display:inline-flex;align-items:center;gap:.6rem;background:#D4B880;color:#fff;border:none;padding:.85rem 2rem;font-family:var(--sans);font-size:.9rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:opacity .2s;border-radius:3px;}
-.ri-wa-btn:hover{opacity:.88;}
+/* ── Register Interest / Visit Showroom Modal ── */
+@keyframes riBoxIn{from{opacity:0;transform:translateY(22px) scale(.965)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes riSuccessIco{0%{transform:scale(0) rotate(-20deg)}65%{transform:scale(1.28) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes riFieldIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes riHdGlow{0%,100%{box-shadow:0 0 0 rgba(193,126,135,0)}50%{box-shadow:0 4px 32px rgba(193,126,135,.18)}}
+.ri-ov{position:fixed;inset:0;z-index:500;background:rgba(4,4,14,.72);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeIn .22s ease;}
+.ri-box{background:#fff;width:100%;max-width:460px;max-height:88vh;box-shadow:0 32px 80px rgba(15,42,69,.28),0 0 0 1px rgba(193,126,135,.15);animation:riBoxIn .34s cubic-bezier(.22,1,.36,1);overflow:hidden;display:flex;flex-direction:column;border-radius:20px;}
+.ri-hd{flex-shrink:0;background:linear-gradient(135deg,#1E0B10 0%,#2D1420 55%,#1A0810 100%);padding:1.5rem 1.6rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;position:relative;overflow:hidden;}
+.ri-hd::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(193,126,135,.55),#C17E87,rgba(193,126,135,.55),transparent);}
+.ri-hd-left{position:relative;z-index:1;}
+.ri-hd-eyebrow{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:#D4A4AC;font-weight:600;margin-bottom:.35rem;}
+.ri-hd-title{font-family:var(--serif);font-size:1.45rem;font-weight:600;color:#fff;line-height:1.15;}
+.ri-hd-proj{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:.3rem;}
+.ri-x{position:relative;z-index:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.65);width:32px;height:32px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:8px;transition:all .2s;}
+.ri-x:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.28);color:#fff;transform:scale(1.08);}
+.ri-options{flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #F0D0D4;}
+.ri-opt-btn{padding:.9rem;font-family:var(--sans);font-size:.8rem;font-weight:600;letter-spacing:.03em;cursor:pointer;border:none;border-bottom:2.5px solid transparent;transition:all .2s;background:#FAF8F3;color:#A07880;}
+.ri-opt-btn.on{background:#fff;color:#2D0E14;border-bottom-color:#C17E87;font-weight:700;}
+.ri-opt-btn:hover:not(.on){background:#FFF5F6;color:#7A2238;}
+.ri-body{padding:1.4rem 1.6rem;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;background:#fff;}
+.ri-field{margin-bottom:.9rem;animation:riFieldIn .3s ease both;}
+.ri-field:nth-child(1){animation-delay:.04s}.ri-field:nth-child(2){animation-delay:.08s}.ri-field:nth-child(3){animation-delay:.12s}.ri-field:nth-child(4){animation-delay:.16s}.ri-field:nth-child(5){animation-delay:.2s}.ri-field:nth-child(6){animation-delay:.24s}.ri-field:nth-child(7){animation-delay:.28s}
+.ri-label{display:block;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:#A07880;font-weight:700;margin-bottom:.38rem;}
+.ri-inp{width:100%;padding:.68rem .95rem;border:1.5px solid #F0D0D4;background:#FFF5F6;color:#2D0E14;font-family:var(--sans);font-size:.88rem;outline:none;border-radius:8px;transition:border-color .2s,background .2s,box-shadow .2s;}
+.ri-inp:focus{border-color:#C17E87;background:#fff;box-shadow:0 0 0 3px rgba(193,126,135,.14);}
+.ri-inp::placeholder{color:#C4A0A8;}
+.ri-submit{width:100%;background:linear-gradient(135deg,#2D0E14 0%,#5C1828 50%,#2D0E14 100%);background-size:200% auto;color:#fff;border:none;padding:.9rem;font-family:var(--sans);font-size:.86rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:10px;transition:transform .2s,box-shadow .2s,background-position .5s;margin-top:.5rem;box-shadow:0 4px 18px rgba(45,14,20,.25);}
+.ri-submit:hover:not(:disabled){background-position:right center;transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,14,20,.32);}
+.ri-submit:active:not(:disabled){transform:translateY(0);box-shadow:0 2px 10px rgba(45,14,20,.2);}
+.ri-submit:disabled{opacity:.45;cursor:not-allowed;}
+.ri-wa-body{padding:1.6rem 1.8rem;text-align:center;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;background:#fff;}
+.ri-wa-icon{font-size:3.2rem;margin-bottom:.85rem;display:block;animation:riSuccessIco .5s cubic-bezier(.34,1.56,.64,1) both .1s;}
+.ri-wa-title{font-family:var(--serif);font-size:1.35rem;color:#2D0E14;margin-bottom:.5rem;font-weight:600;}
+.ri-wa-sub{font-size:.83rem;color:#A07880;line-height:1.65;margin-bottom:1.5rem;}
+.ri-wa-btn{display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;padding:.88rem 2.2rem;font-family:var(--sans);font-size:.88rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:all .22s;border-radius:999px;box-shadow:0 4px 18px rgba(37,211,102,.28);}
+.ri-wa-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.4);}
 .ri-wa-btn svg{flex-shrink:0;}
-.ri-success{padding:2rem 1.6rem;text-align:center;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
-.ri-success-ico{font-size:2.5rem;margin-bottom:.75rem;}
-.ri-success-title{font-family:var(--serif);font-size:1.4rem;color:var(--ink);margin-bottom:.4rem;}
-.ri-success-sub{font-size:.82rem;color:var(--muted);line-height:1.6;}
-.ri-divider{display:flex;align-items:center;gap:.75rem;margin:.5rem 0 1rem;font-size:.72rem;color:var(--muted);}
-.ri-divider::before,.ri-divider::after{content:'';flex:1;height:1px;background:var(--border);}
-.ri-err{background:#FAF8F3;border:1px solid rgba(196,84,62,.3);color:#C4543E;font-size:.76rem;padding:.5rem .8rem;margin-bottom:.8rem;}
+.ri-success{padding:2.2rem 1.8rem;text-align:center;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;background:#fff;}
+.ri-success-ico{font-size:2.8rem;margin-bottom:.85rem;display:block;animation:riSuccessIco .5s cubic-bezier(.34,1.56,.64,1) both .1s;}
+.ri-success-title{font-family:var(--serif);font-size:1.5rem;color:#2D0E14;margin-bottom:.4rem;font-weight:600;}
+.ri-success-sub{font-size:.83rem;color:#A07880;line-height:1.65;}
+.ri-divider{display:flex;align-items:center;gap:.75rem;margin:.5rem 0 1rem;font-size:.72rem;color:#C4A0A8;}
+.ri-divider::before,.ri-divider::after{content:'';flex:1;height:1px;background:#F0D0D4;}
+.ri-err{background:#FFF5F6;border:1px solid rgba(196,84,62,.35);color:#B03020;font-size:.76rem;padding:.6rem .9rem;margin-bottom:.85rem;border-radius:6px;font-weight:500;}
+/* Time slot buttons */
+.tslot-btn{padding:.55rem .4rem;background:#FFF5F6;color:#7A2238;border:1.5px solid #F0D0D4;font-family:var(--sans);font-size:.72rem;letter-spacing:.04em;cursor:pointer;transition:all .18s;font-weight:500;border-radius:7px;}
+.tslot-btn:hover{background:#FFE8EC;border-color:#C17E87;color:#5C1828;}
+.tslot-btn.on{background:linear-gradient(135deg,#2D0E14,#5C1828);color:#fff;border-color:#2D0E14;font-weight:700;box-shadow:0 2px 10px rgba(45,14,20,.25);}
+/* Booking note under submit */
+.ri-booking-note{font-size:.68rem;color:#A07880;margin-top:.65rem;text-align:center;line-height:1.55;}
+.ri-booking-note strong{color:#5C1828;}
 
 /* ── Admin Settings Tab ── */
 .set-card{background:var(--a-bg);border:1px solid var(--a-border);padding:1.4rem;margin-bottom:1.2rem;}
@@ -3939,19 +3961,8 @@ Sent via NB Property website.`
                   <button
                     key={t}
                     type="button"
+                    className={`tslot-btn${time===t?" on":""}`}
                     onClick={()=>{setTime(t);setFormErr("");}}
-                    style={{
-                      padding:".55rem .4rem",
-                      background: time===t ? "var(--gold)" : "rgba(0,0,0,.04)",
-                      color: time===t ? "#000" : "#333",
-                      border:`1px solid ${time===t?"var(--gold)":"#bbb"}`,
-                      fontFamily:"var(--sans)",
-                      fontSize:".72rem",
-                      letterSpacing:".04em",
-                      cursor:"pointer",
-                      transition:"all .15s",
-                      fontWeight: time===t?700:500,
-                    }}
                   >{t}</button>
                 ))}
               </div>
@@ -3965,7 +3976,7 @@ Sent via NB Property website.`
             <button className="ri-submit" onClick={handleBook} disabled={sending}>
               {sending ? "Booking…" : "Book Appointment →"}
             </button>
-            <div style={{fontSize:".68rem",color:"var(--muted)",marginTop:".65rem",textAlign:"center",lineHeight:1.5}}>
+            <div className="ri-booking-note">
               On booking, your appointment details will be sent via <strong>WhatsApp</strong>
               {settings?.adminEmail ? <> and <strong>email</strong></> : null}.
             </div>
