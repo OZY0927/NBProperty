@@ -219,7 +219,7 @@ async function exportPDF(projects){
   const row=(l,f,bid=null)=>[{content:l,styles:lS()},...projects.map((p,i)=>({content:f(p),styles:vS(i,bid===p.id)}))];
   const cheap=projects.reduce((a,b)=>a.priceFrom<b.priceFrom?a:b).id,big=projects.reduce((a,b)=>a.sizeSqft[1]>b.sizeSqft[1]?a:b).id;
   const head=[[{content:"Category",styles:{...lS(),fillColor:[10,30,48],textColor:[20,120,200]}},...projects.map(p=>({content:p.name,styles:{fillColor:[10,30,48],textColor:[255,255,255],fontStyle:"bold",fontSize:9,halign:"center",cellWidth:vW}}))]];
-  const body=[sec("PROJECT OVERVIEW"),row("Developer",p=>p.developer),row("Location",p=>p.location),row("Type",p=>p.type),row("Status",p=>p.status),row("Completion",p=>p.completion),row("Tenure",p=>p.tenure),row("Land Size",p=>p.landSize||"-"),row("Total Units",p=>`${p.totalUnits}`),sec("PRICING"),row("From",p=>fmt(p.priceFrom),cheap),row("Range",p=>`${fmt(p.priceFrom)} - ${fmt(p.priceTo)}`),row("Maintenance",p=>p.maintenanceFee||"-"),sec("UNIT SPECS"),row("Bedrooms",p=>bLbl(p.bedrooms)+" bed"),row("Built-up",p=>`${p.sizeSqft[0]?.toLocaleString()} - ${p.sizeSqft[1]?.toLocaleString()} sf`,big),row("Car Parks",p=>p.numberOfCarParks||"-"),row("Lifts",p=>p.numberOfLifts||"-"),sec("HIGHLIGHTS"),row("Highlights",p=>p.highlights.join(" · "))];
+  const body=[sec("PROJECT OVERVIEW"),row("Developer",p=>p.developer),row("Location",p=>p.location),row("Type",p=>p.type),row("Status",p=>p.status),row("Completion",p=>p.completion),row("Tenure",p=>p.tenure),row("Land Size",p=>p.landSize||"-"),row("Total Units",p=>`${p.totalUnits}`),sec("PRICING"),row(t("fi.from"),p=>fmt(p.priceFrom),cheap),row("Range",p=>`${fmt(p.priceFrom)} - ${fmt(p.priceTo)}`),row("Maintenance",p=>p.maintenanceFee||"-"),sec("UNIT SPECS"),row("Bedrooms",p=>bLbl(p.bedrooms)+" bed"),row("Built-up",p=>`${p.sizeSqft[0]?.toLocaleString()} - ${p.sizeSqft[1]?.toLocaleString()} sf`,big),row("Car Parks",p=>p.numberOfCarParks||"-"),row("Lifts",p=>p.numberOfLifts||"-"),sec("HIGHLIGHTS"),row("Highlights",p=>p.highlights.join(" · "))];
   doc.autoTable({startY:38,head,body,margin:{left:14,right:14},styles:{fontSize:8,cellPadding:3.5,overflow:"linebreak",lineColor:[220,212,200],lineWidth:0.18},headStyles:{fillColor:[10,30,48]},columnStyles:{0:{cellWidth:lW},...Object.fromEntries(projects.map((_,i)=>[i+1,{cellWidth:vW}]))},rowPageBreak:"auto"});
   const pages=doc.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFillColor(10,30,48);doc.rect(0,H-10,W,10,"F");doc.setFontSize(7);doc.setTextColor(90,90,90);doc.text("NB Property · For illustration purposes only.",14,H-3.5);doc.text(`${i} / ${pages}`,W-14,H-3.5,{align:"right"});}
   doc.save(`NB_Comparison_${Date.now()}.pdf`);
@@ -3997,9 +3997,9 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
   const rvr=(cls='')=>({ ref:el=>{ if(el&&!revealRef.current.includes(el)) revealRef.current.push(el); }, className:`cr-right${cls?' '+cls:''}` });
   const vt = p.visibleTabs || {};
   const ALL_DET_TABS = [
-    { k:"overview", l:"Overview",   show: vt.overview  !== false },
-    { k:"location", l:"Location",   show: vt.location  !== false },
-    { k:"layouts",  l:"Layouts",    show: vt.layouts   !== false },
+    { k:"overview", l:t("dp.tab_overview"),   show: vt.overview  !== false },
+    { k:"location", l:t("dp.tab_location"),   show: vt.location  !== false },
+    { k:"layouts",  l:t("dp.tab_layouts"),    show: vt.layouts   !== false },
   ];
   const visDetTabs = ALL_DET_TABS.filter(t=>t.show);
   const [activeTab, setActiveTab] = useState(visDetTabs[0]?.k || "overview");
@@ -4082,7 +4082,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
       {/* ── Floating pill nav ── */}
       <nav className="cine-nav">
         <button className="cine-back" onClick={onClose}>
-          ← <span>Back</span>
+          ← <span>{t("dp.back")}</span>
         </button>
         {visDetTabs.length > 1 && <>
           <div className="cine-nav-divider"/>
@@ -4127,11 +4127,11 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
       {/* ── Stats Strip below hero ── */}
       {(p.priceFrom>0||p.totalUnits>0||p.sizeSqft?.[0]>0||(p.bedrooms||[]).length>0||p.completion) && (
         <div className="cine-stats-strip">
-          {p.priceFrom>0 && <div {...rv()} className="cr css-item"><div className="css-lbl">Starting From</div><div className="css-val">{fmt(p.priceFrom)}</div></div>}
-          {p.totalUnits>0 && <div {...rv()} className="cr css-item"><div className="css-lbl">Total Units</div><div className="css-val">{p.totalUnits.toLocaleString()}<em>units</em></div></div>}
-          {p.sizeSqft?.[0]>0 && <div {...rv()} className="cr css-item"><div className="css-lbl">Built-up From</div><div className="css-val">{p.sizeSqft[0].toLocaleString()}<em>sf</em></div></div>}
-          {(p.bedrooms||[]).length>0 && <div {...rv()} className="cr css-item"><div className="css-lbl">Bedrooms</div><div className="css-val">{bLbl(p.bedrooms)}<em>bed</em></div></div>}
-          {p.completion && <div {...rv()} className="cr css-item"><div className="css-lbl">Completion</div><div className="css-val" style={{fontSize:'1.2rem'}}>{p.completion}</div></div>}
+          {p.priceFrom>0 && <div {...rv()} className="cr css-item"><div className="css-lbl">{t("dp.stat_starting")}</div><div className="css-val">{fmt(p.priceFrom)}</div></div>}
+          {p.totalUnits>0 && <div {...rv()} className="cr css-item"><div className="css-lbl">{t("dp.stat_units")}</div><div className="css-val">{p.totalUnits.toLocaleString()}<em>{t("dp.units_suffix")}</em></div></div>}
+          {p.sizeSqft?.[0]>0 && <div {...rv()} className="cr css-item"><div className="css-lbl">{t("dp.stat_buildup")}</div><div className="css-val">{p.sizeSqft[0].toLocaleString()}<em>{t("dp.sf")}</em></div></div>}
+          {(p.bedrooms||[]).length>0 && <div {...rv()} className="cr css-item"><div className="css-lbl">{t("dp.stat_beds")}</div><div className="css-val">{bLbl(p.bedrooms)}<em>{t("fi.bed")}</em></div></div>}
+          {p.completion && <div {...rv()} className="cr css-item"><div className="css-lbl">{t("dp.stat_completion")}</div><div className="css-val" style={{fontSize:'1.2rem'}}>{p.completion}</div></div>}
         </div>
       )}
 
@@ -4145,8 +4145,8 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
             <section className="cine-section" style={{position:'relative'}}>
               <div className="cine-sec-num">01</div>
               <div {...rv()} className="cr cine-sec-label">
-                <div className="cine-sec-eyebrow">Signature Features</div>
-                <h2 className="cine-sec-title">Key <em>Highlights</em></h2>
+                <div className="cine-sec-eyebrow">{t("dp.feat_eyebrow")}</div>
+                <h2 className="cine-sec-title">{t("dp.feat_title")}</h2>
               </div>
               <div className="cine-bento">
                 {(p.highlights||[]).map((h,i)=>(
@@ -4165,8 +4165,8 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
           {(sec("overview","basicInfo")||sec("overview","development")||sec("overview","unitInfo")||sec("overview","parking")||sec("overview","facilities")||sec("overview","financial")||sec("overview","sales")) && (
             <section className="cine-section">
               <div {...rv()} className="cr cine-sec-label">
-                <div className="cine-sec-eyebrow">Development Details</div>
-                <h2 className="cine-sec-title">Project <em>Information</em></h2>
+                <div className="cine-sec-eyebrow">{t("dp.info_eyebrow")}</div>
+                <h2 className="cine-sec-title">{t("dp.info_title")}</h2>
               </div>
 
               <div className="lux-pi-wrap">
@@ -4189,7 +4189,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                   <div {...rv()} className="cr lux-pi-hero-card">
                     <div className="lux-pi-hero-grid">
                       <div className="lux-pi-hero-left">
-                        <div className="lux-pi-eyebrow">Development Details</div>
+                        <div className="lux-pi-eyebrow">{t("dp.hero_eyebrow")}</div>
                         <h3 className="lux-pi-title">
                           {projectNameLead}
                           {projectNameAccent && <span className="lux-pi-title-accent">{projectNameAccent}</span>}
@@ -4198,19 +4198,19 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
 
                         <div className="lux-pi-quick-grid">
                           <div className="lux-pi-quick-card">
-                            <div className="lux-pi-quick-lbl">Starting From</div>
+                            <div className="lux-pi-quick-lbl">{t("dp.quick_from")}</div>
                             <div className="lux-pi-quick-val">{p.priceFrom ? fmt(p.priceFrom) : '—'}</div>
                           </div>
                           <div className="lux-pi-quick-card">
-                            <div className="lux-pi-quick-lbl">Total Units</div>
+                            <div className="lux-pi-quick-lbl">{t("dp.quick_units")}</div>
                             <div className="lux-pi-quick-val">{p.totalUnits ? p.totalUnits.toLocaleString() : '—'}</div>
                           </div>
                           <div className="lux-pi-quick-card">
-                            <div className="lux-pi-quick-lbl">Tenure</div>
+                            <div className="lux-pi-quick-lbl">{t("dp.quick_tenure")}</div>
                             <div className="lux-pi-quick-val">{p.tenure || '—'}</div>
                           </div>
                           <div className="lux-pi-quick-card">
-                            <div className="lux-pi-quick-lbl">Completion</div>
+                            <div className="lux-pi-quick-lbl">{t("dp.quick_completion")}</div>
                             <div className="lux-pi-quick-val">{p.completion || '—'}</div>
                           </div>
                         </div>
@@ -4219,19 +4219,19 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                       <div className="lux-pi-hero-right">
                         <div className="lux-pi-side-stack">
                           <div className="lux-pi-side-block">
-                            <div className="lux-pi-side-lbl">Developer</div>
+                            <div className="lux-pi-side-lbl">{t("dp.side_developer")}</div>
                             <div className="lux-pi-side-val">{p.developer || '—'}</div>
                           </div>
                           <div className="lux-pi-side-block">
-                            <div className="lux-pi-side-lbl">Property Type</div>
+                            <div className="lux-pi-side-lbl">{t("dp.side_type")}</div>
                             <div className="lux-pi-side-val">{p.type || '—'}</div>
                           </div>
                           <div className="lux-pi-side-block">
-                            <div className="lux-pi-side-lbl">Location</div>
+                            <div className="lux-pi-side-lbl">{t("dp.side_location")}</div>
                             <div className="lux-pi-side-val">{p.location || '—'}</div>
                           </div>
                           <div className="lux-pi-side-block">
-                            <div className="lux-pi-side-lbl">Land Size</div>
+                            <div className="lux-pi-side-lbl">{t("dp.side_land")}</div>
                             <div className="lux-pi-side-val">{p.landSize || '—'}</div>
                           </div>
                         </div>
@@ -4244,45 +4244,45 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                   <div className="lux-pi-detail-grid">
                     {sec("overview","development") && (
                       <article {...rv()} className="cr lux-pi-panel">
-                        <div className="lux-pi-panel-head"><span className="lux-pi-panel-dot"/><div className="lux-pi-panel-hd">Development Details</div></div>
+                        <div className="lux-pi-panel-head"><span className="lux-pi-panel-dot"/><div className="lux-pi-panel-hd">{t("dp.panel_dev")}</div></div>
                         <div className="lux-pi-lines">
-                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Construction Stage</div><div className="lux-pi-line-val">{p.constructionStage || '—'}</div></div>
-                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Floors / Levels</div><div className="lux-pi-line-val">{(p.totalFloorsPerTower||[]).length>0 ? p.totalFloorsPerTower.join(' | ') : (p.floors ? `${p.floors} floors` : '—')}</div></div>
-                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Total Floors</div><div className="lux-pi-line-val">{p.floors ? `${p.floors} floors` : '—'}</div></div>
-                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Residential Start</div><div className="lux-pi-line-val">{p.residentialStartLevel || '—'}</div></div>
+                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_constr")}</div><div className="lux-pi-line-val">{p.constructionStage || '—'}</div></div>
+                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_floors")}</div><div className="lux-pi-line-val">{(p.totalFloorsPerTower||[]).length>0 ? p.totalFloorsPerTower.join(' | ') : (p.floors ? `${p.floors} floors` : '—')}</div></div>
+                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_total_floors")}</div><div className="lux-pi-line-val">{p.floors ? `${p.floors} floors` : '—'}</div></div>
+                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_res_start")}</div><div className="lux-pi-line-val">{p.residentialStartLevel || '—'}</div></div>
                         </div>
                       </article>
                     )}
 
                     {sec("overview","unitInfo") && (
                       <article {...rv()} className="cr lux-pi-panel">
-                        <div className="lux-pi-panel-head"><span className="lux-pi-panel-dot"/><div className="lux-pi-panel-hd">Unit Information</div></div>
+                        <div className="lux-pi-panel-head"><span className="lux-pi-panel-dot"/><div className="lux-pi-panel-hd">{t("dp.panel_unit")}</div></div>
                         <div className="lux-pi-lines">
-                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Bedrooms</div><div className="lux-pi-line-val">{p.bedrooms?.length ? `${bLbl(p.bedrooms)} Bedrooms` : '—'}</div></div>
-                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Bathrooms</div><div className="lux-pi-line-val">{p.bathrooms?.length ? `${bLbl(p.bathrooms)} Bathrooms` : '—'}</div></div>
-                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Size Range</div><div className="lux-pi-line-val">{sizeRange || '—'}</div></div>
-                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Public / Bumi</div><div className="lux-pi-line-val">{p.unitsBreakdown || '—'}</div></div>
+                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_bedrooms")}</div><div className="lux-pi-line-val">{p.bedrooms?.length ? `${bLbl(p.bedrooms)} Bedrooms` : '—'}</div></div>
+                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_bathrooms")}</div><div className="lux-pi-line-val">{p.bathrooms?.length ? `${bLbl(p.bathrooms)} Bathrooms` : '—'}</div></div>
+                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_size")}</div><div className="lux-pi-line-val">{sizeRange || '—'}</div></div>
+                          <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_public_bumi")}</div><div className="lux-pi-line-val">{p.unitsBreakdown || '—'}</div></div>
                         </div>
                       </article>
                     )}
 
                     {(sec("overview","facilities") || sec("overview","parking")) && (
                       <article {...rv()} className="cr lux-pi-panel">
-                        <div className="lux-pi-panel-head"><span className="lux-pi-panel-dot"/><div className="lux-pi-panel-hd">Facilities & Access</div></div>
+                        <div className="lux-pi-panel-head"><span className="lux-pi-panel-dot"/><div className="lux-pi-panel-hd">{t("dp.panel_fac")}</div></div>
                         {sec("overview","facilities") && (
                           <div className="lux-pi-fac-pills">
                             {(p.facilities||[]).length>0
                               ? (p.facilities||[]).map((item,idx)=>(
                                   <span key={idx} className="lux-pi-fac-pill">{getFacIcon(item)} {item}</span>
                                 ))
-                              : <span className="lux-pi-line-val">No facilities listed.</span>
+                              : <span className="lux-pi-line-val">{t("dp.no_facilities")}</span>
                             }
                           </div>
                         )}
                         {sec("overview","parking") && (
                           <div className="lux-pi-park-wrap">
-                            <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Parking Bays</div><div className="lux-pi-line-val">{p.numberOfCarParks || '—'}</div></div>
-                            <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">Parking Type</div><div className="lux-pi-line-val">{p.carParkLevels || '—'}</div></div>
+                            <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_park_bays")}</div><div className="lux-pi-line-val">{p.numberOfCarParks || '—'}</div></div>
+                            <div className="lux-pi-line-item"><div className="lux-pi-line-lbl">{t("dp.lbl_park_type")}</div><div className="lux-pi-line-val">{p.carParkLevels || '—'}</div></div>
                             {p.parkingNotes && <div className="lux-pi-note">{p.parkingNotes}</div>}
                           </div>
                         )}
@@ -4293,26 +4293,26 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
 
                 {(sec("overview","financial") || sec("overview","sales")) && (
                   <div {...rv()} className="cr lux-pi-fin-wrap">
-                    <div className="lux-pi-panel-head"><span className="lux-pi-panel-dot"/><div className="lux-pi-panel-hd">Financial Information</div></div>
+                    <div className="lux-pi-panel-head"><span className="lux-pi-panel-dot"/><div className="lux-pi-panel-hd">{t("dp.panel_fin")}</div></div>
                     <div className="lux-pi-fin-grid">
                       <div className="lux-pi-fin-card">
-                        <div className="lux-pi-fin-lbl">Price Range</div>
+                        <div className="lux-pi-fin-lbl">{t("dp.fin_price")}</div>
                         <div className="lux-pi-fin-val">{priceRange || '—'}</div>
                       </div>
                       <div className="lux-pi-fin-card">
-                        <div className="lux-pi-fin-lbl">Maintenance</div>
+                        <div className="lux-pi-fin-lbl">{t("dp.fin_maint")}</div>
                         <div className="lux-pi-fin-val">{p.maintenanceFee || '—'}</div>
-                        {p.maintenanceFee && <div className="lux-pi-fin-sub">per month</div>}
+                        {p.maintenanceFee && <div className="lux-pi-fin-sub">{t("dp.per_month")}</div>}
                       </div>
                       <div className="lux-pi-fin-card">
-                        <div className="lux-pi-fin-lbl">Sinking Fund</div>
+                        <div className="lux-pi-fin-lbl">{t("dp.fin_sinking")}</div>
                         <div className="lux-pi-fin-val">{p.sinkingFund || '—'}</div>
-                        {p.sinkingFund && <div className="lux-pi-fin-sub">per month</div>}
+                        {p.sinkingFund && <div className="lux-pi-fin-sub">{t("dp.per_month")}</div>}
                       </div>
                       <div className="lux-pi-fin-card">
-                        <div className="lux-pi-fin-lbl">Showroom</div>
+                        <div className="lux-pi-fin-lbl">{t("dp.fin_showroom")}</div>
                         <div className="lux-pi-fin-val">{sec("overview","sales") ? (p.showroom || '—') : 'Hidden'}</div>
-                        {sec("overview","sales") && p.scaleModel && <div className="lux-pi-fin-sub">Scale Model: {p.scaleModel}</div>}
+                        {sec("overview","sales") && p.scaleModel && <div className="lux-pi-fin-sub">{t("dp.scale_model")}: {p.scaleModel}</div>}
                       </div>
                     </div>
                   </div>
@@ -4376,8 +4376,8 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
           {vt.layouts !== false && (
           <section className="cine-section">
             <div className="cine-sec-label">
-              <div className="cine-sec-eyebrow">Floor Plans</div>
-              <h2 className="cine-sec-title">Unit <em>Layouts</em></h2>
+              <div className="cine-sec-eyebrow">{t("dp.fp_eyebrow")}</div>
+              <h2 className="cine-sec-title">{t("dp.layout_title")}</h2>
             </div>
             {sec("layouts","unitTypes") && (
               unitTypes.length===0
@@ -4752,7 +4752,7 @@ function AIPDFWidget({ onAutofill }) {
 
     // String fields: join arrays, skip nulls
     const STRING_FIELDS = {
-      name:"Project Name", developer:"Developer", location:"Location", type:"Property Type",
+      name:"Project Name", developer:"Developer", location:"Location", type:t("fi.prop_type"),
       status:"Status", completion:"Completion Date", tenure:"Tenure", landSize:"Land Size",
       constructionStage:"Construction Stage", totalBlocks:"Total Blocks", floors:"Total Floors",
       totalUnits:"Total Units", residentialStartLevel:"Residential Start Level",
@@ -5249,7 +5249,7 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
             <div className="a-form-grid" style={{marginBottom:"1rem"}}>
               {ff("Developer","developer","e.g. Mah Sing Group")}
               {ff("Location","location","e.g. Georgetown, Penang")}
-              {fs("Property Type","type",PROP_TYPES)}
+              {fs(t("fi.prop_type"),"type",PROP_TYPES)}
               {fs("Status","status",STATUSES)}
               {ff("Completion","completion","e.g. Q4 2026")}
               {fs("Tenure","tenure",TENURES)}
@@ -5312,7 +5312,7 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
                 <div className={`vis-master-title${vis.visible?"":" off"}`}>{vis.visible?"This project is visible to users":"This project is hidden from users"}</div>
                 <div className="vis-master-sub">{vis.visible?"Appears on the public listing page and can be opened by anyone.":"Saved but hidden — not shown on the public website."}</div>
               </div>
-              <Toggle checked={vis.visible} onChange={()=>toggleVis("visible")} label={vis.visible?"Published":"Hidden"}/>
+              <Toggle checked={vis.visible} onChange={()=>toggleVis("visible")} label={vis.visible?"Published":t("dp.hidden")}/>
             </div>
             {!vis.visible&&<div className="vis-hidden-warn">⚠ Users will not see this project until you enable it.</div>}
 
@@ -5889,6 +5889,7 @@ function CRMPanel({projects, settings}){
 /* ═══ ADMIN PANEL ═══ */
 const PAGE_SZ=8;
 function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:externalATab,setATab:externalSetATab}){
+  const { t } = useTranslation();
   const [internalATab,internalSetATab]=useState("projects");
   const aTab = externalATab || internalATab;
   const setATab = externalSetATab || internalSetATab;
@@ -6023,7 +6024,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
                 <div className="a-card-img-wrap">
                   <img className="a-card-img" src={p.image} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
                   <div className="a-card-status"><SChip s={p.status}/></div>
-                  <div className={`a-card-vis-badge${p.visible===false?" hidden":""}`}>{p.visible!==false?"Live":"Hidden"}</div>
+                  <div className={`a-card-vis-badge${p.visible===false?" hidden":""}`}>{p.visible!==false?"Live":t("dp.hidden")}</div>
                 </div>
                 <div className="a-card-body">
                   <div className="a-card-name">{p.name}</div>
@@ -6039,7 +6040,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
                 </div>
                 <div className="a-card-footer">
                   <div className="a-card-toggle">
-                    <Toggle checked={p.visible!==false} onChange={()=>toggleProjectVisible(p.id)} label={p.visible!==false?"Live":"Hidden"}/>
+                    <Toggle checked={p.visible!==false} onChange={()=>toggleProjectVisible(p.id)} label={p.visible!==false?"Live":t("dp.hidden")}/>
                   </div>
                   <div className="a-card-menu-wrap">
                     <button className="a-card-menu-btn" onClick={()=>setOpenMenu(openMenu===p.id?null:p.id)} title="Actions">⋮</button>
@@ -6193,6 +6194,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
 
 /* ═══ ADMIN LOGIN ═══ */
 function AdminLogin(){
+  const { t } = useTranslation();
   const [email,setEmail]=useState("");
   const [pw,setPw]=useState("");
   const [err,setErr]=useState("");
@@ -6212,13 +6214,13 @@ function AdminLogin(){
     <div className="a-login">
       <div className="a-login-box">
         <div className="a-login-logo">NB<span>Property</span></div>
-        <div className="a-login-sub">Admin Portal — Restricted Access</div>
+        <div className="a-login-sub">{t("adm.portal")}</div>
         {err&&<div className="a-login-err">{err}</div>}
-        <label className="a-login-lbl">Email</label>
+        <label className="a-login-lbl">{t("adm.email_lbl")}</label>
         <input className="a-login-inp" type="email" placeholder="admin@example.com" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()}/>
-        <label className="a-login-lbl">Password</label>
+        <label className="a-login-lbl">{t("adm.password_lbl")}</label>
         <input className="a-login-inp" type="password" placeholder="Enter password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()}/>
-        <button className="a-login-btn" onClick={go} disabled={checking}>{checking?"Signing in…":"Sign In"}</button>
+        <button className="a-login-btn" onClick={go} disabled={checking}>{checking?t("adm.signing_in"):t("adm.signin")}</button>
       </div>
     </div>
   );
@@ -6272,6 +6274,7 @@ function calculateNetCash(totalInitialCash,rebateAmt){
 }
 
 function LoanCalculator({settings}){
+  const { t } = useTranslation();
   const [price,setPrice]=useState(500000);
   const [discountPct,setDiscountPct]=useState(0);
   const [rebatePct,setRebatePct]=useState(0);
@@ -6339,16 +6342,16 @@ function LoanCalculator({settings}){
 
       {/* Hero band */}
       <div className="lc-hero-band">
-        <div className="lc-hero-eyebrow">Malaysia Property Finance Intelligence</div>
-        <h2 className="lc-hero-headline">Luxury Loan Calculator</h2>
-        <p className="lc-hero-desc">Precision financing insights for premium property buyers — instant calculations for monthly installments, legal costs, and net cash out.</p>
+        <div className="lc-hero-eyebrow">{t("tl.eyebrow")}</div>
+        <h2 className="lc-hero-headline">{t("tl.headline")}</h2>
+        <p className="lc-hero-desc">{t("tl.desc")}</p>
         {isBelowMarket&&<span className="lc-bm-badge">🏷 Below Market Deal</span>}
         {totalSavings>0&&(
           <div style={{marginTop:".7rem"}}>
             <div className="lc-savings-band">
-              <span>💰 Total Savings</span>
+              <span>💰 {t("tl.total_savings")}</span>
               <strong>{fmtRM(totalSavings)}</strong>
-              <span>({fmtPct(savingsPct)} off market)</span>
+              <span>({fmtPct(savingsPct)} {t("tl.off_market")})</span>
             </div>
           </div>
         )}
@@ -6363,32 +6366,32 @@ function LoanCalculator({settings}){
           <div className="lc-gc lc-sec">
             <div className="lc-sec-hd">
               <div className="lc-sec-ico lc-sec-ico-gold">🏠</div>
-              <div className="lc-sec-title">Property Price &amp; Adjustments</div>
+              <div className="lc-sec-title">{t("tl.sec_price")}</div>
             </div>
             <div className="lc-flds">
               <div className="lc-fld">
-                <div className="lc-flbl">Listing / Market Price (RM)</div>
+                <div className="lc-flbl">{t("tl.price_lbl")}</div>
                 <input className="lc-finp" type="number" min="0" value={price} onChange={numInp(setPrice)} onFocus={e=>e.target.select()}/>
               </div>
               <div className="lc-fld2">
                 <div className="lc-fld">
-                  <div className="lc-flbl">Discount (%)</div>
+                  <div className="lc-flbl">{t("tl.discount_lbl")}</div>
                   <input className="lc-finp" type="number" min="0" max="50" step="0.5" value={discountPct} onChange={numInp(setDiscountPct,0,50)} onFocus={e=>e.target.select()}/>
                   {discountAmt>0&&<div className="lc-fhint lc-fhint-grn">−{fmtRM(discountAmt)}</div>}
                 </div>
                 <div className="lc-fld">
-                  <div className="lc-flbl">Rebate / Cashback (%)</div>
+                  <div className="lc-flbl">{t("tl.rebate_lbl")}</div>
                   <input className="lc-finp" type="number" min="0" max="20" step="0.5" value={rebatePct} onChange={numInp(setRebatePct,0,20)} onFocus={e=>e.target.select()}/>
                   {rebateAmt>0&&<div className="lc-fhint lc-fhint-grn">−{fmtRM(rebateAmt)}</div>}
                 </div>
               </div>
               {(discountPct>0||rebatePct>0)&&(
                 <div className="lc-adj">
-                  <span>SPA Price (after discount)</span>
+                  <span>{t("tl.spa_after")}</span>
                   <strong>{fmtRM(adjustedPrice)}</strong>
                 </div>
               )}
-              {rebatePct>0&&<div className="lc-rebate-note">ℹ️ Rebate reduces your cash out only — legal fees &amp; MOT are based on the SPA price.</div>}
+              {rebatePct>0&&<div className="lc-rebate-note">ℹ️ {t("tl.rebate_note")}</div>}
             </div>
           </div>
 
@@ -6396,14 +6399,14 @@ function LoanCalculator({settings}){
           <div className="lc-gc lc-sec">
             <div className="lc-sec-hd">
               <div className="lc-sec-ico lc-sec-ico-cyan">📈</div>
-              <div className="lc-sec-title">Loan Terms</div>
+              <div className="lc-sec-title">{t("tl.sec_loan")}</div>
             </div>
             <div className="lc-flds">
               <div className="lc-fld">
                 <div className="lc-fslider-wrap">
                   <div className="lc-fslider-top">
-                    <div className="lc-flbl">Interest Rate</div>
-                    <div className="lc-fslider-val">{rate}% p.a.</div>
+                    <div className="lc-flbl">{t("tl.interest_rate")}</div>
+                    <div className="lc-fslider-val">{rate}% {t("tl.pa")}</div>
                   </div>
                   <input className="lc-fslider" type="range" min="1" max="12" step="0.05" value={rate} onChange={e=>setRate(parseFloat(e.target.value))}/>
                   <div className="lc-fslider-ends"><span>1%</span><span>12%</span></div>
@@ -6412,25 +6415,25 @@ function LoanCalculator({settings}){
               <div className="lc-fld">
                 <div className="lc-fslider-wrap">
                   <div className="lc-fslider-top">
-                    <div className="lc-flbl">Loan Tenure</div>
-                    <div className="lc-fslider-val">{years} years</div>
+                    <div className="lc-flbl">{t("tl.loan_tenure")}</div>
+                    <div className="lc-fslider-val">{years} {t("tl.years")}</div>
                   </div>
                   <input className="lc-fslider" type="range" min="5" max="35" step="1" value={years} onChange={e=>setYears(parseInt(e.target.value))}/>
-                  <div className="lc-fslider-ends"><span>5 yrs</span><span>35 yrs</span></div>
+                  <div className="lc-fslider-ends"><span>5 {t("tl.yrs")}</span><span>35 {t("tl.yrs")}</span></div>
                 </div>
               </div>
               <div className="lc-fld">
                 <div className="lc-fslider-top" style={{marginBottom:".4rem"}}>
-                  <div className="lc-flbl">Down Payment</div>
+                  <div className="lc-flbl">{t("tl.down_payment")}</div>
                   <label className="lc-zdp">
                     <input type="checkbox" checked={zeroDp} onChange={e=>setZeroDp(e.target.checked)}/>
-                    Zero Down
+                    {t("tl.zero_down")}
                   </label>
                 </div>
                 {!zeroDp&&(
                   <div className="lc-fslider-wrap">
                     <div className="lc-fslider-top">
-                      <span style={{fontSize:".66rem",color:"rgba(255,255,255,.3)"}}>{dpPct}% of SPA</span>
+                      <span style={{fontSize:".66rem",color:"rgba(255,255,255,.3)"}}>{dpPct}{t("tl.of_spa")}</span>
                       <div className="lc-fslider-val">{fmtRM(dpAmt)}</div>
                     </div>
                     <input className="lc-fslider" type="range" min="5" max="30" step="5" value={dpPct} onChange={e=>setDpPct(parseInt(e.target.value))}/>
@@ -6446,19 +6449,19 @@ function LoanCalculator({settings}){
           <div className="lc-gc lc-sec">
             <div className="lc-sec-hd">
               <div className="lc-sec-ico lc-sec-ico-grn">🌐</div>
-              <div className="lc-sec-title">Buyer &amp; Property Type</div>
+              <div className="lc-sec-title">{t("tl.sec_buyer")}</div>
             </div>
             <div className="lc-tgrp">
               <div className="lc-tpill">
-                <button className={!isForeign?"on":""} onClick={()=>setIsForeign(false)}>🇲🇾 Local</button>
-                <button className={isForeign?"on":""} onClick={()=>setIsForeign(true)}>🌏 Foreign</button>
+                <button className={!isForeign?"on":""} onClick={()=>setIsForeign(false)}>🇲🇾 {t("tl.local_btn")}</button>
+                <button className={isForeign?"on":""} onClick={()=>setIsForeign(true)}>🌏 {t("tl.foreign_btn")}</button>
               </div>
               <div className="lc-tpill">
-                <button className={!isCommercial?"on":""} onClick={()=>setIsCommercial(false)}>🏠 Residential</button>
-                <button className={isCommercial?"on":""} onClick={()=>setIsCommercial(true)}>🏢 Commercial</button>
+                <button className={!isCommercial?"on":""} onClick={()=>setIsCommercial(false)}>🏠 {t("tl.res_btn")}</button>
+                <button className={isCommercial?"on":""} onClick={()=>setIsCommercial(true)}>🏢 {t("tl.comm_btn")}</button>
               </div>
             </div>
-            {isForeign&&<div className="lc-foreign-note">⚠️ Foreign buyer: 8% MOT (flat) + 3% Levy + State Fee ({isCommercial?"RM 20,000":"RM 10,000"}) applies</div>}
+            {isForeign&&<div className="lc-foreign-note">⚠️ {t("tl.foreign_note", {fee: isCommercial ? t("tl.comm_fee") : t("tl.res_fee")})}</div>}
           </div>
 
         </div>
@@ -6468,7 +6471,7 @@ function LoanCalculator({settings}){
 
           {/* Monthly installment hero */}
           <div className="lc-gc lc-monthly">
-            <div className="lc-monthly-eyebrow">Monthly Installment</div>
+            <div className="lc-monthly-eyebrow">{t("tl.monthly_lbl")}</div>
             <div className="lc-monthly-ring">
               <svg width="130" height="130" viewBox="0 0 130 130">
                 <circle cx="65" cy="65" r="52" fill="none" stroke="rgba(191,155,78,.12)" strokeWidth="10"/>
@@ -6484,21 +6487,21 @@ function LoanCalculator({settings}){
               </svg>
               <div className="lc-monthly-ring-inner">
                 <div className="lc-monthly-ring-pct">{piePct}%</div>
-                <div className="lc-monthly-ring-pctlbl">Principal</div>
+                <div className="lc-monthly-ring-pctlbl">{t("tl.principal_lbl")}</div>
               </div>
             </div>
             <div className="lc-monthly-val">{fmtRM(loan.monthly)}</div>
             <div className="lc-monthly-meta">
-              {years} years &nbsp;·&nbsp; {rate}% p.a. &nbsp;·&nbsp; Loan {fmtRM(loanAmt)}
+              {years} {t("tl.years")} · {rate}% {t("tl.pa")} · Loan {fmtRM(loanAmt)}
             </div>
             <div className="lc-monthly-legend">
               <div className="lc-monthly-leg">
                 <div className="lc-monthly-legdot" style={{background:"linear-gradient(135deg,#FFE08A,#BF9B4E)"}}/>
-                Principal {piePct}%
+                {t("tl.principal_lbl")} {piePct}%
               </div>
               <div className="lc-monthly-leg">
                 <div className="lc-monthly-legdot" style={{background:"rgba(191,155,78,.22)"}}/>
-                Interest {100-piePct}%
+                {t("tl.interest_lbl")} {100-piePct}%
               </div>
             </div>
           </div>
@@ -6506,19 +6509,19 @@ function LoanCalculator({settings}){
           {/* Metrics grid */}
           <div className="lc-metrics">
             <div className="lc-gc lc-metric">
-              <div className="lc-metric-lbl">Adjusted SPA Price</div>
+              <div className="lc-metric-lbl">{t("tl.adj_spa")}</div>
               <div className="lc-metric-val">{fmtRM(adjustedPrice)}</div>
             </div>
             <div className="lc-gc lc-metric">
-              <div className="lc-metric-lbl">Loan Amount</div>
+              <div className="lc-metric-lbl">{t("tl.loan_amt")}</div>
               <div className="lc-metric-val cyan">{fmtRM(loanAmt)}</div>
             </div>
             <div className="lc-gc lc-metric">
-              <div className="lc-metric-lbl">Total Initial Cash</div>
+              <div className="lc-metric-lbl">{t("tl.total_initial")}</div>
               <div className="lc-metric-val">{fmtRM(cash.total)}</div>
             </div>
             <div className="lc-gc lc-metric">
-              <div className="lc-metric-lbl">{rebateAmt>0?"Rebate Received":"Total Interest Paid"}</div>
+              <div className="lc-metric-lbl">{rebateAmt>0?t("tl.rebate_rcvd"):t("tl.total_interest")}</div>
               <div className={`lc-metric-val${rebateAmt>0?" grn":" dim"}`}>
                 {rebateAmt>0?`−${fmtRM(rebateAmt)}`:fmtRM(loan.totalInterest)}
               </div>
@@ -6529,12 +6532,12 @@ function LoanCalculator({settings}){
           <div className="lc-gc lc-netcash">
             <div className="lc-netcash-top">
               <div>
-                <div className="lc-netcash-lbl">✅ Net Cash Out</div>
+                <div className="lc-netcash-lbl">✅ {t("tl.net_cash")}</div>
                 <div className="lc-netcash-val">{fmtRM(netCash)}</div>
               </div>
               {rebateAmt>0&&(
                 <div className="lc-netcash-save">
-                  <div className="lc-netcash-save-lbl">Rebate Saves</div>
+                  <div className="lc-netcash-save-lbl">{t("tl.rebate_saves")}</div>
                   <div className="lc-netcash-save-val">−{fmtRM(rebateAmt)}</div>
                 </div>
               )}
@@ -6544,42 +6547,42 @@ function LoanCalculator({settings}){
           {/* Full Cost Breakdown */}
           <div className="lc-gc lc-bkd">
             <button className="lc-bkd-btn" onClick={()=>setShowBreakdown(v=>!v)}>
-              <span>Full Cost Breakdown</span>
+              <span>{t("tl.breakdown_btn")}</span>
               <span className={`lc-bkd-btn-ico${showBreakdown?" open":""}`}>▼</span>
             </button>
             {showBreakdown&&(
               <div className="lc-bkd-inner">
-                <div className="lc-bkd-section-title">Price</div>
-                <BkdRow label="Original Listing Price" value={fmtRM(price)}/>
-                {discountAmt>0&&<BkdRow label={`Discount (${discountPct}%)`} value={`−${fmtRM(discountAmt)}`} grn/>}
-                <BkdRow label="Adjusted SPA Price" value={fmtRM(adjustedPrice)} gold/>
-                {rebateAmt>0&&<BkdRow label={`Rebate / Cashback (${rebatePct}%)`} value={`−${fmtRM(rebateAmt)}`} grn/>}
+                <div className="lc-bkd-section-title">{t("tl.bkd_price")}</div>
+                <BkdRow label={t("tl.bkd_orig")} value={fmtRM(price)}/>
+                {discountAmt>0&&<BkdRow label={`${t("tl.discount_lbl").replace(" (%)","").replace("(%)","").trim()} (${discountPct}%)`} value={`−${fmtRM(discountAmt)}`} grn/>}
+                <BkdRow label={t("tl.bkd_adj")} value={fmtRM(adjustedPrice)} gold/>
+                {rebateAmt>0&&<BkdRow label={`${t("tl.rebate_lbl").replace(" (%)","").replace("(%)","").trim()} (${rebatePct}%)`} value={`−${fmtRM(rebateAmt)}`} grn/>}
 
-                <div className="lc-bkd-section-title" style={{marginTop:".5rem"}}>Down Payment &amp; Loan</div>
-                <BkdRow label={`Down Payment (${zeroDp?"0":dpPct}%)`} value={fmtRM(dpAmt)} gold/>
-                <BkdRow label="Loan Amount" value={fmtRM(loanAmt)}/>
+                <div className="lc-bkd-section-title" style={{marginTop:".5rem"}}>{t("tl.bkd_dp_loan")}</div>
+                <BkdRow label={`${t("tl.down_payment")} (${zeroDp?"0":dpPct}%)`} value={fmtRM(dpAmt)} gold/>
+                <BkdRow label={t("tl.bkd_loan")} value={fmtRM(loanAmt)}/>
 
-                <div className="lc-bkd-section-title" style={{marginTop:".5rem"}}>Legal &amp; Stamp Fees</div>
-                <BkdRow label="Legal Fee — SPA" value={fmtRM(cash.legalSPA)}/>
-                <BkdRow label="Legal Fee — Loan Agreement" value={fmtRM(cash.legalLoan)}/>
-                <BkdRow label="SPA Stamp Duty (RM40 fixed)" value={fmtRM(cash.spaStamp)}/>
-                <BkdRow label="Loan Stamp Duty (0.5% of loan)" value={fmtRM(cash.loanStamp)}/>
+                <div className="lc-bkd-section-title" style={{marginTop:".5rem"}}>{t("tl.bkd_legal")}</div>
+                <BkdRow label={t("tl.bkd_legal_spa")} value={fmtRM(cash.legalSPA)}/>
+                <BkdRow label={t("tl.bkd_legal_loan")} value={fmtRM(cash.legalLoan)}/>
+                <BkdRow label={t("tl.bkd_spa_stamp")} value={fmtRM(cash.spaStamp)}/>
+                <BkdRow label={t("tl.bkd_loan_stamp")} value={fmtRM(cash.loanStamp)}/>
 
-                <div className="lc-bkd-section-title" style={{marginTop:".5rem"}}>Transfer &amp; Taxes</div>
-                <BkdRow label={`MOT / Transfer Stamp Duty${isForeign?" (8% flat)":""}`} value={fmtRM(cash.mot)} gold/>
-                {isForeign&&<BkdRow label="Foreign Buyer Levy (3%)" value={fmtRM(cash.levy)} gold/>}
-                {isForeign&&<BkdRow label={`State Fee (${isCommercial?"Commercial":"Residential"})`} value={fmtRM(cash.stateFee)} gold/>}
+                <div className="lc-bkd-section-title" style={{marginTop:".5rem"}}>{t("tl.bkd_transfer")}</div>
+                <BkdRow label={isForeign?t("tl.bkd_mot_f"):t("tl.bkd_mot")} value={fmtRM(cash.mot)} gold/>
+                {isForeign&&<BkdRow label={t("tl.bkd_levy")} value={fmtRM(cash.levy)} gold/>}
+                {isForeign&&<BkdRow label={`${t("tl.bkd_state", {type: isCommercial ? t("tl.comm_btn") : t("tl.res_btn")})}`} value={fmtRM(cash.stateFee)} gold/>}
 
                 <div className="lc-bkd-total">
-                  <span className="lc-bkd-total-lbl">Total Initial Cash</span>
+                  <span className="lc-bkd-total-lbl">{t("tl.bkd_total")}</span>
                   <span className="lc-bkd-total-val" style={{color:"#D4B880"}}>{fmtRM(cash.total)}</span>
                 </div>
-                {rebateAmt>0&&<BkdRow label={`Rebate Deducted (${rebatePct}%)`} value={`−${fmtRM(rebateAmt)}`} grn/>}
+                {rebateAmt>0&&<BkdRow label={`${t("tl.rebate_lbl").replace(" (%)","").replace("(%)","").trim()} (${rebatePct}%)`} value={`−${fmtRM(rebateAmt)}`} grn/>}
                 <div className="lc-bkd-total">
-                  <span className="lc-bkd-total-lbl">✅ Net Cash Out</span>
+                  <span className="lc-bkd-total-lbl">✅ {t("tl.bkd_net")}</span>
                   <span className="lc-bkd-total-val">{fmtRM(netCash)}</span>
                 </div>
-                <div className="lc-bkd-note">* Estimates only. Legal fees subject to solicitor discretion. MOT per Stamp Act 1949 (Amendment 2019). Foreign buyer fees vary by state.</div>
+                <div className="lc-bkd-note">{t("tl.bkd_note")}</div>
               </div>
             )}
           </div>
@@ -6592,11 +6595,11 @@ function LoanCalculator({settings}){
       {/* Mobile sticky bar */}
       <div className="lc-mob-bar">
         <div>
-          <div className="lc-mob-monthly">Monthly</div>
+          <div className="lc-mob-monthly">{t("tl.mob_monthly")}</div>
           <div className="lc-mob-val">{fmtRM(loan.monthly)}</div>
-          <div className="lc-mob-sub">Net Cash {fmtRM(netCash)}</div>
+          <div className="lc-mob-sub">{t("tl.mob_net")} {fmtRM(netCash)}</div>
         </div>
-        <a href={waUrl} target="_blank" rel="noopener noreferrer" className="lc-mob-wa">Contact Agent</a>
+        <a href={waUrl} target="_blank" rel="noopener noreferrer" className="lc-mob-wa">{t("tl.mob_contact")}</a>
       </div>
     </div>
   );
@@ -7278,7 +7281,7 @@ export default function App(){
               <div className="fd-bar">
                 <button className="fd-trigger" onClick={()=>setFilterOpen(true)}>
                   <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-                  Filters
+                  {t("fi.filters")}
                   {activePills.length>0&&<span className="fd-badge">{activePills.length}</span>}
                 </button>
                 <div className="fd-pills">
@@ -7301,16 +7304,16 @@ export default function App(){
               <div className="fd-sheet">
                 <div className="fd-handle"/>
                 <div className="fd-hd">
-                  <span className="fd-hd-title">Filter Projects</span>
-                  {(()=>{const n=[type!=="All Types",loc!=="All Areas",stat!=="All Status",fBed!=="All Beds",fBath!=="All Baths",fTenure!=="All Tenure",fCompletion!=="All Completion",priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX,!!fSizeMin||!!fSizeMax].filter(Boolean).length;return n>0&&<span className="fd-hd-cnt">{n} active</span>;})()}
+                  <span className="fd-hd-title">{t("fi.title")}</span>
+                  {(()=>{const n=[type!=="All Types",loc!=="All Areas",stat!=="All Status",fBed!=="All Beds",fBath!=="All Baths",fTenure!=="All Tenure",fCompletion!=="All Completion",priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX,!!fSizeMin||!!fSizeMax].filter(Boolean).length;return n>0&&<span className="fd-hd-cnt">{t("fi.n_active",{count:n})}</span>;})()}
                   <button className="fd-close" onClick={()=>setFilterOpen(false)}>✕</button>
                 </div>
                 {/* Desktop: sidebar + body side by side */}
                 <div className="fd-sheet-inner">
                   <div className="fd-sidebar">
                     <div>
-                      <div className="fd-sidebar-title">Active Filters</div>
-                      <div className="fd-sidebar-cnt">{filtered.length} result{filtered.length!==1?"s":""}</div>
+                      <div className="fd-sidebar-title">{t("fi.active")}</div>
+                      <div className="fd-sidebar-cnt">{filtered.length===1?t("fi.n_result",{count:filtered.length}):t("fi.n_results",{count:filtered.length})}</div>
                     </div>
                     <div className="fd-sidebar-filters">
                       {(()=>{
@@ -7325,7 +7328,7 @@ export default function App(){
                         if(priceMin>PRICE_SLIDER_MIN||priceMax<PRICE_SLIDER_MAX) items.push({l:"Custom Price",rm:()=>{setPriceMin(PRICE_SLIDER_MIN);setPriceMax(PRICE_SLIDER_MAX);}});
                         if(fSizeMin||fSizeMax) items.push({l:"Size Range",rm:()=>{setFSizeMin("");setFSizeMax("");}});
                         return items.length===0
-                          ? <div className="fd-sidebar-empty">No filters applied</div>
+                          ? <div className="fd-sidebar-empty">{t("fi.no_active")}</div>
                           : items.map(it=>(
                             <div key={it.l} className="fd-sidebar-item">
                               <span className="fd-sidebar-lbl">{it.l}</span>
@@ -7334,61 +7337,61 @@ export default function App(){
                           ));
                       })()}
                     </div>
-                    <button className="fd-sidebar-clear" onClick={clearAllFilters}>Clear All</button>
+                    <button className="fd-sidebar-clear" onClick={clearAllFilters}>{t("fi.clear_all")}</button>
                   </div>
                   <div className="fd-body">
                     <div className="fd-sec">
-                      <div className="fd-sec-label">Property Type</div>
+                      <div className="fd-sec-label">{t("fi.prop_type")}</div>
                       <div className="fd-chips">{TYPES.map(t=><button key={t} className={`fd-chip${type===t?" on":""}`} onClick={()=>setType(t)}>{t}</button>)}</div>
                     </div>
                     <div className="fd-sec">
-                      <div className="fd-sec-label">Location / Area</div>
+                      <div className="fd-sec-label">{t("fi.location_area")}</div>
                       <div className="fd-chips">{LOCS.map(l=><button key={l} className={`fd-chip${loc===l?" on":""}`} onClick={()=>setLoc(l)}>{l}</button>)}</div>
                     </div>
                     <div className="fd-sec">
-                      <div className="fd-sec-label">Status</div>
+                      <div className="fd-sec-label">{t("fi.status")}</div>
                       <div className="fd-chips">{STATS.map(s=><button key={s} className={`fd-chip${stat===s?" on":""}`} onClick={()=>setStat(s)}>{s}</button>)}</div>
                     </div>
                     <div className="fd-sec">
-                      <div className="fd-sec-label">Bedrooms</div>
+                      <div className="fd-sec-label">{t("fi.bedrooms")}</div>
                       <div className="fd-chips">{BEDS.map(b=><button key={b} className={`fd-chip${fBed===b?" on":""}`} onClick={()=>setFBed(b)}>{b}</button>)}</div>
                     </div>
                     <div className="fd-sec">
-                      <div className="fd-sec-label">Bathrooms</div>
+                      <div className="fd-sec-label">{t("fi.bathrooms")}</div>
                       <div className="fd-chips">{BATHS.map(b=><button key={b} className={`fd-chip${fBath===b?" on":""}`} onClick={()=>setFBath(b)}>{b}</button>)}</div>
                     </div>
                     <div className="fd-sec">
-                      <div className="fd-sec-label">Tenure</div>
+                      <div className="fd-sec-label">{t("fi.tenure")}</div>
                       <div className="fd-chips">{TENURE_OPTS.map(t=><button key={t} className={`fd-chip${fTenure===t?" on":""}`} onClick={()=>setFTenure(t)}>{t}</button>)}</div>
                     </div>
                     <div className="fd-sec">
-                      <div className="fd-sec-label">Completion</div>
+                      <div className="fd-sec-label">{t("fi.completion")}</div>
                       <div className="fd-chips">{COMPLETION_OPTS.map(c=><button key={c} className={`fd-chip${fCompletion===c?" on":""}`} onClick={()=>setFCompletion(c)}>{c}</button>)}</div>
                     </div>
                     <div className="fd-sec fd-sec-price">
-                      <div className="fd-sec-label">Price Range</div>
+                      <div className="fd-sec-label">{t("fi.price_range")}</div>
                       <PriceRangeSlider minVal={priceMin} maxVal={priceMax} onChange={(mn,mx)=>{setPriceMin(mn);setPriceMax(mx);}}/>
                     </div>
                     <div className="fd-sec fd-sec-price">
-                      <div className="fd-sec-label">Built-up Size (sqft)</div>
+                      <div className="fd-sec-label">{t("fi.size_sqft")}</div>
                       <div className="fd-size-row">
-                        <input className="fd-size-inp" type="number" placeholder="Min sqft" value={fSizeMin} onChange={e=>setFSizeMin(e.target.value)} min="0"/>
+                        <input className="fd-size-inp" type="number" placeholder={t("fi.min_sqft")} value={fSizeMin} onChange={e=>setFSizeMin(e.target.value)} min="0"/>
                         <span className="fd-size-sep">–</span>
-                        <input className="fd-size-inp" type="number" placeholder="Max sqft" value={fSizeMax} onChange={e=>setFSizeMax(e.target.value)} min="0"/>
+                        <input className="fd-size-inp" type="number" placeholder={t("fi.max_sqft")} value={fSizeMax} onChange={e=>setFSizeMax(e.target.value)} min="0"/>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="fd-ft">
-                  <button className="fd-ft-clear" onClick={clearAllFilters}>Clear All</button>
-                  <button className="fd-ft-apply" onClick={()=>setFilterOpen(false)}>Show {filtered.length} Result{filtered.length!==1?"s":""} →</button>
+                  <button className="fd-ft-clear" onClick={clearAllFilters}>{t("fi.clear_all")}</button>
+                  <button className="fd-ft-apply" onClick={()=>setFilterOpen(false)}>{filtered.length===1 ? t("fi.show_result",{count:filtered.length}) : t("fi.show_results",{count:filtered.length})}</button>
                 </div>
               </div>
             </>
           )}
 
           <div className="grid">
-            {filtered.length===0 ? <div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">No projects found</div><p className="empty-s">Try adjusting filters.</p></div>
+            {filtered.length===0 ? <div className="empty"><div className="empty-ico">🔍</div><div className="empty-h">{t("fi.no_projects")}</div><p className="empty-s">{t("fi.try_adjust")}</p></div>
             : visibleProjects.map((p, idx) => (
               <div
                 key={p.id}
@@ -7404,12 +7407,12 @@ export default function App(){
               >
                 <div className="cimg"><img src={p.image} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="ctag" style={{background:p.tagColor}}>{p.tag}</div><div className="cstat">{p.status}</div><button className={`cbtn${cmpIds.includes(p.id)?" on":""}`} onClick={e=>toggleCmp(e,p.id)} title="Compare">{cmpIds.includes(p.id)?"✓":"+"}</button></div>
                 <div className="cbody">
-                  <div className="ctype">{p.type}</div><div className="cname">{p.name}</div><div className="cdev">by {p.developer}</div>
+                  <div className="ctype">{p.type}</div><div className="cname">{p.name}</div><div className="cdev">{t("cr.by")} {p.developer}</div>
                   <div className="cloc"><IPin/> {p.location}</div>
                   <div className="cdiv"/>
                   <div className="crow">
-                    <div><div className="cplbl">From</div><div className="cprice">{fmt(p.priceFrom)}</div></div>
-                    <div className="cmeta"><span><IBed/>{bLbl(p.bedrooms)} bed</span><span><IArea/>{p.sizeSqft?.[0]?.toLocaleString()}+ sf</span></div>
+                    <div><div className="cplbl">{t("fi.from")}</div><div className="cprice">{fmt(p.priceFrom)}</div></div>
+                    <div className="cmeta"><span><IBed/>{bLbl(p.bedrooms)} {t("fi.bed")}</span><span><IArea/>{p.sizeSqft?.[0]?.toLocaleString()}+ sf</span></div>
                   </div>
                 </div>
               </div>
@@ -7417,9 +7420,9 @@ export default function App(){
           </div>
           {isDesktop && totalPages>1 && (
             <div className="list-pager">
-              <button onClick={()=>setListPage(p=>Math.max(1,p-1))} disabled={listPage===1}>Prev</button>
-              <div className="page-info">Page {listPage} of {totalPages}</div>
-              <button onClick={()=>setListPage(p=>Math.min(totalPages,p+1))} disabled={listPage===totalPages}>Next</button>
+              <button onClick={()=>setListPage(p=>Math.max(1,p-1))} disabled={listPage===1}>{t("fi.prev")}</button>
+              <div className="page-info">{t("fi.page_of",{page:listPage,total:totalPages})}</div>
+              <button onClick={()=>setListPage(p=>Math.min(totalPages,p+1))} disabled={listPage===totalPages}>{t("fi.next")}</button>
             </div>
           )}
         </main>
@@ -7429,10 +7432,10 @@ export default function App(){
           <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
         </button>
         <div className={`tray${cmpIds.length>0?" show":""}`}>
-          <span className="tray-lbl">Compare ({cmpIds.length}/5)</span>
-          <div className="tray-slots">{[...Array(5)].map((_,i)=>{const p=cmpProjects[i];return p?(<div key={p.id} className="tslot fill"><img src={p.image} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="tslot-nm">{p.name}</div><button className="tslot-x" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div>):<div key={i} className="tslot">empty</div>;})}</div>
-          {cmpIds.length>=2&&<button className="tray-go" onClick={()=>setTab("compare")}>Compare →</button>}
-          <button className="tray-clr" onClick={()=>setCmpIds([])}>Clear</button>
+          <span className="tray-lbl">{t("fi.tray_label",{count:cmpIds.length})}</span>
+          <div className="tray-slots">{[...Array(5)].map((_,i)=>{const p=cmpProjects[i];return p?(<div key={p.id} className="tslot fill"><img src={p.image} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="tslot-nm">{p.name}</div><button className="tslot-x" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div>):<div key={i} className="tslot">{t("fi.empty_slot")}</div>;})}</div>
+          {cmpIds.length>=2&&<button className="tray-go" onClick={()=>setTab("compare")}>{t("fi.compare_go")}</button>}
+          <button className="tray-clr" onClick={()=>setCmpIds([])}>{t("fi.clear")}</button>
         </div>
       </>}
 
@@ -7458,7 +7461,7 @@ export default function App(){
             </div>
           )}
           <div className="cmp-hd">
-            <div><h2 className="cmp-title">Project <em>Comparison</em></h2><p className="cmp-sub">{cmpProjects.length===0?"Select up to 5 projects.":`Comparing ${cmpProjects.length} project${cmpProjects.length>1?"s":""}.`}</p></div>
+            <div><h2 className="cmp-title">{t("cr.title")} <em>{t("cr.title_em")}</em></h2><p className="cmp-sub">{cmpProjects.length===0?t("cr.select_hint"):t("cr.comparing_other",{count:cmpProjects.length})}</p></div>
             {cmpProjects.length>=2&&(
               <div className="pdf-btn-wrap">
                 <button className={`pdf-btn${pdfBusy?" busy":""}`} onClick={handleExportPdf} disabled={pdfBusy}>
@@ -7469,13 +7472,13 @@ export default function App(){
               </div>
             )}
           </div>
-          {cmpProjects.length===0?(<div className="cmp-nil"><div className="cmp-nil-ico">⚖️</div><div className="cmp-nil-h">No projects selected</div><p className="cmp-nil-s">Click + on any listing card.</p><button className="go-btn" onClick={()=>setTab("properties")}>Browse Properties</button></div>):(
+          {cmpProjects.length===0?(<div className="cmp-nil"><div className="cmp-nil-ico">⚖️</div><div className="cmp-nil-h">{t("cr.nil_title")}</div><p className="cmp-nil-s">{t("cr.nil_sub")}</p><button className="go-btn" onClick={()=>setTab("properties")}>{t("cr.browse_btn")}</button></div>):(
             <>
               <div className="ctbl-wrap">
                 <table className="ctbl">
                   <thead><tr>
                     <td className="lbl-col"><div className="sec-hd" style={{color:"#fff",fontSize:".72rem",letterSpacing:".04em",textTransform:"none"}}>Project</div></td>
-                    {cmpProjects.map(p=>(<td key={p.id} className="proj-col" style={{padding:"0 .5rem .5rem",verticalAlign:"top",borderRight:"1px solid var(--border)"}}><div className="proj-card"><img className="proj-img" src={p.image} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="proj-info"><div className="proj-type">{p.type}</div><div className="proj-nm">{p.name}</div><div className="proj-dv">by {p.developer}</div></div><button className="proj-rm" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div></td>))}
+                    {cmpProjects.map(p=>(<td key={p.id} className="proj-col" style={{padding:"0 .5rem .5rem",verticalAlign:"top",borderRight:"1px solid var(--border)"}}><div className="proj-card"><img className="proj-img" src={p.image} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="proj-info"><div className="proj-type">{p.type}</div><div className="proj-nm">{p.name}</div><div className="proj-dv">{t("cr.by")} {p.developer}</div></div><button className="proj-rm" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div></td>))}
                   </tr></thead>
                   <tbody>{(()=>{
                     const vs=p=>(p.visibleSections||{});
@@ -7483,34 +7486,34 @@ export default function App(){
                     const cv=(p,secKey,val)=>{if(!sec(p,secKey))return"—";if(val===null||val===undefined||val==="")return"—";return val;};
                     const cvArr=(p,secKey,arr)=>{if(!sec(p,secKey))return null;const a=Array.isArray(arr)?arr:[];return a.length?a:null;};
                     const Sec=({l})=>(<tr><td><div className="sec-hd">{l}</div></td>{cmpProjects.map(p=><td key={p.id}><div className="val-cell sec"/></td>)}</tr>);
-                    const Row=({l,r,bid})=>(<tr><td><div className="lbl-cell">{l}</div></td>{cmpProjects.map(p=><td key={p.id}><div className={`val-cell${bid===p.id?" best-cell":""}`}>{r(p)}{bid===p.id&&<span className="best-tag">BEST</span>}</div></td>)}</tr>);
+                    const Row=({l,r,bid})=>(<tr><td><div className="lbl-cell">{l}</div></td>{cmpProjects.map(p=><td key={p.id}><div className={`val-cell${bid===p.id?" best-cell":""}`}>{r(p)}{bid===p.id&&<span className="best-tag">{t("cr.best")}</span>}</div></td>)}</tr>);
                     return(<>
-                      <Sec l="OVERVIEW"/>
-                      <Row l="Developer" r={p=>cv(p,"overview.basicInfo",p.developer)}/>
-                      <Row l="Location" r={p=>cv(p,"overview.basicInfo",p.location)}/>
-                      <Row l="Status" r={p=>cv(p,"overview.basicInfo",p.status)}/>
-                      <Row l="Completion" r={p=>cv(p,"overview.basicInfo",p.completion)}/>
-                      <Row l="Tenure" r={p=>cv(p,"overview.basicInfo",p.tenure)}/>
-                      <Row l="Land Size" r={p=>cv(p,"overview.basicInfo",p.landSize)}/>
-                      <Row l="Total Units" r={p=>{const v=cv(p,"overview.unitInfo",p.totalUnits);return v==="—"?"—":`${v} units`;}}/>
-                      <Sec l="PRICING"/>
-                      <Row l="Starting From" r={p=>{if(!sec(p,"overview.financial"))return"—";return p.priceFrom?<strong style={{fontFamily:"var(--serif)",fontSize:"1rem"}}>{fmt(p.priceFrom)}</strong>:"—";}} bid={cheapest}/>
-                      <Row l="Price Range" r={p=>{if(!sec(p,"overview.financial"))return"—";return p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:"—";}}/>
-                      <Row l="Maintenance" r={p=>cv(p,"overview.financial",p.maintenanceFee)}/>
-                      <Sec l="UNIT SPECS"/>
-                      <Row l="Bedrooms" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bedrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bed":"—";}}/>
-                      <Row l="Bathrooms" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bathrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bath":"—";}}/>
-                      <Row l="Built-up" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const s=p.sizeSqft;return Array.isArray(s)&&s[0]&&s[1]?`${s[0].toLocaleString()} – ${s[1].toLocaleString()} sf`:"—";}} bid={largest}/>
-                      <Row l="Car Parks" r={p=>cv(p,"overview.parking",p.numberOfCarParks)}/>
-                      <Row l="Lifts" r={p=>cv(p,"overview.facilities",p.numberOfLifts)}/>
-                      <Row l="Layout Types" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const ut=p.unitTypes;return Array.isArray(ut)?`${ut.length} types`:"—";}}/>
-                      <Sec l="HIGHLIGHTS"/>
-                      <Row l="Highlights" r={p=>{const a=cvArr(p,"overview.highlights",p.highlights);return a?<div className="tw">{a.map(h=><span key={h} className="ctag2">{h}</span>)}</div>:"—";}}/>
+                      <Sec l={t("cr.sec_overview")}/>
+                      <Row l={t("cr.developer")} r={p=>cv(p,"overview.basicInfo",p.developer)}/>
+                      <Row l={t("cr.location")} r={p=>cv(p,"overview.basicInfo",p.location)}/>
+                      <Row l={t("cr.status")} r={p=>cv(p,"overview.basicInfo",p.status)}/>
+                      <Row l={t("cr.completion")} r={p=>cv(p,"overview.basicInfo",p.completion)}/>
+                      <Row l={t("cr.tenure")} r={p=>cv(p,"overview.basicInfo",p.tenure)}/>
+                      <Row l={t("cr.land_size")} r={p=>cv(p,"overview.basicInfo",p.landSize)}/>
+                      <Row l={t("cr.total_units")} r={p=>{const v=cv(p,"overview.unitInfo",p.totalUnits);return v==="—"?"—":`${v} ${t("cr.units_sfx")}`;}}/>
+                      <Sec l={t("cr.sec_pricing")}/>
+                      <Row l={t("cr.starting")} r={p=>{if(!sec(p,"overview.financial"))return"—";return p.priceFrom?<strong style={{fontFamily:"var(--serif)",fontSize:"1rem"}}>{fmt(p.priceFrom)}</strong>:"—";}} bid={cheapest}/>
+                      <Row l={t("cr.price_range")} r={p=>{if(!sec(p,"overview.financial"))return"—";return p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:"—";}}/>
+                      <Row l={t("cr.maintenance")} r={p=>cv(p,"overview.financial",p.maintenanceFee)}/>
+                      <Sec l={t("cr.sec_specs")}/>
+                      <Row l={t("cr.bedrooms")} r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bedrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bed":"—";}}/>
+                      <Row l={t("cr.bathrooms")} r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bathrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bath":"—";}}/>
+                      <Row l={t("cr.buildup")} r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const s=p.sizeSqft;return Array.isArray(s)&&s[0]&&s[1]?`${s[0].toLocaleString()} – ${s[1].toLocaleString()} sf`:"—";}} bid={largest}/>
+                      <Row l={t("cr.car_parks")} r={p=>cv(p,"overview.parking",p.numberOfCarParks)}/>
+                      <Row l={t("cr.lifts")} r={p=>cv(p,"overview.facilities",p.numberOfLifts)}/>
+                      <Row l={t("cr.layout_types")} r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const ut=p.unitTypes;return Array.isArray(ut)?`${ut.length} ${t("cr.types_sfx")}`:"—";}}/>
+                      <Sec l={t("cr.sec_highlights")}/>
+                      <Row l={t("cr.sec_highlights")} r={p=>{const a=cvArr(p,"overview.highlights",p.highlights);return a?<div className="tw">{a.map(h=><span key={h} className="ctag2">{h}</span>)}</div>:"—";}}/>
                     </>);
                   })()}</tbody>
                 </table>
               </div>
-              {cmpProjects.length<5&&<div className="add-more"><p>Add {5-cmpProjects.length} more project{5-cmpProjects.length!==1?"s":""}.</p><button className="go-btn" onClick={()=>setTab("properties")}>+ Add More</button></div>}
+              {cmpProjects.length<5&&<div className="add-more"><p>{t("cr.add_more_other",{count:5-cmpProjects.length})}</p><button className="go-btn" onClick={()=>setTab("properties")}>{t("cr.add_more_btn")}</button></div>}
               {cmpProjects.length>=2&&(
                 <div style={{display:"flex",justifyContent:"flex-end",marginTop:"1.5rem"}}>
                   <div className="pdf-btn-wrap">
