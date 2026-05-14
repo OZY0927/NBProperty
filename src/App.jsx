@@ -168,6 +168,13 @@ const strR  = s  => { const p=String(s??"").split(/[-–]/).map(x=>Number(x.trim
 const newId = ps => Math.max(0,...ps.map(p=>p.id))+1;
 const safeJson = (v, fallback) => { try { return JSON.parse(v); } catch { return fallback; } };
 
+const formatNum = v => {
+  if (v === null || v === undefined || v === "") return v === 0 ? "0" : "-";
+  const n = Number(String(v).replace(/,/g, ''));
+  if (!isFinite(n)) return String(v);
+  return n.toLocaleString();
+};
+
 // Password hashing helpers (browser Web Crypto API)
 function genSalt(len = 12) {
   const arr = crypto.getRandomValues(new Uint8Array(len));
@@ -218,7 +225,7 @@ async function exportPDF(projects){
   const row=(l,f,bid=null)=>[{content:l,styles:lS()},...projects.map((p,i)=>({content:f(p),styles:vS(i,bid===p.id)}))];
   const cheap=projects.reduce((a,b)=>a.priceFrom<b.priceFrom?a:b).id,big=projects.reduce((a,b)=>a.sizeSqft[1]>b.sizeSqft[1]?a:b).id;
   const head=[[{content:"Category",styles:{...lS(),fillColor:[10,30,48],textColor:[20,120,200]}},...projects.map(p=>({content:p.name,styles:{fillColor:[10,30,48],textColor:[255,255,255],fontStyle:"bold",fontSize:9,halign:"center",cellWidth:vW}}))]];
-  const body=[sec("PROJECT OVERVIEW"),row("Developer",p=>p.developer),row("Location",p=>p.location),row("Type",p=>p.type),row("Status",p=>p.status),row("Completion",p=>p.completion),row("Tenure",p=>p.tenure),row("Land Size",p=>p.landSize||"-"),row("Total Units",p=>`${p.totalUnits}`),sec("PRICING"),row("From",p=>fmt(p.priceFrom),cheap),row("Range",p=>`${fmt(p.priceFrom)} - ${fmt(p.priceTo)}`),row("Maintenance",p=>p.maintenanceFee||"-"),sec("UNIT SPECS"),row("Bedrooms",p=>bLbl(p.bedrooms)+" bed"),row("Built-up",p=>`${p.sizeSqft[0]?.toLocaleString()} - ${p.sizeSqft[1]?.toLocaleString()} sf`,big),row("Car Parks",p=>p.numberOfCarParks||"-"),row("Lifts",p=>p.numberOfLifts||"-"),sec("HIGHLIGHTS"),row("Highlights",p=>p.highlights.join(" · "))];
+  const body=[sec("PROJECT OVERVIEW"),row("Developer",p=>p.developer),row("Location",p=>p.location),row("Type",p=>p.type),row("Status",p=>p.status),row("Completion",p=>p.completion),row("Tenure",p=>p.tenure),row("Land Size",p=>p.landSize||"-"),row("Total Units",p=>formatNum(p.totalUnits)),sec("PRICING"),row("From",p=>fmt(p.priceFrom),cheap),row("Range",p=>`${fmt(p.priceFrom)} - ${fmt(p.priceTo)}`),row("Maintenance",p=>p.maintenanceFee||"-"),sec("UNIT SPECS"),row("Bedrooms",p=>bLbl(p.bedrooms)+" bed"),row("Built-up",p=>`${p.sizeSqft[0]?.toLocaleString()} - ${p.sizeSqft[1]?.toLocaleString()} sf`,big),row("Car Parks",p=>p.numberOfCarParks?formatNum(p.numberOfCarParks):"-"),row("Lifts",p=>p.numberOfLifts?formatNum(p.numberOfLifts):"-"),sec("HIGHLIGHTS"),row("Highlights",p=>p.highlights.join(" · "))];
   doc.autoTable({startY:38,head,body,margin:{left:14,right:14},styles:{fontSize:8,cellPadding:3.5,overflow:"linebreak",lineColor:[220,212,200],lineWidth:0.18},headStyles:{fillColor:[10,30,48]},columnStyles:{0:{cellWidth:lW},...Object.fromEntries(projects.map((_,i)=>[i+1,{cellWidth:vW}]))},rowPageBreak:"auto"});
   const pages=doc.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFillColor(10,30,48);doc.rect(0,H-10,W,10,"F");doc.setFontSize(7);doc.setTextColor(90,90,90);doc.text("NB Property · For illustration purposes only.",14,H-3.5);doc.text(`${i} / ${pages}`,W-14,H-3.5,{align:"right"});}
   doc.save(`NB_Comparison_${Date.now()}.pdf`);
@@ -5449,7 +5456,21 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
     });
   };
   const hl=(k)=>highlightedFields[k]?"ai-hl":"";
-  const ff=(label,k,ph="",type="text",hint)=>(<div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label><input className={`a-inp ${hl(k)}`} type={type} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
+  const ff=(label,k,ph="",type="text",hint)=>(
+    <div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}>
+      <label className="a-flbl">{label}{hint&&<small> — {hint}</small>}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label>
+      <input
+        className={`a-inp ${hl(k)}`}
+        type={type}
+        value={type==='number' ? (form[k] || form[k]===0 ? formatNum(form[k]) : '') : (form[k]??"")}
+        placeholder={ph}
+        onChange={e=>{
+          const v = e.target.value.replace(/,/g,'');
+          set(k, v);
+        }}
+      />
+    </div>
+  );
   const ft=(label,k,ph="",rows=2,hint)=>(<div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label><textarea className={`a-txt ${hl(k)}`} rows={rows} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
   const fs=(label,k,opts)=>(<div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}><label className="a-flbl">{label}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label><select className={`a-sel ${hl(k)}`} value={form[k]??""} onChange={e=>set(k,e.target.value)}>{opts.map(o=><option key={o}>{o}</option>)}</select></div>);
   return(
@@ -6257,7 +6278,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
                   <div className="a-card-meta">
                     <span>{p.type}</span>
                     <span className="a-card-meta-sep">·</span>
-                    <span>{p.totalUnits} units</span>
+                    <span>{p.totalUnits?`${formatNum(p.totalUnits)} units`:'—'}</span>
                     <span className="a-card-meta-sep">·</span>
                     <span>{Array.isArray(p.unitTypes)?p.unitTypes.length:0} layouts</span>
                   </div>
@@ -7569,6 +7590,7 @@ export default function App(){
       )}
 
       {tab==="tools"&&<LoanCalculator settings={settings}/>}
+      {tab!=="admin" && tab==="tools" && <LuxuryFooter onTab={setTab} onRI={openRI}/>}
 
       {tab==="listings"&&<>
         <LuxuryHero
@@ -7762,6 +7784,8 @@ export default function App(){
         </div>
       </>}
 
+      {tab!=="admin" && tab==="properties" && <LuxuryFooter onTab={setTab} onRI={openRI}/>}
+
       {tab==="compare"&&(
         <div className="cmp-pg">
           {pdfFxActive && (
@@ -7818,7 +7842,7 @@ export default function App(){
                       <Row l="Completion" r={p=>cv(p,"overview.basicInfo",p.completion)}/>
                       <Row l="Tenure" r={p=>cv(p,"overview.basicInfo",p.tenure)}/>
                       <Row l="Land Size" r={p=>cv(p,"overview.basicInfo",p.landSize)}/>
-                      <Row l="Total Units" r={p=>{const v=cv(p,"overview.unitInfo",p.totalUnits);return v==="—"?"—":`${v} units`;}}/>
+                      <Row l="Total Units" r={p=>{const v=cv(p,"overview.unitInfo",p.totalUnits);return v==="—"?"—":`${formatNum(v)} units`;}}/>
                       <Sec l="PRICING"/>
                       <Row l="Starting From" r={p=>{if(!sec(p,"overview.financial"))return"—";return p.priceFrom?<strong style={{fontFamily:"var(--serif)",fontSize:"1rem"}}>{fmt(p.priceFrom)}</strong>:"—";}} bid={cheapest}/>
                       <Row l="Price Range" r={p=>{if(!sec(p,"overview.financial"))return"—";return p.priceFrom&&p.priceTo?`${fmt(p.priceFrom)} – ${fmt(p.priceTo)}`:"—";}}/>
@@ -7827,8 +7851,8 @@ export default function App(){
                       <Row l="Bedrooms" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bedrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bed":"—";}}/>
                       <Row l="Bathrooms" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bathrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bath":"—";}}/>
                       <Row l="Built-up" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const s=p.sizeSqft;return Array.isArray(s)&&s[0]&&s[1]?`${s[0].toLocaleString()} – ${s[1].toLocaleString()} sf`:"—";}} bid={largest}/>
-                      <Row l="Car Parks" r={p=>cv(p,"overview.parking",p.numberOfCarParks)}/>
-                      <Row l="Lifts" r={p=>cv(p,"overview.facilities",p.numberOfLifts)}/>
+                      <Row l="Car Parks" r={p=>{const v=cv(p,"overview.parking",p.numberOfCarParks);return v==="—"?"—":formatNum(v);}}/>
+                      <Row l="Lifts" r={p=>{const v=cv(p,"overview.facilities",p.numberOfLifts);return v==="—"?"—":formatNum(v);}}/>
                       <Row l="Layout Types" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const ut=p.unitTypes;return Array.isArray(ut)?`${ut.length} types`:"—";}}/>
                       <Sec l="HIGHLIGHTS"/>
                       <Row l="Highlights" r={p=>{const a=cvArr(p,"overview.highlights",p.highlights);return a?<div className="tw">{a.map(h=><span key={h} className="ctag2">{h}</span>)}</div>:"—";}}/>
@@ -7852,6 +7876,8 @@ export default function App(){
           )}
         </div>
       )}
+
+      {tab!=="admin" && tab==="compare" && <LuxuryFooter onTab={setTab} onRI={openRI}/>}
 
       {tab==="detail"&&selected&&<DetailPage p={selected} onClose={()=>{setSelected(null);setTab("properties");}} onRegisterInterest={()=>openRI(selected)} onVisitShowroom={()=>openVS(selected)}/>}
 
