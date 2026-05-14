@@ -848,6 +848,12 @@ body:not(.dark) .cine-pull-quote::before{color:rgba(193,126,135,.18);}
 /* FAB */
 body:not(.dark) .cine-fab-action{background:rgba(255,255,255,.95);color:#7A2238;border-color:rgba(193,126,135,.35);box-shadow:0 8px 28px rgba(92,24,40,.15);}
 body:not(.dark) .cine-fab-action:hover{background:rgba(255,240,242,.98);border-color:#C17E87;box-shadow:0 0 28px rgba(193,126,135,.2);}
+/* AI zone — bright mode */
+body:not(.dark) .ai-zone{background:linear-gradient(135deg,rgba(255,245,246,.85) 0%,rgba(253,232,236,.75) 100%);border-color:rgba(193,126,135,.22);}
+body:not(.dark) .ai-zone-hd{border-bottom-color:rgba(193,126,135,.18);}
+body:not(.dark) .ai-zone-icon{background:linear-gradient(135deg,rgba(193,126,135,.15),rgba(212,164,172,.08));border:1px solid rgba(193,126,135,.25);}
+body:not(.dark) .ai-zone-title{color:#2D0E14;}
+body:not(.dark) .ai-zone-sub{color:rgba(122,34,56,.6);}
 /* Footer — keep dark (intentional dark-on-dark cinematic feel for the CTA strip) */
 body:not(.dark) .cine-footer{background:linear-gradient(180deg,transparent,rgba(92,24,40,.97) 40%,rgba(60,10,20,1) 100%);}
 body:not(.dark) .cine-footer::before{background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(193,126,135,.1),transparent 55%);}
@@ -2494,7 +2500,7 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
 /* AI PDF Autofill */
 .ai-zone{border:1px solid var(--a-border);background:linear-gradient(135deg,#0D0D18 0%,#0D0D18 100%);margin-bottom:1.5rem;overflow:hidden;}
 .ai-zone-hd{display:flex;align-items:center;gap:.7rem;padding:.85rem 1.2rem;border-bottom:1px solid var(--a-border);}
-.ai-zone-icon{width:30px;height:30px;background:linear-gradient(135deg,#0D0D18,#0D0D18);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.ai-zone-icon{width:30px;height:30px;background:linear-gradient(135deg,rgba(191,155,78,.18),rgba(212,184,108,.10));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
 .ai-zone-title{font-size:.78rem;font-weight:600;color:#FAF8F3;letter-spacing:.04em;}
 .ai-zone-sub{font-size:.68rem;color:var(--a-muted);margin-top:.1rem;}
 .ai-zone-body{padding:1rem 1.2rem;}
