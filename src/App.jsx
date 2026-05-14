@@ -4203,6 +4203,15 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
     return ()=>window.removeEventListener('scroll', handleScroll);
   },[]);
   const allImgs = [p.image,...(p.gallery||[])];
+  const handleThumbClick = (i) => {
+    try{
+      if(window.innerWidth >= 1024) {
+        setActiveImg(i);
+      } else {
+        openImage(allImgs[i], allImgs, i);
+      }
+    }catch(err){ setActiveImg(i); }
+  };
   const amenities = Array.isArray(p.nearbyAmenities) ? p.nearbyAmenities : [];
   const unitTypes = Array.isArray(p.unitTypes) ? p.unitTypes : [];
   const mapSrc = p.coordinates?.lat
@@ -4287,8 +4296,8 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
         {allImgs.length > 1 && (
           <div className="cine-gal-nav">
             {allImgs.slice(0,6).map((img,i)=>(
-              <div key={i} className={`cine-gal-thumb${activeImg===i?' on':''}`} onClick={()=>openImage(allImgs[i], allImgs, i)}>
-                <img src={img} alt="" onClick={()=>openImage(allImgs[i], allImgs, i)} style={{cursor:'zoom-in'}} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
+              <div key={i} className={`cine-gal-thumb${activeImg===i?' on':''}`} onClick={()=>handleThumbClick(i)}>
+                <img src={img} alt="" onClick={()=>handleThumbClick(i)} style={{cursor: window.innerWidth>=1024? 'pointer':'zoom-in'}} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
               </div>
             ))}
           </div>
