@@ -225,7 +225,7 @@ async function exportPDF(projects){
 }
 
 /* ═══ FORM HELPERS ═══ */
-const EMPTY_UNIT_TYPE = { name:"", beds:2, baths:2, size:"", priceFrom:"", image:"" };
+const EMPTY_UNIT_TYPE = { label:"", name:"", beds:2, baths:2, size:"", priceFrom:"", image:"" };
 const EMPTY_FORM = {
   name:"",developer:"",location:"",type:"Condominium",status:"New Launch",completion:"",tenure:"Freehold",
   tag:"HOT",tagColor:"#D4B880",priceFrom:"",priceTo:"",bedrooms:"",bathrooms:"",sizeSqft:"",
@@ -1713,9 +1713,10 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
 .lc-tpill{display:flex;border-radius:999px;overflow:hidden;border:1px solid rgba(191,155,78,.18);background:rgba(255,255,255,.02);}
 .lc-tpill button{padding:.38rem 1.1rem;font-family:var(--sans);font-size:.7rem;font-weight:600;background:transparent;color:rgba(255,255,255,.35);border:none;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.05em;}
 .lc-tpill button.on{background:linear-gradient(135deg,#BF9B4E,#D4B880);color:#02030A;box-shadow:0 0 14px rgba(191,155,78,.4);}
-/* Zero DP */
-.lc-zdp{display:flex;align-items:center;gap:.45rem;font-size:.7rem;color:rgba(255,255,255,.45);cursor:pointer;}
-.lc-zdp input{accent-color:#D4B880;width:15px;height:15px;}
+/* Mode toggle (% vs RM) */
+.lc-mode-toggle{display:inline-flex;border-radius:6px;overflow:hidden;border:1px solid rgba(191,155,78,.3);}
+.lc-mode-toggle button{padding:.18rem .55rem;font-family:var(--sans);font-size:.65rem;font-weight:600;background:transparent;color:rgba(255,255,255,.4);border:none;cursor:pointer;transition:all .18s;letter-spacing:.03em;}
+.lc-mode-toggle button.on{background:linear-gradient(135deg,#BF9B4E,#D4B880);color:#02030A;}
 /* ── Result column ── */
 .lc-res-col{display:flex;flex-direction:column;gap:1.1rem;position:sticky;top:1.5rem;}
 /* Monthly hero */
@@ -4505,16 +4506,16 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                       >
                         <div className="cine-unit-img">
                           {ut.image
-                            ? <img src={ut.image} alt={ut.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
+                            ? <img src={ut.image} alt={ut.name||ut.label} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
                             : <div className="cine-unit-noimg">📐</div>
                           }
                           <div className="cine-unit-img-overlay"/>
-                          <div className="cine-unit-img-label">{ut.name||`Type ${String.fromCharCode(65+i)}`}</div>
+                          <div className="cine-unit-img-label">{ut.label||`Type ${String.fromCharCode(65+i)}`}</div>
                         </div>
                         <div className="cine-unit-body">
                           <div>
                             <div className="cine-unit-label">Unit Type {i+1}</div>
-                            <div className="cine-unit-name">{ut.name||'Layout'}</div>
+                            <div className="cine-unit-name">{ut.name||`${ut.label||'Layout'}`}</div>
                             {ut.priceFrom && (
                               <div className="cine-unit-price">
                                 <span className="cine-unit-price-lbl">From</span>
@@ -4604,10 +4605,11 @@ function UnitTypeEditor({unitTypes, onChange}){
       {types.map((ut,i)=>(
         <div key={i} className="ut-editor-row">
           <div className="ut-editor-row-hd">
-            <div className="ut-editor-row-title">Unit Type {i+1}: {ut.name||"(unnamed)"}</div>
+            <div className="ut-editor-row-title">Unit Type {i+1}: {ut.label||"(unnamed)"}</div>
             <button className="ut-rm-btn" onClick={()=>remove(i)} title="Remove">✕</button>
           </div>
           <div className="ut-row-grid" style={{marginBottom:".6rem"}}>
+            <div className="a-ff"><label className="a-flbl">Label</label><input className="a-inp" value={ut.label||""} placeholder="e.g. Type A" onChange={e=>update(i,"label",e.target.value)}/></div>
             <div className="a-ff"><label className="a-flbl">Name</label><input className="a-inp" value={ut.name||""} placeholder="e.g. 2-Bedroom" onChange={e=>update(i,"name",e.target.value)}/></div>
             <div className="a-ff"><label className="a-flbl">Price From</label><input className="a-inp" value={ut.priceFrom||""} placeholder="e.g. From RM 480,000" onChange={e=>update(i,"priceFrom",e.target.value)}/></div>
           </div>
@@ -4621,7 +4623,6 @@ function UnitTypeEditor({unitTypes, onChange}){
             <input className="a-inp" value={ut.image||""} placeholder="https://..." onChange={e=>update(i,"image",e.target.value)}/>
             {ut.image&&<img className="ut-img-mini" src={ut.image} alt="" onError={e=>e.target.style.display="none"} onLoad={e=>e.target.style.display="block"}/>}
           </div>
-
         </div>
       ))}
       <button className="ut-add-btn" onClick={add}>+ Add Unit Type</button>
@@ -6385,21 +6386,25 @@ function calculateNetCash(totalInitialCash,rebateAmt){
 
 function LoanCalculator({settings}){
   const [price,setPrice]=useState(500000);
+  const [discountMode,setDiscountMode]=useState("pct"); // "pct" | "amt"
   const [discountPct,setDiscountPct]=useState(0);
+  const [discountAmt2,setDiscountAmt2]=useState(0);
+  const [rebateMode,setRebateMode]=useState("pct"); // "pct" | "amt"
   const [rebatePct,setRebatePct]=useState(0);
+  const [rebateAmt2,setRebateAmt2]=useState(0);
   const [dpPct,setDpPct]=useState(10);
   const [rate,setRate]=useState(4);
   const [years,setYears]=useState(35);
   const [isForeign,setIsForeign]=useState(false);
   const [isCommercial,setIsCommercial]=useState(false);
-  const [zeroDp,setZeroDp]=useState(false);
   const [showBreakdown,setShowBreakdown]=useState(false);
   const [saved,setSaved]=useState(null);
 
   // ── Core calculations in correct order ──
-  const {discountAmt,adjustedPrice}=calculateAdjustedPrice(price,discountPct);
-  const rebateAmt=adjustedPrice*(rebatePct/100);
-  const dpAmt=zeroDp?0:Math.round(adjustedPrice*(dpPct/100));
+  const discountAmt=discountMode==="pct"?price*(discountPct/100):discountAmt2;
+  const adjustedPrice=Math.max(0,price-discountAmt);
+  const rebateAmt=rebateMode==="pct"?adjustedPrice*(rebatePct/100):rebateAmt2;
+  const dpAmt=Math.round(adjustedPrice*(dpPct/100));
   const loanAmt=Math.max(0,adjustedPrice-dpAmt);
   const loan=calculateLoan(loanAmt,rate,years);
   const cash=calculateInitialCash(adjustedPrice,loanAmt,dpAmt,isForeign,isCommercial);
@@ -6418,7 +6423,7 @@ function LoanCalculator({settings}){
   const waUrl=`https://api.whatsapp.com/send?phone=${waPhone}&text=${encodeURIComponent(waMsg)}`;
 
   const saveCalc=()=>{
-    const data={price,discountPct,rebatePct,dpPct,rate,years,isForeign,isCommercial,zeroDp,monthly:loan.monthly,netCash,ts:Date.now()};
+    const data={price,discountMode,discountPct,discountAmt2,rebateMode,rebatePct,rebateAmt2,dpPct,rate,years,isForeign,isCommercial,monthly:loan.monthly,netCash,ts:Date.now()};
     localStorage.setItem("nb_calc_saved",JSON.stringify(data));
     setSaved(data);
   };
@@ -6427,9 +6432,11 @@ function LoanCalculator({settings}){
   },[]);
   const loadSaved=()=>{
     if(!saved)return;
-    setPrice(saved.price||500000);setDiscountPct(saved.discountPct||0);setRebatePct(saved.rebatePct||0);
+    setPrice(saved.price||500000);
+    setDiscountMode(saved.discountMode||"pct");setDiscountPct(saved.discountPct||0);setDiscountAmt2(saved.discountAmt2||0);
+    setRebateMode(saved.rebateMode||"pct");setRebatePct(saved.rebatePct||0);setRebateAmt2(saved.rebateAmt2||0);
     setDpPct(saved.dpPct||10);setRate(saved.rate||4);setYears(saved.years||35);
-    setIsForeign(!!saved.isForeign);setIsCommercial(!!saved.isCommercial);setZeroDp(!!saved.zeroDp);
+    setIsForeign(!!saved.isForeign);setIsCommercial(!!saved.isCommercial);
   };
 
   const numInp=(set,min=0,max=99999999)=>e=>{const v=parseFloat(String(e.target.value).replace(/,/g,""));if(!isNaN(v)&&v>=min&&v<=max)set(v);};
@@ -6484,14 +6491,32 @@ function LoanCalculator({settings}){
               </div>
               <div className="lc-fld2">
                 <div className="lc-fld">
-                  <div className="lc-flbl">Discount (%)</div>
-                  <input className="lc-finp" type="number" min="0" max="50" step="0.5" value={discountPct} onChange={numInp(setDiscountPct,0,50)} onFocus={e=>e.target.select()}/>
-                  {discountAmt>0&&<div className="lc-fhint lc-fhint-grn">−{fmtRM(discountAmt)}</div>}
+                  <div className="lc-flbl" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:".5rem"}}>
+                    <span>Discount</span>
+                    <span className="lc-mode-toggle">
+                      <button className={discountMode==="pct"?"on":""} onClick={()=>setDiscountMode("pct")}>%</button>
+                      <button className={discountMode==="amt"?"on":""} onClick={()=>setDiscountMode("amt")}>RM</button>
+                    </span>
+                  </div>
+                  {discountMode==="pct"
+                    ?<input className="lc-finp" type="number" min="0" max="50" step="0.5" value={discountPct} onChange={numInp(setDiscountPct,0,50)} onFocus={e=>e.target.select()}/>
+                    :<input className="lc-finp" type="number" min="0" value={discountAmt2} onChange={numInp(setDiscountAmt2,0,price)} onFocus={e=>e.target.select()} placeholder="e.g. 47000"/>
+                  }
+                  {discountAmt>0&&<div className="lc-fhint lc-fhint-grn">−{fmtRM(discountAmt)}{discountMode==="amt"?"":` (${((discountAmt/price)*100).toFixed(1)}%)`}</div>}
                 </div>
                 <div className="lc-fld">
-                  <div className="lc-flbl">Rebate / Cashback (%)</div>
-                  <input className="lc-finp" type="number" min="0" max="20" step="0.5" value={rebatePct} onChange={numInp(setRebatePct,0,20)} onFocus={e=>e.target.select()}/>
-                  {rebateAmt>0&&<div className="lc-fhint lc-fhint-grn">−{fmtRM(rebateAmt)}</div>}
+                  <div className="lc-flbl" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:".5rem"}}>
+                    <span>Rebate / Cashback</span>
+                    <span className="lc-mode-toggle">
+                      <button className={rebateMode==="pct"?"on":""} onClick={()=>setRebateMode("pct")}>%</button>
+                      <button className={rebateMode==="amt"?"on":""} onClick={()=>setRebateMode("amt")}>RM</button>
+                    </span>
+                  </div>
+                  {rebateMode==="pct"
+                    ?<input className="lc-finp" type="number" min="0" max="20" step="0.5" value={rebatePct} onChange={numInp(setRebatePct,0,20)} onFocus={e=>e.target.select()}/>
+                    :<input className="lc-finp" type="number" min="0" value={rebateAmt2} onChange={numInp(setRebateAmt2,0,adjustedPrice)} onFocus={e=>e.target.select()} placeholder="e.g. 30000"/>
+                  }
+                  {rebateAmt>0&&<div className="lc-fhint lc-fhint-grn">−{fmtRM(rebateAmt)}{rebateMode==="amt"?"":` (${((rebateAmt/adjustedPrice)*100).toFixed(1)}%)`}</div>}
                 </div>
               </div>
               {(discountPct>0||rebatePct>0)&&(
@@ -6532,24 +6557,15 @@ function LoanCalculator({settings}){
                 </div>
               </div>
               <div className="lc-fld">
-                <div className="lc-fslider-top" style={{marginBottom:".4rem"}}>
-                  <div className="lc-flbl">Down Payment</div>
-                  <label className="lc-zdp">
-                    <input type="checkbox" checked={zeroDp} onChange={e=>setZeroDp(e.target.checked)}/>
-                    Zero Down
-                  </label>
-                </div>
-                {!zeroDp&&(
-                  <div className="lc-fslider-wrap">
-                    <div className="lc-fslider-top">
-                      <span style={{fontSize:".66rem",color:"rgba(255,255,255,.3)"}}>{dpPct}% of SPA</span>
-                      <div className="lc-fslider-val">{fmtRM(dpAmt)}</div>
-                    </div>
-                    <input className="lc-fslider" type="range" min="5" max="30" step="5" value={dpPct} onChange={e=>setDpPct(parseInt(e.target.value))}/>
-                    <div className="lc-fslider-ends"><span>5%</span><span>30%</span></div>
+                <div className="lc-fslider-wrap">
+                  <div className="lc-fslider-top">
+                    <div className="lc-flbl">Down Payment</div>
+                    <div className="lc-fslider-val">{fmtRM(dpAmt)}</div>
                   </div>
-                )}
-                {zeroDp&&<div className="lc-fhint lc-fhint-gold">Down payment waived — 0% required</div>}
+                  <input className="lc-fslider" type="range" min="0" max="30" step="5" value={dpPct} onChange={e=>setDpPct(parseInt(e.target.value))}/>
+                  <div className="lc-fslider-ends"><span>0%</span><span>30%</span></div>
+                  <span style={{fontSize:".66rem",color:"rgba(255,255,255,.3)"}}>{dpPct}% of SPA</span>
+                </div>
               </div>
             </div>
           </div>
@@ -6665,10 +6681,10 @@ function LoanCalculator({settings}){
                 <BkdRow label="Original Listing Price" value={fmtRM(price)}/>
                 {discountAmt>0&&<BkdRow label={`Discount (${discountPct}%)`} value={`−${fmtRM(discountAmt)}`} grn/>}
                 <BkdRow label="Adjusted SPA Price" value={fmtRM(adjustedPrice)} gold/>
-                {rebateAmt>0&&<BkdRow label={`Rebate / Cashback (${rebatePct}%)`} value={`−${fmtRM(rebateAmt)}`} grn/>}
+                {rebateAmt>0&&<BkdRow label={`Rebate / Cashback${rebateMode==="pct"?` (${rebatePct}%)`:" (flat)"}`} value={`−${fmtRM(rebateAmt)}`} grn/>}
 
                 <div className="lc-bkd-section-title" style={{marginTop:".5rem"}}>Down Payment &amp; Loan</div>
-                <BkdRow label={`Down Payment (${zeroDp?"0":dpPct}%)`} value={fmtRM(dpAmt)} gold/>
+                <BkdRow label={`Down Payment (${dpPct}%)`} value={fmtRM(dpAmt)} gold/>
                 <BkdRow label="Loan Amount" value={fmtRM(loanAmt)}/>
 
                 <div className="lc-bkd-section-title" style={{marginTop:".5rem"}}>Legal &amp; Stamp Fees</div>
