@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import FALLBACK_IMG from "./assets/nblogo.jpg";
 import { getAllProjects, setProjectById, deleteProjectById, addAnalytic, getAllAnalytics, migrateAnalytics, deleteAllAnalytics, getSettings as fsGetSettings, saveSettings as fsSaveSettings } from "./firebase/firestore";
 import COUNTRY_CODES from "./data/countryCodes";
@@ -289,6 +290,25 @@ body.dark .det{background:#0D0D18;}
 .nav-theme-ico.moon.hide{opacity:0;transform:scale(.4) rotate(-90deg);}
 .nav-theme.anim .nav-theme-ico.sun:not(.hide){animation:thSpin .45s cubic-bezier(.34,1.56,.64,1) both;}
 .nav-theme.anim .nav-theme-ico.moon:not(.hide){animation:thMoonSlide .4s cubic-bezier(.34,1.56,.64,1) both;}
+/* ── LANGUAGE SWITCHER ── */
+.nav-lang{position:relative;flex-shrink:0;}
+.nav-lang-btn{background:rgba(191,155,78,.06);border:1px solid rgba(191,155,78,.22);height:40px;padding:0 .7rem;border-radius:999px;display:flex;align-items:center;gap:.35rem;color:#FAF8F3;cursor:pointer;font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;transition:background .2s,border-color .2s,transform .2s;backdrop-filter:blur(6px);}
+.nav-lang-btn:hover{background:rgba(191,155,78,.16);transform:translateY(-1px);border-color:rgba(191,155,78,.45);}
+.nav-lang-btn:active{transform:scale(.92);}
+.nav-lang-flag{font-size:.85rem;line-height:1;}
+.nav-lang-chevron{font-size:.55rem;opacity:.7;transition:transform .2s;}
+.nav-lang.open .nav-lang-chevron{transform:rotate(180deg);}
+.nav-lang-drop{position:absolute;top:calc(100% + 8px);right:0;min-width:150px;background:rgba(8,8,18,.92);border:1px solid rgba(191,155,78,.25);border-radius:14px;padding:.35rem;backdrop-filter:blur(20px);box-shadow:0 12px 40px rgba(0,0,0,.55);z-index:9999;animation:langDropIn .18s cubic-bezier(.34,1.56,.64,1);}
+@keyframes langDropIn{from{opacity:0;transform:translateY(-6px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+.nav-lang-opt{display:flex;align-items:center;gap:.55rem;padding:.52rem .75rem;border-radius:9px;cursor:pointer;color:rgba(250,248,243,.75);font-size:.8rem;font-weight:500;transition:background .15s,color .15s;}
+.nav-lang-opt:hover{background:rgba(191,155,78,.12);color:#FAF8F3;}
+.nav-lang-opt.active{background:rgba(191,155,78,.18);color:var(--gold);}
+.nav-lang-opt-flag{font-size:.9rem;}
+.nav-lang-opt-label{flex:1;}
+.nav-lang-opt-check{font-size:.7rem;color:var(--gold);}
+body:not(.dark) .nav-lang-btn{background:rgba(193,126,135,.1);border-color:rgba(193,126,135,.3);}
+body:not(.dark) .nav-lang-btn:hover{background:rgba(193,126,135,.22);border-color:rgba(193,126,135,.55);}
+body:not(.dark) .nav-lang-drop{background:rgba(60,10,20,.95);border-color:rgba(193,126,135,.3);}
 /* ── LIGHT (ROSE GOLD) MODE overrides ── */
 body:not(.dark) .nav{background:linear-gradient(135deg,#5C1828 0%,#7A2238 52%,#9B3048 100%);border-bottom-color:rgba(193,126,135,.35);box-shadow:0 8px 32px rgba(92,24,40,.35);}
 body:not(.dark) .nav-logo span{color:#FFE0E4;}
@@ -3958,6 +3978,7 @@ function CustomCursor() {
    DETAIL MODAL
 ═══════════════════════════════════════ */
 function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
+  const { t } = useTranslation();
   const [activeImg, setActiveImg] = useState(0);
   const [fabOpen, setFabOpen] = useState(false);
   useEffect(()=>{ window.scrollTo(0,0); },[]);
@@ -4422,9 +4443,9 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
             Register your interest today and our consultants will get back to you with exclusive pricing, availability, and showroom scheduling for {p.name}.
           </p>
           <div className="cine-footer-btns">
-            <button className="cine-cta-pri" onClick={onRegisterInterest}>Register Interest</button>
+            <button className="cine-cta-pri" onClick={onRegisterInterest}>{t("actions.register_interest")}</button>
             {p.showroom && p.showroom.trim().toLowerCase()!=="no" && p.showroom.trim()!=="" && (
-              <button className="cine-cta-sec" onClick={onVisitShowroom}>Visit Showroom</button>
+              <button className="cine-cta-sec" onClick={onVisitShowroom}>{t("actions.visit_showroom")}</button>
             )}
           </div>
           <div className="cine-footer-bottom">
@@ -4441,11 +4462,11 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
       <div className="cine-fab">
         <div className={`cine-fab-actions${fabOpen?' open':''}`}>
           <button className="cine-fab-action" onClick={()=>{setFabOpen(false);onRegisterInterest();}}>
-            <span className="cine-fab-action-ico">✉️</span>Register Interest
+            <span className="cine-fab-action-ico">✉️</span>{t("actions.register_interest")}
           </button>
           {p.showroom&&p.showroom.trim().toLowerCase()!=="no"&&p.showroom.trim()!==""&&(
             <button className="cine-fab-action" onClick={()=>{setFabOpen(false);onVisitShowroom();}}>
-              <span className="cine-fab-action-ico">📍</span>Visit Showroom
+              <span className="cine-fab-action-ico">📍</span>{t("actions.visit_showroom")}
             </button>
           )}
         </div>
@@ -6602,11 +6623,12 @@ function useScrollInView(ref, { once = true, margin = "0px" } = {}) {
    MAIN SECTIONS
 ═══════════════════════════════════════ */
 function LuxuryHero({ search, onSearch, onExplore, onContact }) {
+  const { t } = useTranslation();
   const stats = [
-    { num: "250+", label: "Projects Listed" },
-    { num: "15+", label: "Years Experience" },
-    { num: "All Budgets", label: "Catered For" },
-    { num: "98%", label: "Client Satisfaction" },
+    { num: "250+", label: t("hero.stat_projects") },
+    { num: "15+", label: t("hero.stat_experience") },
+    { num: "All Budgets", label: t("hero.stat_budgets") },
+    { num: "98%", label: t("hero.stat_satisfaction") },
   ];
   return (
     <section className="lux-hero">
@@ -6616,22 +6638,22 @@ function LuxuryHero({ search, onSearch, onExplore, onContact }) {
       <div className="lux-hero-grid"/>
       <div className="lux-hero-content">
         <div className="lux-eyebrow lux-anim" style={{animationDelay:".1s"}}>
-          Penang's Most Complete New Launch Platform
+          {t("hero.eyebrow")}
         </div>
         <h1 className="lux-h1 lux-anim" style={{animationDelay:".28s"}}>
-          Find a Home That<br/><em>Fits Your Life</em>
+          {t("hero.title_line1")}<br/><em>{t("hero.title_line2")}</em>
         </h1>
         <p className="lux-tagline lux-anim" style={{animationDelay:".44s"}}>
-          From first-home condos to spacious family houses — browse every new launch across Penang Island and Seberang Perai, matched to your lifestyle and budget.
+          {t("hero.tagline")}
         </p>
         <div className="lux-ctas lux-anim" style={{animationDelay:".58s"}}>
-          <button className="lux-btn-pri" onClick={onExplore}>Browse All Projects</button>
-          <button className="lux-btn-sec" onClick={onContact}>Talk to an Agent</button>
+          <button className="lux-btn-pri" onClick={onExplore}>{t("hero.browse_all")}</button>
+          <button className="lux-btn-sec" onClick={onContact}>{t("hero.talk_agent")}</button>
         </div>
         <div className="lux-hero-search lux-anim" style={{animationDelay:".72s"}}>
           <input
             className="lux-hero-search-inp"
-            placeholder="Search by project name, area, or developer…"
+            placeholder={t("hero.search_placeholder")}
             value={search}
             onChange={e => onSearch(e.target.value)}
           />
@@ -6651,13 +6673,14 @@ function LuxuryHero({ search, onSearch, onExplore, onContact }) {
 }
 
 function WhyChooseUs() {
+  const { t } = useTranslation();
   const ref = useRef(null);
   const isInView = useScrollInView(ref, { once: true, margin: "-80px" });
   const features = [
-    { icon: "�", title: "All Property Types", desc: "Condos, terraces, semidees, shophouses and more — every budget, every lifestyle." },
-    { icon: "📊", title: "Clear Market Info", desc: "Honest pricing, up-to-date specs and real developer data in one place." },
-    { icon: "🤝", title: "Personalised Guidance", desc: "Our agents listen first — then match you with the right project for your needs." },
-    { icon: "✅", title: "Verified Projects Only", desc: "Every listing is checked and updated so you can enquire with confidence." },
+    { icon: "🏘️", title: t("wcu.feat1_title"), desc: t("wcu.feat1_desc") },
+    { icon: "📊", title: t("wcu.feat2_title"), desc: t("wcu.feat2_desc") },
+    { icon: "🤝", title: t("wcu.feat3_title"), desc: t("wcu.feat3_desc") },
+    { icon: "✅", title: t("wcu.feat4_title"), desc: t("wcu.feat4_desc") },
   ];
   return (
     <section className="wcu-sec" ref={ref}>
@@ -6671,12 +6694,12 @@ function WhyChooseUs() {
           <div className="wcu-img-frame"/>
           <div className="wcu-img-badge">
             <div className="wcu-img-badge-num">15+</div>
-            <div className="wcu-img-badge-lbl">Years in Penang</div>
+            <div className="wcu-img-badge-lbl">{t("wcu.badge_years")}</div>
           </div>
         </div>
         <div className={`lux-reveal lux-reveal-right${isInView ? " lux-revealed" : ""}`} style={{transitionDelay:".18s"}}>
-          <div className="wcu-eyebrow">Why Choose NB Property</div>
-          <h2 className="wcu-title">Built Around<br/><em>Your Lifestyle</em></h2>
+          <div className="wcu-eyebrow">{t("wcu.eyebrow")}</div>
+          <h2 className="wcu-title">{t("wcu.title_line1")}<br/><em>{t("wcu.title_line2")}</em></h2>
           <p className="wcu-desc">Whether you're a first-time buyer, growing family or seasoned investor, we have projects across every price range in Penang. We don't push one type — we find what works for you.</p>
           <div className="wcu-features">
             {features.map((f, i) => (
@@ -6715,28 +6738,29 @@ function ShowcaseBanner({ onExplore }) {
 }
 
 function LuxuryFooter({ onTab, onRI }) {
+  const { t } = useTranslation();
   return (
     <footer className="lux-ft">
       <div className="lux-ft-inner">
         <div>
           <div className="lux-ft-logo">NB<span>Property</span></div>
-          <div className="lux-ft-tagline">Penang's most complete new launch platform — for every budget, every lifestyle, every stage of life.</div>
+          <div className="lux-ft-tagline">{t("footer.tagline")}</div>
         </div>
         <div>
-          <div className="lux-ft-col-title">Navigation</div>
+          <div className="lux-ft-col-title">{t("footer.nav_col")}</div>
           <div className="lux-ft-links">
-            <button className="lux-ft-link" onClick={() => onTab("listings")}>Home</button>
-            <button className="lux-ft-link" onClick={() => onTab("properties")}>Properties</button>
-            <button className="lux-ft-link" onClick={() => onTab("compare")}>Compare Projects</button>
-            <button className="lux-ft-link" onClick={() => onTab("tools")}>Loan Calculator</button>
+            <button className="lux-ft-link" onClick={() => onTab("listings")}>{t("nav.home")}</button>
+            <button className="lux-ft-link" onClick={() => onTab("properties")}>{t("nav.properties")}</button>
+            <button className="lux-ft-link" onClick={() => onTab("compare")}>{t("footer.compare_projects")}</button>
+            <button className="lux-ft-link" onClick={() => onTab("tools")}>{t("footer.loan_calculator")}</button>
           </div>
         </div>
         <div>
-          <div className="lux-ft-col-title">Contact Us</div>
+          <div className="lux-ft-col-title">{t("footer.contact_col")}</div>
           <div className="lux-ft-links">
-            <button className="lux-ft-link" onClick={() => onRI && onRI()}>Register Interest</button>
-            <span className="lux-ft-link" style={{cursor:"default"}}>Penang, Malaysia</span>
-            <span className="lux-ft-link" style={{cursor:"default"}}>WhatsApp Available</span>
+            <button className="lux-ft-link" onClick={() => onRI && onRI()}>{t("actions.register_interest")}</button>
+            <span className="lux-ft-link" style={{cursor:"default"}}>{t("footer.penang_malaysia")}</span>
+            <span className="lux-ft-link" style={{cursor:"default"}}>{t("footer.whatsapp_available")}</span>
           </div>
         </div>
       </div>
@@ -6800,6 +6824,7 @@ const OB_SLIDES = [
 ];
 
 function OnboardingGuide({ onDone }) {
+  const { t } = useTranslation();
   const [step, setStep] = useState(0);
   const [animKey, setAnimKey] = useState(0);
   const total = OB_SLIDES.length;
@@ -6853,7 +6878,7 @@ function OnboardingGuide({ onDone }) {
         </div>
         {/* Footer */}
         <div className="ob-footer">
-          <button className="ob-skip" onClick={onDone}>Skip</button>
+          <button className="ob-skip" onClick={onDone}>{t("ob.skip")}</button>
           <div className="ob-dots">
             {OB_SLIDES.map((_, i) => (
               <div key={i} className={`ob-dot${i === step ? " on" : ""}`} onClick={() => goTo(i)}/>
@@ -6861,10 +6886,10 @@ function OnboardingGuide({ onDone }) {
           </div>
           <div className="ob-btn-wrap">
             {step > 0 && (
-              <button className="ob-btn-back" onClick={back}>← Back</button>
+              <button className="ob-btn-back" onClick={back}>{t("ob.back")}</button>
             )}
             <button className="ob-btn-next" onClick={next}>
-              {step < total - 1 ? <>Next <span>→</span></> : <>Get Started ✦</>}
+              {step < total - 1 ? <>{t("ob.next")} <span>→</span></> : <>{t("ob.get_started")}</>}
             </button>
           </div>
         </div>
@@ -6874,6 +6899,21 @@ function OnboardingGuide({ onDone }) {
 }
 
 export default function App(){
+  const { t, i18n } = useTranslation();
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef(null);
+  const LANGS = [
+    { code: "en", flag: "🇬🇧", label: "English" },
+    { code: "zh", flag: "🇨🇳", label: "中文" },
+    { code: "ms", flag: "🇲🇾", label: "BM" },
+  ];
+  useEffect(()=>{
+    const handler = e => { if(langRef.current && !langRef.current.contains(e.target)) setLangOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return ()=>document.removeEventListener("mousedown", handler);
+  },[]);
+  const switchLang = code => { i18n.changeLanguage(code); setLangOpen(false); };
+  const currentLang = LANGS.find(l=>l.code===i18n.language) || LANGS[0];
   const [projects,setProjects]=useState([]);
   const [settings,setSettings]=useState(DEFAULT_SETTINGS);
   const [ready,setReady]=useState(false);
@@ -7144,14 +7184,33 @@ export default function App(){
         <div className="nav-logo" onClick={()=>goTab("listings")}>NB<span>Property</span></div>
         {/* Desktop tabs (centered) */}
         <div className="nav-tabs">
-          <button className={`ntab${tab==="listings"?" on":""}`} onClick={()=>goTab("listings")}><span>Home</span></button>
-          <button className={`ntab${tab==="properties"?" on":""}`} onClick={()=>goTab("properties")}><span>Properties</span></button>
-          <button className={`ntab${tab==="compare"?" on":""}`} onClick={()=>goTab("compare")}><span>Compare</span>{cmpIds.length>0&&<span className="badge">{cmpIds.length}</span>}</button>
-          <button className={`ntab${tab==="tools"?" on":""}`} onClick={()=>goTab("tools")}><span>Tools</span></button>
+          <button className={`ntab${tab==="listings"?" on":""}`} onClick={()=>goTab("listings")}><span>{t("nav.home")}</span></button>
+          <button className={`ntab${tab==="properties"?" on":""}`} onClick={()=>goTab("properties")}><span>{t("nav.properties")}</span></button>
+          <button className={`ntab${tab==="compare"?" on":""}`} onClick={()=>goTab("compare")}><span>{t("nav.compare")}</span>{cmpIds.length>0&&<span className="badge">{cmpIds.length}</span>}</button>
+          <button className={`ntab${tab==="tools"?" on":""}`} onClick={()=>goTab("tools")}><span>{t("nav.tools")}</span></button>
         </div>
 
-        {/* Right-side controls: admin icon + mobile hamburger */}
+        {/* Right-side controls: language switcher + theme + admin + hamburger */}
         <div className="nav-right">
+          {/* Language switcher */}
+          <div className={`nav-lang${langOpen?" open":""}`} ref={langRef}>
+            <button className="nav-lang-btn" onClick={()=>setLangOpen(v=>!v)} aria-label="Switch language">
+              <span className="nav-lang-flag">{currentLang.flag}</span>
+              <span>{currentLang.label}</span>
+              <span className="nav-lang-chevron">▼</span>
+            </button>
+            {langOpen&&(
+              <div className="nav-lang-drop">
+                {LANGS.map(l=>(
+                  <div key={l.code} className={`nav-lang-opt${i18n.language===l.code?" active":""}`} onClick={()=>switchLang(l.code)}>
+                    <span className="nav-lang-opt-flag">{l.flag}</span>
+                    <span className="nav-lang-opt-label">{l.label}</span>
+                    {i18n.language===l.code&&<span className="nav-lang-opt-check">✓</span>}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <button className={`nav-theme${themeAnim?" anim":""}`} onClick={toggleTheme} aria-label="Toggle theme">
             <span className={`nav-theme-ico sun${darkMode?" hide":""}`}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFE08A" strokeWidth="2" strokeLinecap="round">
@@ -7198,9 +7257,9 @@ export default function App(){
 
       {tab==="properties"&&<>
         <div className="sec-label">
-          <div className="sec-label-eye">All Project Types</div>
-          <h2 className="sec-label-title">Browse <em>Listings</em></h2>
-          <p className="sec-label-sub">From affordable starter homes to spacious family properties — find your perfect match across Penang</p>
+          <div className="sec-label-eye">{t("listings.eyebrow")}</div>
+          <h2 className="sec-label-title">{t("listings.title_browse")} <em>{t("listings.title_listings")}</em></h2>
+          <p className="sec-label-sub">{t("listings.subtitle")}</p>
         </div>
         <main className="main" id="listings-main">
           {/* ── Filter bar ── */}
@@ -7404,7 +7463,7 @@ export default function App(){
               <div className="pdf-btn-wrap">
                 <button className={`pdf-btn${pdfBusy?" busy":""}`} onClick={handleExportPdf} disabled={pdfBusy}>
                   <span className="pdf-btn-ico"><IPDF/></span>
-                  <span className="pdf-btn-txt">{pdfBusy?"Generating…":"Export PDF"}</span>
+                  <span className="pdf-btn-txt">{pdfBusy?"Generating…":t("actions.export_pdf")}</span>
                   <span className="pdf-btn-spark"/>
                 </button>
               </div>
@@ -7457,7 +7516,7 @@ export default function App(){
                   <div className="pdf-btn-wrap">
                     <button className={`pdf-btn${pdfBusy?" busy":""}`} onClick={handleExportPdf} disabled={pdfBusy}>
                       <span className="pdf-btn-ico"><IPDF/></span>
-                      <span className="pdf-btn-txt">{pdfBusy?"Generating…":"Export PDF"}</span>
+                      <span className="pdf-btn-txt">{pdfBusy?"Generating…":t("actions.export_pdf")}</span>
                       <span className="pdf-btn-spark"/>
                     </button>
                   </div>
