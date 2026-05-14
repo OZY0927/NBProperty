@@ -1796,6 +1796,41 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
   .lc-mob-sub{font-size:.62rem;color:rgba(255,255,255,.3);}
   .lc-mob-wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-family:var(--sans);font-size:.78rem;font-weight:700;padding:.6rem 1.3rem;border-radius:999px;text-decoration:none;box-shadow:0 4px 14px rgba(37,211,102,.3);}
 }
+/* ── Entry stagger ── */
+@keyframes lcCardIn{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.lc-monthly{animation:lcCardIn .5s .05s both;}
+.lc-amort{animation:lcCardIn .5s .15s both;}
+.lc-cbar{animation:lcCardIn .5s .2s both;}
+.lc-netcash{animation:lcCardIn .5s .28s both;}
+.lc-bkd{animation:lcCardIn .5s .36s both;}
+.lc-metrics>.lc-gc:nth-child(1){animation:lcCardIn .45s .22s both;}
+.lc-metrics>.lc-gc:nth-child(2){animation:lcCardIn .45s .29s both;}
+.lc-metrics>.lc-gc:nth-child(3){animation:lcCardIn .45s .36s both;}
+.lc-metrics>.lc-gc:nth-child(4){animation:lcCardIn .45s .43s both;}
+.lc-inp-col>.lc-gc:nth-child(1){animation:lcCardIn .5s .05s both;}
+.lc-inp-col>.lc-gc:nth-child(2){animation:lcCardIn .5s .13s both;}
+.lc-inp-col>.lc-gc:nth-child(3){animation:lcCardIn .5s .21s both;}
+/* ── Ring arc draw ── */
+@keyframes lcRingDraw{from{stroke-dasharray:0 999;}to{stroke-dasharray:var(--fill) 999;}}
+.lc-ring-arc{animation:lcRingDraw .8s cubic-bezier(.4,0,.2,1) both;}
+/* ── Value flash ── */
+@keyframes lcValFlash{from{opacity:.4;transform:scale(.96);}to{opacity:1;transform:scale(1);}}
+.lc-val-flash{display:inline-block;animation:lcValFlash .35s cubic-bezier(.4,0,.2,1) both;}
+/* ── Amortization chart ── */
+.lc-amort{padding:1.2rem 1.5rem;}
+.lc-amort-eyebrow{font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(0,212,255,.65);display:flex;justify-content:space-between;align-items:center;margin-bottom:.65rem;}
+.lc-amort-svg-wrap{width:100%;border-radius:8px;overflow:hidden;background:rgba(0,0,0,.18);}
+.lc-amort-axis{display:flex;justify-content:space-between;font-size:.57rem;color:rgba(255,255,255,.22);margin-top:.35rem;}
+@keyframes lcAmortDraw{to{stroke-dashoffset:0;}}
+.lc-amort-line{stroke-dasharray:2000;stroke-dashoffset:2000;animation:lcAmortDraw 1.2s cubic-bezier(.4,0,.2,1) .2s both;}
+/* ── Cost composition bar ── */
+.lc-cbar{padding:1rem 1.5rem 1.1rem;}
+.lc-cbar-title{font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:.5rem;}
+.lc-cbar-track{height:11px;border-radius:999px;overflow:hidden;display:flex;gap:2px;background:rgba(255,255,255,.04);}
+.lc-cbar-seg{height:100%;transition:flex .55s cubic-bezier(.4,0,.2,1);}
+.lc-cbar-legs{display:flex;flex-wrap:wrap;gap:.32rem .85rem;margin-top:.55rem;}
+.lc-cbar-leg{display:flex;align-items:center;gap:.28rem;font-size:.6rem;color:rgba(255,255,255,.38);}
+.lc-cbar-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
 
 /* ═══ DETAIL PAGE (replaces overlay modal) ═══ */
 /* ════════════════════════════════════════════
@@ -6384,6 +6419,29 @@ function calculateNetCash(totalInitialCash,rebateAmt){
   return totalInitialCash-rebateAmt;
 }
 
+function AnimNum({value,format=(v=>v)}){
+  const [display,setDisplay]=useState(value);
+  const state=useRef({from:value,raf:null,first:true});
+  useEffect(()=>{
+    if(state.current.first){state.current.first=false;state.current.from=value;return;}
+    const from=state.current.from,to=value;
+    if(from===to)return;
+    const t0=performance.now(),dur=480;
+    const tick=(now)=>{
+      const p=Math.min((now-t0)/dur,1);
+      const ease=1-Math.pow(1-p,3);
+      setDisplay(Math.round(from+(to-from)*ease));
+      if(p<1)state.current.raf=requestAnimationFrame(tick);
+      else{state.current.from=to;setDisplay(to);}
+    };
+    if(state.current.raf)cancelAnimationFrame(state.current.raf);
+    state.current.raf=requestAnimationFrame(tick);
+    state.current.from=from;
+    return()=>{if(state.current.raf)cancelAnimationFrame(state.current.raf);};
+  },[value]);
+  return <span key={value} className="lc-val-flash">{format(display)}</span>;
+}
+
 function LoanCalculator({settings}){
   const [price,setPrice]=useState(500000);
   const [discountMode,setDiscountMode]=useState("pct"); // "pct" | "amt"
@@ -6416,6 +6474,36 @@ function LoanCalculator({settings}){
   // ring circumference for r=52: 2πr ≈ 326.7
   const ringC=326.7;
   const ringFill=ringC*(piePct/100);
+
+  // ── Amortization curve data ──
+  const amortData=useMemo(()=>{
+    if(loanAmt<=0||loan.monthly<=0||years<=0)return{pathD:"",fillD:"",W:300,H:72,midYr:0};
+    const W=300,H=72,r=rate/12/100;
+    let bal=loanAmt;
+    const pts=[];
+    for(let yr=0;yr<=years;yr++){
+      const x=(yr/years)*W;
+      const y=H*(1-bal/loanAmt); // 0=top(full debt) → H=bottom(paid)
+      pts.push({x,y});
+      for(let m=0;m<12&&bal>0;m++){
+        const interest=bal*r;
+        bal=Math.max(0,bal-Math.max(0,loan.monthly-interest));
+      }
+    }
+    const pathD="M "+pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" L ");
+    const last=pts[pts.length-1];
+    const fillD=pathD+` L ${last.x.toFixed(1)},${H} L 0,${H} Z`;
+    return{pathD,fillD,W,H,midYr:Math.floor(years/2)};
+  },[loanAmt,rate,years,loan.monthly]);
+
+  // ── Cost composition bar ──
+  const cbarTotal=cash.total;
+  const cbarSegs=cbarTotal>0?[
+    {label:"Down Payment",color:"#BF9B4E",val:dpAmt},
+    {label:"Legal Fees",color:"#5E8FD0",val:cash.legalSPA+cash.legalLoan},
+    {label:"Stamp Duties",color:"#9090A8",val:cash.spaStamp+cash.loanStamp},
+    {label:"MOT / Transfer",color:"#C4543E",val:cash.mot+cash.levy+cash.stateFee},
+  ]:[];
 
   const waPhone=(settings?.whatsappPhone||"60129846080").replace(/\D/g,"");
   const waName=settings?.whatsappName||"Joel";
@@ -6600,9 +6688,10 @@ function LoanCalculator({settings}){
             <div className="lc-monthly-ring">
               <svg width="130" height="130" viewBox="0 0 130 130">
                 <circle cx="65" cy="65" r="52" fill="none" stroke="rgba(191,155,78,.12)" strokeWidth="10"/>
-                <circle cx="65" cy="65" r="52" fill="none" stroke="url(#lcRingGrad)" strokeWidth="10"
+                <circle key={Math.round(ringFill)} cx="65" cy="65" r="52" fill="none" stroke="url(#lcRingGrad)" strokeWidth="10"
                   strokeDasharray={`${ringFill} ${ringC-ringFill}`}
-                  strokeDashoffset="0" strokeLinecap="round"/>
+                  strokeDashoffset="0" strokeLinecap="round"
+                  className="lc-ring-arc" style={{"--fill":ringFill.toFixed(1)}}/>
                 <defs>
                   <linearGradient id="lcRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#FFE08A"/>
@@ -6615,7 +6704,7 @@ function LoanCalculator({settings}){
                 <div className="lc-monthly-ring-pctlbl">Principal</div>
               </div>
             </div>
-            <div className="lc-monthly-val">{fmtRM(loan.monthly)}</div>
+            <div className="lc-monthly-val"><AnimNum value={Math.round(loan.monthly)} format={fmtRM}/></div>
             <div className="lc-monthly-meta">
               {years} years &nbsp;·&nbsp; {rate}% p.a. &nbsp;·&nbsp; Loan {fmtRM(loanAmt)}
             </div>
@@ -6653,12 +6742,70 @@ function LoanCalculator({settings}){
             </div>
           </div>
 
+          {/* Amortization curve */}
+          {amortData.pathD&&(
+            <div className="lc-gc lc-amort">
+              <div className="lc-amort-eyebrow">
+                <span>Loan Balance Over Time</span>
+                <span style={{color:"rgba(255,255,255,.28)"}}>{years}yr @ {rate}%</span>
+              </div>
+              <div className="lc-amort-svg-wrap">
+                <svg key={amortData.pathD.slice(0,30)} viewBox={`0 0 ${amortData.W} ${amortData.H}`} preserveAspectRatio="none" width="100%" height="80">
+                  <defs>
+                    <linearGradient id="amortLineGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#00D4FF"/>
+                      <stop offset="100%" stopColor="#BF9B4E"/>
+                    </linearGradient>
+                    <linearGradient id="amortAreaFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="rgba(0,212,255,.22)"/>
+                      <stop offset="100%" stopColor="rgba(191,155,78,.04)"/>
+                    </linearGradient>
+                  </defs>
+                  {/* Year marker lines */}
+                  {[0,amortData.midYr,years].map(yr=>{
+                    const x=((yr/years)*amortData.W).toFixed(1);
+                    return <line key={yr} x1={x} y1="0" x2={x} y2={amortData.H} stroke="rgba(255,255,255,.07)" strokeWidth="1" strokeDasharray="3,3"/>;
+                  })}
+                  <path d={amortData.fillD} fill="url(#amortAreaFill)"/>
+                  <path d={amortData.pathD} fill="none" stroke="url(#amortLineGrad)" strokeWidth="2.2" strokeLinecap="round" className="lc-amort-line"/>
+                  {/* Midpoint dot */}
+                  <circle cx={(amortData.W/2).toFixed(1)} cy={(amortData.H*0.5).toFixed(1)} r="3" fill="#00D4FF" opacity=".7"/>
+                </svg>
+              </div>
+              <div className="lc-amort-axis">
+                <span>Year 0</span>
+                <span>Year {amortData.midYr}</span>
+                <span>Year {years}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Cost composition bar */}
+          {cbarTotal>0&&(
+            <div className="lc-gc lc-cbar">
+              <div className="lc-cbar-title">Initial Cash Composition</div>
+              <div className="lc-cbar-track">
+                {cbarSegs.map((s,i)=>s.val>0&&(
+                  <div key={i} className="lc-cbar-seg" style={{flex:s.val/cbarTotal,background:s.color,opacity:.88}}/>
+                ))}
+              </div>
+              <div className="lc-cbar-legs">
+                {cbarSegs.map((s,i)=>s.val>0&&(
+                  <div key={i} className="lc-cbar-leg">
+                    <div className="lc-cbar-dot" style={{background:s.color}}/>
+                    {s.label} ({((s.val/cbarTotal)*100).toFixed(0)}%)
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Net Cash Out */}
           <div className="lc-gc lc-netcash">
             <div className="lc-netcash-top">
               <div>
                 <div className="lc-netcash-lbl">✅ Net Cash Out</div>
-                <div className="lc-netcash-val">{fmtRM(netCash)}</div>
+                <div className="lc-netcash-val"><AnimNum value={Math.round(netCash)} format={fmtRM}/></div>
               </div>
               {rebateAmt>0&&(
                 <div className="lc-netcash-save">
