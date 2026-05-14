@@ -1214,8 +1214,12 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
   .main{padding:1.5rem 1rem;}
   .grid{grid-template-columns:repeat(2,1fr);gap:.9rem;}
 
+  /* Section header */
+  .sec-label{padding:3rem 1.25rem 1.75rem;}
+
   /* Filter bar */
-  .fd-bar{padding:.65rem .85rem;gap:.45rem;}
+  .fd-bar{padding:.65rem .85rem;gap:.45rem;flex-wrap:wrap;}
+  .fd-pills{order:3;width:100%;min-width:0;}
   .price-panel{padding:.85rem;}
 
   /* Card image */
@@ -1274,9 +1278,15 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
   .main{padding:1rem .75rem;}
   .grid{grid-template-columns:1fr;gap:.85rem;}
 
+  /* Section header */
+  .sec-label{padding:1.75rem 1rem 1.25rem;}
+  .sec-label-title{font-size:clamp(1.55rem,5.5vw,2rem);}
+  .sec-label-sub{font-size:.8rem;}
+
   /* Filter bar */
-  .fd-bar{flex-wrap:nowrap;gap:.35rem;padding:.55rem .75rem;border-radius:12px;}
-  .fd-trigger{font-size:.68rem;padding:.38rem .75rem;letter-spacing:.06em;}
+  .fd-bar{flex-wrap:wrap;gap:.45rem;padding:.6rem .75rem;border-radius:12px;}
+  .fd-trigger{font-size:.7rem;padding:.4rem .8rem;letter-spacing:.06em;flex:1 0 auto;}
+  .fd-pills{order:3;width:100%;min-width:0;}
   .fd-rcnt{font-size:.68rem;}
   .fd-body{grid-template-columns:1fr!important;}
   .fd-sec-price{grid-column:1!important;}
@@ -7281,7 +7291,6 @@ export default function App(){
                           ));
                       })()}
                     </div>
-                    <button className="fd-sidebar-clear" onClick={clearAllFilters}>Clear All</button>
                   </div>
                   <div className="fd-body">
                     <div className="fd-sec">
