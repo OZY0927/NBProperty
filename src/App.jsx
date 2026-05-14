@@ -2519,6 +2519,16 @@ body:not(.dark) .lux-pi-fin-sub{color:#8B7272;}
 .a-modal-x:hover{border-color:var(--a-red);color:var(--a-red);}
 .a-modal-body{padding:1.8rem 2rem;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
 
+/* Image modal */
+.img-modal-ov{position:fixed;inset:0;z-index:850;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:1rem;}
+.img-modal{position:relative;max-width:98vw;max-height:96vh;display:flex;align-items:center;justify-content:center;}
+.img-modal-body{display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.img-modal img{max-width:100%;max-height:100%;display:block;}
+.img-modal-close{position:absolute;top:10px;right:10px;background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff;width:36px;height:36px;border-radius:6px;cursor:pointer;font-size:1rem}
+.img-modal-nav{position:absolute;top:50%;transform:translateY(-50%);background:transparent;border:1px solid rgba(255,255,255,.18);color:#fff;width:42px;height:56px;border-radius:8px;cursor:pointer;font-size:1.6rem;display:flex;align-items:center;justify-content:center}
+.img-modal-nav.prev{left:10px}
+.img-modal-nav.next{right:10px}
+
 /* ── Toggle Switch ── */
 .tog-wrap{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;user-select:none;}
 .tog{position:relative;width:42px;height:24px;flex-shrink:0;}
@@ -4131,6 +4141,25 @@ function CustomCursor() {
 function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
   const [activeImg, setActiveImg] = useState(0);
   const [fabOpen, setFabOpen] = useState(false);
+  const [imgModal, setImgModal] = useState({open:false, src:'', group:[], index:0});
+  const openImage = (src, group = [], index = 0) => setImgModal({open:true, src, group, index});
+  const closeImage = () => setImgModal({open:false, src:'', group:[], index:0});
+  useEffect(()=>{
+    const onKey = (e) => {
+      if(!imgModal.open) return;
+      if(e.key === 'Escape') return closeImage();
+      if(e.key === 'ArrowLeft' && imgModal.group && imgModal.group.length>1){
+        const ni = (imgModal.index - 1 + imgModal.group.length) % imgModal.group.length;
+        setImgModal(m=>({...m, index:ni, src:m.group[ni]}));
+      }
+      if(e.key === 'ArrowRight' && imgModal.group && imgModal.group.length>1){
+        const ni = (imgModal.index + 1) % imgModal.group.length;
+        setImgModal(m=>({...m, index:ni, src:m.group[ni]}));
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return ()=>window.removeEventListener('keydown', onKey);
+  },[imgModal.open,imgModal.group,imgModal.index]);
   useEffect(()=>{ window.scrollTo(0,0); },[]);
 
   /* ── Scroll-reveal helper ── */
@@ -4245,7 +4274,12 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
       {/* ── CINEMATIC HERO ── */}
       <section className="cine-hero">
         <div className="cine-hero-bg">
-          <img key={activeImg} src={allImgs[activeImg]} alt={p.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
+          <img key={activeImg}
+               src={allImgs[activeImg]}
+               alt={p.name}
+               style={{cursor:'zoom-in'}}
+               onClick={()=>openImage(allImgs[activeImg], allImgs, activeImg)}
+               onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
         </div>
         <div className="cine-hero-overlay"/>
         <div className="cine-hero-side-glow"/>
@@ -4253,8 +4287,8 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
         {allImgs.length > 1 && (
           <div className="cine-gal-nav">
             {allImgs.slice(0,6).map((img,i)=>(
-              <div key={i} className={`cine-gal-thumb${activeImg===i?' on':''}`} onClick={()=>setActiveImg(i)}>
-                <img src={img} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
+              <div key={i} className={`cine-gal-thumb${activeImg===i?' on':''}`} onClick={()=>openImage(allImgs[i], allImgs, i)}>
+                <img src={img} alt="" onClick={()=>openImage(allImgs[i], allImgs, i)} style={{cursor:'zoom-in'}} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
               </div>
             ))}
           </div>
@@ -4273,6 +4307,27 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
           </div>
         </div>
       </section>
+
+      {imgModal.open && (
+        <div className="img-modal-ov" onClick={e=>e.target===e.currentTarget&&closeImage()}>
+          <div className="img-modal">
+            {imgModal.group && imgModal.group.length>1 && (
+              <button className="img-modal-nav prev" onClick={()=>{
+                setImgModal(m=>{ const ni=(m.index-1+m.group.length)%m.group.length; return {...m, index:ni, src:m.group[ni]}; });
+              }}>‹</button>
+            )}
+            <div className="img-modal-body">
+              <img src={imgModal.src} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}} style={{maxWidth:'95vw',maxHeight:'90vh',objectFit:'contain',display:'block'}}/>
+            </div>
+            {imgModal.group && imgModal.group.length>1 && (
+              <button className="img-modal-nav next" onClick={()=>{
+                setImgModal(m=>{ const ni=(m.index+1)%m.group.length; return {...m, index:ni, src:m.group[ni]}; });
+              }}>›</button>
+            )}
+            <button className="img-modal-close" onClick={closeImage}>✕</button>
+          </div>
+        </div>
+      )}
 
       {/* ── Stats Strip below hero ── */}
       {(p.priceFrom>0||p.totalUnits>0||p.sizeSqft?.[0]>0||(p.bedrooms||[]).length>0||p.completion) && (
@@ -4541,7 +4596,15 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                       >
                         <div className="cine-unit-img">
                           {ut.image
-                            ? <img src={ut.image} alt={ut.name||ut.label} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
+                            ? <img
+                                src={ut.image}
+                                alt={ut.name||ut.label}
+                                style={{cursor:'zoom-in'}}
+                                tabIndex={0}
+                                onClick={()=>openImage(ut.image,[ut.image],0)}
+                                onKeyDown={e=>{ if(e.key==='Enter' || e.key===' ') openImage(ut.image,[ut.image],0); }}
+                                onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}
+                              />
                             : <div className="cine-unit-noimg">📐</div>
                           }
                           <div className="cine-unit-img-overlay"/>
