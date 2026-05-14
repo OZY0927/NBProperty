@@ -225,7 +225,7 @@ async function exportPDF(projects){
 }
 
 /* ═══ FORM HELPERS ═══ */
-const EMPTY_UNIT_TYPE = { label:"", name:"", beds:2, baths:2, size:"", priceFrom:"", image:"", desc:"" };
+const EMPTY_UNIT_TYPE = { name:"", beds:2, baths:2, size:"", priceFrom:"", image:"" };
 const EMPTY_FORM = {
   name:"",developer:"",location:"",type:"Condominium",status:"New Launch",completion:"",tenure:"Freehold",
   tag:"HOT",tagColor:"#D4B880",priceFrom:"",priceTo:"",bedrooms:"",bathrooms:"",sizeSqft:"",
@@ -4505,16 +4505,16 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                       >
                         <div className="cine-unit-img">
                           {ut.image
-                            ? <img src={ut.image} alt={ut.name||ut.label} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
+                            ? <img src={ut.image} alt={ut.name} onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
                             : <div className="cine-unit-noimg">📐</div>
                           }
                           <div className="cine-unit-img-overlay"/>
-                          <div className="cine-unit-img-label">{ut.label||`Type ${String.fromCharCode(65+i)}`}</div>
+                          <div className="cine-unit-img-label">{ut.name||`Type ${String.fromCharCode(65+i)}`}</div>
                         </div>
                         <div className="cine-unit-body">
                           <div>
                             <div className="cine-unit-label">Unit Type {i+1}</div>
-                            <div className="cine-unit-name">{ut.name||`${ut.label||'Layout'}`}</div>
+                            <div className="cine-unit-name">{ut.name||'Layout'}</div>
                             {ut.priceFrom && (
                               <div className="cine-unit-price">
                                 <span className="cine-unit-price-lbl">From</span>
@@ -4527,7 +4527,6 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                               {ut.size && <span className="cine-unit-pill">📐 {ut.size}</span>}
                             </div>
                           </div>
-                          {ut.desc && <div className="cine-unit-desc">{ut.desc}</div>}
                           <button className="cine-unit-cta" onClick={onRegisterInterest}>Enquire Now →</button>
                         </div>
                       </div>
@@ -4605,11 +4604,10 @@ function UnitTypeEditor({unitTypes, onChange}){
       {types.map((ut,i)=>(
         <div key={i} className="ut-editor-row">
           <div className="ut-editor-row-hd">
-            <div className="ut-editor-row-title">Unit Type {i+1}: {ut.label||"(unnamed)"}</div>
+            <div className="ut-editor-row-title">Unit Type {i+1}: {ut.name||"(unnamed)"}</div>
             <button className="ut-rm-btn" onClick={()=>remove(i)} title="Remove">✕</button>
           </div>
           <div className="ut-row-grid" style={{marginBottom:".6rem"}}>
-            <div className="a-ff"><label className="a-flbl">Label</label><input className="a-inp" value={ut.label||""} placeholder="e.g. Type A" onChange={e=>update(i,"label",e.target.value)}/></div>
             <div className="a-ff"><label className="a-flbl">Name</label><input className="a-inp" value={ut.name||""} placeholder="e.g. 2-Bedroom" onChange={e=>update(i,"name",e.target.value)}/></div>
             <div className="a-ff"><label className="a-flbl">Price From</label><input className="a-inp" value={ut.priceFrom||""} placeholder="e.g. From RM 480,000" onChange={e=>update(i,"priceFrom",e.target.value)}/></div>
           </div>
@@ -4623,10 +4621,7 @@ function UnitTypeEditor({unitTypes, onChange}){
             <input className="a-inp" value={ut.image||""} placeholder="https://..." onChange={e=>update(i,"image",e.target.value)}/>
             {ut.image&&<img className="ut-img-mini" src={ut.image} alt="" onError={e=>e.target.style.display="none"} onLoad={e=>e.target.style.display="block"}/>}
           </div>
-          <div className="a-ff">
-            <label className="a-flbl">Description</label>
-            <textarea className="a-txt" rows={2} value={ut.desc||""} placeholder="Describe this unit layout..." onChange={e=>update(i,"desc",e.target.value)}/>
-          </div>
+
         </div>
       ))}
       <button className="ut-add-btn" onClick={add}>+ Add Unit Type</button>
