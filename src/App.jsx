@@ -225,7 +225,7 @@ async function exportPDF(projects){
   const row=(l,f,bid=null)=>[{content:l,styles:lS()},...projects.map((p,i)=>({content:f(p),styles:vS(i,bid===p.id)}))];
   const cheap=projects.reduce((a,b)=>a.priceFrom<b.priceFrom?a:b).id,big=projects.reduce((a,b)=>a.sizeSqft[1]>b.sizeSqft[1]?a:b).id;
   const head=[[{content:"Category",styles:{...lS(),fillColor:[10,30,48],textColor:[20,120,200]}},...projects.map(p=>({content:p.name,styles:{fillColor:[10,30,48],textColor:[255,255,255],fontStyle:"bold",fontSize:9,halign:"center",cellWidth:vW}}))]];
-  const body=[sec("PROJECT OVERVIEW"),row("Developer",p=>p.developer),row("Location",p=>p.location),row("Type",p=>p.type),row("Status",p=>p.status),row("Completion",p=>p.completion),row("Tenure",p=>p.tenure),row("Land Size",p=>p.landSize||"-"),row("Total Units",p=>formatNum(p.totalUnits)),sec("PRICING"),row("From",p=>fmt(p.priceFrom),cheap),row("Range",p=>`${fmt(p.priceFrom)} - ${fmt(p.priceTo)}`),row("Maintenance",p=>p.maintenanceFee||"-"),sec("UNIT SPECS"),row("Bedrooms",p=>bLbl(p.bedrooms)+" bed"),row("Built-up",p=>`${p.sizeSqft[0]?.toLocaleString()} - ${p.sizeSqft[1]?.toLocaleString()} sf`,big),row("Car Parks",p=>p.numberOfCarParks?formatNum(p.numberOfCarParks):"-"),row("Lifts",p=>p.numberOfLifts?formatNum(p.numberOfLifts):"-"),sec("HIGHLIGHTS"),row("Highlights",p=>p.highlights.join(" · "))];
+  const body=[sec("PROJECT OVERVIEW"),row("Developer",p=>p.developer),row("Location",p=>p.location),row("Type",p=>p.type),row("Status",p=>p.status),row("Completion",p=>p.completion),row("Tenure",p=>p.tenure),row("Land Size",p=>p.landSize||"-"),row("Total Units",p=>formatNum(p.totalUnits)),sec("PRICING"),row("From",p=>fmt(p.priceFrom),cheap),row("Range",p=>`${fmt(p.priceFrom)} - ${fmt(p.priceTo)}`),row("Maintenance",p=>p.maintenanceFee||"-"),sec("UNIT SPECS"),row("Bedrooms",p=>bLbl(p.bedrooms)+" bed"),row("Built-up",p=>`${p.sizeSqft[0]?.toLocaleString()} - ${p.sizeSqft[1]?.toLocaleString()} sqft`,big),row("Car Parks",p=>p.numberOfCarParks?formatNum(p.numberOfCarParks):"-"),row("Lifts",p=>p.numberOfLifts?formatNum(p.numberOfLifts):"-"),sec("HIGHLIGHTS"),row("Highlights",p=>p.highlights.join(" · "))];
   doc.autoTable({startY:38,head,body,margin:{left:14,right:14},styles:{fontSize:8,cellPadding:3.5,overflow:"linebreak",lineColor:[220,212,200],lineWidth:0.18},headStyles:{fillColor:[10,30,48]},columnStyles:{0:{cellWidth:lW},...Object.fromEntries(projects.map((_,i)=>[i+1,{cellWidth:vW}]))},rowPageBreak:"auto"});
   const pages=doc.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFillColor(10,30,48);doc.rect(0,H-10,W,10,"F");doc.setFontSize(7);doc.setTextColor(90,90,90);doc.text("NB Property · For illustration purposes only.",14,H-3.5);doc.text(`${i} / ${pages}`,W-14,H-3.5,{align:"right"});}
   doc.save(`NB_Comparison_${Date.now()}.pdf`);
@@ -4255,7 +4255,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
   const projectNameLead = projectNameParts.length > 1 ? projectNameParts.slice(0, -1).join(' ') : projectName;
   const projectNameAccent = projectNameParts.length > 1 ? projectNameParts[projectNameParts.length - 1] : '';
   const sizeRange = p.sizeSqft?.[0]
-    ? `${p.sizeSqft[0].toLocaleString()}${p.sizeSqft?.[1] ? ` - ${p.sizeSqft[1].toLocaleString()}` : ''} sf`
+    ? `${p.sizeSqft[0].toLocaleString()}${p.sizeSqft?.[1] ? ` - ${p.sizeSqft[1].toLocaleString()}` : ''} sqft`
     : '';
   const priceRange = p.priceFrom && p.priceTo
     ? `${fmt(p.priceFrom)} - ${fmt(p.priceTo)}`
@@ -4645,7 +4645,7 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
                             <div className="cine-unit-pills">
                               {ut.beds>0 && <span className="cine-unit-pill">🛏 {ut.beds} Bed{ut.beds>1?'s':''}</span>}
                               {ut.baths>0 && <span className="cine-unit-pill">🚿 {ut.baths} Bath</span>}
-                              {ut.size && <span className="cine-unit-pill">📐 {ut.size}</span>}
+                              {ut.size && <span className="cine-unit-pill">📐 {ut.size}{/sqft|sq ft|sf\b/i.test(ut.size)?'':' sqft'}</span>}
                             </div>
                           </div>
                           <button className="cine-unit-cta" onClick={onRegisterInterest}>Enquire Now →</button>
@@ -4736,7 +4736,7 @@ function UnitTypeEditor({unitTypes, onChange}){
           <div className="ut-row-grid" style={{marginBottom:".6rem"}}>
             <div className="a-ff"><label className="a-flbl">Beds</label><input className="a-inp" type="number" min="0" value={ut.beds||""} placeholder="2" onChange={e=>update(i,"beds",Number(e.target.value))}/></div>
             <div className="a-ff"><label className="a-flbl">Baths</label><input className="a-inp" type="number" min="0" value={ut.baths||""} placeholder="2" onChange={e=>update(i,"baths",Number(e.target.value))}/></div>
-            <div className="a-ff"><label className="a-flbl">Size (sqft)</label><input className="a-inp" value={ut.size||""} placeholder="e.g. 900 sf" onChange={e=>update(i,"size",e.target.value)}/></div>
+            <div className="a-ff"><label className="a-flbl">Size (sqft)</label><input className="a-inp" value={ut.size||""} placeholder="e.g. 900 sqft" onChange={e=>update(i,"size",e.target.value)}/></div>
           </div>
           <div className="a-ff" style={{marginBottom:".6rem"}}>
             <label className="a-flbl">Layout Image URL</label>
@@ -5456,21 +5456,32 @@ function PropertyForm({initial,onSave,onClose,isEdit}){
     });
   };
   const hl=(k)=>highlightedFields[k]?"ai-hl":"";
-  const ff=(label,k,ph="",type="text",hint)=>(
+  const ff=(label,k,ph="",type="text",hint)=>{
+    const isNum = type==='number';
+    const displayVal = isNum
+      ? (form[k]!==undefined && form[k]!=='' ? formatNum(String(form[k]).replace(/,/g,'')) : '')
+      : (form[k]??"");
+    return (
     <div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}>
       <label className="a-flbl">{label}{hint&&<small> — {hint}</small>}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label>
       <input
         className={`a-inp ${hl(k)}`}
-        type={type}
-        value={type==='number' ? (form[k] || form[k]===0 ? formatNum(form[k]) : '') : (form[k]??"")}
+        type="text"
+        inputMode={isNum ? "numeric" : undefined}
+        value={displayVal}
         placeholder={ph}
         onChange={e=>{
-          const v = e.target.value.replace(/,/g,'');
-          set(k, v);
+          if(isNum){
+            const raw = e.target.value.replace(/[^0-9]/g,'');
+            set(k, raw);
+          } else {
+            set(k, e.target.value);
+          }
         }}
       />
     </div>
-  );
+    );
+  };
   const ft=(label,k,ph="",rows=2,hint)=>(<div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}><label className="a-flbl">{label}{hint&&<small> — {hint}</small>}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label><textarea className={`a-txt ${hl(k)}`} rows={rows} value={form[k]??""} placeholder={ph} onChange={e=>set(k,e.target.value)}/></div>);
   const fs=(label,k,opts)=>(<div className={`a-ff${highlightedFields[k]?" ai-field-flash":""}`}><label className="a-flbl">{label}{highlightedFields[k]&&<span className="ai-autofill-badge">✨ AI</span>}</label><select className={`a-sel ${hl(k)}`} value={form[k]??""} onChange={e=>set(k,e.target.value)}>{opts.map(o=><option key={o}>{o}</option>)}</select></div>);
   return(
@@ -7850,7 +7861,7 @@ export default function App(){
                       <Sec l="UNIT SPECS"/>
                       <Row l="Bedrooms" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bedrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bed":"—";}}/>
                       <Row l="Bathrooms" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const b=p.bathrooms;return Array.isArray(b)&&b.length?bLbl(b)+" bath":"—";}}/>
-                      <Row l="Built-up" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const s=p.sizeSqft;return Array.isArray(s)&&s[0]&&s[1]?`${s[0].toLocaleString()} – ${s[1].toLocaleString()} sf`:"—";}} bid={largest}/>
+                      <Row l="Built-up" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const s=p.sizeSqft;return Array.isArray(s)&&s[0]&&s[1]?`${s[0].toLocaleString()} – ${s[1].toLocaleString()} sqft`:"—";}} bid={largest}/>
                       <Row l="Car Parks" r={p=>{const v=cv(p,"overview.parking",p.numberOfCarParks);return v==="—"?"—":formatNum(v);}}/>
                       <Row l="Lifts" r={p=>{const v=cv(p,"overview.facilities",p.numberOfLifts);return v==="—"?"—":formatNum(v);}}/>
                       <Row l="Layout Types" r={p=>{if(!sec(p,"overview.unitInfo"))return"—";const ut=p.unitTypes;return Array.isArray(ut)?`${ut.length} types`:"—";}}/>
