@@ -4282,12 +4282,18 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
 
       {/* ── CINEMATIC HERO ── */}
       <section className="cine-hero">
-        <div className="cine-hero-bg">
+        <div
+          className="cine-hero-bg"
+          role="button"
+          tabIndex={0}
+          style={{cursor:'zoom-in'}}
+          onClick={()=>openImage(allImgs[activeImg], allImgs, activeImg)}
+          onKeyDown={e=>{ if(e.key==='Enter' || e.key===' ') openImage(allImgs[activeImg], allImgs, activeImg); }}
+        >
           <img key={activeImg}
                src={allImgs[activeImg]}
                alt={p.name}
-               style={{cursor:'zoom-in'}}
-               onClick={()=>openImage(allImgs[activeImg], allImgs, activeImg)}
+               style={{pointerEvents:'none'}}
                onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/>
         </div>
         <div className="cine-hero-overlay"/>
