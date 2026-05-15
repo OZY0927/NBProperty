@@ -7210,18 +7210,71 @@ function LuxuryFooter({ onTab, onRI }) {
 }
 
 /* ═══ TOUR GUIDE COMPONENT ═══ */
+// mkStep — helper so onEnter callbacks are always functions
+const mkStep = (target, title, desc, onEnter) => ({ target, title, desc, onEnter });
+
+// TOUR_STEPS — each step may have an onEnter({isMobile, openNav, closeNav, goTab}) callback
+// Desktop: highlights the top nav tabs. Mobile: opens the drawer and highlights the drawer items.
 const TOUR_STEPS = [
-  { target: () => document.querySelector('.nav-logo'),                     title: 'Welcome to NB Property',    desc: 'Your complete guide to premium new launches in Penang. Browse, compare, and calculate — all in one place.' },
-  { target: () => document.querySelectorAll('.ntab')[0],                   title: 'Home',                      desc: 'The Home tab showcases hero projects, live stats, and curated highlights — your starting point every visit.' },
-  { target: () => document.querySelectorAll('.ntab')[1],                   title: 'Browse Properties',         desc: 'Explore hundreds of verified new launch projects. Filter by type, location, price, bedrooms, and completion year.' },
-  { target: () => document.querySelector('.fd-trigger'),                   title: 'Smart Filters',             desc: 'Tap Filters to narrow results instantly by property type, area, status, bedrooms, size, and developer.' },
-  { target: () => document.querySelector('.proj-card'),                    title: 'Project Cards',             desc: 'Click any card for the full cinematic detail page — gallery, floor plans, facilities, location map and pricing.' },
-  { target: () => document.querySelectorAll('.ntab')[2],                   title: 'Compare Projects',          desc: 'Add up to 5 projects and compare specs, pricing, size and facilities side by side — instantly.' },
-  { target: () => document.querySelectorAll('.ntab')[3],                   title: 'Loan Calculator',           desc: 'Calculate true monthly costs — discounts, rebates, legal fees, stamp duty and MOT for local and foreign buyers.' },
-  { target: () => document.querySelector('.nav-theme'),                    title: 'Light & Dark Mode',         desc: 'Switch themes anytime. Your preference is saved and remembered across every visit.' },
+  mkStep(
+    () => document.querySelector('.nav-logo'),
+    'Welcome to NB Property',
+    'Your complete guide to premium new launches in Penang. Browse, compare, and calculate — all in one place.',
+    ({ closeNav }) => closeNav(),
+  ),
+  mkStep(
+    ({ isMobile }) => isMobile
+      ? document.querySelectorAll('.mob-nav-item')[0]
+      : document.querySelectorAll('.ntab')[0],
+    'Home',
+    'Showcases hero projects, live stats, and curated highlights — your starting point every visit.',
+    ({ isMobile, openNav, closeNav, goTab }) => { goTab('listings'); if (isMobile) openNav(); else closeNav(); },
+  ),
+  mkStep(
+    ({ isMobile }) => isMobile
+      ? document.querySelectorAll('.mob-nav-item')[1]
+      : document.querySelectorAll('.ntab')[1],
+    'Browse Properties',
+    'Explore hundreds of verified new launch projects. Filter by type, location, price, bedrooms, and completion year.',
+    ({ isMobile, openNav, closeNav, goTab }) => { goTab('properties'); if (isMobile) openNav(); else closeNav(); },
+  ),
+  mkStep(
+    ({ isMobile }) => isMobile
+      ? document.querySelectorAll('.mob-nav-item')[2]
+      : document.querySelectorAll('.ntab')[2],
+    'Compare Projects',
+    'Add up to 5 projects and compare specs, pricing, size and facilities side by side — instantly.',
+    ({ isMobile, openNav, closeNav }) => { if (isMobile) openNav(); else closeNav(); },
+  ),
+  mkStep(
+    ({ isMobile }) => isMobile
+      ? document.querySelectorAll('.mob-nav-item')[3]
+      : document.querySelectorAll('.ntab')[3],
+    'Loan Calculator',
+    'Calculate true monthly costs — discounts, rebates, legal fees, stamp duty and MOT for local and foreign buyers.',
+    ({ isMobile, openNav, closeNav }) => { if (isMobile) openNav(); else closeNav(); },
+  ),
+  mkStep(
+    () => document.querySelector('.fd-trigger'),
+    'Smart Filters',
+    'Tap Filters to narrow results instantly by property type, area, status, bedrooms, size, and developer.',
+    ({ closeNav, goTab }) => { goTab('properties'); closeNav(); },
+  ),
+  mkStep(
+    () => document.querySelector('.proj-card'),
+    'Project Cards',
+    'Tap any card for the full detail page — gallery, floor plans, facilities, location map and pricing.',
+    ({ closeNav, goTab }) => { goTab('properties'); closeNav(); },
+  ),
+  mkStep(
+    () => document.querySelector('.nav-theme'),
+    'Light & Dark Mode',
+    'Switch themes anytime. Your preference is saved and remembered across every visit.',
+    ({ closeNav }) => closeNav(),
+  ),
 ];
 
-function TourGuide({ steps, onDone }) {
+function TourGuide({ steps, onDone, openNav, closeNav, goTab }) {
   const PAD = 12, TW = 296, TH = 200, GAP = 16, EDGE = 10;
   const [step,   setStep]   = useState(0);
   const [spot,   setSpot]   = useState({ x:0, y:0, w:0, h:0, ok:false });
@@ -7231,9 +7284,11 @@ function TourGuide({ steps, onDone }) {
   const [mob,    setMob]    = useState(() => window.innerWidth < 768);
   const txRef = useRef(0), tyRef = useRef(0);
 
+  const isMobile = () => window.innerWidth < 768;
+
   const measure = useCallback(() => {
     const s = steps[step];
-    const el = typeof s.target === 'function' ? s.target() : document.querySelector(s.target);
+    const el = typeof s.target === 'function' ? s.target({ isMobile: isMobile() }) : document.querySelector(s.target);
     if (!el) { setSpot(v => ({ ...v, ok: false })); return; }
     const r = el.getBoundingClientRect();
     if (r.width === 0 && r.height === 0) { setSpot(v => ({ ...v, ok: false })); return; }
@@ -7250,11 +7305,18 @@ function TourGuide({ steps, onDone }) {
 
   useEffect(() => {
     const s = steps[step];
-    const el = typeof s.target === 'function' ? s.target() : document.querySelector(s.target);
-    if (el && el.getBoundingClientRect().width > 0) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-    const t = setTimeout(measure, 360);
+    // Fire the step's onEnter hook (opens/closes drawer, switches tab, etc.)
+    if (typeof s.onEnter === 'function') {
+      s.onEnter({ isMobile: isMobile(), openNav, closeNav, goTab });
+    }
+    // Allow layout to settle before measuring
+    const t1 = setTimeout(() => {
+      const el = typeof s.target === 'function' ? s.target({ isMobile: isMobile() }) : document.querySelector(s.target);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+    }, 80);
+    const t2 = setTimeout(measure, 380);
     setAKey(k => k + 1);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [step]);
 
   useEffect(() => {
@@ -7264,9 +7326,12 @@ function TourGuide({ steps, onDone }) {
     return () => { window.removeEventListener('resize', h); window.removeEventListener('scroll', h, true); };
   }, [measure]);
 
+  // Close drawer when tour finishes / is skipped
+  const handleDone = () => { closeNav(); onDone(); };
+
   useEffect(() => {
     const onKey = e => {
-      if (e.key === 'Escape')                              onDone();
+      if (e.key === 'Escape')                              handleDone();
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
       if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
     };
@@ -7283,7 +7348,7 @@ function TourGuide({ steps, onDone }) {
 
   const go = dir => {
     ripple();
-    if (dir > 0) { if (step < steps.length - 1) setStep(s => s + 1); else onDone(); }
+    if (dir > 0) { if (step < steps.length - 1) setStep(s => s + 1); else handleDone(); }
     else         { if (step > 0)                setStep(s => s - 1); }
   };
 
@@ -7328,7 +7393,7 @@ function TourGuide({ steps, onDone }) {
       <div className="tg-body">{s.desc}</div>
       <div className="tg-prog"><div className="tg-prog-fill" style={{ width: `${pct}%` }}/></div>
       <div className="tg-ft">
-        <button className="tg-skip" onClick={onDone}>Skip tour</button>
+        <button className="tg-skip" onClick={handleDone}>Skip tour</button>
         <div className="tg-btns">
           {step > 0 && <button className="tg-btn-bk" onClick={() => go(-1)}>← Back</button>}
           <button className="tg-btn-nx" onClick={() => go(1)}>{isLast ? 'Finish ✦' : 'Next →'}</button>
@@ -7401,7 +7466,7 @@ function TourGuide({ steps, onDone }) {
           <div className="tg-prog-fill" style={{ width:`${pct}%` }}/>
         </div>
         <div className="tg-sheet-ft">
-          <button className="tg-skip" onClick={onDone}>Skip</button>
+          <button className="tg-skip" onClick={handleDone}>Skip</button>
           <div className="tg-dots">{steps.map((_,i) => <div key={i} className={`tg-dot${i===step?' on':''}`}/>)}</div>
           <div className="tg-btns">
             {step > 0 && <button className="tg-btn-bk" onClick={() => go(-1)}>←</button>}
@@ -7666,7 +7731,7 @@ export default function App(){
     <>
       <style>{css}</style>
       <CustomCursor/>
-      {showGuide&&<TourGuide steps={TOUR_STEPS} onDone={dismissGuide}/>}
+      {showGuide&&<TourGuide steps={TOUR_STEPS} onDone={()=>{closeNav&&closeNav();dismissGuide();}} openNav={()=>setMobileNavOpen(true)} closeNav={()=>setMobileNavOpen(false)} goTab={goTab}/>}
 
       {/* ── Mobile side-nav overlay — hidden on detail page ── */}
       {tab!=="detail"&&<div className={`mob-drawer-ov${mobileNavOpen?" open":""}`} onClick={()=>setMobileNavOpen(false)}/>}
