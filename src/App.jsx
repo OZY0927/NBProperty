@@ -8025,7 +8025,7 @@ export default function App(){
         </button>
         <div className={`tray${cmpIds.length>0?" show":""}`}>
           <span className="tray-lbl">Compare ({cmpIds.length}/5)</span>
-          <div className="tray-slots">{[...Array(5)].map((_,i)=>{const p=cmpProjects[i];return p?(<div key={p.id} className="tslot fill"><img src={p.image} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="tslot-nm">{p.name}</div><button className="tslot-x" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div>):<div key={i} className="tslot">empty</div>;})}</div>
+          <div className="tray-slots">{[...Array(5)].map((_,i)=>{const p=cmpProjects[i];return p?(<div key={i} className="tslot fill"><img src={p.image} alt="" onError={e=>{e.target.onerror=null;e.target.src=FALLBACK_IMG;}}/><div className="tslot-nm">{p.name}</div><button className="tslot-x" onClick={()=>setCmpIds(prev=>prev.filter(x=>x!==p.id))}>✕</button></div>):<div key={i} className="tslot">empty</div>;})}</div>
           {cmpIds.length>=2&&<button className="tray-go" onClick={()=>setTab("compare")}>Compare →</button>}
           <button className="tray-clr" onClick={()=>setCmpIds([])}>Clear</button>
         </div>
