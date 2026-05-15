@@ -3479,151 +3479,119 @@ body.cine-active *{cursor:none !important;}
 .cine-amenity-card{opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1),background .28s,border-color .28s,box-shadow .28s;}
 .cine-amenity-card.vis{opacity:1;transform:translateY(0);}
 
-/* ═══ ONBOARDING GUIDE ═══ */
-@keyframes obEnter{from{opacity:0;transform:scale(.96) translateY(18px);}to{opacity:1;transform:scale(1) translateY(0);}}
-@keyframes obSlideIn{from{opacity:0;transform:translateX(32px);}to{opacity:1;transform:translateX(0);}}
-@keyframes obSlideOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-32px);}}
-@keyframes obDotPulse{0%,100%{transform:scale(1);opacity:.5;}50%{transform:scale(1.5);opacity:1;}}
-@keyframes obFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
-@keyframes obOrbit{0%{transform:rotate(0deg) translateX(38px) rotate(0deg);}100%{transform:rotate(360deg) translateX(38px) rotate(-360deg);}}
-@keyframes obShimmer{0%{background-position:-300px 0;}100%{background-position:300px 0;}}
-@keyframes obProgressBar{from{width:0;}to{width:100%;}}
-@keyframes obIconPop{0%{transform:scale(.4) rotate(-15deg);opacity:0;}60%{transform:scale(1.15) rotate(4deg);}100%{transform:scale(1) rotate(0deg);opacity:1;}}
-@keyframes obGlowPulse{0%,100%{box-shadow:0 0 24px rgba(191,155,78,.15),inset 0 0 24px rgba(191,155,78,.04);}50%{box-shadow:0 0 48px rgba(191,155,78,.3),inset 0 0 32px rgba(191,155,78,.08);}}
-@keyframes obBlobMove{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(20px,-15px) scale(1.05);}66%{transform:translate(-10px,12px) scale(.95);}}
-/* ── Onboarding overlay ── */
-.ob-ov{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
-body.dark .ob-ov{background:rgba(2,3,10,.85);}
-body:not(.dark) .ob-ov{background:rgba(45,14,20,.55);}
-/* Blobs – dark only */
-.ob-blob1{position:absolute;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(191,155,78,.1) 0%,transparent 70%);top:-100px;left:-80px;animation:obBlobMove 12s ease-in-out infinite;pointer-events:none;}
-.ob-blob2{position:absolute;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.07) 0%,transparent 70%);bottom:-60px;right:-60px;animation:obBlobMove 15s ease-in-out infinite reverse;pointer-events:none;}
-.ob-blob3{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(191,155,78,.06) 0%,transparent 70%);top:40%;left:60%;animation:obBlobMove 10s ease-in-out infinite;pointer-events:none;}
-body:not(.dark) .ob-blob1,body:not(.dark) .ob-blob2,body:not(.dark) .ob-blob3{display:none;}
-/* Grid */
-.ob-grid{position:absolute;inset:0;background-size:52px 52px;pointer-events:none;}
-body.dark .ob-grid{background-image:linear-gradient(rgba(191,155,78,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(191,155,78,.04) 1px,transparent 1px);}
-body:not(.dark) .ob-grid{background-image:linear-gradient(rgba(193,126,135,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(193,126,135,.07) 1px,transparent 1px);}
-/* Card */
-.ob-card{position:relative;width:100%;max-width:560px;border-radius:24px;overflow:hidden;animation:obEnter .55s cubic-bezier(.22,1,.36,1) both;}
-body.dark .ob-card{background:linear-gradient(160deg,rgba(14,12,26,.98) 0%,rgba(8,8,20,.99) 100%);border:1px solid rgba(191,155,78,.2);box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(191,155,78,.06) inset;}
-body:not(.dark) .ob-card{background:linear-gradient(160deg,#ffffff 0%,#fff5f6 100%);border:1px solid rgba(193,126,135,.25);box-shadow:0 32px 80px rgba(45,14,20,.18),0 0 0 1px rgba(193,126,135,.06) inset;}
-.ob-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;}
-body.dark .ob-card::before{background:linear-gradient(90deg,transparent,rgba(191,155,78,.5),rgba(0,212,255,.3),transparent);}
-body:not(.dark) .ob-card::before{background:linear-gradient(90deg,transparent,rgba(193,126,135,.5),rgba(212,164,172,.3),transparent);}
-/* Progress bar */
-.ob-progress-bar{height:2px;position:relative;overflow:hidden;}
-body.dark .ob-progress-bar{background:rgba(255,255,255,.05);}
-body:not(.dark) .ob-progress-bar{background:rgba(45,14,20,.08);}
-.ob-progress-fill{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.65,0,.35,1);}
-body.dark .ob-progress-fill{background:linear-gradient(90deg,#BF9B4E,#FFE08A,#00D4FF);}
-body:not(.dark) .ob-progress-fill{background:linear-gradient(90deg,var(--gold),var(--gold-l),#D4A4AC);}
-/* Body */
-.ob-body{padding:2.2rem 2.2rem 1.6rem;position:relative;z-index:1;}
-.ob-slide{animation:obSlideIn .42s cubic-bezier(.22,1,.36,1) both;}
-/* Icon */
-.ob-icon-wrap{position:relative;width:80px;height:80px;margin:0 auto 1.6rem;display:flex;align-items:center;justify-content:center;}
-.ob-icon-ring{position:absolute;inset:0;border-radius:50%;animation:obGlowPulse 3s ease-in-out infinite;}
-body.dark .ob-icon-ring{border:1px solid rgba(191,155,78,.2);}
-body:not(.dark) .ob-icon-ring{border:1px solid rgba(193,126,135,.3);}
-.ob-icon-ring2{position:absolute;inset:8px;border-radius:50%;}
-body.dark .ob-icon-ring2{border:1px dashed rgba(191,155,78,.12);}
-body:not(.dark) .ob-icon-ring2{border:1px dashed rgba(193,126,135,.2);}
-.ob-icon-orbit{position:absolute;inset:0;animation:obOrbit 5s linear infinite;}
-.ob-icon-orb{position:absolute;top:0;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;}
-body.dark .ob-icon-orb{background:linear-gradient(135deg,#FFE08A,#BF9B4E);box-shadow:0 0 8px rgba(191,155,78,.8);}
-body:not(.dark) .ob-icon-orb{background:linear-gradient(135deg,var(--gold-l),var(--gold));box-shadow:0 0 8px rgba(193,126,135,.6);}
-.ob-icon-bg{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;animation:obIconPop .5s .1s cubic-bezier(.34,1.56,.64,1) both;}
-body.dark .ob-icon-bg{background:linear-gradient(135deg,rgba(191,155,78,.15),rgba(191,155,78,.06));border:1px solid rgba(191,155,78,.25);}
-body:not(.dark) .ob-icon-bg{background:linear-gradient(135deg,rgba(193,126,135,.12),rgba(193,126,135,.04));border:1px solid rgba(193,126,135,.3);}
-/* Text */
-.ob-eyebrow{font-size:.55rem;letter-spacing:.25em;text-transform:uppercase;font-weight:600;text-align:center;margin-bottom:.55rem;}
-body.dark .ob-eyebrow{color:rgba(0,212,255,.65);}
-body:not(.dark) .ob-eyebrow{color:var(--gold);}
-.ob-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.7rem;font-weight:300;line-height:1.2;text-align:center;margin-bottom:.7rem;}
-body.dark .ob-title{color:#FFE08A;}
-body:not(.dark) .ob-title{color:var(--cta);}
-.ob-desc{font-size:.82rem;text-align:center;line-height:1.75;max-width:400px;margin:0 auto;}
-body.dark .ob-desc{color:rgba(255,255,255,.45);}
-body:not(.dark) .ob-desc{color:rgba(45,14,20,.62);}
-/* Features */
-.ob-features{display:flex;flex-direction:column;gap:.55rem;margin-top:1.3rem;}
-.ob-feat{display:flex;align-items:flex-start;gap:.8rem;padding:.7rem .9rem;border-radius:12px;transition:border-color .25s,background .25s;}
-body.dark .ob-feat{background:rgba(255,255,255,.025);border:1px solid rgba(191,155,78,.1);}
-body.dark .ob-feat:hover{background:rgba(191,155,78,.06);border-color:rgba(191,155,78,.22);}
-body:not(.dark) .ob-feat{background:rgba(193,126,135,.05);border:1px solid rgba(193,126,135,.15);}
-body:not(.dark) .ob-feat:hover{background:rgba(193,126,135,.1);border-color:rgba(193,126,135,.3);}
-.ob-feat-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:.05rem;}
-body.dark .ob-feat-ico{background:linear-gradient(135deg,rgba(191,155,78,.18),rgba(191,155,78,.07));border:1px solid rgba(191,155,78,.2);}
-body:not(.dark) .ob-feat-ico{background:linear-gradient(135deg,rgba(193,126,135,.14),rgba(193,126,135,.05));border:1px solid rgba(193,126,135,.22);}
-.ob-feat-title{font-size:.76rem;font-weight:600;margin-bottom:.18rem;}
-body.dark .ob-feat-title{color:rgba(255,255,255,.8);}
-body:not(.dark) .ob-feat-title{color:var(--cta);}
-.ob-feat-desc{font-size:.7rem;line-height:1.5;}
-body.dark .ob-feat-desc{color:rgba(255,255,255,.35);}
-body:not(.dark) .ob-feat-desc{color:var(--muted);}
-/* Tip */
-.ob-tip-box{margin-top:1.2rem;padding:.8rem 1rem;border-radius:12px;font-size:.74rem;line-height:1.6;text-align:center;}
-body.dark .ob-tip-box{background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(0,180,220,.03));border:1px solid rgba(0,212,255,.15);color:rgba(0,212,255,.7);}
-body:not(.dark) .ob-tip-box{background:rgba(193,126,135,.07);border:1px solid rgba(193,126,135,.22);color:var(--gold);}
-/* Footer */
-.ob-footer{display:flex;align-items:center;justify-content:space-between;padding:1rem 2.2rem 1.5rem;gap:.75rem;}
-body.dark .ob-footer{border-top:1px solid rgba(255,255,255,.05);}
-body:not(.dark) .ob-footer{border-top:1px solid var(--border);}
-.ob-dots{display:flex;gap:.45rem;align-items:center;}
-.ob-dot{width:6px;height:6px;border-radius:50%;transition:all .3s cubic-bezier(.34,1.56,.64,1);cursor:pointer;}
-body.dark .ob-dot{background:rgba(255,255,255,.18);}
-body:not(.dark) .ob-dot{background:rgba(45,14,20,.18);}
-.ob-dot.on{width:20px;border-radius:3px;box-shadow:0 0 10px rgba(191,155,78,.5);}
-body.dark .ob-dot.on{background:linear-gradient(90deg,#BF9B4E,#FFE08A);}
-body:not(.dark) .ob-dot.on{background:linear-gradient(90deg,var(--gold),var(--gold-l));box-shadow:0 0 10px rgba(193,126,135,.4);}
-.ob-skip{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:none;cursor:pointer;padding:.3rem .5rem;transition:color .2s;font-family:var(--sans);}
-body.dark .ob-skip{color:rgba(255,255,255,.25);}
-body.dark .ob-skip:hover{color:rgba(255,255,255,.5);}
-body:not(.dark) .ob-skip{color:rgba(45,14,20,.35);}
-body:not(.dark) .ob-skip:hover{color:rgba(45,14,20,.65);}
-.ob-btn-wrap{display:flex;gap:.6rem;}
-.ob-btn-next{display:flex;align-items:center;gap:.5rem;border:none;border-radius:999px;padding:.6rem 1.4rem;font-family:var(--sans);font-size:.74rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:opacity .2s,box-shadow .2s,transform .2s;}
-body.dark .ob-btn-next{background:linear-gradient(135deg,#BF9B4E,#D4B880);color:#02030A;box-shadow:0 4px 18px rgba(191,155,78,.35);}
-body.dark .ob-btn-next:hover{opacity:.9;box-shadow:0 6px 26px rgba(191,155,78,.5);transform:translateY(-1px);}
-body:not(.dark) .ob-btn-next{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;box-shadow:0 4px 18px rgba(193,126,135,.35);}
-body:not(.dark) .ob-btn-next:hover{opacity:.9;box-shadow:0 6px 26px rgba(193,126,135,.5);transform:translateY(-1px);}
-.ob-btn-next:active{transform:scale(.97);}
-.ob-btn-back{display:flex;align-items:center;gap:.4rem;border-radius:999px;padding:.58rem 1rem;font-family:var(--sans);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;}
-body.dark .ob-btn-back{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);}
-body.dark .ob-btn-back:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);}
-body:not(.dark) .ob-btn-back{background:rgba(193,126,135,.07);border:1px solid rgba(193,126,135,.25);color:var(--gold);}
-body:not(.dark) .ob-btn-back:hover{background:rgba(193,126,135,.15);color:var(--cta);}
-/* Glow */
-.ob-welcome-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:320px;height:200px;pointer-events:none;}
-body.dark .ob-welcome-glow{background:radial-gradient(ellipse,rgba(191,155,78,.12) 0%,transparent 70%);}
-body:not(.dark) .ob-welcome-glow{background:radial-gradient(ellipse,rgba(193,126,135,.1) 0%,transparent 70%);}
+/* ═══ TOUR GUIDE ═══ */
+@keyframes tgTipIn{from{opacity:0;transform:scale(.88) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
+@keyframes tgSheetUp{from{opacity:0;transform:translateY(64px);}to{opacity:1;transform:translateY(0);}}
+@keyframes tgRipple{0%{transform:scale(1);opacity:.55;}100%{transform:scale(3);opacity:0;}}
+@keyframes tgSpotFadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes tgPulseRing{0%,100%{transform:scale(1);opacity:.7;}50%{transform:scale(1.04);opacity:1;}}
+/* ── Tour overlay (SVG handles the dim, this is the pointer blocker) ── */
+.tg-ov{position:fixed;inset:0;z-index:9000;pointer-events:none;}
+/* Ripple */
+.tg-ripple{position:fixed;border-radius:50%;pointer-events:none;z-index:9003;animation:tgRipple .65s ease-out forwards;background:rgba(191,155,78,.32);}
+body:not(.dark) .tg-ripple{background:rgba(193,126,135,.32);}
+/* Desktop tooltip */
+.tg-tip{position:fixed;z-index:9010;width:296px;border-radius:16px;overflow:hidden;animation:tgTipIn .32s cubic-bezier(.22,1,.36,1) both;pointer-events:all;box-shadow:0 20px 56px rgba(0,0,0,.5),0 0 0 1px rgba(191,155,78,.08) inset;}
+body.dark .tg-tip{background:rgba(9,8,22,.97);border:1px solid rgba(191,155,78,.22);}
+body:not(.dark) .tg-tip{background:#fff;border:1px solid rgba(193,126,135,.28);box-shadow:0 20px 56px rgba(45,14,20,.14),0 0 0 1px rgba(193,126,135,.06) inset;}
+/* Top accent bar */
+.tg-tip-bar{height:2px;}
+body.dark .tg-tip-bar{background:linear-gradient(90deg,#BF9B4E,#FFE08A,rgba(78,171,255,.8));}
+body:not(.dark) .tg-tip-bar{background:linear-gradient(90deg,var(--gold),var(--gold-l));}
+/* Tooltip arrow */
+.tg-arrow{position:absolute;width:0;height:0;pointer-events:none;}
+.tg-arrow.from-top{top:-7px;border-left:7px solid transparent;border-right:7px solid transparent;}
+body.dark .tg-arrow.from-top{border-bottom:7px solid rgba(191,155,78,.22);}
+body:not(.dark) .tg-arrow.from-top{border-bottom:7px solid rgba(193,126,135,.28);}
+.tg-arrow.from-bottom{bottom:-7px;border-left:7px solid transparent;border-right:7px solid transparent;}
+body.dark .tg-arrow.from-bottom{border-top:7px solid rgba(191,155,78,.22);}
+body:not(.dark) .tg-arrow.from-bottom{border-top:7px solid rgba(193,126,135,.28);}
+.tg-arrow.from-right{right:-7px;top:50%;transform:translateY(-50%);border-top:7px solid transparent;border-bottom:7px solid transparent;}
+body.dark .tg-arrow.from-right{border-left:7px solid rgba(191,155,78,.22);}
+body:not(.dark) .tg-arrow.from-right{border-left:7px solid rgba(193,126,135,.28);}
+.tg-arrow.from-left{left:-7px;top:50%;transform:translateY(-50%);border-top:7px solid transparent;border-bottom:7px solid transparent;}
+body.dark .tg-arrow.from-left{border-right:7px solid rgba(191,155,78,.22);}
+body:not(.dark) .tg-arrow.from-left{border-right:7px solid rgba(193,126,135,.28);}
+/* Tip head */
+.tg-tip-hd{padding:.85rem 1rem .4rem;display:flex;align-items:center;gap:.55rem;}
+.tg-badge{font-size:.54rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.19rem .55rem;border-radius:999px;white-space:nowrap;flex-shrink:0;}
+body.dark .tg-badge{background:rgba(191,155,78,.12);color:#BF9B4E;border:1px solid rgba(191,155,78,.22);}
+body:not(.dark) .tg-badge{background:rgba(193,126,135,.1);color:var(--gold);border:1px solid rgba(193,126,135,.22);}
+.tg-title{font-size:.84rem;font-weight:700;line-height:1.25;}
+body.dark .tg-title{color:#FAF8F3;}
+body:not(.dark) .tg-title{color:var(--cta);}
+/* Tip body */
+.tg-body{padding:.1rem 1rem .7rem;font-size:.73rem;line-height:1.72;}
+body.dark .tg-body{color:rgba(255,255,255,.46);}
+body:not(.dark) .tg-body{color:var(--muted);}
+/* Progress */
+.tg-prog{height:2px;margin:0 1rem .65rem;border-radius:2px;overflow:hidden;}
+body.dark .tg-prog{background:rgba(255,255,255,.07);}
+body:not(.dark) .tg-prog{background:rgba(45,14,20,.08);}
+.tg-prog-fill{height:100%;border-radius:2px;transition:width .45s cubic-bezier(.65,0,.35,1);}
+body.dark .tg-prog-fill{background:linear-gradient(90deg,#BF9B4E,#FFE08A);}
+body:not(.dark) .tg-prog-fill{background:linear-gradient(90deg,var(--gold),var(--gold-l));}
+/* Tip footer */
+.tg-ft{padding:.6rem 1rem .75rem;display:flex;align-items:center;justify-content:space-between;gap:.4rem;}
+body.dark .tg-ft{border-top:1px solid rgba(255,255,255,.05);}
+body:not(.dark) .tg-ft{border-top:1px solid var(--border);}
+.tg-skip{font-size:.59rem;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:none;cursor:pointer;font-family:var(--sans);transition:color .2s;padding:.2rem .25rem;}
+body.dark .tg-skip{color:rgba(255,255,255,.2);}
+body.dark .tg-skip:hover{color:rgba(255,255,255,.5);}
+body:not(.dark) .tg-skip{color:rgba(45,14,20,.28);}
+body:not(.dark) .tg-skip:hover{color:rgba(45,14,20,.6);}
+.tg-btns{display:flex;gap:.38rem;}
+.tg-btn-bk{font-size:.67rem;font-weight:600;font-family:var(--sans);border-radius:999px;padding:.36rem .8rem;cursor:pointer;transition:all .2s;}
+body.dark .tg-btn-bk{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);}
+body.dark .tg-btn-bk:hover{background:rgba(255,255,255,.1);color:#fff;}
+body:not(.dark) .tg-btn-bk{background:rgba(193,126,135,.07);border:1px solid rgba(193,126,135,.2);color:var(--gold);}
+body:not(.dark) .tg-btn-bk:hover{background:rgba(193,126,135,.14);}
+.tg-btn-nx{font-size:.67rem;font-weight:700;font-family:var(--sans);border:none;border-radius:999px;padding:.38rem .92rem;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+body.dark .tg-btn-nx{background:linear-gradient(135deg,#BF9B4E,#D4B880);color:#02030A;box-shadow:0 3px 12px rgba(191,155,78,.35);}
+body.dark .tg-btn-nx:hover{box-shadow:0 5px 18px rgba(191,155,78,.5);transform:translateY(-1px);}
+body:not(.dark) .tg-btn-nx{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;box-shadow:0 3px 12px rgba(193,126,135,.3);}
+body:not(.dark) .tg-btn-nx:hover{box-shadow:0 5px 18px rgba(193,126,135,.45);transform:translateY(-1px);}
+.tg-btn-nx:active{transform:scale(.96);}
+/* Mobile bottom sheet */
+.tg-sheet{position:fixed;bottom:0;left:0;right:0;z-index:9010;border-radius:20px 20px 0 0;padding:.9rem 1.2rem calc(env(safe-area-inset-bottom,0px) + 1.4rem);pointer-events:all;animation:tgSheetUp .36s cubic-bezier(.22,1,.36,1) both;}
+body.dark .tg-sheet{background:rgba(9,8,22,.99);border-top:1px solid rgba(191,155,78,.18);box-shadow:0 -12px 40px rgba(0,0,0,.5);}
+body:not(.dark) .tg-sheet{background:#fff;border-top:1px solid rgba(193,126,135,.22);box-shadow:0 -10px 36px rgba(45,14,20,.1);}
+.tg-drag{width:32px;height:4px;border-radius:2px;margin:0 auto .8rem;}
+body.dark .tg-drag{background:rgba(255,255,255,.14);}
+body:not(.dark) .tg-drag{background:rgba(45,14,20,.14);}
+.tg-sheet-hd{display:flex;align-items:center;gap:.55rem;margin-bottom:.45rem;}
+.tg-sheet-title{font-size:.9rem;font-weight:700;flex:1;}
+body.dark .tg-sheet-title{color:#FAF8F3;}
+body:not(.dark) .tg-sheet-title{color:var(--cta);}
+.tg-sheet-body{font-size:.76rem;line-height:1.75;margin-bottom:.8rem;}
+body.dark .tg-sheet-body{color:rgba(255,255,255,.46);}
+body:not(.dark) .tg-sheet-body{color:var(--muted);}
+.tg-sheet-ft{display:flex;align-items:center;justify-content:space-between;gap:.4rem;}
+/* Dots */
+.tg-dots{display:flex;gap:.32rem;align-items:center;}
+.tg-dot{width:5px;height:5px;border-radius:50%;transition:all .3s cubic-bezier(.34,1.56,.64,1);}
+body.dark .tg-dot{background:rgba(255,255,255,.18);}
+body:not(.dark) .tg-dot{background:rgba(45,14,20,.15);}
+.tg-dot.on{width:16px;border-radius:2px;}
+body.dark .tg-dot.on{background:linear-gradient(90deg,#BF9B4E,#FFE08A);box-shadow:0 0 8px rgba(191,155,78,.4);}
+body:not(.dark) .tg-dot.on{background:linear-gradient(90deg,var(--gold),var(--gold-l));}
+/* No-target centered card */
+.tg-center{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9010;width:min(320px,88vw);border-radius:18px;padding:1.6rem 1.4rem;pointer-events:all;animation:tgTipIn .35s cubic-bezier(.22,1,.36,1) both;}
+body.dark .tg-center{background:rgba(9,8,22,.97);border:1px solid rgba(191,155,78,.2);box-shadow:0 24px 60px rgba(0,0,0,.5);}
+body:not(.dark) .tg-center{background:#fff;border:1px solid rgba(193,126,135,.25);box-shadow:0 24px 60px rgba(45,14,20,.12);}
 /* ── Mobile ── */
-@media(max-width:600px){
-  .ob-ov{padding:0;align-items:flex-end;}
-  .ob-card{border-radius:20px 20px 0 0;max-height:92vh;max-height:92dvh;overflow-y:auto;}
-  .ob-body{padding:1.4rem 1.2rem 1rem;}
-  .ob-footer{padding:.75rem 1.2rem 1rem;flex-wrap:wrap;}
-  .ob-skip{order:1;}
-  .ob-btn-wrap{order:2;margin-left:auto;}
-  .ob-dots{order:3;flex:0 0 100%;justify-content:center;padding-top:.25rem;}
-  .ob-title{font-size:1.3rem;}
-  .ob-desc{font-size:.78rem;}
-  .ob-icon-wrap{width:60px;height:60px;margin-bottom:1.1rem;}
-  .ob-icon-bg{width:42px;height:42px;font-size:1.2rem;}
-  .ob-features{gap:.4rem;margin-top:.9rem;}
-  .ob-feat{padding:.55rem .7rem;gap:.55rem;}
-  .ob-feat-ico{width:28px;height:28px;font-size:.8rem;}
-  .ob-feat-title{font-size:.72rem;}
-  .ob-feat-desc{font-size:.67rem;}
-  .ob-tip-box{font-size:.7rem;padding:.6rem .8rem;margin-top:.9rem;}
+@media(max-width:767px){
+  .tg-tip{display:none;}
 }
-/* ── Tablet ── */
-@media(min-width:601px) and (max-width:800px){
-  .ob-card{max-width:480px;}
-  .ob-body{padding:1.8rem 1.8rem 1.3rem;}
-  .ob-footer{padding:.9rem 1.8rem 1.3rem;}
-  .ob-title{font-size:1.5rem;}
+/* ── Desktop: hide sheet ── */
+@media(min-width:768px){
+  .tg-sheet{display:none;}
+}
+/* ── Landscape phone ── */
+@media(max-width:767px) and (orientation:landscape){
+  .tg-sheet{padding:.6rem 1.2rem calc(env(safe-area-inset-bottom,0px) + .8rem);border-radius:14px 14px 0 0;}
+  .tg-drag{margin-bottom:.5rem;}
+  .tg-sheet-body{margin-bottom:.5rem;font-size:.72rem;}
 }
 `;
 
@@ -7241,123 +7209,203 @@ function LuxuryFooter({ onTab, onRI }) {
   );
 }
 
-/* ═══ ONBOARDING GUIDE COMPONENT ═══ */
-const OB_SLIDES = [
-  {
-    eyebrow: "Welcome to NB Property",
-    title: "Your Luxury Property Journey Starts Here",
-    icon: "🏠",
-    desc: "Discover premium new launches across Penang Island and Seberang Perai — curated for every lifestyle and budget.",
-    features: [
-      { ico: "🏘️", title: "250+ Projects Listed", desc: "Every new launch in Penang, verified and kept up to date." },
-      { ico: "⚖️", title: "Compare Side by Side", desc: "Stack up to 5 projects and compare specs, price, and facilities." },
-      { ico: "🧮", title: "Luxury Loan Calculator", desc: "Instant financing intelligence — monthly installments, legal fees, and net cash out." },
-    ],
-  },
-  {
-    eyebrow: "Browsing Properties",
-    title: "Filter, Search & Explore",
-    icon: "🔍",
-    desc: "Use the powerful filter system to narrow down by type, price, bedrooms, tenure, and more.",
-    features: [
-      { ico: "🏷️", title: "Smart Filters", desc: "Filter by property type, area, status, bedrooms, size, and completion year." },
-      { ico: "💰", title: "Price Range Slider", desc: "Instantly narrow results to your exact budget — from starter condos to premium residences." },
-      { ico: "📋", title: "Detailed Project Pages", desc: "Each project has a full cinematic detail page with gallery, facilities, location map, and floor plans." },
-    ],
-  },
-  {
-    eyebrow: "Finance & Planning",
-    title: "Calculate Your Monthly Commitment",
-    icon: "📈",
-    desc: "Our Loan Calculator handles discount, rebate, legal fees, stamp duty, and MOT — giving you the true cost picture.",
-    features: [
-      { ico: "📉", title: "Discount & Rebate Logic", desc: "Enter developer discounts and cashback to see your actual SPA price and savings." },
-      { ico: "🌐", title: "Local & Foreign Buyer", desc: "Switch between local and foreign buyer mode — MOT, levy, and state fees auto-calculate." },
-      { ico: "💾", title: "Save & Share Results", desc: "Save your calculation and share it directly to your agent via WhatsApp." },
-    ],
-    tip: "💡 Head to the Tools tab to access the full Loan Calculator dashboard.",
-  },
-  {
-    eyebrow: "Register Your Interest",
-    title: "Talk to an Agent Anytime",
-    icon: "💬",
-    desc: "Found something you love? Register interest directly from any project page — or reach out via WhatsApp for personalised advice.",
-    features: [
-      { ico: "✉️", title: "Register Interest", desc: "Submit your enquiry directly from any project detail page in seconds." },
-      { ico: "📍", title: "Visit Showroom", desc: "Book a showroom visit directly from the project page — available where listed." },
-      { ico: "🤝", title: "Personalised Guidance", desc: "Our agents listen first and match you with the right project for your needs." },
-    ],
-    tip: "💡 Tap the phone FAB button on any project page to register interest or visit a showroom.",
-  },
+/* ═══ TOUR GUIDE COMPONENT ═══ */
+const TOUR_STEPS = [
+  { target: () => document.querySelector('.nav-logo'),                     title: 'Welcome to NB Property',    desc: 'Your complete guide to premium new launches in Penang. Browse, compare, and calculate — all in one place.' },
+  { target: () => document.querySelectorAll('.ntab')[0],                   title: 'Home',                      desc: 'The Home tab showcases hero projects, live stats, and curated highlights — your starting point every visit.' },
+  { target: () => document.querySelectorAll('.ntab')[1],                   title: 'Browse Properties',         desc: 'Explore hundreds of verified new launch projects. Filter by type, location, price, bedrooms, and completion year.' },
+  { target: () => document.querySelector('.fd-trigger'),                   title: 'Smart Filters',             desc: 'Tap Filters to narrow results instantly by property type, area, status, bedrooms, size, and developer.' },
+  { target: () => document.querySelector('.proj-card'),                    title: 'Project Cards',             desc: 'Click any card for the full cinematic detail page — gallery, floor plans, facilities, location map and pricing.' },
+  { target: () => document.querySelectorAll('.ntab')[2],                   title: 'Compare Projects',          desc: 'Add up to 5 projects and compare specs, pricing, size and facilities side by side — instantly.' },
+  { target: () => document.querySelectorAll('.ntab')[3],                   title: 'Loan Calculator',           desc: 'Calculate true monthly costs — discounts, rebates, legal fees, stamp duty and MOT for local and foreign buyers.' },
+  { target: () => document.querySelector('.nav-theme'),                    title: 'Light & Dark Mode',         desc: 'Switch themes anytime. Your preference is saved and remembered across every visit.' },
 ];
 
-function OnboardingGuide({ onDone }) {
-  const [step, setStep] = useState(0);
-  const [animKey, setAnimKey] = useState(0);
-  const total = OB_SLIDES.length;
-  const slide = OB_SLIDES[step];
-  const pct = ((step + 1) / total) * 100;
+function TourGuide({ steps, onDone }) {
+  const PAD = 12, TW = 296, TH = 200, GAP = 16, EDGE = 10;
+  const [step,   setStep]   = useState(0);
+  const [spot,   setSpot]   = useState({ x:0, y:0, w:0, h:0, ok:false });
+  const [side,   setSide]   = useState('bottom');
+  const [aKey,   setAKey]   = useState(0);
+  const [ripples,setRipples]= useState([]);
+  const [mob,    setMob]    = useState(() => window.innerWidth < 768);
+  const txRef = useRef(0), tyRef = useRef(0);
 
-  const goTo = (n) => { setStep(n); setAnimKey(k => k + 1); };
-  const next = () => { if (step < total - 1) goTo(step + 1); else onDone(); };
-  const back = () => { if (step > 0) goTo(step - 1); };
+  const measure = useCallback(() => {
+    const s = steps[step];
+    const el = typeof s.target === 'function' ? s.target() : document.querySelector(s.target);
+    if (!el) { setSpot(v => ({ ...v, ok: false })); return; }
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) { setSpot(v => ({ ...v, ok: false })); return; }
+    const vw = window.innerWidth, vh = window.innerHeight;
+    setSpot({ x: r.left, y: r.top, w: r.width, h: r.height, ok: true });
+    const spB = vh - r.bottom - PAD, spT = r.top - PAD;
+    const spR = vw - r.right - PAD,  spL = r.left - PAD;
+    if      (spB >= TH + GAP) setSide('bottom');
+    else if (spT >= TH + GAP) setSide('top');
+    else if (spR >= TW + GAP) setSide('right');
+    else if (spL >= TW + GAP) setSide('left');
+    else                       setSide('bottom');
+  }, [step, steps]);
+
+  useEffect(() => {
+    const s = steps[step];
+    const el = typeof s.target === 'function' ? s.target() : document.querySelector(s.target);
+    if (el && el.getBoundingClientRect().width > 0) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+    const t = setTimeout(measure, 360);
+    setAKey(k => k + 1);
+    return () => clearTimeout(t);
+  }, [step]);
+
+  useEffect(() => {
+    const h = () => { setMob(window.innerWidth < 768); measure(); };
+    window.addEventListener('resize', h);
+    window.addEventListener('scroll', h, true);
+    return () => { window.removeEventListener('resize', h); window.removeEventListener('scroll', h, true); };
+  }, [measure]);
+
+  useEffect(() => {
+    const onKey = e => {
+      if (e.key === 'Escape')                              onDone();
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [step]);
+
+  const ripple = () => {
+    if (!spot.ok) return;
+    const id = Date.now(), cx = spot.x + spot.w / 2, cy = spot.y + spot.h / 2;
+    setRipples(r => [...r, { id, cx, cy }]);
+    setTimeout(() => setRipples(r => r.filter(x => x.id !== id)), 680);
+  };
+
+  const go = dir => {
+    ripple();
+    if (dir > 0) { if (step < steps.length - 1) setStep(s => s + 1); else onDone(); }
+    else         { if (step > 0)                setStep(s => s - 1); }
+  };
+
+  const tipPos = () => {
+    if (!spot.ok) return { top: '50%', left: '50%', transform: 'translate(-50%,-50%)' };
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const cx = spot.x + spot.w / 2;
+    switch (side) {
+      case 'bottom': return { left: Math.max(EDGE, Math.min(cx - TW/2, vw - TW - EDGE)), top: spot.y + spot.h + PAD + GAP };
+      case 'top':    return { left: Math.max(EDGE, Math.min(cx - TW/2, vw - TW - EDGE)), top: Math.max(EDGE, spot.y - PAD - GAP - TH) };
+      case 'right':  return { left: spot.x + spot.w + PAD + GAP, top: Math.max(EDGE, Math.min(spot.y + spot.h/2 - TH/2, vh - TH - EDGE)) };
+      case 'left':   return { right: vw - (spot.x - PAD - GAP), top: Math.max(EDGE, Math.min(spot.y + spot.h/2 - TH/2, vh - TH - EDGE)) };
+      default:       return {};
+    }
+  };
+
+  const arrowH = () => {
+    if (!spot.ok || (side !== 'bottom' && side !== 'top')) return {};
+    const vw = window.innerWidth;
+    const cx  = spot.x + spot.w / 2;
+    const tl  = Math.max(EDGE, Math.min(cx - TW/2, vw - TW - EDGE));
+    return { left: Math.max(18, Math.min(cx - tl - 7, TW - 32)) };
+  };
+
+  const total = steps.length, pct = ((step + 1) / total) * 100;
+  const s = steps[step], isLast = step === total - 1;
+  const sx = spot.x - PAD, sy = spot.y - PAD, sw = spot.w + PAD*2, sh = spot.h + PAD*2;
+  /* SVG geometry CSS transitions — supported Chrome88+, FF89+, Safari15.4+ */
+  const geomT = 'x .4s cubic-bezier(.22,1,.36,1),y .4s cubic-bezier(.22,1,.36,1),width .4s cubic-bezier(.22,1,.36,1),height .4s cubic-bezier(.22,1,.36,1),opacity .28s';
+
+  const Tip = () => (
+    <>
+      <div className="tg-tip-bar"/>
+      {side === 'bottom' && <div className="tg-arrow from-top"  style={arrowH()}/>}
+      {side === 'top'    && <div className="tg-arrow from-bottom" style={arrowH()}/>}
+      {side === 'right'  && <div className="tg-arrow from-right"/>}
+      {side === 'left'   && <div className="tg-arrow from-left"/>}
+      <div className="tg-tip-hd">
+        <span className="tg-badge">{step + 1} / {total}</span>
+        <span className="tg-title">{s.title}</span>
+      </div>
+      <div className="tg-body">{s.desc}</div>
+      <div className="tg-prog"><div className="tg-prog-fill" style={{ width: `${pct}%` }}/></div>
+      <div className="tg-ft">
+        <button className="tg-skip" onClick={onDone}>Skip tour</button>
+        <div className="tg-btns">
+          {step > 0 && <button className="tg-btn-bk" onClick={() => go(-1)}>← Back</button>}
+          <button className="tg-btn-nx" onClick={() => go(1)}>{isLast ? 'Finish ✦' : 'Next →'}</button>
+        </div>
+      </div>
+    </>
+  );
 
   return (
-    <div className="ob-ov">
-      <div className="ob-grid"/>
-      <div className="ob-blob1"/>
-      <div className="ob-blob2"/>
-      <div className="ob-blob3"/>
-      <div className="ob-card">
-        <div className="ob-welcome-glow"/>
-        {/* Progress bar */}
-        <div className="ob-progress-bar">
-          <div className="ob-progress-fill" style={{ width: `${pct}%` }}/>
+    <div
+      className="tg-ov"
+      role="dialog" aria-modal="true" aria-label="Application tour"
+      onTouchStart={e => { txRef.current = e.touches[0].clientX; tyRef.current = e.touches[0].clientY; }}
+      onTouchEnd={e => {
+        const dx = txRef.current - e.changedTouches[0].clientX;
+        const dy = tyRef.current - e.changedTouches[0].clientY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 48) go(dx > 0 ? 1 : -1);
+      }}
+    >
+      {/* ── SVG spotlight overlay ── */}
+      <svg
+        key={`svg-${aKey}`}
+        style={{ position:'fixed', inset:0, width:'100%', height:'100%', zIndex:9001, pointerEvents:'none', animation:'tgSpotFadeIn .3s ease both' }}
+        aria-hidden="true"
+      >
+        <defs>
+          <mask id="tg-mask">
+            <rect width="100%" height="100%" fill="white"/>
+            <rect fill="black" style={{ x:sx, y:sy, width:sw, height:sh, rx:14, opacity: spot.ok ? 1 : 0, transition: geomT }}/>
+          </mask>
+        </defs>
+        {/* Dim layer */}
+        <rect width="100%" height="100%" fill="rgba(2,3,10,.82)" mask="url(#tg-mask)"/>
+        {/* Glow ring */}
+        <rect fill="none" stroke="rgba(191,155,78,.75)" strokeWidth="1.5"
+          style={{ x:sx, y:sy, width:sw, height:sh, rx:14, opacity: spot.ok ? 1 : 0, transition: geomT, filter:'drop-shadow(0 0 7px rgba(191,155,78,.55))' }}/>
+        {/* Outer soft ring */}
+        <rect fill="none" stroke="rgba(191,155,78,.18)" strokeWidth="1"
+          style={{ x:sx-6, y:sy-6, width:sw+12, height:sh+12, rx:20, opacity: spot.ok ? 1 : 0, transition: geomT }}/>
+      </svg>
+
+      {/* ── Ripple effects ── */}
+      {ripples.map(r => (
+        <div key={r.id} className="tg-ripple" style={{ left:r.cx-36, top:r.cy-36, width:72, height:72, zIndex:9002, position:'fixed', pointerEvents:'none' }}/>
+      ))}
+
+      {/* ── Desktop tooltip ── */}
+      <div
+        className="tg-tip"
+        key={`tip-${aKey}`}
+        style={{ ...tipPos(), position:'fixed', pointerEvents:'all' }}
+        role="status" aria-live="polite"
+      >
+        <Tip/>
+      </div>
+
+      {/* ── Mobile bottom sheet ── */}
+      <div
+        className="tg-sheet"
+        key={`sheet-${aKey}`}
+        role="status" aria-live="polite"
+      >
+        <div className="tg-drag"/>
+        <div className="tg-sheet-hd">
+          <span className="tg-badge">{step + 1} / {total}</span>
+          <span className="tg-sheet-title">{s.title}</span>
         </div>
-        {/* Body */}
-        <div className="ob-body">
-          <div key={`slide-${animKey}`} className="ob-slide">
-            {/* Icon */}
-            <div className="ob-icon-wrap">
-              <div className="ob-icon-ring"/>
-              <div className="ob-icon-ring2"/>
-              <div className="ob-icon-orbit"><div className="ob-icon-orb"/></div>
-              <div className="ob-icon-bg">{slide.icon}</div>
-            </div>
-            {/* Text */}
-            <div className="ob-eyebrow">{slide.eyebrow}</div>
-            <h2 className="ob-title">{slide.title}</h2>
-            <p className="ob-desc">{slide.desc}</p>
-            {/* Feature rows */}
-            <div className="ob-features">
-              {slide.features.map((f, i) => (
-                <div className="ob-feat" key={i} style={{ animationDelay: `${i * 0.08}s` }}>
-                  <div className="ob-feat-ico">{f.ico}</div>
-                  <div>
-                    <div className="ob-feat-title">{f.title}</div>
-                    <div className="ob-feat-desc">{f.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            {slide.tip && <div className="ob-tip-box">{slide.tip}</div>}
-          </div>
+        <p className="tg-sheet-body">{s.desc}</p>
+        <div className="tg-prog" style={{ margin:'0 0 .75rem' }}>
+          <div className="tg-prog-fill" style={{ width:`${pct}%` }}/>
         </div>
-        {/* Footer */}
-        <div className="ob-footer">
-          <button className="ob-skip" onClick={onDone}>Skip</button>
-          <div className="ob-dots">
-            {OB_SLIDES.map((_, i) => (
-              <div key={i} className={`ob-dot${i === step ? " on" : ""}`} onClick={() => goTo(i)}/>
-            ))}
-          </div>
-          <div className="ob-btn-wrap">
-            {step > 0 && (
-              <button className="ob-btn-back" onClick={back}>← Back</button>
-            )}
-            <button className="ob-btn-next" onClick={next}>
-              {step < total - 1 ? <>Next <span>→</span></> : <>Get Started ✦</>}
-            </button>
+        <div className="tg-sheet-ft">
+          <button className="tg-skip" onClick={onDone}>Skip</button>
+          <div className="tg-dots">{steps.map((_,i) => <div key={i} className={`tg-dot${i===step?' on':''}`}/>)}</div>
+          <div className="tg-btns">
+            {step > 0 && <button className="tg-btn-bk" onClick={() => go(-1)}>←</button>}
+            <button className="tg-btn-nx" onClick={() => go(1)}>{isLast ? 'Finish ✦' : 'Next →'}</button>
           </div>
         </div>
       </div>
@@ -7618,7 +7666,7 @@ export default function App(){
     <>
       <style>{css}</style>
       <CustomCursor/>
-      {showGuide&&<OnboardingGuide onDone={dismissGuide}/>}
+      {showGuide&&<TourGuide steps={TOUR_STEPS} onDone={dismissGuide}/>}
 
       {/* ── Mobile side-nav overlay — hidden on detail page ── */}
       {tab!=="detail"&&<div className={`mob-drawer-ov${mobileNavOpen?" open":""}`} onClick={()=>setMobileNavOpen(false)}/>}
