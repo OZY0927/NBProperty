@@ -685,6 +685,30 @@ body:not(.dark) .lc-savings-band strong{color:#16a34a;}
 body:not(.dark) .lc-savings-band span{color:#7A2238;}
 body:not(.dark) .lc-bm-badge{color:#166534;}
 body:not(.dark) .lc-sec-title{color:#7A2238;}
+/* ── Loan calculator light-theme text contrast fixes ── */
+body:not(.dark) .lc-flbl{color:rgba(45,14,20,.6);}
+body:not(.dark) .lc-fslider-ends{color:rgba(45,14,20,.38);}
+body:not(.dark) .lc-adj{color:rgba(45,14,20,.7);background:rgba(255,230,234,.4);border-color:rgba(193,126,135,.22);}
+body:not(.dark) .lc-rebate-note{color:rgba(45,14,20,.52);background:rgba(255,245,246,.6);border-color:rgba(193,126,135,.14);}
+body:not(.dark) .lc-tpill button{color:rgba(45,14,20,.45);}
+body:not(.dark) .lc-mode-toggle{border-color:rgba(193,126,135,.3);}
+body:not(.dark) .lc-mode-toggle button{color:rgba(45,14,20,.45);}
+body:not(.dark) .lc-monthly-meta{color:rgba(45,14,20,.5);}
+body:not(.dark) .lc-metric-lbl{color:rgba(45,14,20,.5);}
+body:not(.dark) .lc-metric-val.dim{color:rgba(45,14,20,.5);}
+body:not(.dark) .lc-netcash-lbl{color:rgba(22,101,52,.7);}
+body:not(.dark) .lc-netcash-val{color:#16a34a;}
+body:not(.dark) .lc-netcash-save-lbl{color:rgba(22,101,52,.6);}
+body:not(.dark) .lc-netcash-save-val{color:#16a34a;}
+body:not(.dark) .lc-bkd-total-lbl{color:#2D0E14;}
+body:not(.dark) .lc-bkd-note{color:rgba(45,14,20,.38);}
+body:not(.dark) .lc-amort-eyebrow{color:var(--gold);}
+body:not(.dark) .lc-amort-axis{color:rgba(45,14,20,.35);}
+body:not(.dark) .lc-amort-svg-wrap{background:rgba(193,126,135,.05);}
+body:not(.dark) .lc-cbar-title{color:rgba(45,14,20,.4);}
+body:not(.dark) .lc-cbar-leg{color:rgba(45,14,20,.5);}
+body:not(.dark) .lc-mob-monthly{color:rgba(45,14,20,.5);}
+body:not(.dark) .lc-mob-sub{color:rgba(45,14,20,.42);}
 body:not(.dark) .ob-ov{background:rgba(45,14,20,.7);}
 body:not(.dark) .ob-desc{color:rgba(45,14,20,.6);}
 body:not(.dark) .ob-eyebrow{color:#C17E87;}
