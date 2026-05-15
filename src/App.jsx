@@ -272,6 +272,11 @@ body.dark .proj-card{background:#141428;border-color:#2C2A3E;}
 body.dark .proj-card:hover{background:#1C1C30;border-color:rgba(191,155,78,.3);}
 body.dark .card{background:#141428;border-color:#2C2A3E;}
 body.dark .filter-panel{background:#141428;border-color:#2C2A3E;}
+/* Compare table dark overrides */
+body.dark .sec-hd{background:#080812;border-color:rgba(191,155,78,.12);}
+body.dark .val-cell.sec{background:#080812;border-color:rgba(191,155,78,.12);}
+body.dark .pdf-btn{background:#0D0D18;border-color:rgba(191,155,78,.25);}
+body.dark .pdf-btn:hover{border-color:#D4B880;}
 body.dark .lux-hero{background:#04040E;}
 body.dark .wcu-sec{background:#0D0D18;}
 body.dark .wcu-img-wrap{filter:brightness(.9);}
