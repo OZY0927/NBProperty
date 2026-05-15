@@ -7261,7 +7261,11 @@ const TOUR_STEPS = [
     ({ closeNav, goTab }) => { goTab('properties'); closeNav(); },
   ),
   mkStep(
-    () => document.querySelector('.proj-card'),
+    () => {
+      // Pick the first proj-card that is actually visible in the viewport (or any first one)
+      const cards = Array.from(document.querySelectorAll('.proj-card'));
+      return cards.find(c => c.getBoundingClientRect().width > 0) || null;
+    },
     'Project Cards',
     'Tap any card for the full detail page — gallery, floor plans, facilities, location map and pricing.',
     ({ closeNav, goTab }) => { goTab('properties'); closeNav(); },
@@ -7309,12 +7313,19 @@ function TourGuide({ steps, onDone, openNav, closeNav, goTab }) {
     if (typeof s.onEnter === 'function') {
       s.onEnter({ isMobile: isMobile(), openNav, closeNav, goTab });
     }
-    // Allow layout to settle before measuring
+    // Allow layout to settle before measuring; retry up to 4 times if element not yet in DOM
     const t1 = setTimeout(() => {
       const el = typeof s.target === 'function' ? s.target({ isMobile: isMobile() }) : document.querySelector(s.target);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
     }, 80);
-    const t2 = setTimeout(measure, 380);
+    let attempts = 0;
+    const tryMeasure = () => {
+      const el = typeof s.target === 'function' ? s.target({ isMobile: isMobile() }) : document.querySelector(s.target);
+      if (el && el.getBoundingClientRect().width > 0) { measure(); return; }
+      if (++attempts < 4) setTimeout(tryMeasure, 220);
+      else measure(); // fall through → spot.ok=false → centered display
+    };
+    const t2 = setTimeout(tryMeasure, 380);
     setAKey(k => k + 1);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [step]);
@@ -7731,7 +7742,7 @@ export default function App(){
     <>
       <style>{css}</style>
       <CustomCursor/>
-      {showGuide&&<TourGuide steps={TOUR_STEPS} onDone={()=>{closeNav&&closeNav();dismissGuide();}} openNav={()=>setMobileNavOpen(true)} closeNav={()=>setMobileNavOpen(false)} goTab={goTab}/>}
+      {showGuide&&<TourGuide steps={TOUR_STEPS} onDone={dismissGuide} openNav={()=>setMobileNavOpen(true)} closeNav={()=>setMobileNavOpen(false)} goTab={goTab}/>}
 
       {/* ── Mobile side-nav overlay — hidden on detail page ── */}
       {tab!=="detail"&&<div className={`mob-drawer-ov${mobileNavOpen?" open":""}`} onClick={()=>setMobileNavOpen(false)}/>}
