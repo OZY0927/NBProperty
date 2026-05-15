@@ -6864,8 +6864,10 @@ function LoanCalculator({settings}){
                 </defs>
               </svg>
               <div className="lc-monthly-ring-inner">
-                <div className="lc-monthly-ring-pct" style={{fontSize:'.62rem'}}>{fmtRM(Math.round(loan.monthly*(piePct/100)))}</div>
-                <div className="lc-monthly-ring-pctlbl">Principal</div>
+                <div style={{fontSize:'.52rem',fontWeight:700,color:'#D4B880',lineHeight:1.3}}>{fmtRM(Math.round(loan.monthly*(piePct/100)))}</div>
+                <div style={{fontSize:'.4rem',letterSpacing:'.08em',textTransform:'uppercase',color:'rgba(212,184,128,.45)',marginBottom:'.2rem'}}>Principal</div>
+                <div style={{fontSize:'.52rem',fontWeight:700,color:'rgba(191,155,78,.55)',lineHeight:1.3}}>{fmtRM(Math.round(loan.monthly*(1-piePct/100)))}</div>
+                <div style={{fontSize:'.4rem',letterSpacing:'.08em',textTransform:'uppercase',color:'rgba(212,184,128,.35)'}}>Interest</div>
               </div>
             </div>
             <div className="lc-monthly-val"><AnimNum value={Math.round(loan.monthly)} format={fmtRM}/></div>
