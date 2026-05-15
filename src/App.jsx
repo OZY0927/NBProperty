@@ -709,6 +709,8 @@ body:not(.dark) .lc-cbar-title{color:rgba(45,14,20,.4);}
 body:not(.dark) .lc-cbar-leg{color:rgba(45,14,20,.5);}
 body:not(.dark) .lc-mob-monthly{color:rgba(45,14,20,.5);}
 body:not(.dark) .lc-mob-sub{color:rgba(45,14,20,.42);}
+body:not(.dark) .lc-monthly-ring-pct{color:#7A2238;}
+body:not(.dark) .lc-monthly-ring-pctlbl{color:rgba(92,24,40,.5);}
 body:not(.dark) .ob-ov{background:rgba(45,14,20,.7);}
 body:not(.dark) .ob-desc{color:rgba(45,14,20,.6);}
 body:not(.dark) .ob-eyebrow{color:#C17E87;}
