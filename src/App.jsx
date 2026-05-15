@@ -6864,7 +6864,7 @@ function LoanCalculator({settings}){
                 </defs>
               </svg>
               <div className="lc-monthly-ring-inner">
-                <div className="lc-monthly-ring-pct">{piePct}%</div>
+                <div className="lc-monthly-ring-pct" style={{fontSize:'.62rem'}}>{fmtRM(Math.round(loan.monthly*(piePct/100)))}</div>
                 <div className="lc-monthly-ring-pctlbl">Principal</div>
               </div>
             </div>
@@ -6875,11 +6875,11 @@ function LoanCalculator({settings}){
             <div className="lc-monthly-legend">
               <div className="lc-monthly-leg">
                 <div className="lc-monthly-legdot" style={{background:"linear-gradient(135deg,#FFE08A,#BF9B4E)"}}/>
-                Principal {piePct}%
+                Principal {fmtRM(Math.round(loan.monthly*(piePct/100)))}
               </div>
               <div className="lc-monthly-leg">
                 <div className="lc-monthly-legdot" style={{background:"rgba(191,155,78,.22)"}}/>
-                Interest {100-piePct}%
+                Interest {fmtRM(Math.round(loan.monthly*(1-piePct/100)))}
               </div>
             </div>
           </div>
@@ -8004,8 +8004,6 @@ export default function App(){
           <button className="tray-clr" onClick={()=>setCmpIds([])}>Clear</button>
         </div>
       </>}
-
-      {tab!=="admin" && tab==="properties" && <LuxuryFooter onTab={setTab} onRI={openRI}/>}
 
       {tab==="compare"&&(
         <div className="cmp-pg">
