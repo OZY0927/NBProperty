@@ -3052,7 +3052,7 @@ body{background:#080812;color:#E8E4F0;}
    CINEMA DETAIL PAGE — Full Luxury Dark Redesign
 ═══════════════════════════════════════════════════════════ */
 .cine-cursor{position:fixed;pointer-events:none;z-index:99999;mix-blend-mode:difference;width:12px;height:12px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .3s;}
-.cine-cursor-ring{position:fixed;pointer-events:none;z-index:99998;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(191,155,78,.7);transform:translate(-50%,-50%);transition:left .03s ease-out,top .03s ease-out,width .25s,height .25s,border-color .25s,opacity .3s;}
+.cine-cursor-ring{position:fixed;pointer-events:none;z-index:99998;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(191,155,78,.7);transform:translate(-50%,-50%);transition:width .25s,height .25s,border-color .25s,opacity .3s;}
 .cine-cursor-ring.hovering{width:64px;height:64px;border-color:rgba(212,184,128,.9);box-shadow:0 0 24px rgba(191,155,78,.4);}
 body.cine-active *{cursor:none !important;}
 .cine-det{position:relative;min-height:100vh;background:#080810;color:#f0f0f0;font-family:'DM Sans',system-ui,sans-serif;overflow-x:hidden;}
@@ -4202,8 +4202,8 @@ function CustomCursor() {
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseover', onOver);
     const tick = () => {
-      ringPosRef.current.x += (posRef.current.x - ringPosRef.current.x) * 0.25;
-      ringPosRef.current.y += (posRef.current.y - ringPosRef.current.y) * 0.25;
+      ringPosRef.current.x += (posRef.current.x - ringPosRef.current.x) * 0.45;
+      ringPosRef.current.y += (posRef.current.y - ringPosRef.current.y) * 0.45;
       if (ringRef.current) {
         ringRef.current.style.left = ringPosRef.current.x + 'px';
         ringRef.current.style.top = ringPosRef.current.y + 'px';
