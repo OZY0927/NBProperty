@@ -79,13 +79,75 @@ async function crmCreateWebsiteEnquiryLead(data, settings) {
 }
 
 /* ═══ CRM — constants ═══ */
-const CRM_STATUSES = ["new","contacted","qualified","viewing","closed"];
-const CRM_STATUS_LABELS = { new:"New Lead", contacted:"Contacted", qualified:"Qualified", viewing:"Viewing", closed:"Closed" };
+const DEFAULT_CRM_STATUS_OPTIONS = [
+  { value: "new", label: "New Lead" },
+  { value: "contacted", label: "Contacted" },
+  { value: "qualified", label: "Qualified" },
+  { value: "viewing", label: "Viewing" },
+  { value: "closed", label: "Closed" },
+];
+const DEFAULT_CRM_SOURCE_OPTIONS = [
+  { value: "website", label: "Website" },
+  { value: "fb_ads", label: "Facebook Ads" },
+  { value: "referral", label: "Referral" },
+  { value: "walk_in", label: "Walk-in" },
+  { value: "other", label: "Other" },
+];
+const CRM_STATUSES = DEFAULT_CRM_STATUS_OPTIONS.map(option => option.value);
+const CRM_STATUS_LABELS = Object.fromEntries(DEFAULT_CRM_STATUS_OPTIONS.map(option => [option.value, option.label]));
 const CRM_STATUS_COLORS = { new:"#9090A8", contacted:"#5E8FD0", qualified:"#BF9B4E", viewing:"#4E9A72", closed:"#C4543E" };
 const CRM_STATUS_BG    = { new:"rgba(144,144,168,.15)", contacted:"rgba(94,143,208,.15)", qualified:"rgba(191,155,78,.15)", viewing:"rgba(78,154,114,.15)", closed:"rgba(196,84,62,.15)" };
-const CRM_SOURCES = ["website","fb_ads","referral","walk_in","other"];
-const CRM_SOURCE_LABELS = { website:"Website", fb_ads:"Facebook Ads", referral:"Referral", walk_in:"Walk-in", other:"Other" };
+const CRM_SOURCES = DEFAULT_CRM_SOURCE_OPTIONS.map(option => option.value);
+const CRM_SOURCE_LABELS = Object.fromEntries(DEFAULT_CRM_SOURCE_OPTIONS.map(option => [option.value, option.label]));
 const EMPTY_LEAD = { name:"", phone:"", email:"", budget:"", propertyInterest:"", source:"website", status:"new", assignedAgent:"", nextFollowUpDate:"", notes:"" };
+const CRM_OPTION_PALETTE = ["#9090A8", "#5E8FD0", "#BF9B4E", "#4E9A72", "#C4543E", "#8E8A84"];
+function slugifyCrmValue(value, fallback = "option") {
+  const raw = String(value ?? "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+  return raw || fallback;
+}
+function normalizeCrmOptionList(options, fallback) {
+  if (!Array.isArray(options)) {
+    return fallback.map(option => ({ ...option }));
+  }
+  const normalized = options
+    .map((option, index) => {
+      if (typeof option === "string") {
+        const label = option.trim();
+        if (!label) return null;
+        return { value: slugifyCrmValue(label, `option_${index + 1}`), label };
+      }
+      if (option && typeof option === "object") {
+        const label = String(option.label ?? option.name ?? "").trim();
+        const value = String(option.value ?? option.key ?? option.id ?? "").trim();
+        if (!label && !value) return null;
+        return {
+          value: slugifyCrmValue(value || label, `option_${index + 1}`),
+          label: label || value || `Option ${index + 1}`,
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+  return normalized.length ? normalized : fallback.map(option => ({ ...option }));
+}
+function getCrmOptionList(settings, kind) {
+  const fallback = kind === "status" ? DEFAULT_CRM_STATUS_OPTIONS : DEFAULT_CRM_SOURCE_OPTIONS;
+  const configured = kind === "status" ? settings?.crmStatusOptions : settings?.crmSourceOptions;
+  return normalizeCrmOptionList(configured, fallback);
+}
+function getCrmOptionLabel(options, value, fallbackLabel) {
+  const option = (options || []).find(entry => entry?.value === value);
+  return option?.label || fallbackLabel || value || "—";
+}
+function getCrmOptionColor(options, value, fallbackColor) {
+  const matchIndex = (options || []).findIndex(entry => entry?.value === value);
+  if (matchIndex >= 0) return CRM_OPTION_PALETTE[matchIndex % CRM_OPTION_PALETTE.length];
+  return fallbackColor || "var(--a-muted)";
+}
+function getCrmOptionStyle(options, value, fallbackColor, fallbackBg) {
+  const color = getCrmOptionColor(options, value, fallbackColor);
+  return { color, background: fallbackBg || `${color}18` };
+}
 
 /* ═══════════════════════════════════════════════
    DATA  –  unitTypes is now an array of objects,
@@ -120,7 +182,17 @@ const DEFAULT_SETTINGS = {
   telegramEnabled:  false,
   telegramBotToken: "",
   telegramChatId:   "",
+  crmStatusOptions: DEFAULT_CRM_STATUS_OPTIONS.map(option => ({ ...option })),
+  crmSourceOptions: DEFAULT_CRM_SOURCE_OPTIONS.map(option => ({ ...option })),
 };
+function normalizeSettings(settings = {}) {
+  return {
+    ...DEFAULT_SETTINGS,
+    ...settings,
+    crmStatusOptions: normalizeCrmOptionList(settings?.crmStatusOptions ?? DEFAULT_SETTINGS.crmStatusOptions, DEFAULT_CRM_STATUS_OPTIONS),
+    crmSourceOptions: normalizeCrmOptionList(settings?.crmSourceOptions ?? DEFAULT_SETTINGS.crmSourceOptions, DEFAULT_CRM_SOURCE_OPTIONS),
+  };
+}
 
 async function sendTelegramNotification(lead, settings) {
   if (!settings?.telegramEnabled) return;
@@ -5913,14 +5985,20 @@ const crmScore=(lead)=>{let s=0;if(lead.email)s+=15;if(lead.phone)s+=20;if(lead.
 const crmFmtDate=(ts)=>{if(!ts)return"—";const d=ts.toDate?ts.toDate():new Date(ts);const diff=(Date.now()-d)/1000;if(diff<60)return"just now";if(diff<3600)return`${Math.floor(diff/60)}m ago`;if(diff<86400)return`${Math.floor(diff/3600)}h ago`;if(diff<604800)return`${Math.floor(diff/86400)}d ago`;return d.toLocaleDateString("en-MY",{day:"numeric",month:"short",year:"2-digit"})+" · "+d.toLocaleTimeString("en-MY",{hour:"2-digit",minute:"2-digit",hour12:true});};
 const crmWaLink=(countryCode,phone,name,project)=>{const full=`${countryCode||'+60'}${phone||""}`;const p=full.replace(/[^0-9]/g,"");const msg=encodeURIComponent(`Hi, I'm following up on your enquiry${project?` about ${project}`:""}. Are you still interested?`);return{href:`https://wa.me/${p}?text=${msg}`,label:`${countryCode||'+60'} ${phone||""}`};};;
 const crmExportCSV=(leads)=>{const esc=v=>`"${String(v||"").replace(/"/g,'""')}"`;const headers=["Name","Phone","Email","Source","Status","Budget","Interest","Agent","Follow-up","Created","Notes"];const rows=leads.map(l=>[l.name,l.phone,l.email,l.source,l.status,l.budget,l.propertyInterest,l.assignedAgent,l.nextFollowUpDate,l.createdAt&&l.createdAt.toDate?l.createdAt.toDate().toISOString().split("T")[0]:"",l.notes].map(esc).join(","));const csv=[headers.join(","),...rows].join("\n");const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`leads_${new Date().toISOString().split("T")[0]}.csv`;a.click();URL.revokeObjectURL(url);};
-const LeadBadge=({status})=>(<span className="crm-badge" style={{color:CRM_STATUS_COLORS[status]||"var(--a-muted)",background:CRM_STATUS_BG[status]||"transparent",border:`1px solid ${(CRM_STATUS_COLORS[status]||"#333")}44`}}>{CRM_STATUS_LABELS[status]||status}</span>);
+const LeadBadge=({status,statusOptions=[]})=>{const label=getCrmOptionLabel(statusOptions,status,CRM_STATUS_LABELS[status]||status);const style=getCrmOptionStyle(statusOptions,status,CRM_STATUS_COLORS[status],CRM_STATUS_BG[status]);return(<span className="crm-badge" style={{color:style.color,background:style.background,border:`1px solid ${style.color}44`}}>{label}</span>);};
 const CRMScoreBar=({score})=>{const color=score>=75?"#4E9A72":score>=50?"#BF9B4E":score>=25?"#5E8FD0":"#C4543E";return(<span className="crm-score" style={{color}}>{score}<span className="crm-score-bar"><span className="crm-score-fill" style={{width:`${score}%`,background:color}}/></span></span>);};
-function LeadForm({lead,projects,onSave,onClose}){
+function LeadForm({lead,projects,onSave,onClose,statusOptions=DEFAULT_CRM_STATUS_OPTIONS,sourceOptions=DEFAULT_CRM_SOURCE_OPTIONS}){
   const blank={name:"",countryCode:"+60",phone:"",email:"",budget:"",propertyInterest:"",source:"website",status:"new",assignedAgent:"",nextFollowUpDate:"",notes:""};
+  const projectNames=(projects||[]).map(p=>p.name).filter(Boolean);
+  const initialLeadPropertyInterest=lead&&lead!=="new"?lead.propertyInterest||"":"";
+  const initialCustomPropertyInterest=initialLeadPropertyInterest&&!projectNames.includes(initialLeadPropertyInterest)?initialLeadPropertyInterest:"";
   const [f,setF]=useState({...blank,...(lead&&lead!=="new"?normalizeCrmLead(lead):{})});
+  const [customPropertyInterest,setCustomPropertyInterest]=useState(initialCustomPropertyInterest);
   const upd=(k,v)=>setF(p=>({...p,[k]:v}));
   const [busy,setBusy]=useState(false);
-  const handleSave=async()=>{if(!f.name.trim()){alert("Name is required.");return;}setBusy(true);await onSave({...f,budget:f.budget?Number(f.budget):0});setBusy(false);};
+  const selectedPropertyInterest=f.propertyInterest && !projectNames.includes(f.propertyInterest)?"Others":f.propertyInterest;
+  const handlePropertyInterestChange=(value)=>{upd("propertyInterest",value);if(value!=="Others")setCustomPropertyInterest("");};
+  const handleSave=async()=>{if(!f.name.trim()){alert("Name is required.");return;}const finalPropertyInterest=f.propertyInterest==="Others"?customPropertyInterest.trim():f.propertyInterest;setBusy(true);await onSave({...f,propertyInterest:finalPropertyInterest,budget:f.budget?Number(f.budget):0});setBusy(false);};
   useEffect(()=>{const h=e=>{if(e.key==="Escape")onClose();};document.addEventListener("keydown",h);return()=>document.removeEventListener("keydown",h);},[onClose]);
   return(
     <div className="crm-modal-ov" onClick={e=>e.target===e.currentTarget&&onClose()}>
@@ -5944,11 +6022,11 @@ function LeadForm({lead,projects,onSave,onClose}){
             <div className="crm-field"><label className="crm-label">Budget (RM)</label><input className="crm-inp" value={f.budget} onChange={e=>upd("budget",e.target.value)} placeholder="650000" type="number" min="0"/></div>
           </div>
           <div className="crm-grid2">
-            <div className="crm-field"><label className="crm-label">Source</label><select className="crm-inp" value={f.source} onChange={e=>upd("source",e.target.value)}>{CRM_SOURCES.map(s=><option key={s} value={s}>{CRM_SOURCE_LABELS[s]}</option>)}</select></div>
-            <div className="crm-field"><label className="crm-label">Status</label><select className="crm-inp" value={f.status} onChange={e=>upd("status",e.target.value)}>{CRM_STATUSES.map(s=><option key={s} value={s}>{CRM_STATUS_LABELS[s]}</option>)}</select></div>
+            <div className="crm-field"><label className="crm-label">Source</label><select className="crm-inp" value={f.source} onChange={e=>upd("source",e.target.value)}>{(sourceOptions||DEFAULT_CRM_SOURCE_OPTIONS).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></div>
+            <div className="crm-field"><label className="crm-label">Status</label><select className="crm-inp" value={f.status} onChange={e=>upd("status",e.target.value)}>{(statusOptions||DEFAULT_CRM_STATUS_OPTIONS).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></div>
           </div>
           <div className="crm-grid2">
-            <div className="crm-field"><label className="crm-label">Property Interest</label><select className="crm-inp" value={f.propertyInterest} onChange={e=>upd("propertyInterest",e.target.value)}><option value="">— Any —</option>{(projects||[]).map(p=><option key={p.id} value={p.name}>{p.name}</option>)}</select></div>
+            <div className="crm-field"><label className="crm-label">Property Interest</label><select className="crm-inp" value={selectedPropertyInterest} onChange={e=>handlePropertyInterestChange(e.target.value)}><option value="">— Any —</option>{(projects||[]).map(p=><option key={p.id} value={p.name}>{p.name}</option>)}<option value="Others">Others</option></select>{selectedPropertyInterest==="Others"&&<div style={{marginTop:".45rem"}}><input className="crm-inp" value={customPropertyInterest} onChange={e=>setCustomPropertyInterest(e.target.value)} placeholder="Enter custom property interest"/></div>}</div>
             <div className="crm-field"><label className="crm-label">Assigned Agent</label><input className="crm-inp" value={f.assignedAgent} onChange={e=>upd("assignedAgent",e.target.value)} placeholder="Agent name"/></div>
           </div>
           <div className="crm-field"><label className="crm-label">Next Follow-up Date</label><input className="crm-inp" value={f.nextFollowUpDate} onChange={e=>upd("nextFollowUpDate",e.target.value)} type="date"/></div>
@@ -5962,7 +6040,7 @@ function LeadForm({lead,projects,onSave,onClose}){
     </div>
   );
 }
-function LeadDrawer({lead,activities,projects,onClose,onUpdate,onAddActivity,onEdit,onDelete}){
+function LeadDrawer({lead,activities,projects,onClose,onUpdate,onAddActivity,onEdit,onDelete,statusOptions=DEFAULT_CRM_STATUS_OPTIONS,sourceOptions=DEFAULT_CRM_SOURCE_OPTIONS}){
   const [note,setNote]=useState("");
   const [noteType,setNoteType]=useState("note");
   const [busy,setBusy]=useState(false);
@@ -5978,7 +6056,7 @@ function LeadDrawer({lead,activities,projects,onClose,onUpdate,onAddActivity,onE
         <div className="crm-drawer-hd">
           <div style={{flex:1}}>
             <div className="crm-drawer-name">{lead.name}</div>
-            <div style={{marginTop:".35rem",display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}><LeadBadge status={lead.status}/><span style={{fontSize:".72rem",color:"var(--a-muted)"}}>{CRM_SOURCE_LABELS[lead.source]||lead.source}</span><CRMScoreBar score={score}/></div>
+            <div style={{marginTop:".35rem",display:"flex",gap:".4rem",flexWrap:"wrap",alignItems:"center"}}><LeadBadge status={lead.status} statusOptions={statusOptions}/><span style={{fontSize:".72rem",color:"var(--a-muted)"}}>{getCrmOptionLabel(sourceOptions, lead.source, CRM_SOURCE_LABELS[lead.source] || lead.source)}</span><CRMScoreBar score={score}/></div>
           </div>
           <div style={{display:"flex",gap:".4rem"}}>
             <button className="crm-ico" onClick={onEdit} title="Edit">✏️</button>
@@ -6001,7 +6079,7 @@ function LeadDrawer({lead,activities,projects,onClose,onUpdate,onAddActivity,onE
           <div className="crm-drawer-sec">
             <div className="crm-drawer-sec-hd">Move Stage</div>
             <div className="crm-drawer-sec-body" style={{display:"flex",gap:".4rem",flexWrap:"wrap"}}>
-              {CRM_STATUSES.map(s=><button key={s} onClick={()=>onUpdate({status:s})} style={{background:lead.status===s?CRM_STATUS_BG[s]:"transparent",border:`1px solid ${lead.status===s?CRM_STATUS_COLORS[s]:"var(--a-border)"}`,color:lead.status===s?CRM_STATUS_COLORS[s]:"var(--a-muted)",padding:".35rem .75rem",borderRadius:999,font:"600 .7rem var(--sans)",cursor:"pointer",letterSpacing:".06em",textTransform:"uppercase",transition:"all .18s"}}>{CRM_STATUS_LABELS[s]}</button>)}
+              {(statusOptions||DEFAULT_CRM_STATUS_OPTIONS).map(option=><button key={option.value} onClick={()=>onUpdate({status:option.value})} style={{background:lead.status===option.value?getCrmOptionStyle(statusOptions, option.value, CRM_STATUS_COLORS[option.value], CRM_STATUS_BG[option.value]).background:"transparent",border:`1px solid ${lead.status===option.value?getCrmOptionColor(statusOptions, option.value, CRM_STATUS_COLORS[option.value]):"var(--a-border)"}`,color:lead.status===option.value?getCrmOptionColor(statusOptions, option.value, CRM_STATUS_COLORS[option.value]):"var(--a-muted)",padding:".35rem .75rem",borderRadius:999,font:"600 .7rem var(--sans)",cursor:"pointer",letterSpacing:".06em",textTransform:"uppercase",transition:"all .18s"}}>{option.label}</button>)}
             </div>
           </div>
           {lead.notes&&<div className="crm-drawer-sec"><div className="crm-drawer-sec-hd">Notes</div><div className="crm-drawer-sec-body" style={{fontSize:".82rem",color:"var(--a-text)",lineHeight:1.6,whiteSpace:"pre-wrap"}}>{lead.notes}</div></div>}
@@ -6028,10 +6106,12 @@ function LeadDrawer({lead,activities,projects,onClose,onUpdate,onAddActivity,onE
     </>
   );
 }
-function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete}){
+function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete,statusOptions=DEFAULT_CRM_STATUS_OPTIONS,sourceOptions=DEFAULT_CRM_SOURCE_OPTIONS}){
   const [srch,setSrch]=useState("");
   const [statF,setStatF]=useState("all");
   const [srcF,setSrcF]=useState("all");
+  const statusList = Array.isArray(statusOptions) ? statusOptions : DEFAULT_CRM_STATUS_OPTIONS;
+  const sourceList = Array.isArray(sourceOptions) ? sourceOptions : DEFAULT_CRM_SOURCE_OPTIONS;
   const [sort,setSort]=useState({k:"createdAt",asc:false});
   const sortBy=k=>setSort(s=>({k,asc:s.k===k?!s.asc:false}));
   const filtered=useMemo(()=>{
@@ -6047,8 +6127,8 @@ function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete}){
     <div>
       <div className="crm-toolbar">
         <input className="crm-search" placeholder="Search name, phone, email…" value={srch} onChange={e=>setSrch(e.target.value)}/>
-        <select className="crm-select" value={statF} onChange={e=>setStatF(e.target.value)}><option value="all">All Status</option>{CRM_STATUSES.map(s=><option key={s} value={s}>{CRM_STATUS_LABELS[s]}</option>)}</select>
-        <select className="crm-select" value={srcF} onChange={e=>setSrcF(e.target.value)}><option value="all">All Sources</option>{CRM_SOURCES.map(s=><option key={s} value={s}>{CRM_SOURCE_LABELS[s]}</option>)}</select>
+        <select className="crm-select" value={statF} onChange={e=>setStatF(e.target.value)}><option value="all">All Status</option>{statusList.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select>
+        <select className="crm-select" value={srcF} onChange={e=>setSrcF(e.target.value)}><option value="all">All Sources</option>{sourceList.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select>
         <button className="crm-btn-pri" onClick={onAdd}>＋ Add Lead</button>
         <button className="crm-btn-sec" onClick={()=>crmExportCSV(filtered)} title="Export leads to CSV">⬇ CSV</button>
       </div>
@@ -6071,8 +6151,8 @@ function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete}){
               <tr key={l.id} onClick={()=>onSelect(l)}>
                 <td><div style={{fontWeight:700,color:"#fff"}}>{l.name}</div><div style={{fontSize:".7rem",color:"var(--a-muted)"}}>{l.email}</div></td>
                 <td>{wa?<a href={wa.href} className="crm-wa-link" onClick={e=>e.stopPropagation()} target="_blank" rel="noopener noreferrer">💬 {l.countryCode} {l.phone}</a>:"—"}</td>
-                <td><LeadBadge status={l.status}/></td>
-                <td style={{color:"var(--a-muted)",fontSize:".76rem"}}>{CRM_SOURCE_LABELS[l.source]||l.source||"—"}</td>
+                <td><LeadBadge status={l.status} statusOptions={statusList}/></td>
+                <td style={{color:"var(--a-muted)",fontSize:".76rem"}}>{getCrmOptionLabel(sourceList, l.source, CRM_SOURCE_LABELS[l.source] || l.source || "—")}</td>
                 <td style={{color:"var(--a-text)"}}>{l.budget?`RM ${Number(l.budget).toLocaleString()}`:"—"}</td>
                 <td style={{color:"var(--a-muted)",fontSize:".76rem"}}>{l.propertyInterest||"Any"}</td>
                 <td><CRMScoreBar score={crmScore(l)}/></td>
@@ -6090,10 +6170,10 @@ function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete}){
     </div>
   );
 }
-function KanbanBoard({leads,onSelect,onStatusChange}){
+function KanbanBoard({leads,onSelect,onStatusChange,statusOptions=DEFAULT_CRM_STATUS_OPTIONS,sourceOptions=DEFAULT_CRM_SOURCE_OPTIONS}){
   const [dragId,setDragId]=useState(null);
   const [overCol,setOverCol]=useState(null);
-  const cols=CRM_STATUSES.map(s=>({status:s,leads:leads.filter(l=>l.status===s)}));
+  const cols=(statusOptions||DEFAULT_CRM_STATUS_OPTIONS).map(option=>({status:option.value,label:option.label,leads:leads.filter(l=>l.status===option.value)}));
   return(
     <div className="crm-kanban">
       {cols.map(col=>(
@@ -6102,8 +6182,8 @@ function KanbanBoard({leads,onSelect,onStatusChange}){
           onDragLeave={()=>setOverCol(null)}
           onDrop={e=>{e.preventDefault();if(dragId){const l=leads.find(x=>x.id===dragId);if(l&&l.status!==col.status)onStatusChange(dragId,col.status);}setDragId(null);setOverCol(null);}}>
           <div className="crm-col-hd">
-            <span style={{width:8,height:8,borderRadius:"50%",background:CRM_STATUS_COLORS[col.status],flexShrink:0,display:"inline-block"}}/>
-            <span className="crm-col-hd-label">{CRM_STATUS_LABELS[col.status]}</span>
+            <span style={{width:8,height:8,borderRadius:"50%",background:getCrmOptionColor(statusOptions, col.status, CRM_STATUS_COLORS[col.status]),flexShrink:0,display:"inline-block"}}/>
+            <span className="crm-col-hd-label">{col.label}</span>
             <span className="crm-col-count">{col.leads.length}</span>
           </div>
           <div className={`crm-col-body${overCol===col.status?" drag-over":""}`}>
@@ -6117,7 +6197,7 @@ function KanbanBoard({leads,onSelect,onStatusChange}){
                   {overdue&&<div className="crm-overdue">⚠ Overdue: {l.nextFollowUpDate}</div>}
                 </div>
                 <div className="crm-card-foot">
-                  <span className="crm-card-src">{CRM_SOURCE_LABELS[l.source]||l.source}</span>
+                  <span className="crm-card-src">{getCrmOptionLabel(sourceOptions, l.source, CRM_SOURCE_LABELS[l.source] || l.source)}</span>
                   <span className="crm-card-score" style={{color:crmScore(l)>=60?"#0D0D18":"var(--a-muted)"}}>●{crmScore(l)}</span>
                   {wa&&<a href={wa.href} className="crm-wa-link" onClick={e=>e.stopPropagation()} target="_blank" rel="noopener noreferrer" style={{fontSize:".62rem",padding:".15rem .45rem"}}>💬</a>}
                 </div>
@@ -6129,15 +6209,17 @@ function KanbanBoard({leads,onSelect,onStatusChange}){
     </div>
   );
 }
-function CRMAnalytics({leads}){
+function CRMAnalytics({leads,statusOptions=DEFAULT_CRM_STATUS_OPTIONS,sourceOptions=DEFAULT_CRM_SOURCE_OPTIONS}){
   const total=leads.length;
   const closed=leads.filter(l=>l.status==="closed").length;
   const viewing=leads.filter(l=>l.status==="viewing").length;
   const overdue=leads.filter(l=>l.nextFollowUpDate&&new Date(l.nextFollowUpDate)<new Date()).length;
   const budgetLeads=leads.filter(l=>l.budget>0);
   const avgBudget=budgetLeads.reduce((a,l)=>a+Number(l.budget),0)/Math.max(1,budgetLeads.length);
-  const maxStatus=Math.max(1,...CRM_STATUSES.map(s=>leads.filter(l=>l.status===s).length));
-  const maxSource=Math.max(1,...CRM_SOURCES.map(s=>leads.filter(l=>l.source===s).length));
+  const statusList = Array.isArray(statusOptions) ? statusOptions : DEFAULT_CRM_STATUS_OPTIONS;
+  const sourceList = Array.isArray(sourceOptions) ? sourceOptions : DEFAULT_CRM_SOURCE_OPTIONS;
+  const maxStatus=Math.max(1,...statusList.map(option=>leads.filter(l=>l.status===option.value).length));
+  const maxSource=Math.max(1,...sourceList.map(option=>leads.filter(l=>l.source===option.value).length));
   return(
     <div>
       <div className="crm-stats">
@@ -6150,11 +6232,11 @@ function CRMAnalytics({leads}){
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:"1rem"}}>
         <div className="crm-chart-card">
           <div className="crm-chart-title">Leads by Stage</div>
-          {CRM_STATUSES.map(s=>{const c=leads.filter(l=>l.status===s).length;return(<div key={s} className="crm-bar-row"><span className="crm-bar-lbl">{CRM_STATUS_LABELS[s]}</span><div className="crm-bar-track"><div className="crm-bar-fill" style={{width:`${(c/maxStatus)*100}%`,background:CRM_STATUS_COLORS[s]}}/></div><span className="crm-bar-val" style={{color:CRM_STATUS_COLORS[s]}}>{c}</span></div>);})}
+          {statusList.map(option=>{const c=leads.filter(l=>l.status===option.value).length;return(<div key={option.value} className="crm-bar-row"><span className="crm-bar-lbl">{option.label}</span><div className="crm-bar-track"><div className="crm-bar-fill" style={{width:`${(c/maxStatus)*100}%`,background:getCrmOptionColor(statusList, option.value, CRM_STATUS_COLORS[option.value])}}/></div><span className="crm-bar-val" style={{color:getCrmOptionColor(statusList, option.value, CRM_STATUS_COLORS[option.value])}}>{c}</span></div>);})}
         </div>
         <div className="crm-chart-card">
           <div className="crm-chart-title">Leads by Source</div>
-          {CRM_SOURCES.map(s=>{const c=leads.filter(l=>l.source===s).length;return(<div key={s} className="crm-bar-row"><span className="crm-bar-lbl">{CRM_SOURCE_LABELS[s]}</span><div className="crm-bar-track"><div className="crm-bar-fill" style={{width:`${(c/maxSource)*100}%`,background:"var(--a-gold)"}}/></div><span className="crm-bar-val">{c}</span></div>);})}
+          {sourceList.map(option=>{const c=leads.filter(l=>l.source===option.value).length;return(<div key={option.value} className="crm-bar-row"><span className="crm-bar-lbl">{option.label}</span><div className="crm-bar-track"><div className="crm-bar-fill" style={{width:`${(c/maxSource)*100}%`,background:"var(--a-gold)"}}/></div><span className="crm-bar-val">{c}</span></div>);})}
         </div>
       </div>
     </div>
@@ -6162,6 +6244,9 @@ function CRMAnalytics({leads}){
 }
 function CRMPanel({projects, settings}){
   const [leads,setLeads]=useState([]);
+  const normalizedSettings = useMemo(() => normalizeSettings(settings), [settings]);
+  const statusOptions = useMemo(() => getCrmOptionList(normalizedSettings, "status"), [normalizedSettings]);
+  const sourceOptions = useMemo(() => getCrmOptionList(normalizedSettings, "source"), [normalizedSettings]);
   const [crmTab,setCrmTab]=useState("table");
   const [selectedLead,setSelectedLead]=useState(null);
   const [editLead,setEditLead]=useState(null);
@@ -6207,7 +6292,7 @@ function CRMPanel({projects, settings}){
     if(!selectedLead)return;
     try{
       await crmUpdateLead(selectedLead.id,patch);
-      if(patch.status){await crmAddActivity(selectedLead.id,{type:"status_change",content:`Status → "${CRM_STATUS_LABELS[patch.status]}"`,createdBy:"admin"});const a=await crmGetActivities(selectedLead.id);setActivities(a);}
+      if(patch.status){const statusLabel=getCrmOptionLabel(statusOptions, patch.status, CRM_STATUS_LABELS[patch.status]);await crmAddActivity(selectedLead.id,{type:"status_change",content:`Status → "${statusLabel}"`,createdBy:"admin"});const a=await crmGetActivities(selectedLead.id);setActivities(a);}
     }catch(e){alert("Update failed: "+e.message);}
   };
   return(
@@ -6220,11 +6305,11 @@ function CRMPanel({projects, settings}){
         <button className={`crm-subbtn${crmTab==="analytics"?" on":""}`} onClick={()=>setCrmTab("analytics")}>📊 Analytics</button>
       </div>
       {loading&&<div style={{color:"var(--a-muted)",textAlign:"center",padding:"3rem",fontSize:".86rem"}}>Loading leads…</div>}
-      {!loading&&crmTab==="table"&&<LeadTable leads={leads} projects={projects} onSelect={l=>setSelectedLead(l)} onAdd={()=>setEditLead("new")} onEdit={l=>setEditLead(l)} onDelete={handleDeleteLead}/>}
-      {!loading&&crmTab==="kanban"&&<KanbanBoard leads={leads} onSelect={l=>setSelectedLead(l)} onStatusChange={handleStatusChange}/>}
-      {!loading&&crmTab==="analytics"&&<CRMAnalytics leads={leads}/>}
-      {selectedLead&&<LeadDrawer lead={selectedLead} activities={activities} projects={projects} onClose={()=>setSelectedLead(null)} onUpdate={handleUpdateLead} onAddActivity={handleAddActivity} onEdit={()=>setEditLead(selectedLead)} onDelete={handleDeleteLead}/>}
-      {editLead&&<LeadForm lead={editLead} projects={projects} onSave={handleSaveLead} onClose={()=>setEditLead(null)}/>}
+      {!loading&&crmTab==="table"&&<LeadTable leads={leads} projects={projects} onSelect={l=>setSelectedLead(l)} onAdd={()=>setEditLead("new")} onEdit={l=>setEditLead(l)} onDelete={handleDeleteLead} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
+      {!loading&&crmTab==="kanban"&&<KanbanBoard leads={leads} onSelect={l=>setSelectedLead(l)} onStatusChange={handleStatusChange} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
+      {!loading&&crmTab==="analytics"&&<CRMAnalytics leads={leads} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
+      {selectedLead&&<LeadDrawer lead={selectedLead} activities={activities} projects={projects} onClose={()=>setSelectedLead(null)} onUpdate={handleUpdateLead} onAddActivity={handleAddActivity} onEdit={()=>setEditLead(selectedLead)} onDelete={handleDeleteLead} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
+      {editLead&&<LeadForm lead={editLead} projects={projects} onSave={handleSaveLead} onClose={()=>setEditLead(null)} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
     </div>
   );
 }
@@ -6261,9 +6346,33 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
   const [toast,setToast]=useState(null);
   const showToast=(msg,type="success")=>setToast({msg,type});
   // Settings local state (copy so edits don't save until Save clicked)
-  const [sett,setSett]=useState({...DEFAULT_SETTINGS,...settings});
+  const [sett,setSett]=useState(() => normalizeSettings(settings));
+  useEffect(() => {
+    setSett(normalizeSettings(settings));
+  }, [settings]);
   const setSF=(k,v)=>setSett(s=>({...s,[k]:v}));
-  const handleSaveSettings=()=>{onSaveSettings(sett);showToast("Settings saved.","success");};
+  const updateCrmOption=(kind,index,field,value)=>{
+    const key = kind === "status" ? "crmStatusOptions" : "crmSourceOptions";
+    setSett(s=>({
+      ...s,
+      [key]: (s[key] || []).map((option, optionIndex) => optionIndex === index ? { ...option, [field]: value } : option),
+    }));
+  };
+  const addCrmOption=(kind)=>{
+    const key = kind === "status" ? "crmStatusOptions" : "crmSourceOptions";
+    setSett(s=>({
+      ...s,
+      [key]: [...(s[key] || []), { value: "", label: "" }],
+    }));
+  };
+  const removeCrmOption=(kind,index)=>{
+    const key = kind === "status" ? "crmStatusOptions" : "crmSourceOptions";
+    setSett(s=>({
+      ...s,
+      [key]: (s[key] || []).filter((_, optionIndex) => optionIndex !== index),
+    }));
+  };
+  const handleSaveSettings=()=>{const normalized=normalizeSettings(sett);onSaveSettings(normalized);setSett(normalized);showToast("Settings saved.","success");};
   // Password change fields
   const [curPw,setCurPw] = useState("");
   const [newPw,setNewPw] = useState("");
@@ -6456,6 +6565,37 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
             <div className="set-preview">
               <div style={{fontSize:".65rem",letterSpacing:".1em",textTransform:"uppercase",color:"var(--a-gold)",fontWeight:700,marginBottom:".4rem"}}>Preview Link</div>
               <a href={prevWaURL} target="_blank" rel="noopener noreferrer">{prevWaURL}</a>
+            </div>
+          </div>
+
+          <div className="set-card">
+            <div className="set-card-title">🧭 CRM Dropdown Choices</div>
+            <div className="set-card-sub">Add or remove the options shown in the CRM lead status and source dropdowns.</div>
+            <div style={{marginBottom:"1rem"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"0.7rem"}}>
+                <div className="set-label">Status Options</div>
+                <button className="set-save-btn" style={{padding:"0.45rem 0.8rem",fontSize:"0.72rem"}} onClick={()=>addCrmOption("status")}>＋ Add Status</button>
+              </div>
+              {(sett.crmStatusOptions || []).map((option, index) => (
+                <div key={`status-${index}`} style={{display:"grid",gridTemplateColumns:"1fr 1fr auto",gap:"0.55rem",marginBottom:"0.5rem"}}>
+                  <input className="set-inp" value={option.label || ""} placeholder="Label" onChange={e=>updateCrmOption("status", index, "label", e.target.value)}/>
+                  <input className="set-inp" value={option.value || ""} placeholder="Value" onChange={e=>updateCrmOption("status", index, "value", e.target.value)}/>
+                  <button className="crm-btn-sec" onClick={()=>removeCrmOption("status", index)}>Remove</button>
+                </div>
+              ))}
+            </div>
+            <div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"0.7rem"}}>
+                <div className="set-label">Source Options</div>
+                <button className="set-save-btn" style={{padding:"0.45rem 0.8rem",fontSize:"0.72rem"}} onClick={()=>addCrmOption("source")}>＋ Add Source</button>
+              </div>
+              {(sett.crmSourceOptions || []).map((option, index) => (
+                <div key={`source-${index}`} style={{display:"grid",gridTemplateColumns:"1fr 1fr auto",gap:"0.55rem",marginBottom:"0.5rem"}}>
+                  <input className="set-inp" value={option.label || ""} placeholder="Label" onChange={e=>updateCrmOption("source", index, "label", e.target.value)}/>
+                  <input className="set-inp" value={option.value || ""} placeholder="Value" onChange={e=>updateCrmOption("source", index, "value", e.target.value)}/>
+                  <button className="crm-btn-sec" onClick={()=>removeCrmOption("source", index)}>Remove</button>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -7522,7 +7662,7 @@ function TourGuide({ steps, onDone, openNav, closeNav, goTab }) {
 
 export default function App(){
   const [projects,setProjects]=useState([]);
-  const [settings,setSettings]=useState(DEFAULT_SETTINGS);
+  const [settings,setSettings]=useState(() => normalizeSettings(DEFAULT_SETTINGS));
   const [ready,setReady]=useState(false);
   const [showGuide,setShowGuide]=useState(()=>!localStorage.getItem("nb_guide_done"));
   const dismissGuide=()=>{localStorage.setItem("nb_guide_done","1");setShowGuide(false);};
@@ -7535,7 +7675,7 @@ export default function App(){
       console.error('Failed to load projects from Firestore', err);
       setProjects(DEFAULT_PROJECTS);
     }
-    try{ const s = await fsGetSettings(); if(s) setSettings({...DEFAULT_SETTINGS,...s}); }catch{}
+    try{ const s = await fsGetSettings(); if(s) setSettings(normalizeSettings({ ...DEFAULT_SETTINGS, ...s })); }catch{}
 
     // Migrate any existing analytics stored in browser localStorage into Firestore (one-time)
     try{
@@ -7574,7 +7714,7 @@ export default function App(){
       }
     }catch(e){ console.error('Firestore sync failed', e); }
   },[]);
-  const saveSettings=useCallback(async updated=>{setSettings(updated);try{await fsSaveSettings(updated);}catch{}},[]);
+  const saveSettings=useCallback(async updated=>{const normalized=normalizeSettings(updated);setSettings(normalized);try{await fsSaveSettings(normalized);}catch{}},[]);
 
   const [tab,setTab]=useState(()=>{
     // Secret URL access: ?admin or #admin opens admin tab on load
