@@ -6266,6 +6266,46 @@ function CRMPanel({projects, settings}){
     const fresh=leads.find(l=>l.id===selectedLead.id);
     if(fresh)setSelectedLead(fresh);
   },[leads]);
+  // Follow-up reminders via Telegram
+  const notifiedFollowUps=useRef(new Set());
+  useEffect(()=>{
+    const checkFollowUps=async()=>{
+      if(!settings?.telegramEnabled)return;
+      const botToken=(settings?.telegramBotToken||"").trim();
+      const chatId=(settings?.telegramChatId||"").trim();
+      if(!botToken||!chatId)return;
+      const todayStr=new Date().toISOString().split("T")[0];
+      const due=leads.filter(l=>{
+        if(!l.nextFollowUpDate||notifiedFollowUps.current.has(l.id))return false;
+        return l.nextFollowUpDate<=todayStr;
+      });
+      for(const l of due){
+        notifiedFollowUps.current.add(l.id);
+        const waFull=`${l.countryCode||"+60"}${l.phone||""}`.replace(/[^0-9+]/g,"");
+        const waMsg=encodeURIComponent(`Hi ${l.name||""}, I'm following up on your enquiry${l.propertyInterest?` about ${l.propertyInterest}`:""}. Are you still interested?`);
+        const waLink=l.phone?`https://wa.me/${waFull.replace(/[^0-9]/g,"")}?text=${waMsg}`:"";
+        const overdue=l.nextFollowUpDate<todayStr;
+        const text=[
+          overdue?"⚠️ *Overdue Follow-up Reminder*":"📅 *Follow-up Due Today*",
+          "",
+          `👤 *Name:* ${l.name||"—"}`,
+          `📞 *Phone:* ${l.countryCode||"+60"} ${l.phone||"—"}`,
+          l.propertyInterest?`🏠 *Interest:* ${l.propertyInterest}`:"",
+          `📋 *Status:* ${l.status||"—"}`,
+          `📆 *Follow-up Date:* ${l.nextFollowUpDate}`,
+          l.notes?`📝 *Notes:* ${l.notes}`:"",
+          "",
+          waLink?`[💬 Open WhatsApp](${waLink})`:"",
+        ].filter(Boolean).join("\n");
+        try{
+          await fetch("/api/send-telegram",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({botToken,chatId,text})});
+        }catch(e){console.warn("Follow-up reminder failed:",e);}
+      }
+    };
+    checkFollowUps();
+    const interval=setInterval(checkFollowUps,60000);
+    return()=>clearInterval(interval);
+  },[leads,settings]);
   const handleSaveLead=async(formData)=>{
     try{
       if(!editLead||editLead==="new"){
@@ -6355,7 +6395,12 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
     const key = kind === "status" ? "crmStatusOptions" : "crmSourceOptions";
     setSett(s=>({
       ...s,
-      [key]: (s[key] || []).map((option, optionIndex) => optionIndex === index ? { ...option, [field]: value } : option),
+      [key]: (s[key] || []).map((option, optionIndex) => {
+        if (optionIndex !== index) return option;
+        const updated = { ...option, [field]: value };
+        if (field === "label") updated.value = value.toLowerCase().replace(/\s+/g, "_");
+        return updated;
+      }),
     }));
   };
   const addCrmOption=(kind)=>{
@@ -6577,9 +6622,8 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
                 <button className="set-save-btn" style={{padding:"0.45rem 0.8rem",fontSize:"0.72rem"}} onClick={()=>addCrmOption("status")}>＋ Add Status</button>
               </div>
               {(sett.crmStatusOptions || []).map((option, index) => (
-                <div key={`status-${index}`} style={{display:"grid",gridTemplateColumns:"1fr 1fr auto",gap:"0.55rem",marginBottom:"0.5rem"}}>
+                <div key={`status-${index}`} style={{display:"grid",gridTemplateColumns:"1fr auto",gap:"0.55rem",marginBottom:"0.5rem"}}>
                   <input className="set-inp" value={option.label || ""} placeholder="Label" onChange={e=>updateCrmOption("status", index, "label", e.target.value)}/>
-                  <input className="set-inp" value={option.value || ""} placeholder="Value" onChange={e=>updateCrmOption("status", index, "value", e.target.value)}/>
                   <button className="crm-btn-sec" onClick={()=>removeCrmOption("status", index)}>Remove</button>
                 </div>
               ))}
@@ -6590,9 +6634,8 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
                 <button className="set-save-btn" style={{padding:"0.45rem 0.8rem",fontSize:"0.72rem"}} onClick={()=>addCrmOption("source")}>＋ Add Source</button>
               </div>
               {(sett.crmSourceOptions || []).map((option, index) => (
-                <div key={`source-${index}`} style={{display:"grid",gridTemplateColumns:"1fr 1fr auto",gap:"0.55rem",marginBottom:"0.5rem"}}>
+                <div key={`source-${index}`} style={{display:"grid",gridTemplateColumns:"1fr auto",gap:"0.55rem",marginBottom:"0.5rem"}}>
                   <input className="set-inp" value={option.label || ""} placeholder="Label" onChange={e=>updateCrmOption("source", index, "label", e.target.value)}/>
-                  <input className="set-inp" value={option.value || ""} placeholder="Value" onChange={e=>updateCrmOption("source", index, "value", e.target.value)}/>
                   <button className="crm-btn-sec" onClick={()=>removeCrmOption("source", index)}>Remove</button>
                 </div>
               ))}
