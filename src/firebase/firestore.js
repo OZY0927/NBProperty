@@ -1,4 +1,4 @@
-// Firestore helpers for NBProperty
+// Firestore helpers for Hauszy
 import { getFirestore, collection, doc, writeBatch, setDoc, addDoc, getDocs, deleteDoc, getDoc } from "firebase/firestore";
 import app from "./config";
 

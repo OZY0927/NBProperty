@@ -289,7 +289,7 @@ async function exportPDF(projects){
   if(!window.jspdf) await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
   if(!(window.jspdf?.jsPDF?.prototype?.autoTable)) await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js");
   const {jsPDF}=window.jspdf,doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"}),W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight();
-  doc.setFillColor(10,30,48);doc.rect(0,0,W,32,"F");doc.setTextColor(20,120,200);doc.setFont("helvetica","bold");doc.setFontSize(20);doc.text("NB",14,20);doc.setTextColor(255,255,255);doc.setFont("helvetica","normal");doc.setFontSize(20);doc.text("Property",20,20);doc.setTextColor(150,150,150);doc.setFontSize(8);doc.text("New Project Comparison Report",14,28);const today=new Date().toLocaleDateString("en-MY",{year:"numeric",month:"long",day:"numeric"});doc.text(`${today}  |  ${projects.length} projects`,W-14,28,{align:"right"});doc.setDrawColor(20,120,200);doc.setLineWidth(0.6);doc.line(0,32,W,32);
+  doc.setFillColor(10,30,48);doc.rect(0,0,W,32,"F");doc.setTextColor(20,120,200);doc.setFont("helvetica","bold");doc.setFontSize(20);doc.text("Haus",14,20);const brandW=doc.getTextWidth("Haus");doc.setTextColor(255,255,255);doc.setFont("helvetica","normal");doc.setFontSize(20);doc.text("zy",14+brandW,20);doc.setTextColor(150,150,150);doc.setFontSize(8);doc.text("New Project Comparison Report",14,28);const today=new Date().toLocaleDateString("en-MY",{year:"numeric",month:"long",day:"numeric"});doc.text(`${today}  |  ${projects.length} projects`,W-14,28,{align:"right"});doc.setDrawColor(20,120,200);doc.setLineWidth(0.6);doc.line(0,32,W,32);
   const nCol=projects.length,lW=46,vW=Math.floor((W-28-lW)/nCol);
   const lS=()=>({fillColor:[245,241,234],textColor:[10,30,48],fontStyle:"bold",fontSize:8,cellWidth:lW});
   const vS=(i,b)=>({fillColor:b?[230,242,252]:i%2===0?[255,255,255]:[252,249,244],textColor:[10,30,48],fontSize:8,halign:"center",fontStyle:b?"bold":"normal",cellWidth:vW});
@@ -299,8 +299,8 @@ async function exportPDF(projects){
   const head=[[{content:"Category",styles:{...lS(),fillColor:[10,30,48],textColor:[20,120,200]}},...projects.map(p=>({content:p.name,styles:{fillColor:[10,30,48],textColor:[255,255,255],fontStyle:"bold",fontSize:9,halign:"center",cellWidth:vW}}))]];
   const body=[sec("PROJECT OVERVIEW"),row("Developer",p=>p.developer),row("Location",p=>p.location),row("Type",p=>p.type),row("Status",p=>p.status),row("Completion",p=>p.completion),row("Tenure",p=>p.tenure),row("Land Size",p=>p.landSize||"-"),row("Total Units",p=>formatNum(p.totalUnits)),sec("PRICING"),row("From",p=>fmt(p.priceFrom),cheap),row("Range",p=>`${fmt(p.priceFrom)} - ${fmt(p.priceTo)}`),row("Maintenance",p=>p.maintenanceFee||"-"),sec("UNIT SPECS"),row("Bedrooms",p=>bLbl(p.bedrooms)+" bed"),row("Built-up",p=>`${p.sizeSqft[0]?.toLocaleString()} - ${p.sizeSqft[1]?.toLocaleString()} sqft`,big),row("Car Parks",p=>p.numberOfCarParks?formatNum(p.numberOfCarParks):"-"),row("Lifts",p=>p.numberOfLifts?formatNum(p.numberOfLifts):"-"),sec("HIGHLIGHTS"),row("Highlights",p=>p.highlights.join(" · "))];
   doc.autoTable({startY:38,head,body,margin:{left:14,right:14},styles:{fontSize:8,cellPadding:3.5,overflow:"linebreak",lineColor:[220,212,200],lineWidth:0.18},headStyles:{fillColor:[10,30,48]},columnStyles:{0:{cellWidth:lW},...Object.fromEntries(projects.map((_,i)=>[i+1,{cellWidth:vW}]))},rowPageBreak:"auto"});
-  const pages=doc.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFillColor(10,30,48);doc.rect(0,H-10,W,10,"F");doc.setFontSize(7);doc.setTextColor(90,90,90);doc.text("NB Property · For illustration purposes only.",14,H-3.5);doc.text(`${i} / ${pages}`,W-14,H-3.5,{align:"right"});}
-  doc.save(`NB_Comparison_${Date.now()}.pdf`);
+  const pages=doc.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFillColor(10,30,48);doc.rect(0,H-10,W,10,"F");doc.setFontSize(7);doc.setTextColor(90,90,90);doc.text("Hauszy · For illustration purposes only.",14,H-3.5);doc.text(`${i} / ${pages}`,W-14,H-3.5,{align:"right"});}
+  doc.save(`Hauszy_Comparison_${Date.now()}.pdf`);
 }
 
 /* ═══ FORM HELPERS ═══ */
@@ -4122,7 +4122,7 @@ Please confirm my appointment. Thanks!`;
     // ── Email message ──
     const subject = encodeURIComponent(`Showroom Visit Booking — ${projName}`);
     const body = encodeURIComponent(
-`New showroom visit appointment booked via NB Property website.
+`New showroom visit appointment booked via Hauszy website.
 
 Project:   ${projName}
 ${projLoc?`Location:  ${projLoc}\n`:""}${showroom?`Showroom:  ${showroom}\n`:""}
@@ -4135,7 +4135,7 @@ Name:   ${name}
 Email:  ${email}
 Phone:  ${fullPhone}
 ${notes?`\nNotes:\n${notes}\n`:""}
-Sent via NB Property website.`
+Sent via Hauszy website.`
     );
 
     // Open WhatsApp in a new tab
@@ -4840,9 +4840,9 @@ function DetailPage({p, onClose, onRegisterInterest, onVisitShowroom}){
             )}
           </div>
           <div className="cine-footer-bottom">
-            <div className="cine-footer-logo">NB <span style={{opacity:.35}}>Property</span></div>
+            <div className="cine-footer-logo">Haus<span style={{opacity:.35}}>zy</span></div>
             <div>{p.name} · {p.location}</div>
-            <div>© {new Date().getFullYear()} NB Property</div>
+            <div>© {new Date().getFullYear()} Hauszy</div>
           </div>
         </div>
         </>)}
@@ -5985,6 +5985,70 @@ const crmScore=(lead)=>{let s=0;if(lead.email)s+=15;if(lead.phone)s+=20;if(lead.
 const crmFmtDate=(ts)=>{if(!ts)return"—";const d=ts.toDate?ts.toDate():new Date(ts);const diff=(Date.now()-d)/1000;if(diff<60)return"just now";if(diff<3600)return`${Math.floor(diff/60)}m ago`;if(diff<86400)return`${Math.floor(diff/3600)}h ago`;if(diff<604800)return`${Math.floor(diff/86400)}d ago`;return d.toLocaleDateString("en-MY",{day:"numeric",month:"short",year:"2-digit"})+" · "+d.toLocaleTimeString("en-MY",{hour:"2-digit",minute:"2-digit",hour12:true});};
 const crmWaLink=(countryCode,phone,name,project)=>{const full=`${countryCode||'+60'}${phone||""}`;const p=full.replace(/[^0-9]/g,"");const msg=encodeURIComponent(`Hi, I'm following up on your enquiry${project?` about ${project}`:""}. Are you still interested?`);return{href:`https://wa.me/${p}?text=${msg}`,label:`${countryCode||'+60'} ${phone||""}`};};;
 const crmExportCSV=(leads)=>{const esc=v=>`"${String(v||"").replace(/"/g,'""')}"`;const headers=["Name","Phone","Email","Source","Status","Budget","Interest","Agent","Follow-up","Created","Notes"];const rows=leads.map(l=>[l.name,l.phone,l.email,l.source,l.status,l.budget,l.propertyInterest,l.assignedAgent,l.nextFollowUpDate,l.createdAt&&l.createdAt.toDate?l.createdAt.toDate().toISOString().split("T")[0]:"",l.notes].map(esc).join(","));const csv=[headers.join(","),...rows].join("\n");const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`leads_${new Date().toISOString().split("T")[0]}.csv`;a.click();URL.revokeObjectURL(url);};
+// Column-header → lead-field matchers for spreadsheet import
+const CRM_IMPORT_FIELD_MATCHERS=[
+  ["countryCode",h=>/(country|dial).*code|^cc$|^code$/.test(h)],
+  ["name",h=>/name/.test(h)&&!/agent|user|company/.test(h)],
+  ["phone",h=>/phone|mobile|contact|whatsapp|\bwa\b|\btel/.test(h)],
+  ["email",h=>/e-?mail/.test(h)],
+  ["budget",h=>/budget|price|amount/.test(h)],
+  ["propertyInterest",h=>/interest|property|project|unit/.test(h)],
+  ["assignedAgent",h=>/agent|assigned|salesperson|\brep\b/.test(h)],
+  ["source",h=>/source|channel|origin/.test(h)],
+  ["status",h=>/status|stage/.test(h)],
+  ["nextFollowUpDate",h=>/follow.?up|next contact/.test(h)],
+  ["notes",h=>/note|remark|comment|message/.test(h)],
+];
+const crmResolveOption=(list,raw,fallback)=>{
+  const s=String(raw||"").trim().toLowerCase();
+  if(!s)return fallback;
+  const hit=(list||[]).find(o=>String(o.value).toLowerCase()===s||String(o.label||"").toLowerCase()===s);
+  return hit?hit.value:(fallback||slugifyCrmValue(s));
+};
+const crmImportDateStr=(v)=>{
+  if(v instanceof Date&&!isNaN(v))return v.toISOString().slice(0,10);
+  const s=String(v||"").trim();
+  if(!s)return"";
+  const d=new Date(s);
+  return isNaN(d)?s:d.toISOString().slice(0,10);
+};
+async function crmParseImportFile(file,{statusOptions,sourceOptions}={}){
+  const XLSX=await import("xlsx");
+  const buf=await file.arrayBuffer();
+  const wb=XLSX.read(buf,{type:"array",cellDates:true});
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  if(!ws)return{leads:[],skipped:0};
+  const rows=XLSX.utils.sheet_to_json(ws,{defval:"",raw:true});
+  const leads=[];
+  let skipped=0;
+  for(const row of rows){
+    const mapped={};
+    for(const key of Object.keys(row)){
+      const h=String(key).trim().toLowerCase();
+      for(const [field,test] of CRM_IMPORT_FIELD_MATCHERS){
+        if(mapped[field]===undefined&&test(h)){mapped[field]=row[key];break;}
+      }
+    }
+    const name=String(mapped.name||"").trim();
+    const phone=String(mapped.phone||"").trim();
+    const email=String(mapped.email||"").trim();
+    if(!name&&!phone&&!email){skipped++;continue;}
+    leads.push({
+      name,
+      countryCode:String(mapped.countryCode||"").trim()||"+60",
+      phone,
+      email,
+      budget:Number(String(mapped.budget??"").replace(/[^0-9.]/g,""))||0,
+      propertyInterest:String(mapped.propertyInterest||"").trim(),
+      assignedAgent:String(mapped.assignedAgent||"").trim(),
+      source:crmResolveOption(sourceOptions,mapped.source,"other"),
+      status:crmResolveOption(statusOptions,mapped.status,"new"),
+      nextFollowUpDate:crmImportDateStr(mapped.nextFollowUpDate),
+      notes:String(mapped.notes||"").trim(),
+    });
+  }
+  return{leads,skipped};
+}
 const LeadBadge=({status,statusOptions=[]})=>{const label=getCrmOptionLabel(statusOptions,status,CRM_STATUS_LABELS[status]||status);const style=getCrmOptionStyle(statusOptions,status,CRM_STATUS_COLORS[status],CRM_STATUS_BG[status]);return(<span className="crm-badge" style={{color:style.color,background:style.background,border:`1px solid ${style.color}44`}}>{label}</span>);};
 const CRMScoreBar=({score})=>{const color=score>=75?"#4E9A72":score>=50?"#BF9B4E":score>=25?"#5E8FD0":"#C4543E";return(<span className="crm-score" style={{color}}>{score}<span className="crm-score-bar"><span className="crm-score-fill" style={{width:`${score}%`,background:color}}/></span></span>);};
 function LeadForm({lead,projects,onSave,onClose,statusOptions=DEFAULT_CRM_STATUS_OPTIONS,sourceOptions=DEFAULT_CRM_SOURCE_OPTIONS}){
@@ -6106,8 +6170,9 @@ function LeadDrawer({lead,activities,projects,onClose,onUpdate,onAddActivity,onE
     </>
   );
 }
-function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete,statusOptions=DEFAULT_CRM_STATUS_OPTIONS,sourceOptions=DEFAULT_CRM_SOURCE_OPTIONS}){
+function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete,onImport,importing=false,statusOptions=DEFAULT_CRM_STATUS_OPTIONS,sourceOptions=DEFAULT_CRM_SOURCE_OPTIONS}){
   const [srch,setSrch]=useState("");
+  const importRef=useRef(null);
   const [statF,setStatF]=useState("all");
   const [srcF,setSrcF]=useState("all");
   const statusList = Array.isArray(statusOptions) ? statusOptions : DEFAULT_CRM_STATUS_OPTIONS;
@@ -6130,6 +6195,8 @@ function LeadTable({leads,projects,onSelect,onAdd,onEdit,onDelete,statusOptions=
         <select className="crm-select" value={statF} onChange={e=>setStatF(e.target.value)}><option value="all">All Status</option>{statusList.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select>
         <select className="crm-select" value={srcF} onChange={e=>setSrcF(e.target.value)}><option value="all">All Sources</option>{sourceList.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select>
         <button className="crm-btn-pri" onClick={onAdd}>＋ Add Lead</button>
+        <button className="crm-btn-sec" onClick={()=>importRef.current?.click()} disabled={importing} title="Import leads from an Excel or CSV file">{importing?"Importing…":"⬆ Import Excel"}</button>
+        <input ref={importRef} type="file" accept=".xlsx,.xls,.csv" style={{display:"none"}} onChange={e=>{const f=e.target.files&&e.target.files[0];if(f&&onImport)onImport(f);e.target.value="";}}/>
         <button className="crm-btn-sec" onClick={()=>crmExportCSV(filtered)} title="Export leads to CSV">⬇ CSV</button>
       </div>
       <div className="crm-tbl-wrap">
@@ -6266,46 +6333,6 @@ function CRMPanel({projects, settings}){
     const fresh=leads.find(l=>l.id===selectedLead.id);
     if(fresh)setSelectedLead(fresh);
   },[leads]);
-  // Follow-up reminders via Telegram
-  const notifiedFollowUps=useRef(new Set());
-  useEffect(()=>{
-    const checkFollowUps=async()=>{
-      if(!settings?.telegramEnabled)return;
-      const botToken=(settings?.telegramBotToken||"").trim();
-      const chatId=(settings?.telegramChatId||"").trim();
-      if(!botToken||!chatId)return;
-      const todayStr=new Date().toISOString().split("T")[0];
-      const due=leads.filter(l=>{
-        if(!l.nextFollowUpDate||notifiedFollowUps.current.has(l.id))return false;
-        return l.nextFollowUpDate<=todayStr;
-      });
-      for(const l of due){
-        notifiedFollowUps.current.add(l.id);
-        const waFull=`${l.countryCode||"+60"}${l.phone||""}`.replace(/[^0-9+]/g,"");
-        const waMsg=encodeURIComponent(`Hi ${l.name||""}, I'm following up on your enquiry${l.propertyInterest?` about ${l.propertyInterest}`:""}. Are you still interested?`);
-        const waLink=l.phone?`https://wa.me/${waFull.replace(/[^0-9]/g,"")}?text=${waMsg}`:"";
-        const overdue=l.nextFollowUpDate<todayStr;
-        const text=[
-          overdue?"⚠️ *Overdue Follow-up Reminder*":"📅 *Follow-up Due Today*",
-          "",
-          `👤 *Name:* ${l.name||"—"}`,
-          `📞 *Phone:* ${l.countryCode||"+60"} ${l.phone||"—"}`,
-          l.propertyInterest?`🏠 *Interest:* ${l.propertyInterest}`:"",
-          `📋 *Status:* ${l.status||"—"}`,
-          `📆 *Follow-up Date:* ${l.nextFollowUpDate}`,
-          l.notes?`📝 *Notes:* ${l.notes}`:"",
-          "",
-          waLink?`[💬 Open WhatsApp](${waLink})`:"",
-        ].filter(Boolean).join("\n");
-        try{
-          await fetch("/api/send-telegram",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({botToken,chatId,text})});
-        }catch(e){console.warn("Follow-up reminder failed:",e);}
-      }
-    };
-    checkFollowUps();
-    const interval=setInterval(checkFollowUps,60000);
-    return()=>clearInterval(interval);
-  },[leads,settings]);
   const handleSaveLead=async(formData)=>{
     try{
       if(!editLead||editLead==="new"){
@@ -6321,6 +6348,20 @@ function CRMPanel({projects, settings}){
   const handleDeleteLead=async(id)=>{
     try{await crmDeleteLead(id);if(selectedLead?.id===id)setSelectedLead(null);}
     catch(e){alert("Delete failed: "+e.message);}
+  };
+  const [importing,setImporting]=useState(false);
+  const handleImportLeads=async(file)=>{
+    setImporting(true);
+    try{
+      const {leads:parsed,skipped}=await crmParseImportFile(file,{statusOptions,sourceOptions});
+      if(!parsed.length){alert(skipped?`No valid leads found — ${skipped} row(s) skipped (need a name, phone or email).`:"No rows found in that file.");return;}
+      if(!window.confirm(`Import ${parsed.length} lead(s)${skipped?` (${skipped} row(s) will be skipped)`:""}?`))return;
+      let ok=0,fail=0;
+      for(const l of parsed){try{await crmAddLead(l);ok++;}catch(e){console.warn("Import row failed:",e);fail++;}}
+      alert(`Imported ${ok} lead(s).${fail?` ${fail} failed.`:""}${skipped?` ${skipped} row(s) skipped.`:""}`);
+    }
+    catch(e){alert("Import failed: "+e.message);}
+    finally{setImporting(false);}
   };
   const handleStatusChange=async(id,status)=>{try{await crmUpdateLead(id,{status});}catch(e){alert("Update failed: "+e.message);}};
   const handleAddActivity=async(data)=>{
@@ -6345,7 +6386,7 @@ function CRMPanel({projects, settings}){
         <button className={`crm-subbtn${crmTab==="analytics"?" on":""}`} onClick={()=>setCrmTab("analytics")}>📊 Analytics</button>
       </div>
       {loading&&<div style={{color:"var(--a-muted)",textAlign:"center",padding:"3rem",fontSize:".86rem"}}>Loading leads…</div>}
-      {!loading&&crmTab==="table"&&<LeadTable leads={leads} projects={projects} onSelect={l=>setSelectedLead(l)} onAdd={()=>setEditLead("new")} onEdit={l=>setEditLead(l)} onDelete={handleDeleteLead} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
+      {!loading&&crmTab==="table"&&<LeadTable leads={leads} projects={projects} onSelect={l=>setSelectedLead(l)} onAdd={()=>setEditLead("new")} onEdit={l=>setEditLead(l)} onDelete={handleDeleteLead} onImport={handleImportLeads} importing={importing} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
       {!loading&&crmTab==="kanban"&&<KanbanBoard leads={leads} onSelect={l=>setSelectedLead(l)} onStatusChange={handleStatusChange} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
       {!loading&&crmTab==="analytics"&&<CRMAnalytics leads={leads} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
       {selectedLead&&<LeadDrawer lead={selectedLead} activities={activities} projects={projects} onClose={()=>setSelectedLead(null)} onUpdate={handleUpdateLead} onAddActivity={handleAddActivity} onEdit={()=>setEditLead(selectedLead)} onDelete={handleDeleteLead} statusOptions={statusOptions} sourceOptions={sourceOptions}/>}
@@ -6492,7 +6533,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
         {aTab==="crm"&&<CRMPanel projects={projects} settings={sett}/>}
         {aTab==="dashboard"&&<>
           <div className="a-pg-title">Admin <em>Dashboard</em></div>
-          <div className="a-pg-sub">Overview of all NB Property listings.</div>
+          <div className="a-pg-sub">Overview of all Hauszy listings.</div>
           <div className="a-stats">
             <div className="a-stat gold"><div className="a-stat-lbl">Total Projects</div><div className="a-stat-val">{projects.length}</div></div>
             <div className="a-stat blue"><div className="a-stat-lbl">New Launch</div><div className="a-stat-val">{byS("New Launch")}</div></div>
@@ -6575,7 +6616,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
             </div>
             <div className="set-field">
               <label className="set-label">Admin Email Address</label>
-              <input className="set-inp" type="email" value={sett.adminEmail} placeholder="e.g. admin@nbproperty.com"
+              <input className="set-inp" type="email" value={sett.adminEmail} placeholder="e.g. admin@hauszy.com"
                 onChange={e=>setSF("adminEmail",e.target.value)}/>
             </div>
           </div>
@@ -6698,7 +6739,7 @@ function AdminPanel({projects,onSave,onLogout,settings,onSaveSettings,aTab:exter
                 const chatId=(sett.telegramChatId||"").trim();
                 if(!botToken||!chatId){showToast("Enter Bot Token and Chat ID first.","error");return;}
                 try{
-                  const res=await fetch("/api/send-telegram",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({botToken,chatId,text:"✅ *Test Notification*\n\nYour NB Property Telegram notifications are working correctly."})});
+                  const res=await fetch("/api/send-telegram",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({botToken,chatId,text:"✅ *Test Notification*\n\nYour Hauszy Telegram notifications are working correctly."})});
                   if(res.ok){showToast("Test message sent!","success");}else{showToast("Failed — check your Bot Token & Chat ID.","error");}
                 }catch{showToast("Network error sending test.","error");}
               }}>Send Test Message</button>
@@ -6737,7 +6778,7 @@ function AdminLogin(){
   return(
     <div className="a-login">
       <div className="a-login-box">
-        <div className="a-login-logo">NB<span>Property</span></div>
+        <div className="a-login-logo">Haus<span>zy</span></div>
         <div className="a-login-sub">Admin Portal — Restricted Access</div>
         {err&&<div className="a-login-err">{err}</div>}
         <label className="a-login-lbl">Email</label>
@@ -6885,7 +6926,7 @@ function LoanCalculator({settings}){
 
   const waPhone=(settings?.whatsappPhone||"60129846080").replace(/\D/g,"");
   const waName=settings?.whatsappName||"Joel";
-  const waMsg=`Hi ${waName}, I used the NB Property Loan Calculator.\n\nProperty: RM ${price.toLocaleString()}\nAdjusted SPA: ${fmtRM(adjustedPrice)}\nMonthly Installment: ${fmtRM(loan.monthly)}\nNet Cash Out: ${fmtRM(netCash)}\n\nCan you advise?`;
+  const waMsg=`Hi ${waName}, I used the Hauszy Loan Calculator.\n\nProperty: RM ${price.toLocaleString()}\nAdjusted SPA: ${fmtRM(adjustedPrice)}\nMonthly Installment: ${fmtRM(loan.monthly)}\nNet Cash Out: ${fmtRM(netCash)}\n\nCan you advise?`;
   const waUrl=`https://api.whatsapp.com/send?phone=${waPhone}&text=${encodeURIComponent(waMsg)}`;
 
   const saveCalc=()=>{
@@ -7349,7 +7390,7 @@ function WhyChooseUs() {
           </div>
         </div>
         <div className={`lux-reveal lux-reveal-right${isInView ? " lux-revealed" : ""}`} style={{transitionDelay:".18s"}}>
-          <div className="wcu-eyebrow">Why Choose NB Property</div>
+          <div className="wcu-eyebrow">Why Choose Hauszy</div>
           <h2 className="wcu-title">Built Around<br/><em>Your Lifestyle</em></h2>
           <p className="wcu-desc">Whether you're a first-time buyer, growing family or seasoned investor, we have projects across every price range in Penang. We don't push one type — we find what works for you.</p>
           <div className="wcu-features">
@@ -7393,7 +7434,7 @@ function LuxuryFooter({ onTab, onRI }) {
     <footer className="lux-ft">
       <div className="lux-ft-inner">
         <div>
-          <div className="lux-ft-logo">NB<span>Property</span></div>
+          <div className="lux-ft-logo">Haus<span>zy</span></div>
           <div className="lux-ft-tagline">Penang's most complete new launch platform — for every budget, every lifestyle, every stage of life.</div>
         </div>
         <div>
@@ -7416,7 +7457,7 @@ function LuxuryFooter({ onTab, onRI }) {
       </div>
       <div className="lux-ft-divider"/>
       <div className="lux-ft-bottom">
-        <div className="lux-ft-copy">© 2025 <span>NB Property</span> · All rights reserved</div>
+        <div className="lux-ft-copy">© 2025 <span>Hauszy</span> · All rights reserved</div>
         <div className="lux-ft-copy">Penang Island &amp; Seberang Perai, Malaysia</div>
       </div>
     </footer>
@@ -7432,7 +7473,7 @@ const mkStep = (target, title, desc, onEnter) => ({ target, title, desc, onEnter
 const TOUR_STEPS = [
   mkStep(
     () => document.querySelector('.nav-logo'),
-    'Welcome to NB Property',
+    'Welcome to Hauszy',
     'Your complete guide to premium new launches in Penang. Browse, compare, and calculate — all in one place.',
     ({ closeNav }) => closeNav(),
   ),
@@ -7944,7 +7985,7 @@ export default function App(){
         </svg>
       </div>
     </div>
-    <div className="nb-loader-logo">NB<span>Property</span></div>
+    <div className="nb-loader-logo">Haus<span>zy</span></div>
     <div className="nb-loader-tagline">Luxury Real Estate</div>
     <div className="nb-loader-bar-wrap"><div className="nb-loader-bar"/></div>
     <div className="nb-loader-dots"><span/><span/><span/></div>
@@ -7964,7 +8005,7 @@ export default function App(){
       {/* ── Mobile side-nav drawer — hidden on detail page ── */}
       {tab!=="detail"&&<div className={`mob-drawer${mobileNavOpen?" open":""}`}>
         <div className="mob-drawer-hd">
-          <div className="mob-drawer-logo" onClick={()=>{handleLogoTap();setMobileNavOpen(false);}}>NB<span>Property</span></div>
+          <div className="mob-drawer-logo" onClick={()=>{handleLogoTap();setMobileNavOpen(false);}}>Haus<span>zy</span></div>
           <button className="mob-drawer-x" onClick={()=>setMobileNavOpen(false)}>✕</button>
         </div>
         <div className="mob-drawer-nav">
@@ -7986,7 +8027,7 @@ export default function App(){
 
       {/* ── Top navigation — hidden on detail page ── */}
       <nav className="nav" style={tab==="detail"?{display:"none"}:undefined}>
-        <div className="nav-logo" onClick={handleLogoTap}>NB<span>Property</span></div>
+        <div className="nav-logo" onClick={handleLogoTap}>Haus<span>zy</span></div>
         {/* Desktop tabs (centered) */}
         <div className="nav-tabs">
           <button className={`ntab${tab==="listings"?" on":""}`} onClick={()=>goTab("listings")}><span>Home</span></button>
